@@ -9,19 +9,24 @@ obj/
 *.vs/
 .vscode/
 .idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 *.cer
 appsettings.Development.json
 appsettings.json
 
-# User-specific files
+# Datoteke specifične za korisnika
 *.rsuser
-*.suo
 *.user
 *.userosscache
 *.sln.docstates
 *.sln.ide
 
-# Packages
+# Paketi
 *.nupkg
 *.snupkg
 packages/
@@ -29,14 +34,20 @@ packages/
 project.lock.json
 project.fragment.lock.json
 
-# Resharper
+# ReSharper
 _ReSharper/
 *.DotSettings.user
 
-# Logs
+# Logovi
+logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# VS Code directories
+# VS Code direktoriji
 .vscode/
 
 # Node.js
@@ -48,16 +59,19 @@ yarn-error.log*
 .pnp.loader.mjs
 package-lock.json
 yarn.lock
+dist/
+dist-ssr/
+*.local
 
-# Optional eslint cache
+# Opcionalna eslint cache
 .eslintcache
 
-# dotenv environment variables file
+# dotenv datoteke s varijablama okruženja
 .env.development
 .env.production
 
-# React production build
+# React proizvodna izgradnja
 build/
 
-# Dependency directories
-jspm_packages
+# Direktoriji ovisnosti
+jspm_packages/
