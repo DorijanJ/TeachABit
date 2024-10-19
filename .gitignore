@@ -1,0 +1,63 @@
+# ASP.NET Core
+bin/
+obj/
+*.db
+*.bak
+*.log
+*.pdb
+*.TestResults/
+*.vs/
+.vscode/
+.idea/
+*.cer
+appsettings.Development.json
+appsettings.json
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sln.ide
+
+# Packages
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+
+# Resharper
+_ReSharper/
+*.DotSettings.user
+
+# Logs
+*.log
+
+# VS Code directories
+.vscode/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp.cjs
+.pnp.loader.mjs
+package-lock.json
+yarn.lock
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env.development
+.env.production
+
+# React production build
+build/
+
+# Dependency directories
+jspm_packages
