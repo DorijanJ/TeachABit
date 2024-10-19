@@ -52,7 +52,7 @@ yarn.lock
 # Optional eslint cache
 .eslintcache
 
-# dotenv environment variables file
+# Vite environments
 .env.development
 .env.production
 
