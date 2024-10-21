@@ -1,3 +1,6 @@
+# TeachABit
+Ova platforma omogućuje korisnicima raznovrsne mogućnosti učenja i razmjene znanja. Korisnici mogu objavljivati vlastite tečajeve i radionice, te aktivno sudjelovati u diskusijama foruma. Forumi omogućuju razmjenu ideja, postavljanje pitanja i davanje odgovora. Cilj platforme je unaprijediti pristup obrazovanju i olakšati povezivanje između predavača i zainteresiranih korisnika.
+
 # Programsko inženjerstvo
 
 > Ime projekta u naslovu ima cilj opisati namjenu projekta te pomoći u podizanju početnog interesa za projekt prezentirajući osnovnu svrhu projekta.
