@@ -29,8 +29,15 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 
 #Instalcija
 # Članovi tima 
-> Popis članova tima/linkovi/ glavni doprinos
->
+| Članovi           | Uloge             |
+|:------------------|:------------------|
+| Dorijan Jančić    | Devops            |
+| Matej Jurišić     | Full stack        |
+| Ivan Mitar        | Frontend          |
+| Dino Gabrić       | Frontend          |
+| Martin Vidmar     | Frontend, Dizajn  |
+| Mateo Tojić       | Backend           |
+| Tomislav Sesar    | Backend           |
 
 # Kontribucije
 >Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
