@@ -17,6 +17,8 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 * Frontend: [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
 * Backend: [ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet)
 * Baza podataka: [PostgreSQL](https://www.postgresql.org/)
+* Dokumentacija: [Github](https://github.com/)
+* Plačanje: [Stripe](https://stripe.com/en-hr)
 
 #Instalcija
 # Članovi tima 
