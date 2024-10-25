@@ -4,5 +4,13 @@
       "Default": "Information",
       "Microsoft.AspNetCore": "Warning"
     }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=;Port=;Database=;Username=;Password=;SearchPath="
+  },
+  "JwtSettings": {
+    "Issuer": "TeachABitBackend",
+    "Audience": "TeachABitUser",
+    "Key": ""
   }
 }
