@@ -88,7 +88,7 @@ namespace TeachABit.Service.Services.Authentication
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Lax,
                 Expires = valid ? DateTime.UtcNow.AddHours(6) : DateTime.UtcNow.AddDays(-1),
             };
 
@@ -105,7 +105,7 @@ namespace TeachABit.Service.Services.Authentication
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Lax,
             });
             return ServiceResult.Success();
         }
