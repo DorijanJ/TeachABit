@@ -16,7 +16,7 @@ namespace TeachABit.Model.DTOs.Result
     {
         public T? Data { get; set; }
 
-        public static ServiceResult<T> Success(T data) => new() { Data = data };
+        public static ServiceResult<T> Success(T data, MessageResponse? messageResponse = null) => new() { Data = data, Message = messageResponse };
         new public static ServiceResult<T> Failure(MessageResponse? messageResponse = null) => new() { Message = messageResponse ?? MessageDescriber.DefaultError() };
     }
 }

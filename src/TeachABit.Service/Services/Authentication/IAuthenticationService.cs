@@ -8,6 +8,7 @@ namespace TeachABit.Service.Services.Authentication
     {
         Task<ServiceResult<AppUserDto>> Login(LoginAttemptDTO loginAttempt);
         Task<ServiceResult<AppUserDto>> Register(RegisterAttemptDTO registerAttempt);
+        Task<ServiceResult<AppUserDto>> SignInGoogle(string googleIdToken);
         ServiceResult Logout();
     }
 }

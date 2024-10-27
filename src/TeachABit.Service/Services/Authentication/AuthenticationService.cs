@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +109,43 @@ namespace TeachABit.Service.Services.Authentication
                 SameSite = SameSiteMode.Lax,
             });
             return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult<AppUserDto>> SignInGoogle(string googleIdToken)
+        {
+            GoogleJsonWebSignature.Payload payload;
+
+            try
+            {
+                payload = await GoogleJsonWebSignature.ValidateAsync(googleIdToken);
+            }
+            catch (InvalidJwtException)
+            {
+                return ServiceResult<AppUserDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageTypes.AuthenticationError));
+            }
+
+            AppUser? user = await _userManager.FindByEmailAsync(payload.Email);
+            if (user == null)
+            {
+                user = new AppUser
+                {
+                    Email = payload.Email,
+                    UserName = payload.Name
+                };
+                var result = await _userManager.CreateAsync(user);
+                if (!result.Succeeded)
+                {
+                    return ServiceResult<AppUserDto>.Failure();
+                }
+            }
+
+            var cookieSetResult = SetAuthCookie(user);
+            if (cookieSetResult.IsError)
+            {
+                return ServiceResult<AppUserDto>.Failure(cookieSetResult.Message);
+            }
+
+            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user), new MessageResponse("Successfully logged in.", MessageTypes.Success));
         }
     }
 }

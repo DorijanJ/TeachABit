@@ -43,6 +43,13 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(_authenticationService.Logout());
         }
 
+        [AllowAnonymous]
+        [HttpPost("google-signin")]
+        public async Task<IActionResult> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
+        {
+            return GetControllerResult(await _authenticationService.SignInGoogle(googleSigninAttempt.Token));
+        }
+
         [HttpGet]
         public IActionResult GetCurrentUser()
         {
