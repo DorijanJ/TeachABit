@@ -15,7 +15,7 @@ namespace TeachABit.API.Configurations
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllers(opt =>
@@ -48,6 +48,21 @@ namespace TeachABit.API.Configurations
                     context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
                     return new ValueTask();
                 };
+            });
+            services.AddCors(opt =>
+            {
+                var allowedHosts = configuration.GetValue<string?>("AllowedHosts");
+                var origins = allowedHosts?.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                  ?? [];
+
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy
+                       .AllowAnyHeader()
+                       .AllowAnyMethod()
+                       .AllowCredentials()
+                       .WithOrigins(origins);
+                });
             });
 
             return services;
