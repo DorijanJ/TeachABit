@@ -145,7 +145,7 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult<AppUserDto>.Failure(cookieSetResult.Message);
             }
 
-            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user), new MessageResponse("Successfully logged in.", MessageTypes.Success));
+            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user), "Successfully logged in.");
         }
     }
 }
