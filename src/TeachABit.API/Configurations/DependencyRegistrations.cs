@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TeachABit.Model.Models;
+using TeachABit.Model.Models.User;
 using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Util;
