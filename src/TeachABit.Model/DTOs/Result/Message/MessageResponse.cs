@@ -1,6 +1,14 @@
-﻿namespace TeachABit.Model.DTOs.Result.Message
+﻿using System.Text.Json.Serialization;
+
+namespace TeachABit.Model.DTOs.Result.Message
 {
-    public record MessageResponse(string Message, MessageType MessageType, MessageCode? MessageCode = null);
+    public class MessageResponse(string message, MessageType messageType, MessageStatusCode? messageStatusCode = null)
+    {
+        public string Message { get; } = message;
+        public MessageType MessageType { get; } = messageType;
+        [JsonIgnore]
+        public MessageStatusCode? MessageStatusCode { get; } = messageStatusCode;
+    }
 
     public record MessageType(string Type, string Severity);
 
@@ -19,19 +27,14 @@
         public static readonly string Success = "Success";
     }
 
-    public enum MessageCode
+    public enum MessageStatusCode
     {
-        DefaultError,
-        UserNotFound,
-        PasswordMismatch,
-        DuplicateUsername,
-        DuplicateEmail,
-        RegistrationError,
-        Unauthenticated,
-        Unauthorized,
-        InvalidModelState,
-        MethodNotAllowed,
-        AccountLockedOut,
-        Success
+        BadRequest = 400,
+        Unauthorized = 401,
+        Forbidden = 403,
+        NotFound = 404,
+        MethodNotAllowed = 405,
+        Conflict = 409,
+        InternalServerError = 500
     }
 }
