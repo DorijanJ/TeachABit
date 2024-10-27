@@ -6,7 +6,7 @@ using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.DTOs.User;
-using TeachABit.Model.Models;
+using TeachABit.Model.Models.User;
 using TeachABit.Service.Util;
 
 namespace TeachABit.Service.Services.Authentication

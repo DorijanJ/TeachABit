@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using TeachABit.Model.DTOs.User;
-using TeachABit.Model.Models;
+using TeachABit.Model.Models.User;
 
 namespace TeachABit.Model.Mapping
 {

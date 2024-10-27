@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TeachABit.Model.Models;
+using TeachABit.Model.Models.User;
 
 namespace TeachABit.Model
 {
