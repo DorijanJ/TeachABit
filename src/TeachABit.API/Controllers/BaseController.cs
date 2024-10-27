@@ -27,7 +27,7 @@ namespace TeachABit.API.Controllers
             if (controllerResult.Message == null)
                 return StatusCode(500, controllerResult);
 
-            if (ErrorCodeMapping.TryGetValue(controllerResult.Message.MessageCode, out var statusCode))
+            if (controllerResult.Message.MessageCode.HasValue && ErrorCodeMapping.TryGetValue(controllerResult.Message.MessageCode.Value, out var statusCode))
                 return StatusCode(statusCode, controllerResult);
 
             return StatusCode(500, controllerResult);

@@ -1,6 +1,6 @@
 ﻿namespace TeachABit.Model.DTOs.Result.Message
 {
-    public record MessageResponse(string Message, MessageCode MessageCode, MessageType MessageType);
+    public record MessageResponse(string Message, MessageType MessageType, MessageCode? MessageCode = null);
 
     public record MessageType(string Type, string Severity);
 
