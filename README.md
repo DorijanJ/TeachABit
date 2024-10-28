@@ -9,8 +9,68 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 
 > Dobro izrađen opis omogućuje vam da pokažete svoj rad drugim programerima, kao i potencijalnim poslodavcima. Ne samo da prvi dojam na stranici opisa često razlikuje dobar projekt od lošeg projekta već i predstavlja dobru praksu koju morate savladati.
 
-# Funkcijski zahtjevi
-> Navedite ključne zahtjeve Vašeg projekta.
+# Funkcionalni zahtjevi
+**Korisnik:**
+>Pretraživanje stavki (tečaj/radionica/objava)
+>* Pretraživanje po naslovu
+>* Pretraživanje po broju likeova
+>* Pretraživanje po vremenu
+>* Pretraživanje po popularnosti
+>* Pretraživanje po cijeni (tečaj/radionicu)
+
+> Pregled tuđih profila
+
+> Prijava u sustav
+>* Autentifikacija
+>* Resetiranje lozinke ("Zaboravio/la sam lozinku.")
+
+> Prijava na stavku (tečaj/radionica)
+>* Besplatna prijava (za besplatne stavke)
+>* Prijava s plaćanjem (za privatne stavke)
+
+> Kreiranje stavki (tečaj/radionica)
+>* Definirati naslov
+>* Definiranje opisa
+>* Upload slika
+>* Definirati lekcije (tečaj)
+>* Definiranje kategorije
+
+> Modificiranje stavki (tečaj/radionica/objava)
+>* Brisanje stavke
+>* Modificiranje stavke
+>* Označavanje točnog odgovora (objava)
+
+> Komentiranje stavki (tečaj/radionica/objava)
+>* Stvaranje objave kao komentar
+>* Lajkanje stavke
+>* Favoriziranje stavke
+
+> Personalizacija profila
+>* Promjena imena
+>* Promjena slike
+>* Resetiranje lozinke
+
+> Prijava korisnika za neprimjereno ponašanje
+
+> Prijava za verificiranje profila
+
+**Moderator:**
+> Brisanje stavke (tečaj/radionica/objava)
+
+> Verificiranje korisnika
+
+> Utišanje korisnika
+
+**Administrator:**
+> Brisanje profila
+
+> Davanje moderatorske uloge
+
+**Server:**
+> Obrada zahtjeva
+>* Dohvat podataka
+>* Izmjena podataka
+>* Spremanje podataka
 
 
 # Tehnologije
@@ -29,7 +89,7 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 | Ivan Mitar        | Frontend          |
 | Dino Gabrić       | Frontend          |
 | Martin Vidmar     | Frontend, Dizajn  |
-| Mateo Tojić       | Backend           |
+| Mateo Toić        | Backend           |
 | Tomislav Sesar    | Backend           |
 
 # Kontribucije
