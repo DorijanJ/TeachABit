@@ -1,0 +1,77 @@
+# ASP.NET Core
+bin/
+obj/
+*.db
+*.bak
+*.log
+*.pdb
+*.TestResults/
+*.vs/
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.cer
+appsettings.Development.json
+appsettings.json
+
+# Datoteke specifične za korisnika
+*.rsuser
+*.user
+*.userosscache
+*.sln.docstates
+*.sln.ide
+
+# Paketi
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+
+# ReSharper
+_ReSharper/
+*.DotSettings.user
+
+# Logovi
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# VS Code direktoriji
+.vscode/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp.cjs
+.pnp.loader.mjs
+package-lock.json
+yarn.lock
+dist/
+dist-ssr/
+*.local
+
+# Opcionalna eslint cache
+.eslintcache
+
+# dotenv datoteke s varijablama okruženja
+.env.development
+.env.production
+
+# React proizvodna izgradnja
+build/
+
+# Direktoriji ovisnosti
+jspm_packages/
