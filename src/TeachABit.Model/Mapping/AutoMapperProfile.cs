@@ -8,7 +8,7 @@ namespace TeachABit.Model.Mapping
     {
         public AutoMapperProfile()
         {
-            CreateMap<AppUser, AppUserDto>().ForMember(x => x.UserName, opt => opt.MapFrom(x => x.UserName));
+            CreateMap<AppUser, AppUserDto>().ForMember(x => x.Username, opt => opt.MapFrom(x => x.UserName));
         }
     }
 }
