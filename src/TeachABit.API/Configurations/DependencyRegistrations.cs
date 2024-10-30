@@ -2,7 +2,8 @@
 using TeachABit.Model.Models.User;
 using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Authorization;
-using TeachABit.Service.Util;
+using TeachABit.Service.Util.Mail;
+using TeachABit.Service.Util.Token;
 
 namespace TeachABit.API.Configurations
 {
@@ -15,6 +16,7 @@ namespace TeachABit.API.Configurations
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<SignInManager<AppUser>>();
             services.AddScoped<UserManager<AppUser>>();
+            services.AddScoped<IMailSenderService, MailSenderService>();
             return services;
         }
     }
