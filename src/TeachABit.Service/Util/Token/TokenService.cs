@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using TeachABit.Model.Models.User;
 
-namespace TeachABit.Service.Util
+namespace TeachABit.Service.Util.Token
 {
     public class TokenService(IConfiguration configuration) : ITokenService
     {
