@@ -13,6 +13,8 @@
         public static MessageResponse Unauthorized() => new("Unauthorized.", MessageTypes.AuthenticationError, MessageStatusCode.Forbidden);
         public static MessageResponse InvalidModelState(string errorMessage, MessageType messageType) => new(errorMessage, messageType, MessageStatusCode.BadRequest);
         public static MessageResponse MethodNotAllowed() => new("Method not allowed.", MessageTypes.BadRequest, MessageStatusCode.MethodNotAllowed);
+        public static MessageResponse ItemNotFound() => new("Item not found.", MessageTypes.NotFound, MessageStatusCode.NotFound);
+
         public static MessageResponse AccountLockedOut(DateTimeOffset duration)
         {
             var time = duration - DateTimeOffset.UtcNow;
