@@ -10,7 +10,7 @@
   },
   "JwtSettings": {
     "Issuer": "TeachABitBackend",
-    "Audience": "TeachABitFlowUser",
+    "Audience": "TeachABitUser",
     "Key": ""
   },
   "Authentication": {
