@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using TeachABit.Model.DTOs.Tecaj;
+using TeachABit.Model.DTOs.Tecajevi;
 using TeachABit.Model.DTOs.User;
-using TeachABit.Model.Models.Tecaj;
+using TeachABit.Model.Models.Tecajevi;
 using TeachABit.Model.Models.User;
 
 namespace TeachABit.Model.Mapping
