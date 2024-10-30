@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using TeachABit.Model.Models.User;
+using TeachABit.Repository.Repositories.Tecaj;
 using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Util;
@@ -15,6 +16,7 @@ namespace TeachABit.API.Configurations
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<SignInManager<AppUser>>();
             services.AddScoped<UserManager<AppUser>>();
+            services.AddScoped<ITecajeviRepository, TecajeviRepository>();
             return services;
         }
     }
