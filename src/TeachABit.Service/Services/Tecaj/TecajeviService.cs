@@ -13,21 +13,21 @@ public class TecajeviService(ITecajeviRepository tecajeviRepository, IMapper map
 
     public async Task<ServiceResult<List<TecajDto>>> GetTecajList()
     {
-        List<TecajDto> Tecajevi = _mapper.Map<List<TecajDto>>(await _TecajeviRepository.GetTecajList());
-        return ServiceResult<List<TecajDto>>.Success(Tecajevi);
+        List<TecajDto> tecajevi = _mapper.Map<List<TecajDto>>(await _TecajeviRepository.GetTecajList());
+        return ServiceResult<List<TecajDto>>.Success(tecajevi);
     }
     public async Task<ServiceResult<TecajDto>> GetTecaj(int id)
     {
-        TecajDto? Tecaj = _mapper.Map<TecajDto>(await _TecajeviRepository.GetTecaj(id));
-        if(Tecaj == null) return ServiceResult<TecajDto>.Failure(MessageDescriber.ItemNotFound());
-        return ServiceResult<TecajDto>.Success(Tecaj);
+        TecajDto? tecaj = _mapper.Map<TecajDto>(await _TecajeviRepository.GetTecaj(id));
+        if(tecaj == null) return ServiceResult<TecajDto>.Failure(MessageDescriber.ItemNotFound());
+        return ServiceResult<TecajDto>.Success(tecaj);
     }
-    public async Task<ServiceResult<TecajDto>> CreateTecaj(TecajDto Tecaj)
+    public async Task<ServiceResult<TecajDto>> CreateTecaj(TecajDto tecaj)
     {
-        TecajDto createdTecaj = _mapper.Map<TecajDto>(await _TecajeviRepository.CreateTecaj(_mapper.Map<Model.Models.Tecaj.Tecaj>(Tecaj)));
+        TecajDto createdTecaj = _mapper.Map<TecajDto>(await _TecajeviRepository.CreateTecaj(_mapper.Map<Model.Models.Tecaj.Tecaj>(tecaj)));
         return ServiceResult<TecajDto>.Success(createdTecaj);
     }
-    /*public async Task<ServiceResult<TecajDto>> UpdateTecaj(TecajDto Tecaj)
+    /*public async Task<ServiceResult<TecajDto>> UpdateTecaj(TecajDto tecaj)
     {
         // Moram provjeriti najbolji način implementacije za update.
         ...

@@ -11,7 +11,7 @@ public class TecajeviRepository(TeachABitContext context) : ITecajeviRepository
     {
         return await _context.Tecajevi.ToListAsync();
     }
-    // Vraća tip Zadatak? jer postoji mogućnost vraćacanja null vrijednosti ako ne postoji podatak sa zadanim id-om.
+    
     public async Task<Tecaj?> GetTecaj(int id)
     {
         return await _context.Tecajevi.FirstOrDefaultAsync(x => x.Id == id);
