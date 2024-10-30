@@ -80,7 +80,7 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 * Dokumentacija: [Github](https://github.com/)
 * Plačanje: [Stripe](https://stripe.com/en-hr)
 
-# Instalcija
+# Instalacija
 
 ### 1. Klonirati repozitorij
 
