@@ -17,9 +17,9 @@ namespace TeachABit.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginAttemptDTO loginAttempt)
+        public async Task<IActionResult> Login(LoginAttemptDto loginAttempt)
         {
-            MessageResponse? modelStateErorr = GetModelStateError(MessageTypes.AuthenticationError);
+            MessageResponse? modelStateErorr = GetModelStateError(MessageTypeDescriber.AuthenticationError);
             if (modelStateErorr != null)
                 return GetControllerResult(modelStateErorr);
 
@@ -28,9 +28,9 @@ namespace TeachABit.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterAttemptDTO registerAttempt)
+        public async Task<IActionResult> Register(RegisterAttemptDto registerAttempt)
         {
-            MessageResponse? modelStateError = GetModelStateError(MessageTypes.AuthenticationError);
+            MessageResponse? modelStateError = GetModelStateError(MessageTypeDescriber.AuthenticationError);
             if (modelStateError != null)
                 return GetControllerResult(modelStateError);
 
@@ -69,6 +69,20 @@ namespace TeachABit.API.Controllers
         public IActionResult GetCurrentUser()
         {
             return GetControllerResult(_authorizationService.GetUser());
+        }
+
+        [AllowAnonymous]
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailDto confirmEmail)
+        {
+            return GetControllerResult(await _authenticationService.ConfirmEmail(confirmEmail));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("resend-confirm-email")]
+        public async Task<IActionResult> ResendConfirmEmail(ResendConfirmEmailDto resendConfirmEmail)
+        {
+            return GetControllerResult(await _authenticationService.ResendMailConfirmationLink(resendConfirmEmail));
         }
     }
 }

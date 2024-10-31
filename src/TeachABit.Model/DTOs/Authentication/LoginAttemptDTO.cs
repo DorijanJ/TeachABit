@@ -2,7 +2,7 @@
 
 namespace TeachABit.Model.DTOs.Authentication
 {
-    public class LoginAttemptDTO
+    public class LoginAttemptDto
     {
         [Required(ErrorMessage = "Credentials can't be empty")]
         public string Credentials { get; set; } = string.Empty;
