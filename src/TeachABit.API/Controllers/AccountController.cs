@@ -9,10 +9,11 @@ namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService) : BaseController
+    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService, IConfiguration configuration) : BaseController
     {
         private readonly IAuthenticationService _authenticationService = authenticationService;
         private readonly IAuthorizationService _authorizationService = authorizationService;
+        private readonly IConfiguration _configuration = configuration;
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -48,6 +49,20 @@ namespace TeachABit.API.Controllers
         public async Task<IActionResult> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
         {
             return GetControllerResult(await _authenticationService.SignInGoogle(googleSigninAttempt.Token));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPassword)
+        {
+            return GetControllerResult(await _authenticationService.ResetPassword(resetPassword));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto email)
+        {
+            return GetControllerResult(await _authenticationService.ForgotPassword(email));
         }
 
         [HttpGet]
