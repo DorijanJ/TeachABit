@@ -15,6 +15,8 @@
         public static MessageResponse MethodNotAllowed() => new("Method not allowed.", MessageTypes.BadRequest, MessageStatusCode.MethodNotAllowed);
         public static MessageResponse BadRequest(string errorMessage) => new(errorMessage, MessageTypes.BadRequest, MessageStatusCode.BadRequest);
         public static MessageResponse MissingConfiguration() => new("The server currently can't complete this operation.", MessageTypes.GlobalError, MessageStatusCode.InternalServerError);
+        public static MessageResponse ItemNotFound() => new("Item not found.", MessageTypes.NotFound, MessageStatusCode.NotFound);
+
         public static MessageResponse AccountLockedOut(DateTimeOffset duration)
         {
             var time = duration - DateTimeOffset.UtcNow;

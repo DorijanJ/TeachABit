@@ -18,6 +18,7 @@ namespace TeachABit.Model.DTOs.Result.Message
         public static readonly MessageType GlobalError = new("global_error", MessageSeverities.Error);
         public static readonly MessageType BadRequest = new("request_error", MessageSeverities.Error);
         public static readonly MessageType Success = new("succcess_response", MessageSeverities.Success);
+        public static readonly MessageType NotFound = new("not_found", MessageSeverities.Error);
     }
 
     public static class MessageSeverities
