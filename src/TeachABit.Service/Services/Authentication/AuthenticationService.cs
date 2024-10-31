@@ -25,7 +25,7 @@ namespace TeachABit.Service.Services.Authentication
         private readonly IMapper _mapper = mapper;
 
 
-        public async Task<ServiceResult<AppUserDto>> Login(LoginAttemptDTO loginAttempt)
+        public async Task<ServiceResult<AppUserDto>> Login(LoginAttemptDto loginAttempt)
         {
             AppUser? user = await _userManager.FindByEmailAsync(loginAttempt.Credentials)
                 ?? await _userManager.FindByNameAsync(loginAttempt.Credentials);
@@ -35,6 +35,7 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult<AppUserDto>.Failure(MessageDescriber.UserNotFound());
             }
 
+
             SignInResult? result = await _signInManager.CheckPasswordSignInAsync(user, loginAttempt.Password, true);
             if (result.IsLockedOut)
             {
@@ -42,6 +43,8 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult<AppUserDto>.Failure(MessageDescriber.AccountLockedOut(lockoutEnd.Value));
             }
             if (!result.Succeeded) return ServiceResult<AppUserDto>.Failure(MessageDescriber.PasswordMismatch());
+
+            if (!user.EmailConfirmed) return ServiceResult<AppUserDto>.Failure(MessageDescriber.EmailNotConfirmed());
 
             ServiceResult cookieSetResult = SetAuthCookie(user);
             if (cookieSetResult.IsError) return ServiceResult<AppUserDto>.Failure(cookieSetResult.Message);
@@ -55,7 +58,7 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<AppUserDto>> Register(RegisterAttemptDTO registerAttempt)
+        public async Task<ServiceResult<AppUserDto>> Register(RegisterAttemptDto registerAttempt)
         {
             if (await _userManager.Users.AnyAsync(x => x.UserName == registerAttempt.Username))
                 return ServiceResult<AppUserDto>.Failure(MessageDescriber.DuplicateUsername(registerAttempt.Username));
@@ -76,7 +79,29 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult<AppUserDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
             }
 
-            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user));
+            ServiceResult mailResult = await SendEmailConfirmationMail(user);
+
+            if (mailResult.IsError) return ServiceResult<AppUserDto>.Failure(mailResult.Message);
+
+            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user), MessageDescriber.EmailConfimationSent());
+        }
+
+        private async Task<ServiceResult> SendEmailConfirmationMail(AppUser user)
+        {
+            if (user.Email == null) return ServiceResult.Failure(MessageDescriber.BadRequest("User does not have an email."));
+
+            string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            string confirmationLink = $"https://teachabit.org/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
+
+            MailMessage message = new()
+            {
+                Subject = "Mail confirmation for your TeachABit account",
+                Body = MailDescriber.EmailConfirmationMail(confirmationLink),
+                IsBodyHtml = true
+            };
+
+            ServiceResult mailResult = await _mailSenderService.SendMail(message, user.Email);
+            return mailResult;
         }
 
         private ServiceResult SetAuthCookie(AppUser? user = null, bool valid = true)
@@ -124,7 +149,7 @@ namespace TeachABit.Service.Services.Authentication
             }
             catch (InvalidJwtException)
             {
-                return ServiceResult<AppUserDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageTypes.AuthenticationError));
+                return ServiceResult<AppUserDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageTypeDescriber.AuthenticationError));
             }
 
             AppUser? user = await _userManager.FindByEmailAsync(payload.Email);
@@ -187,5 +212,34 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success("If an account with that email exists, a password reset link will be sent.");
         }
 
+        public async Task<ServiceResult> ConfirmEmail(ConfirmEmailDto confirmEmail)
+        {
+            AppUser? user = await _userManager.FindByEmailAsync(confirmEmail.Email);
+            if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
+
+            var result = await _userManager.ConfirmEmailAsync(user, confirmEmail.Token);
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
+
+            return ServiceResult.Success(MessageDescriber.EmailConfirmed());
+        }
+
+        public async Task<ServiceResult> ResendMailConfirmationLink(ResendConfirmEmailDto resendConfirmEmail)
+        {
+            var user = await _userManager.FindByEmailAsync(resendConfirmEmail.Email);
+            if (user == null)
+                return ServiceResult.Failure(MessageDescriber.BadRequest("No account associated with this email."));
+
+            if (user.EmailConfirmed)
+                return ServiceResult.Failure(MessageDescriber.BadRequest("Email is already confirmed."));
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var mailResult = await SendEmailConfirmationMail(user);
+
+            if (mailResult.IsError)
+                return ServiceResult.Failure(mailResult.Message);
+
+            return ServiceResult.Success(MessageDescriber.EmailConfimationSent());
+        }
     }
 }

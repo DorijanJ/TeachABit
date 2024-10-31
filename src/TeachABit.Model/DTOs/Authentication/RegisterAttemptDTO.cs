@@ -2,7 +2,7 @@
 
 namespace TeachABit.Model.DTOs.Authentication
 {
-    public class RegisterAttemptDTO
+    public class RegisterAttemptDto
     {
         [Required(ErrorMessage = "Email can't be empty.")]
         [EmailAddress(ErrorMessage = "Invalid email.")]
