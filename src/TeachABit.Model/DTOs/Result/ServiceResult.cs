@@ -7,7 +7,7 @@ namespace TeachABit.Model.DTOs.Result
         public MessageResponse? Message { get; set; }
 
         public bool IsError => Message != null && Message.MessageType.Severity == MessageSeverities.Error;
-        public static ServiceResult Success() => new() { };
+        public static ServiceResult Success() => new() { Message = MessageDescriber.SuccessMessage() };
         public static ServiceResult Success(string message) => new() { Message = MessageDescriber.SuccessMessage(message) };
         public static ServiceResult Failure(MessageResponse? messageResponse = null) => new() { Message = messageResponse ?? MessageDescriber.DefaultError() };
     }
