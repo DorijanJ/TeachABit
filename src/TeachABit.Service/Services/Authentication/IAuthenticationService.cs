@@ -6,11 +6,13 @@ namespace TeachABit.Service.Services.Authentication
 {
     public interface IAuthenticationService
     {
-        Task<ServiceResult<AppUserDto>> Login(LoginAttemptDTO loginAttempt);
-        Task<ServiceResult<AppUserDto>> Register(RegisterAttemptDTO registerAttempt);
+        Task<ServiceResult<AppUserDto>> Login(LoginAttemptDto loginAttempt);
+        Task<ServiceResult<AppUserDto>> Register(RegisterAttemptDto registerAttempt);
         Task<ServiceResult<AppUserDto>> SignInGoogle(string googleIdToken);
         Task<ServiceResult> ResetPassword(ResetPasswordDto resetPassword);
         Task<ServiceResult> ForgotPassword(ForgotPasswordDto forgotPassword);
+        Task<ServiceResult> ConfirmEmail(ConfirmEmailDto confirmEmail);
+        Task<ServiceResult> ResendMailConfirmationLink(ResendConfirmEmailDto resendConfirmEmail);
         ServiceResult Logout();
     }
 }

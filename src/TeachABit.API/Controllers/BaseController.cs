@@ -54,7 +54,7 @@ namespace TeachABit.API.Controllers
             var modelStateError = ModelState.Values.First().Errors.FirstOrDefault();
             if (modelStateError != null)
             {
-                return MessageDescriber.InvalidModelState(modelStateError.ErrorMessage, messageType ?? MessageTypes.GlobalError);
+                return MessageDescriber.InvalidModelState(modelStateError.ErrorMessage, messageType ?? MessageTypeDescriber.GlobalError);
             }
 
             return null;

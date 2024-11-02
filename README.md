@@ -80,7 +80,57 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 * Dokumentacija: [Github](https://github.com/)
 * Plačanje: [Stripe](https://stripe.com/en-hr)
 
-#Instalcija
+# Instalacija
+
+### 1. Klonirati repozitorij
+
+Klonirati GitHub repozitorij:
+
+```console
+    git clone https://github.com/DorijanJ/TeachABit.git
+    cd TeachABit/src
+```
+
+### 2. Postavljanje backend okruženja
+
+1. Navigirajte do TeachABit.API direktorija.
+2. Stvorite "appsettings.development.json" datoteku.
+3. Kopirajte sadržaj "appsettings.development.json.txt" u stvorenu datoteku.
+4. Dodajte JWT ključ u datoteku.
+5. Dodajte ostale "secrets" ako ih imate.
+
+### 3. Postavljanje baze podataka
+
+1. Napravite novog PostgreSQL korisnika s imenom "teachabit_backend" i dodijeliti mu lozinku.
+2. Kreirajte bazu podataka s imenom "teachabit" i schemom "backend".
+3. Popunite ConnectionString u "appsettings.development.json" datoteci.
+4. Ako nemate instaliran dotnet tools, pokrenuti sljedeću naredbu:
+
+```console
+    dotnet tool install --global dotnet-ef --version 8.*
+```
+5. Za kreiranje tablica u bazi podataka, pokrenite iduću naredbu iz "TeachABit/src" direktorija:
+
+```console
+    dotnet ef database update -s TeachABit.API -p TeachABit.Model
+```
+### 4. Pokretanje backend-a
+```console
+    dotnet restore
+    dotnet run
+```
+### 5. Postavljanje i pokretanje frontend-a
+1. Navigirajte do "TeachABit.Front" direktorija.
+2. Kreirajte ".env.development" datoteku.
+3. Kopirajte sadržaj ".env.development.txt" u stvorenu datoteku.
+4. Pokrenite sljedeće naredbe iz "TeachABit.Front" direktorija:
+```console
+    npm install
+    npm run dev
+```
+### 6. Pristupanje aplikaciji
+Nakon ovih koraka otvoiti preglednik i navigirajte do https://localhost:3000 kako bi pristupili "TeachABit" aplikaciji.
+
 # Članovi tima 
 | Članovi           | Uloge             |
 |:------------------|:------------------|
