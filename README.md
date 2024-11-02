@@ -79,6 +79,7 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 * Baza podataka: [PostgreSQL](https://www.postgresql.org/)
 * Dokumentacija: [Github](https://github.com/)
 * Plačanje: [Stripe](https://stripe.com/en-hr)
+* Mail: [Twilio SendGrid](https://sendgrid.com/en-us)
 
 #Instalcija
 # Članovi tima 
