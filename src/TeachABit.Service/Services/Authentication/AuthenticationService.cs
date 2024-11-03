@@ -221,6 +221,8 @@ namespace TeachABit.Service.Services.Authentication
             AppUser? user = await _userManager.FindByEmailAsync(confirmEmail.Email);
             if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
 
+            if (user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.BadRequest("Email has already been confirmed."));
+
             var result = await _userManager.ConfirmEmailAsync(user, confirmEmail.Token);
             if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Invalid mail confirmation request."));
 

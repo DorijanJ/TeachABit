@@ -18,16 +18,8 @@ export default function RegisterForm() {
     const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleRegister = async (registerAttempt: RegisterAttemptDto) => {
-        try {
-            const response: ApiResponseDto = await auth.register(
-                registerAttempt
-            );
-            if (response.message) {
-                setMessage(response.message);
-            }
-        } catch (error: any) {
-            setMessage(error.message as MessageResponseDto);
-        }
+        const response: ApiResponseDto = await auth.register(registerAttempt);
+        if (response.message) setMessage(response.message);
     };
 
     const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
