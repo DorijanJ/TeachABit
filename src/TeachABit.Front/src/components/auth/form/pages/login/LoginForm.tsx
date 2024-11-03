@@ -22,16 +22,11 @@ export default function LoginForm(props: Props) {
     const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleLogin = async (loginAttempt: LoginAttemptDto) => {
-        try {
-            const response: ApiResponseDto = await auth.login(loginAttempt);
-            const user: AppUserDto = response.data;
+        const response: ApiResponseDto = await auth.login(loginAttempt);
+        const user: AppUserDto = response.data;
 
-            if (user && user.username) props.onClose();
-            if (response.message) setMessage(response.message);
-        } catch (error: any) {
-            const message: MessageResponseDto = error.message;
-            setMessage(message);
-        }
+        if (user && user.username) props.onClose();
+        if (response.message) setMessage(response.message);
     };
 
     const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {

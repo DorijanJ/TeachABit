@@ -13,8 +13,6 @@ interface GlobalContextProps {
     setIsUserLoggedIn: Dispatch<SetStateAction<boolean | undefined>>;
     loggedInUser: AppUserDto | undefined;
     setLoggedInUser: Dispatch<SetStateAction<AppUserDto | undefined>>;
-    pageIsLoading: boolean;
-    setPageIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 const GlobalContext = createContext<GlobalContextProps>({
@@ -22,8 +20,6 @@ const GlobalContext = createContext<GlobalContextProps>({
     setIsUserLoggedIn: () => {},
     userIsLoggedIn: undefined,
     setLoggedInUser: () => {},
-    pageIsLoading: false,
-    setPageIsLoading: () => {},
 });
 
 interface ProviderProps {
@@ -36,9 +32,7 @@ export const useGlobalContext = () => {
 
 export function GlobalContextProvider({ children }: ProviderProps) {
     const [loggedInUser, setLoggedInUser] = useState<AppUserDto>();
-    const [pageIsLoading, setPageIsLoading] = useState(false);
     const [userIsLoggedIn, setIsUserLoggedIn] = useState<boolean>();
-    const [isOpenAuthForm, setIsOpenAuthForm] = useState(false);
     return (
         <GlobalContext.Provider
             value={{
@@ -46,8 +40,6 @@ export function GlobalContextProvider({ children }: ProviderProps) {
                 setIsUserLoggedIn,
                 loggedInUser,
                 setLoggedInUser,
-                pageIsLoading,
-                setPageIsLoading,
             }}
         >
             {children}

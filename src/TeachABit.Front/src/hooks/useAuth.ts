@@ -38,13 +38,8 @@ const useAuth = () => {
         const user: AppUserDto = response.data;
         if (user && user.username) {
             setAuthData(user);
-            return response;
         }
-        return Promise.reject({
-            message: {
-                message: "An error has occured",
-            } as MessageResponseDto,
-        });
+        return response;
     };
 
     const loginGoogle = async (
@@ -57,18 +52,8 @@ const useAuth = () => {
         const user: AppUserDto = response.data;
         if (user && user.username) {
             setAuthData(user);
-            return response;
         }
-        if (response.message) {
-            return Promise.reject({
-                message: response.message,
-            });
-        }
-        return Promise.reject({
-            message: {
-                message: "An error has occured",
-            } as MessageResponseDto,
-        });
+        return response;
     };
 
     const logout = async () => {
