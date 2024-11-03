@@ -139,31 +139,35 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<AppUserDto>> SignInGoogle(string googleIdToken)
+        public async Task<ServiceResult<AppUserDto>> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
         {
             GoogleJsonWebSignature.Payload payload;
 
             try
             {
-                payload = await GoogleJsonWebSignature.ValidateAsync(googleIdToken);
+                payload = await GoogleJsonWebSignature.ValidateAsync(googleSigninAttempt.Token);
             }
             catch (InvalidJwtException)
             {
-                return ServiceResult<AppUserDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageTypeDescriber.AuthenticationError));
+                return ServiceResult<AppUserDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageSeverities.Error));
             }
 
             AppUser? user = await _userManager.FindByEmailAsync(payload.Email);
+
             if (user == null)
             {
+                if (String.IsNullOrEmpty(googleSigninAttempt.Username)) return ServiceResult<AppUserDto>.Failure(MessageDescriber.UsernameNotProvided());
+
                 user = new AppUser
                 {
                     Email = payload.Email,
-                    UserName = payload.Name
+                    UserName = googleSigninAttempt.Username,
                 };
                 var result = await _userManager.CreateAsync(user);
-                if (!result.Succeeded)
+                if (!result.Succeeded && result.Errors.Any())
                 {
-                    return ServiceResult<AppUserDto>.Failure();
+                    string errorMessage = result.Errors.First().Description;
+                    return ServiceResult<AppUserDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
                 }
             }
 

@@ -1,6 +1,9 @@
 import requests from "../api/agent";
+import { GoogleAuthRequest } from "../components/auth/form/AuhtForm";
 import { useGlobalContext } from "../context/Global.context";
 import { AppUserDto } from "../models/AppUserDto";
+import { ApiResponseDto } from "../models/common/ApiResponseDto";
+import { MessageResponseDto } from "../models/common/MessageResponseDto";
 import { LoginAttemptDto } from "../models/LoginAttemptDto";
 import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
 
@@ -23,20 +26,45 @@ const useAuth = () => {
 
     const login = async (
         loginAttempt: LoginAttemptDto
-    ): Promise<AppUserDto> => {
-        try {
-            const response: AppUserDto = await requests.postWithLoading(
-                "account/login",
-                loginAttempt
-            );
-            if (response.username) {
-                setAuthData(response);
-                return response;
-            }
-            return Promise.reject();
-        } catch (error) {
-            return Promise.reject();
+    ): Promise<ApiResponseDto> => {
+        const response = await requests.postWithLoading(
+            "account/login",
+            loginAttempt
+        );
+        const user: AppUserDto = response.data;
+        if (user && user.username) {
+            setAuthData(user);
+            return response;
         }
+        return Promise.reject({
+            message: {
+                message: "An error has occured",
+            } as MessageResponseDto,
+        });
+    };
+
+    const loginGoogle = async (
+        googleAuthRequest: GoogleAuthRequest
+    ): Promise<ApiResponseDto> => {
+        const response: ApiResponseDto = await requests.postWithLoading(
+            "account/google-signin",
+            googleAuthRequest
+        );
+        const user: AppUserDto = response.data;
+        if (user && user.username) {
+            setAuthData(user);
+            return response;
+        }
+        if (response.message) {
+            return Promise.reject({
+                message: response.message,
+            });
+        }
+        return Promise.reject({
+            message: {
+                message: "An error has occured",
+            } as MessageResponseDto,
+        });
     };
 
     const logout = async () => {
@@ -46,20 +74,12 @@ const useAuth = () => {
 
     const register = async (
         registerAttempt: RegisterAttemptDto
-    ): Promise<AppUserDto> => {
-        try {
-            const response: AppUserDto = await requests.postWithLoading(
-                "account/register",
-                registerAttempt
-            );
-            if (response.username) {
-                setAuthData(response);
-                return response;
-            }
-            return Promise.reject();
-        } catch (error) {
-            return Promise.reject();
-        }
+    ): Promise<ApiResponseDto> => {
+        const response: ApiResponseDto = await requests.postWithLoading(
+            "account/register",
+            registerAttempt
+        );
+        return response;
     };
 
     const setAuthData = (appUser: AppUserDto) => {
@@ -114,6 +134,7 @@ const useAuth = () => {
         login,
         logout,
         register,
+        loginGoogle,
         getCurrentUserName,
         handleUserLoggedInCheck,
         validateEmail: (email: string) => validate("email", email),

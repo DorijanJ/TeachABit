@@ -43,18 +43,18 @@ namespace TeachABit.API.Controllers
             {
                 Message = messageResponse
             };
-            return messageResponse.MessageType.Severity == MessageSeverities.Error ? Error(result) : Ok(result);
+            return messageResponse.Severity == MessageSeverities.Error ? Error(result) : Ok(result);
         }
 
         [NonAction]
-        public MessageResponse? GetModelStateError(MessageType? messageType = null)
+        public MessageResponse? GetModelStateError()
         {
             if (ModelState.IsValid || !ModelState.Values.Any()) return null;
 
             var modelStateError = ModelState.Values.First().Errors.FirstOrDefault();
             if (modelStateError != null)
             {
-                return MessageDescriber.InvalidModelState(modelStateError.ErrorMessage, messageType ?? MessageTypeDescriber.GlobalError);
+                return MessageDescriber.InvalidModelState(modelStateError.ErrorMessage);
             }
 
             return null;

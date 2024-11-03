@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
+// Ovo je mobx store, koristi se za istu stvar kao i context, ali ima drukčiju sintaksu
 class GlobalStore {
     pageIsLoading = 0;
 

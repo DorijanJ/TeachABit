@@ -27,7 +27,6 @@ axios.interceptors.response.use(
         if (config.loading) {
             globalStore.decrementPageLoading();
         }
-
         return response.data;
     },
     (error) => {
@@ -35,11 +34,14 @@ axios.interceptors.response.use(
         if (config?.loadingTimeoutId) {
             clearTimeout(config.loadingTimeoutId);
         }
-
         if (config?.loading) {
             globalStore.decrementPageLoading();
         }
-        return Promise.reject(error);
+
+        const errorMessage =
+            error.response?.data?.message || "An error occurred";
+
+        return Promise.reject({ message: errorMessage });
     }
 );
 
@@ -49,7 +51,7 @@ const requests = {
             `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
             { loading } as RequestInjector
         );
-        return response.data;
+        return response;
     },
     post: async (endpoint: string, data: any, loading: boolean = false) => {
         const response = await axios.post(
@@ -57,14 +59,15 @@ const requests = {
             data,
             { loading } as RequestInjector
         );
-        return response.data;
+        console.log(JSON.stringify(response));
+        return response;
     },
     delete: async (endpoint: string, loading: boolean = false) => {
         const response = await axios.delete(
             `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
             { loading } as RequestInjector
         );
-        return response.data;
+        return response;
     },
     getWithLoading: async (endpoint: string) => {
         return requests.get(endpoint, true);

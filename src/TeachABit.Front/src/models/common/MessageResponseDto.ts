@@ -1,8 +1,6 @@
 export interface MessageResponseDto {
     message: string;
-    messageType: {
-        type: string;
-        severity: string;
-    };
+    severity: "info" | "warning" | "error";
     messageStatusCode?: number;
+    code?: string;
 }

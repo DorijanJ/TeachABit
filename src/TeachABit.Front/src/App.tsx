@@ -4,9 +4,11 @@ import useAuth from "./hooks/useAuth";
 import { useEffect } from "react";
 import GenericRoute from "./components/auth/routing/GenericRoute";
 import Tecajevi from "./pages/Tecajevi/Tecajevi";
-import { GlobalContextProvider } from "./context/Global.context";
+import { observer } from "mobx-react";
+import globalStore from "./stores/GlobalStore";
+import { Backdrop, CircularProgress } from "@mui/material";
 
-function App() {
+const App = observer(() => {
     const auth = useAuth();
 
     useEffect(() => {
@@ -15,7 +17,19 @@ function App() {
 
     return (
         <>
+            {globalStore.isPageLoading && (
+                <Backdrop
+                    sx={{
+                        color: "#fff",
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                    open
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+            )}
             <BrowserRouter>
+                s
                 <div className="appContainer">
                     <Routes>
                         <Route
@@ -48,6 +62,6 @@ function App() {
             </BrowserRouter>
         </>
     );
-}
+});
 
 export default App;

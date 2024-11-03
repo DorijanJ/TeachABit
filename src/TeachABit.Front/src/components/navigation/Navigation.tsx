@@ -12,11 +12,10 @@ import {
 import BookIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import ForumIcon from "@mui/icons-material/Forum";
-import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate } from "react-router-dom";
-import AuthForm from "../auth/form/AuthForm";
+import AuthForm from "../auth/form/AuhtForm";
 import { useGlobalContext } from "../../context/Global.context";
 import useAuth from "../../hooks/useAuth";
 
@@ -112,26 +111,9 @@ export default function Navigation() {
                             </>
                         )}
 
-                    {globalContext.userIsLoggedIn === false && (
-                        <Button
-                            variant="contained"
-                            startIcon={<LoginIcon />}
-                            sx={{ width: "80%", margin: "20px" }}
-                            onClick={() =>
-                                globalContext.setIsOpenAuthForm(true)
-                            }
-                        >
-                            Prijava
-                        </Button>
-                    )}
+                    {globalContext.userIsLoggedIn === false && <AuthForm />}
                 </Box>
             </Drawer>
-            {globalContext.isOpenAuthForm && (
-                <AuthForm
-                    isOpen={globalContext.isOpenAuthForm}
-                    onClose={() => globalContext.setIsOpenAuthForm(false)}
-                />
-            )}
         </>
     );
 }

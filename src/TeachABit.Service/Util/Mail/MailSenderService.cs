@@ -42,7 +42,7 @@ namespace TeachABit.Service.Util.Mail
             }
             catch (Exception ex)
             {
-                return ServiceResult.Failure(new MessageResponse($"{ex.Message}", MessageTypeDescriber.GlobalError));
+                return ServiceResult.Failure(new MessageResponse($"{ex.Message}", MessageSeverities.Error));
             }
         }
     }
