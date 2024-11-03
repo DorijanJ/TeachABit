@@ -7,6 +7,8 @@ import Tecajevi from "./pages/Tecajevi/Tecajevi";
 import { observer } from "mobx-react";
 import globalStore from "./stores/GlobalStore";
 import { Backdrop, CircularProgress } from "@mui/material";
+import PublicRoute from "./components/auth/routing/PublicRoute";
+import ConfirmEmail from "./pages/ConfirmEmail/ConfirmEmail";
 
 const App = observer(() => {
     const auth = useAuth();
@@ -21,7 +23,7 @@ const App = observer(() => {
                 <Backdrop
                     sx={{
                         color: "#fff",
-                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                        zIndex: 1600,
                     }}
                     open
                 >
@@ -29,7 +31,6 @@ const App = observer(() => {
                 </Backdrop>
             )}
             <BrowserRouter>
-                s
                 <div className="appContainer">
                     <Routes>
                         <Route
@@ -51,6 +52,15 @@ const App = observer(() => {
                             path="forumi"
                             element={
                                 <GenericRoute page={<></>} withNavigation />
+                            }
+                        />
+                        <Route
+                            path="confirm-email"
+                            element={
+                                <PublicRoute
+                                    page={<ConfirmEmail />}
+                                    withNavigation
+                                />
                             }
                         />
                         <Route

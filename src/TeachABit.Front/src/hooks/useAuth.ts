@@ -1,5 +1,4 @@
 import requests from "../api/agent";
-import { GoogleAuthRequest } from "../components/auth/form/AuhtForm";
 import { useGlobalContext } from "../context/Global.context";
 import { AppUserDto } from "../models/AppUserDto";
 import { ApiResponseDto } from "../models/common/ApiResponseDto";
@@ -8,6 +7,11 @@ import { LoginAttemptDto } from "../models/LoginAttemptDto";
 import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
 
 const USERNAME_KEY = "username";
+
+interface GoogleAuthRequest {
+    token: string;
+    username?: string;
+}
 
 const useAuth = () => {
     const globalContext = useGlobalContext();
