@@ -15,7 +15,7 @@ import ForumIcon from "@mui/icons-material/Forum";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate } from "react-router-dom";
-import AuthForm from "../auth/form/AuhtForm";
+import AuthForm from "../auth/form/AuthForm";
 import { useGlobalContext } from "../../context/Global.context";
 import useAuth from "../../hooks/useAuth";
 

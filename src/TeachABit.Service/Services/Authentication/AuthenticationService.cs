@@ -91,7 +91,7 @@ namespace TeachABit.Service.Services.Authentication
             if (user.Email == null) return ServiceResult.Failure(MessageDescriber.BadRequest("User does not have an email."));
 
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            string confirmationLink = $"https://teachabit.org/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
+            string confirmationLink = $"https://localhost:3000/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
 
             MailMessage message = new()
             {
@@ -222,7 +222,7 @@ namespace TeachABit.Service.Services.Authentication
             if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
 
             var result = await _userManager.ConfirmEmailAsync(user, confirmEmail.Token);
-            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Invalid mail confirmation request."));
 
             return ServiceResult.Success(MessageDescriber.EmailConfirmed());
         }
@@ -235,8 +235,6 @@ namespace TeachABit.Service.Services.Authentication
 
             if (user.EmailConfirmed)
                 return ServiceResult.Failure(MessageDescriber.BadRequest("Email is already confirmed."));
-
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var mailResult = await SendEmailConfirmationMail(user);
 
