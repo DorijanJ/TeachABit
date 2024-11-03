@@ -9,17 +9,16 @@ namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService, IConfiguration configuration) : BaseController
+    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService) : BaseController
     {
         private readonly IAuthenticationService _authenticationService = authenticationService;
         private readonly IAuthorizationService _authorizationService = authorizationService;
-        private readonly IConfiguration _configuration = configuration;
 
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginAttemptDto loginAttempt)
         {
-            MessageResponse? modelStateErorr = GetModelStateError(MessageTypeDescriber.AuthenticationError);
+            MessageResponse? modelStateErorr = GetModelStateError();
             if (modelStateErorr != null)
                 return GetControllerResult(modelStateErorr);
 
@@ -30,7 +29,7 @@ namespace TeachABit.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterAttemptDto registerAttempt)
         {
-            MessageResponse? modelStateError = GetModelStateError(MessageTypeDescriber.AuthenticationError);
+            MessageResponse? modelStateError = GetModelStateError();
             if (modelStateError != null)
                 return GetControllerResult(modelStateError);
 
@@ -41,6 +40,7 @@ namespace TeachABit.API.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
+            Thread.Sleep(3000);
             return GetControllerResult(_authenticationService.Logout());
         }
 
@@ -48,7 +48,7 @@ namespace TeachABit.API.Controllers
         [HttpPost("google-signin")]
         public async Task<IActionResult> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
         {
-            return GetControllerResult(await _authenticationService.SignInGoogle(googleSigninAttempt.Token));
+            return GetControllerResult(await _authenticationService.SignInGoogle(googleSigninAttempt));
         }
 
         [AllowAnonymous]

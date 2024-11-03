@@ -1,0 +1,4 @@
+.appContainer {
+    display: flex;
+    flex-direction: row;
+}

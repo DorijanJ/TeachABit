@@ -8,7 +8,7 @@ namespace TeachABit.Service.Services.Authentication
     {
         Task<ServiceResult<AppUserDto>> Login(LoginAttemptDto loginAttempt);
         Task<ServiceResult<AppUserDto>> Register(RegisterAttemptDto registerAttempt);
-        Task<ServiceResult<AppUserDto>> SignInGoogle(string googleIdToken);
+        Task<ServiceResult<AppUserDto>> SignInGoogle(GoogleSignInAttempt googleSigninAttempt);
         Task<ServiceResult> ResetPassword(ResetPasswordDto resetPassword);
         Task<ServiceResult> ForgotPassword(ForgotPasswordDto forgotPassword);
         Task<ServiceResult> ConfirmEmail(ConfirmEmailDto confirmEmail);

@@ -1,0 +1,18 @@
+.authFormContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    padding: 20px;
+    justify-content: flex-start;
+    width: 400px;
+    height: 500px;
+}
+
+.formContent {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    align-items: center;
+    gap: 20px;
+}

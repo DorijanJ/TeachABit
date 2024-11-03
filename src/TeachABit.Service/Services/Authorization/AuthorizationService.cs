@@ -21,7 +21,7 @@ namespace TeachABit.Service.Services.Authorization
             var claim = jwt.Claims.FirstOrDefault(claim => claim.Type == "unique_name");
             return claim == null ? throw new UnauthorizedAccessException() : ServiceResult<AppUserDto>.Success(new AppUserDto()
             {
-                UserName = claim.Value,
+                Username = claim.Value,
             });
         }
     }
