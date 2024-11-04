@@ -60,9 +60,9 @@ namespace TeachABit.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto email)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPassword)
         {
-            return GetControllerResult(await _authenticationService.ForgotPassword(email));
+            return GetControllerResult(await _authenticationService.ForgotPassword(forgotPassword));
         }
 
         [HttpGet]

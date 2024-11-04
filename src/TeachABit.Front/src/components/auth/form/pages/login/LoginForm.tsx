@@ -1,4 +1,13 @@
-import { TextField, Button, Alert } from "@mui/material";
+import {
+    TextField,
+    Button,
+    Alert,
+    Link,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+} from "@mui/material";
 import { useState, FormEvent, ChangeEvent } from "react";
 import useAuth from "../../../../../hooks/useAuth";
 import { AppUserDto } from "../../../../../models/AppUserDto";
@@ -6,6 +15,8 @@ import { ApiResponseDto } from "../../../../../models/common/ApiResponseDto";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
 import { LoginAttemptDto } from "../../../../../models/LoginAttemptDto";
 import localStyles from "../../AuthForm.module.css";
+import requests from "../../../../../api/agent";
+import ForgotPassword from "./ForgotPassword";
 
 interface Props {
     onClose: () => void;
@@ -18,7 +29,6 @@ export default function LoginForm(props: Props) {
         credentials: "",
         password: "",
     });
-
     const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleLogin = async (loginAttempt: LoginAttemptDto) => {
@@ -66,6 +76,7 @@ export default function LoginForm(props: Props) {
                         }))
                     }
                 />
+                <ForgotPassword />
                 <Button sx={{ width: 150 }} variant="contained" type="submit">
                     Login
                 </Button>

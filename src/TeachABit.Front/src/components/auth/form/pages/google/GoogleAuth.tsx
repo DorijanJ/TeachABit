@@ -31,7 +31,6 @@ export default function GoogleAuth(props: Props) {
     const [alertMessage, setAlertMessage] = useState<MessageResponseDto | null>(
         null
     );
-    const globalContext = useGlobalContext();
     const auth = useAuth();
 
     const handleGoogleSuccess = async (token: string) => {
@@ -41,17 +40,15 @@ export default function GoogleAuth(props: Props) {
     };
 
     const handleGoogleLogin = async (authRequest: GoogleAuthData) => {
-        try {
-            const response: ApiResponseDto = await auth.loginGoogle(
-                authRequest
-            );
-            const user: AppUserDto = response.data;
-            if (user?.username) props.onClose();
-        } catch (error: any) {
-            const errorMessage: MessageResponseDto = error.message;
+        const response: ApiResponseDto = await auth.loginGoogle(authRequest);
+        const user: AppUserDto = response.data;
+        if (user?.username) props.onClose();
 
-            if (isUsernameDialogOpen) setAlertMessage(errorMessage);
-            else if (errorMessage.code === MessageCodes.UsernameNotProvided) {
+        if (response.message) {
+            if (isUsernameDialogOpen) setAlertMessage(response.message);
+            else if (
+                response.message.code === MessageCodes.UsernameNotProvided
+            ) {
                 setIsUsernameDialogOpen(true);
                 setAuthData((prev: any) => ({
                     ...prev,
