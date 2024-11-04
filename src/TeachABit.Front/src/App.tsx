@@ -9,6 +9,7 @@ import globalStore from "./stores/GlobalStore";
 import { Backdrop, CircularProgress } from "@mui/material";
 import PublicRoute from "./components/auth/routing/PublicRoute";
 import ConfirmEmail from "./pages/ConfirmEmail/ConfirmEmail";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 const App = observer(() => {
     const auth = useAuth();
@@ -59,6 +60,15 @@ const App = observer(() => {
                             element={
                                 <PublicRoute
                                     page={<ConfirmEmail />}
+                                    withNavigation
+                                />
+                            }
+                        />
+                        <Route
+                            path="reset-password"
+                            element={
+                                <PublicRoute
+                                    page={<ResetPassword />}
                                     withNavigation
                                 />
                             }

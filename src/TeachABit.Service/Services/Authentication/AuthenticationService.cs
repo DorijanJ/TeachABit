@@ -162,6 +162,7 @@ namespace TeachABit.Service.Services.Authentication
                 {
                     Email = payload.Email,
                     UserName = googleSigninAttempt.Username,
+                    EmailConfirmed = true,
                 };
                 var result = await _userManager.CreateAsync(user);
                 if (!result.Succeeded && result.Errors.Any())
@@ -186,7 +187,7 @@ namespace TeachABit.Service.Services.Authentication
             if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid password reset request."));
 
             IdentityResult result = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
-            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid password reset request."));
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Invalid password reset request."));
 
             return ServiceResult.Success("Password has been reset.");
         }
@@ -199,7 +200,7 @@ namespace TeachABit.Service.Services.Authentication
             {
                 string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                 string encodedToken = HttpUtility.UrlEncode(resetToken);
-                string resetUrl = $"https://teachabit.org/reset-password?token={encodedToken}&email={HttpUtility.UrlEncode(user.Email)}";
+                string resetUrl = $"https://localhost:3000/reset-password?token={encodedToken}&email={HttpUtility.UrlEncode(user.Email)}";
 
                 MailMessage message = new()
                 {
