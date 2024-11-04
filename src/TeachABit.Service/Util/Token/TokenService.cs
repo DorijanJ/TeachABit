@@ -11,7 +11,7 @@ namespace TeachABit.Service.Util.Token
     {
         private readonly IConfiguration _configuration = configuration;
 
-        public string? CreateToken(AppUser user)
+        public string? CreateToken(Korisnik user)
         {
             if (user.UserName == null || user.Email == null) return null;
             var claims = new List<Claim>

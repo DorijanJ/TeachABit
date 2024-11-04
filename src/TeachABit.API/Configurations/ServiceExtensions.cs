@@ -70,7 +70,7 @@ namespace TeachABit.API.Configurations
         }
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentityCore<AppUser>(options =>
+            services.AddIdentityCore<Korisnik>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequiredUniqueChars = 1;

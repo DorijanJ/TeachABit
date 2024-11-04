@@ -1,4 +1,4 @@
-using TeachABit.Model.Models.Tecajevi;
+using TeachABit.Model.Models.Tecaj;
 
 namespace TeachABit.Repository.Repositories.Tecajevi
 {
