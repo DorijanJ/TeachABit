@@ -15,10 +15,10 @@ using TeachABit.Service.Util.Token;
 
 namespace TeachABit.Service.Services.Authentication
 {
-    public class AuthenticationService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService) : IAuthenticationService
+    public class AuthenticationService(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService) : IAuthenticationService
     {
-        private readonly UserManager<AppUser> _userManager = userManager;
-        private readonly SignInManager<AppUser> _signInManager = signInManager;
+        private readonly UserManager<Korisnik> _userManager = userManager;
+        private readonly SignInManager<Korisnik> _signInManager = signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ITokenService _tokenService = tokenService;
         private readonly IMailSenderService _mailSenderService = mailSenderService;
@@ -27,7 +27,7 @@ namespace TeachABit.Service.Services.Authentication
 
         public async Task<ServiceResult<AppUserDto>> Login(LoginAttemptDto loginAttempt)
         {
-            AppUser? user = await _userManager.FindByEmailAsync(loginAttempt.Credentials)
+            Korisnik? user = await _userManager.FindByEmailAsync(loginAttempt.Credentials)
                 ?? await _userManager.FindByNameAsync(loginAttempt.Credentials);
 
             if (user == null)
@@ -66,7 +66,7 @@ namespace TeachABit.Service.Services.Authentication
             if (await _userManager.Users.AnyAsync(x => x.Email == registerAttempt.Email))
                 return ServiceResult<AppUserDto>.Failure(MessageDescriber.DuplicateEmail(registerAttempt.Email));
 
-            AppUser user = new()
+            Korisnik user = new()
             {
                 Email = registerAttempt.Email,
                 UserName = registerAttempt.Username,
@@ -86,7 +86,7 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user), MessageDescriber.EmailConfimationSent());
         }
 
-        private async Task<ServiceResult> SendEmailConfirmationMail(AppUser user)
+        private async Task<ServiceResult> SendEmailConfirmationMail(Korisnik user)
         {
             if (user.Email == null) return ServiceResult.Failure(MessageDescriber.BadRequest("User does not have an email."));
 
@@ -104,7 +104,7 @@ namespace TeachABit.Service.Services.Authentication
             return mailResult;
         }
 
-        private ServiceResult SetAuthCookie(AppUser? user = null, bool valid = true)
+        private ServiceResult SetAuthCookie(Korisnik? user = null, bool valid = true)
         {
             string? token = user == null ? "" : _tokenService.CreateToken(user);
 
@@ -124,7 +124,7 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        private ServiceResult ClearAuthCookie(AppUser? user = null, bool valid = true)
+        private ServiceResult ClearAuthCookie(Korisnik? user = null, bool valid = true)
         {
             var httpContext = _httpContextAccessor.HttpContext;
 
@@ -152,13 +152,13 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult<AppUserDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageSeverities.Error));
             }
 
-            AppUser? user = await _userManager.FindByEmailAsync(payload.Email);
+            Korisnik? user = await _userManager.FindByEmailAsync(payload.Email);
 
             if (user == null)
             {
                 if (String.IsNullOrEmpty(googleSigninAttempt.Username)) return ServiceResult<AppUserDto>.Failure(MessageDescriber.UsernameNotProvided());
 
-                user = new AppUser
+                user = new Korisnik
                 {
                     Email = payload.Email,
                     UserName = googleSigninAttempt.Username,
@@ -183,7 +183,7 @@ namespace TeachABit.Service.Services.Authentication
 
         public async Task<ServiceResult> ResetPassword(ResetPasswordDto resetPassword)
         {
-            AppUser? user = await _userManager.FindByEmailAsync(resetPassword.Email);
+            Korisnik? user = await _userManager.FindByEmailAsync(resetPassword.Email);
             if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid password reset request."));
 
             IdentityResult result = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
@@ -194,7 +194,7 @@ namespace TeachABit.Service.Services.Authentication
 
         public async Task<ServiceResult> ForgotPassword(ForgotPasswordDto forgotPassword)
         {
-            AppUser? user = await _userManager.FindByEmailAsync(forgotPassword.Email);
+            Korisnik? user = await _userManager.FindByEmailAsync(forgotPassword.Email);
 
             if (user != null && user.Email != null)
             {
@@ -219,7 +219,7 @@ namespace TeachABit.Service.Services.Authentication
 
         public async Task<ServiceResult> ConfirmEmail(ConfirmEmailDto confirmEmail)
         {
-            AppUser? user = await _userManager.FindByEmailAsync(confirmEmail.Email);
+            Korisnik? user = await _userManager.FindByEmailAsync(confirmEmail.Email);
             if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
 
             if (user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.BadRequest("Email has already been confirmed."));

@@ -4,6 +4,6 @@ namespace TeachABit.Service.Util.Token
 {
     public interface ITokenService
     {
-        string? CreateToken(AppUser user);
+        string? CreateToken(Korisnik user);
     }
 }
