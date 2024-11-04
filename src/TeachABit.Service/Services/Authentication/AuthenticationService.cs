@@ -8,8 +8,8 @@ using System.Web;
 using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
-using TeachABit.Model.DTOs.User;
-using TeachABit.Model.Models.User;
+using TeachABit.Model.DTOs.Korisnici;
+using TeachABit.Model.Models.Korisnici;
 using TeachABit.Service.Util.Mail;
 using TeachABit.Service.Util.Token;
 
@@ -25,14 +25,14 @@ namespace TeachABit.Service.Services.Authentication
         private readonly IMapper _mapper = mapper;
 
 
-        public async Task<ServiceResult<AppUserDto>> Login(LoginAttemptDto loginAttempt)
+        public async Task<ServiceResult<KorisnikDto>> Login(LoginAttemptDto loginAttempt)
         {
             Korisnik? user = await _userManager.FindByEmailAsync(loginAttempt.Credentials)
                 ?? await _userManager.FindByNameAsync(loginAttempt.Credentials);
 
             if (user == null)
             {
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.UserNotFound());
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.UserNotFound());
             }
 
 
@@ -40,16 +40,16 @@ namespace TeachABit.Service.Services.Authentication
             if (result.IsLockedOut)
             {
                 var lockoutEnd = await _userManager.GetLockoutEndDateAsync(user);
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.AccountLockedOut(lockoutEnd.Value));
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.AccountLockedOut(lockoutEnd.Value));
             }
-            if (!result.Succeeded) return ServiceResult<AppUserDto>.Failure(MessageDescriber.PasswordMismatch());
+            if (!result.Succeeded) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.PasswordMismatch());
 
-            if (!user.EmailConfirmed) return ServiceResult<AppUserDto>.Failure(MessageDescriber.EmailNotConfirmed());
+            if (!user.EmailConfirmed) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.EmailNotConfirmed());
 
             ServiceResult cookieSetResult = SetAuthCookie(user);
-            if (cookieSetResult.IsError) return ServiceResult<AppUserDto>.Failure(cookieSetResult.Message);
+            if (cookieSetResult.IsError) return ServiceResult<KorisnikDto>.Failure(cookieSetResult.Message);
 
-            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user));
+            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user));
         }
 
         public ServiceResult Logout()
@@ -58,13 +58,13 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<AppUserDto>> Register(RegisterAttemptDto registerAttempt)
+        public async Task<ServiceResult<KorisnikDto>> Register(RegisterAttemptDto registerAttempt)
         {
             if (await _userManager.Users.AnyAsync(x => x.UserName == registerAttempt.Username))
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.DuplicateUsername(registerAttempt.Username));
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.DuplicateUsername(registerAttempt.Username));
 
             if (await _userManager.Users.AnyAsync(x => x.Email == registerAttempt.Email))
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.DuplicateEmail(registerAttempt.Email));
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.DuplicateEmail(registerAttempt.Email));
 
             Korisnik user = new()
             {
@@ -76,14 +76,14 @@ namespace TeachABit.Service.Services.Authentication
             if (!result.Succeeded && result.Errors.Any())
             {
                 string errorMessage = result.Errors.First().Description;
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
             }
 
             ServiceResult mailResult = await SendEmailConfirmationMail(user);
 
-            if (mailResult.IsError) return ServiceResult<AppUserDto>.Failure(mailResult.Message);
+            if (mailResult.IsError) return ServiceResult<KorisnikDto>.Failure(mailResult.Message);
 
-            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user), MessageDescriber.EmailConfimationSent());
+            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user), MessageDescriber.EmailConfimationSent());
         }
 
         private async Task<ServiceResult> SendEmailConfirmationMail(Korisnik user)
@@ -139,7 +139,7 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<AppUserDto>> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
+        public async Task<ServiceResult<KorisnikDto>> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
         {
             GoogleJsonWebSignature.Payload payload;
 
@@ -149,14 +149,14 @@ namespace TeachABit.Service.Services.Authentication
             }
             catch (InvalidJwtException)
             {
-                return ServiceResult<AppUserDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageSeverities.Error));
+                return ServiceResult<KorisnikDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageSeverities.Error));
             }
 
             Korisnik? user = await _userManager.FindByEmailAsync(payload.Email);
 
             if (user == null)
             {
-                if (String.IsNullOrEmpty(googleSigninAttempt.Username)) return ServiceResult<AppUserDto>.Failure(MessageDescriber.UsernameNotProvided());
+                if (String.IsNullOrEmpty(googleSigninAttempt.Username)) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.UsernameNotProvided());
 
                 user = new Korisnik
                 {
@@ -168,17 +168,17 @@ namespace TeachABit.Service.Services.Authentication
                 if (!result.Succeeded && result.Errors.Any())
                 {
                     string errorMessage = result.Errors.First().Description;
-                    return ServiceResult<AppUserDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
+                    return ServiceResult<KorisnikDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
                 }
             }
 
             var cookieSetResult = SetAuthCookie(user);
             if (cookieSetResult.IsError)
             {
-                return ServiceResult<AppUserDto>.Failure(cookieSetResult.Message);
+                return ServiceResult<KorisnikDto>.Failure(cookieSetResult.Message);
             }
 
-            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user), "Successfully logged in.");
+            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user), "Successfully logged in.");
         }
 
         public async Task<ServiceResult> ResetPassword(ResetPasswordDto resetPassword)

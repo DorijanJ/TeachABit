@@ -2,7 +2,7 @@ using AutoMapper;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.DTOs.Tecajevi;
-using TeachABit.Model.Models.Tecaj;
+using TeachABit.Model.Models.Tecajevi;
 using TeachABit.Repository.Repositories.Tecajevi;
 
 namespace TeachABit.Service.Services.Tecajevi

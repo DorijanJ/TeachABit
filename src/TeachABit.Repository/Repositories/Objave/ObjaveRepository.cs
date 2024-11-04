@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TeachABit.Model;
-using TeachABit.Model.Models.Forumi;
+using TeachABit.Model.Models.Objave;
 
 namespace TeachABit.Repository.Repositories.Objave
 {
