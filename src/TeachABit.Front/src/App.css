@@ -1,0 +1,5 @@
+body {
+    background-color: #314455; /* Set your desired color */
+    margin: 0; /* Remove default margin */
+    height: 100vh; /* Ensure the body covers full viewport height */
+}

@@ -5,6 +5,8 @@ import GoogleAuth from "./pages/google/GoogleAuth";
 import LoginForm from "./pages/login/LoginForm";
 import RegisterForm from "./pages/register/RegisterForm";
 import LoginIcon from "@mui/icons-material/Login";
+import Logo from "../../../images/logo.png";
+import Divider from '@mui/material/Divider';
 
 const authFormTabs = ["Login", "Register"];
 
@@ -39,20 +41,37 @@ export default function AuthButton() {
             <Button
                 variant="contained"
                 startIcon={<LoginIcon />}
-                sx={{ width: "80%", margin: "20px" }}
+                sx={{ width: "80%", margin: "20px", backgroundColor: "#922728", fontFamily: 'Poppins, Arial, sans-serif' }}
                 onClick={() => setSelectedTab(0)}
             >
                 Prijava
             </Button>
             {selectedTab !== undefined && (
-                <Dialog open onClose={onClose}>
+                <Dialog open onClose={onClose}
+                    sx={{
+                        maxHeight: '500vh',
+                        padding:0
+                    }}>
                     <div className={localStyles.authFormContainer}>
-                        <Tabs variant="fullWidth" value={selectedTab}>
+                        <img src={Logo} alt="Teach A Bit Logo" style={{width: "20%", height: "auto", marginBottom: 0}}/>
+                        <Tabs
+                            variant="fullWidth"
+                            value={selectedTab}
+
+                            sx={{
+                                fontFamily: 'Poppins, Arial, sans-serif',
+
+                            }}
+                        >
                             {authFormTabs.map((tab, index) => (
                                 <Tab
                                     key={tab}
                                     onClick={() => setSelectedTab(index)}
                                     label={tab}
+                                    sx={{
+                                        textColor: "red" ,
+
+                                    }}
                                 />
                             ))}
                         </Tabs>
@@ -60,7 +79,9 @@ export default function AuthButton() {
                             selectedPage={selectedTab}
                             onClose={onClose}
                         />
-                        <GoogleAuth onClose={onClose} />
+                        <Divider orientation="horizontal" flexItem color="black"
+                        />
+                        <GoogleAuth onClose={onClose}/>
                     </div>
                 </Dialog>
             )}

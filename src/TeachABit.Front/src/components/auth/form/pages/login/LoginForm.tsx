@@ -70,8 +70,9 @@ export default function LoginForm(props: Props) {
                             password: e.target.value,
                         }))
                     }
+                    sx={{  fontFamily: 'Poppins, Arial, sans-serif'}}
                 />
-                <Button sx={{ width: 150 }} variant="contained" type="submit">
+                <Button  sx={{ width: 150 , backgroundColor:"#922728", fontFamily: 'Poppins, Arial, sans-serif'}} variant="contained" type="submit">
                     Login
                 </Button>
             </form>

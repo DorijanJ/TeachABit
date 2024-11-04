@@ -50,7 +50,7 @@ const App = observer(() => {
                         <Route
                             path="forumi"
                             element={
-                                <GenericRoute page={<></>} withNavigation />
+                                <GenericRoute page={<></>} withNavigation  />
                             }
                         />
                         <Route
