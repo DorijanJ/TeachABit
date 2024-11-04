@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using TeachABit.Model.DTOs.Tecajevi;
-using TeachABit.Model.DTOs.User;
-using TeachABit.Model.Models.Tecaj;
-using TeachABit.Model.Models.User;
+using TeachABit.Model.DTOs.Korisnici;
+using TeachABit.Model.Models.Tecajevi;
+using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Model.Mapping
 {
@@ -10,7 +10,7 @@ namespace TeachABit.Model.Mapping
     {
         public AutoMapperProfile()
         {
-            CreateMap<Korisnik, AppUserDto>().ForMember(x => x.Username, opt => opt.MapFrom(x => x.UserName));
+            CreateMap<Korisnik, KorisnikDto>().ForMember(x => x.Username, opt => opt.MapFrom(x => x.UserName));
             CreateMap<Tecaj, TecajDto>().ReverseMap();
         }
     }

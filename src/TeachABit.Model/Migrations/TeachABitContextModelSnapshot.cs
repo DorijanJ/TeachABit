@@ -154,7 +154,7 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Forumi.Objava", b =>
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -313,7 +313,7 @@ namespace TeachABit.Model.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Forumi.Objava", b =>
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
                 {
                     b.HasOne("TeachABit.Model.Models.User.Korisnik", "Vlasnik")
                         .WithMany("Objave")

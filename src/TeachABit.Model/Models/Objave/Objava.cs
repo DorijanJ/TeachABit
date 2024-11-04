@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TeachABit.Model.Models.User;
+using TeachABit.Model.Models.Korisnici;
 
-namespace TeachABit.Model.Models.Objava
+namespace TeachABit.Model.Models.Objave
 {
     [Table("Objava")]
     public class Objava

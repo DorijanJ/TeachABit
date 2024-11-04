@@ -10,7 +10,7 @@ using System.Threading.RateLimiting;
 using TeachABit.Model;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.Mapping;
-using TeachABit.Model.Models.User;
+using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.API.Configurations
 {

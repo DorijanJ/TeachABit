@@ -68,7 +68,7 @@ namespace TeachABit.API.Controllers
         [HttpGet]
         public IActionResult GetCurrentUser()
         {
-            return GetControllerResult(_authorizationService.GetUser());
+            return GetControllerResult(_authorizationService.GetKorisnikDto());
         }
 
         [AllowAnonymous]

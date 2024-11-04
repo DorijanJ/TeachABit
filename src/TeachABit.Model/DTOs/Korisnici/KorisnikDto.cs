@@ -1,6 +1,6 @@
-﻿namespace TeachABit.Model.DTOs.User
+﻿namespace TeachABit.Model.DTOs.Korisnici
 {
-    public class AppUserDto
+    public class KorisnikDto
     {
         public string Username { get; set; } = string.Empty;
     }

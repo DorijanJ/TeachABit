@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TeachABit.Model.Models.Forumi;
+using TeachABit.Model.Models.Objave;
 
-namespace TeachABit.Model.Models.User
+namespace TeachABit.Model.Models.Korisnici
 {
     public class Korisnik : IdentityUser
     {

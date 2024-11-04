@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TeachABit.Model.Models.Tecaj
+namespace TeachABit.Model.Models.Tecajevi
 {
     [Table("Tecaj")]
     public class Tecaj

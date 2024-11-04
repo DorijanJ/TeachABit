@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using TeachABit.Model.DTOs.Result;
-using TeachABit.Model.DTOs.User;
+using TeachABit.Model.DTOs.Korisnici;
+using TeachABit.Model.DTOs.Result.Message;
+using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Service.Services.Authorization
 {
@@ -9,20 +11,21 @@ namespace TeachABit.Service.Services.Authorization
     {
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-        public ServiceResult<AppUserDto> GetUser()
+        public Korisnik GetKorisnik()
         {
             var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("No HTTP context available.");
-            var token = httpContext.Request.Cookies["AuthToken"];
-
-            if (token == null) throw new UnauthorizedAccessException();
-
+            var token = httpContext.Request.Cookies["AuthToken"] ?? throw new UnauthorizedAccessException();
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwt = jwtHandler.ReadJwtToken(token);
-            var claim = jwt.Claims.FirstOrDefault(claim => claim.Type == "unique_name");
-            return claim == null ? throw new UnauthorizedAccessException() : ServiceResult<AppUserDto>.Success(new AppUserDto()
+            var usernameClaim = jwt.Claims.FirstOrDefault(claim => claim.Type == "unique_name");
+            var idClaim = jwt.Claims.FirstOrDefault(claim => claim.Type == "id");
+            var emailClaim = jwt.Claims.FirstOrDefault(claim => claim.Type == "email");
+            return (usernameClaim == null || idClaim == null || emailClaim == null) ? throw new UnauthorizedAccessException() : new Korisnik()
             {
-                Username = claim.Value,
-            });
+                Email = emailClaim.Value,
+                UserName = usernameClaim.Value,
+                Id = idClaim.Value,
+            };
         }
     }
 }
