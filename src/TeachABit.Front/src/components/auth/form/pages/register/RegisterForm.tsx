@@ -78,7 +78,7 @@ export default function RegisterForm() {
                         }))
                     }
                 />
-                <Button sx={{ width: 150 , backgroundColor:"#922728", fontFamily: 'Poppins, Arial, sans-serif'}} variant="contained" type="submit">
+                <Button className={localStyles.myButton} variant="contained" type="submit">
                     Register
                 </Button>
             </form>

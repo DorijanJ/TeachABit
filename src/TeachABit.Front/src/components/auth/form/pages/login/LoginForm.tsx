@@ -72,7 +72,7 @@ export default function LoginForm(props: Props) {
                     }
                     sx={{  fontFamily: 'Poppins, Arial, sans-serif'}}
                 />
-                <Button  sx={{ width: 150 , backgroundColor:"#922728", fontFamily: 'Poppins, Arial, sans-serif'}} variant="contained" type="submit">
+                <Button  className={localStyles.myButton} variant="contained" type="submit">
                     Login
                 </Button>
             </form>

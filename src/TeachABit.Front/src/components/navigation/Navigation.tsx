@@ -17,7 +17,8 @@ import { useNavigate } from "react-router-dom";
 import AuthForm from "../auth/form/AuhtForm";
 import { useGlobalContext } from "../../context/Global.context";
 import useAuth from "../../hooks/useAuth";
-import './Navigation.css'
+import localStyles from './Navigation.module.css'
+
 import Logo from '../../images/logo.png'
 
 export default function Navigation() {
@@ -57,21 +58,22 @@ export default function Navigation() {
 
                             }}>
 
-                                    <img src={Logo} alt="Teach A Bit Logo"
-                                         style={{width: "15%", height: "15%", marginBottom:40}}/>
 
                             </ListItemIcon>
+                            <img src={Logo} alt="Teach A Bit Logo"
+                                 style={{width: "50%", height: "50%", marginBottom: 40}}/>
                         </ListItem>
-                        <ListItem  disablePadding>
+                        <ListItem disablePadding>
                             <ListItemButton
                                 onClick={() => navigate("/tecajevi")}
+
                             >
                                 <ListItemIcon>
-                                    <BookIcon  fontSize="large" style={{ color: "922728" }} />
+                                    <BookIcon  className={localStyles.navImage} />
                                 </ListItemIcon>
                                 <ListItemText  primary="Tečajevi"
                                                primaryTypographyProps={{
-                                                   style: { fontFamily: 'Poppins, Arial, sans-serif', fontSize: "1.5vw" , fontWeight: "bold"}
+                                                   style: { fontFamily: 'Poppins, Arial, sans-serif' , fontSize: "1.5vw" , fontWeight: "bold"}
                                                }}/>
                             </ListItemButton>
                         </ListItem>
@@ -80,7 +82,7 @@ export default function Navigation() {
                                 onClick={() => navigate("/radionice")}
                             >
                                 <ListItemIcon>
-                                    <GroupIcon  fontSize="large" style={{ color: "922728" }}/>
+                                    <GroupIcon  className={localStyles.navImage}/>
                                 </ListItemIcon>
                                 <ListItemText primary="Radionice"
                                               primaryTypographyProps={{
@@ -91,7 +93,7 @@ export default function Navigation() {
                         <ListItem disablePadding>
                             <ListItemButton onClick={() => navigate("/forumi")}>
                                 <ListItemIcon>
-                                    <ForumIcon fontSize="large" style={{ color: "922728" }}/>
+                                    <ForumIcon className={localStyles.navImage}/>
                                 </ListItemIcon>
                                 <ListItemText primary="Forumi"
                                               primaryTypographyProps={{

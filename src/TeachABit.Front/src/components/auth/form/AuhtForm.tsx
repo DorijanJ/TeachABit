@@ -8,6 +8,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import Logo from "../../../images/logo.png";
 import Divider from '@mui/material/Divider';
 
+
 const authFormTabs = ["Login", "Register"];
 
 enum AuthFormEnum {
@@ -41,7 +42,10 @@ export default function AuthButton() {
             <Button
                 variant="contained"
                 startIcon={<LoginIcon />}
-                sx={{ width: "80%", margin: "20px", backgroundColor: "#922728", fontFamily: 'Poppins, Arial, sans-serif' }}
+                className={localStyles.myButton}
+                sx={{
+                    margin: 5
+                }}
                 onClick={() => setSelectedTab(0)}
             >
                 Prijava
