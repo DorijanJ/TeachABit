@@ -35,7 +35,7 @@ export default function ForgotPassword() {
                     setIsOpen(true);
                 }}
             >
-                Zaboravljena lozinka?
+                Forgot password
             </Link>
             {isOpen && (
                 <Dialog
