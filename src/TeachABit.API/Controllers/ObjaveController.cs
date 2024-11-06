@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TeachABit.Model.DTOs.Objave;
 using TeachABit.Service.Services.Objave;
 
@@ -10,12 +11,14 @@ namespace TeachABit.API.Controllers
     {
         private readonly IObjaveService _objaveService = objaveService;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetObjavaList()
         {
             return GetControllerResult(await _objaveService.GetObjavaList());
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetObjavaById(int id)
         {

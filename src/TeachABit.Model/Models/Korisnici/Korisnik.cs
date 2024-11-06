@@ -5,6 +5,6 @@ namespace TeachABit.Model.Models.Korisnici
 {
     public class Korisnik : IdentityUser
     {
-        public IEnumerable<Objava> Objave { get; set; } = [];
+        public List<Objava> Objave { get; set; } = [];
     }
 }

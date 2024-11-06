@@ -9,7 +9,7 @@ export default function GenericRoute(props: GenericRouteProps) {
     return (
         <>
             {props.withNavigation && <Navigation />}
-            {props.page}
+            <div className="pageView">{props.page}</div>
         </>
     );
 }

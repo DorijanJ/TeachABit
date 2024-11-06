@@ -75,7 +75,7 @@ export default function RegisterForm() {
                     variant="contained"
                     type="submit"
                 >
-                    Registriraj se
+                    Registracija
                 </Button>
             </form>
             {message && (

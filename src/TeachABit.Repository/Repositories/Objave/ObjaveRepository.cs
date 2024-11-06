@@ -1,9 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TeachABit.Model;
 using TeachABit.Model.Models.Objave;
 
@@ -24,14 +19,18 @@ namespace TeachABit.Repository.Repositories.Objave
             await _context.Objave.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
-        public Task<Objava?> GetObjavaById(int id)
+        public async Task<Objava?> GetObjavaById(int id)
         {
-            return _context.Objave.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Objave
+                .Include(x => x.Vlasnik)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<List<Objava>> GetObjavaList()
+        public async Task<List<Objava>> GetObjavaList()
         {
-            return _context.Objave.ToListAsync();
+            return await _context.Objave
+                .Include(x => x.Vlasnik)
+                .ToListAsync();
         }
 
         public Task<Objava> UpdateObjava(Objava objava)
