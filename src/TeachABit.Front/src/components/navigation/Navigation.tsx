@@ -2,7 +2,6 @@ import {
     Box,
     Button,
     Drawer,
-    IconButton,
     List,
     ListItem,
     ListItemButton,
@@ -18,6 +17,9 @@ import { useNavigate } from "react-router-dom";
 import AuthForm from "../auth/form/AuthForm";
 import { useGlobalContext } from "../../context/Global.context";
 import useAuth from "../../hooks/useAuth";
+import localStyles from './Navigation.module.css'
+
+import Logo from '../../images/logo.png'
 
 export default function Navigation() {
     const navigate = useNavigate();
@@ -45,17 +47,34 @@ export default function Navigation() {
                         flexDirection: "column",
                         height: "100%",
                         width: "100%",
+                        backgroundColor: "#D9D9D9",
                     }}
                 >
                     <List sx={{ width: "100%" }}>
+                        <ListItem>
+                            <ListItemIcon sx={{
+                                display: 'flex',
+
+
+                            }}>
+
+
+                            </ListItemIcon>
+                            <img src={Logo} alt="Teach A Bit Logo"
+                                 style={{width: "50%", height: "50%", marginBottom: 40}}/>
+                        </ListItem>
                         <ListItem disablePadding>
                             <ListItemButton
                                 onClick={() => navigate("/tecajevi")}
+
                             >
                                 <ListItemIcon>
-                                    <BookIcon />
+                                    <BookIcon  className={localStyles.navImage} />
                                 </ListItemIcon>
-                                <ListItemText primary="Tečajevi" />
+                                <ListItemText  primary="Tečajevi"
+                                               primaryTypographyProps={{
+                                                   style: { fontFamily: 'Poppins, Arial, sans-serif' , fontSize: "1.5vw" , fontWeight: "bold"}
+                                               }}/>
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
@@ -63,17 +82,23 @@ export default function Navigation() {
                                 onClick={() => navigate("/radionice")}
                             >
                                 <ListItemIcon>
-                                    <GroupIcon />
+                                    <GroupIcon  className={localStyles.navImage}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Radionice" />
+                                <ListItemText primary="Radionice"
+                                              primaryTypographyProps={{
+                                                  style: { fontFamily: 'Poppins, Arial, sans-serif' , fontSize: "1.5vw" , fontWeight: "bold"}
+                                              }}/>
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
                             <ListItemButton onClick={() => navigate("/forumi")}>
                                 <ListItemIcon>
-                                    <ForumIcon />
+                                    <ForumIcon className={localStyles.navImage}/>
                                 </ListItemIcon>
-                                <ListItemText primary="Forumi" />
+                                <ListItemText primary="Forumi"
+                                              primaryTypographyProps={{
+                                                  style: { fontFamily: 'Poppins, Arial, sans-serif' , fontSize: "1.5vw" , fontWeight: "bold"}
+                                              }}/>
                             </ListItemButton>
                         </ListItem>
                     </List>
