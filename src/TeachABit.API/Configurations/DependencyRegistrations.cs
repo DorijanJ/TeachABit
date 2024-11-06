@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using TeachABit.Model.Models.User;
+using TeachABit.Repository.Repositories.Radionice;
 using TeachABit.Repository.Repositories.Tecajevi;
 using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Authorization;
@@ -21,6 +22,7 @@ namespace TeachABit.API.Configurations
             services.AddScoped<IMailSenderService, MailSenderService>();
             services.AddScoped<ITecajeviRepository, TecajeviRepository>();
             services.AddScoped<ITecajeviService, TecajeviService>();
+            services.AddScoped<IRadioniceRepository, RadioniceRepository>();
             return services;
         }
     }
