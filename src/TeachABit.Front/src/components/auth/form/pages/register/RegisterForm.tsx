@@ -18,16 +18,8 @@ export default function RegisterForm() {
     const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleRegister = async (registerAttempt: RegisterAttemptDto) => {
-        try {
-            const response: ApiResponseDto = await auth.register(
-                registerAttempt
-            );
-            if (response.message) {
-                setMessage(response.message);
-            }
-        } catch (error: any) {
-            setMessage(error.message as MessageResponseDto);
-        }
+        const response: ApiResponseDto = await auth.register(registerAttempt);
+        if (response.message) setMessage(response.message);
     };
 
     const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -43,7 +35,7 @@ export default function RegisterForm() {
             >
                 <TextField
                     fullWidth
-                    label="Username"
+                    label="Korisničko ime"
                     name="username"
                     value={registerAttempt.username}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -67,7 +59,7 @@ export default function RegisterForm() {
                 />
                 <TextField
                     fullWidth
-                    label="Password"
+                    label="Lozinka"
                     name="password"
                     type="password"
                     value={registerAttempt.password}
@@ -78,8 +70,12 @@ export default function RegisterForm() {
                         }))
                     }
                 />
-                <Button className={localStyles.myButton} variant="contained" type="submit">
-                    Register
+                <Button
+                    className={localStyles.myButton}
+                    variant="contained"
+                    type="submit"
+                >
+                    Registriraj se
                 </Button>
             </form>
             {message && (

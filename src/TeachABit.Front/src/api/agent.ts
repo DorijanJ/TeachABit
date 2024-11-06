@@ -1,5 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import globalStore from "../stores/GlobalStore";
+import { ApiResponseDto } from "../models/common/ApiResponseDto";
 
 interface RequestInjector extends InternalAxiosRequestConfig {
     loading?: boolean;
@@ -38,22 +39,28 @@ axios.interceptors.response.use(
             globalStore.decrementPageLoading();
         }
 
-        const errorMessage =
-            error.response?.data?.message || "An error occurred";
+        if (error.response?.data) return error.response.data;
 
-        return Promise.reject({ message: errorMessage });
+        return Promise.reject({ message: "Something went wrong :(" });
     }
 );
 
 const requests = {
-    get: async (endpoint: string, loading: boolean = false) => {
+    get: async (
+        endpoint: string,
+        loading: boolean = false
+    ): Promise<ApiResponseDto> => {
         const response = await axios.get(
             `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
             { loading } as RequestInjector
         );
         return response;
     },
-    post: async (endpoint: string, data: any, loading: boolean = false) => {
+    post: async (
+        endpoint: string,
+        data: any,
+        loading: boolean = false
+    ): Promise<ApiResponseDto> => {
         const response = await axios.post(
             `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
             data,
@@ -62,7 +69,10 @@ const requests = {
         console.log(JSON.stringify(response));
         return response;
     },
-    delete: async (endpoint: string, loading: boolean = false) => {
+    delete: async (
+        endpoint: string,
+        loading: boolean = false
+    ): Promise<ApiResponseDto> => {
         const response = await axios.delete(
             `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
             { loading } as RequestInjector

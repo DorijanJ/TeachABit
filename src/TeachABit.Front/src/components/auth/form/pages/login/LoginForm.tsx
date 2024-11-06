@@ -1,4 +1,13 @@
-import { TextField, Button, Alert } from "@mui/material";
+import {
+    TextField,
+    Button,
+    Alert,
+    Link,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+} from "@mui/material";
 import { useState, FormEvent, ChangeEvent } from "react";
 import useAuth from "../../../../../hooks/useAuth";
 import { AppUserDto } from "../../../../../models/AppUserDto";
@@ -6,6 +15,8 @@ import { ApiResponseDto } from "../../../../../models/common/ApiResponseDto";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
 import { LoginAttemptDto } from "../../../../../models/LoginAttemptDto";
 import localStyles from "../../AuthForm.module.css";
+import requests from "../../../../../api/agent";
+import ForgotPassword from "./ForgotPassword";
 
 interface Props {
     onClose: () => void;
@@ -18,20 +29,14 @@ export default function LoginForm(props: Props) {
         credentials: "",
         password: "",
     });
-
     const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleLogin = async (loginAttempt: LoginAttemptDto) => {
-        try {
-            const response: ApiResponseDto = await auth.login(loginAttempt);
-            const user: AppUserDto = response.data;
+        const response: ApiResponseDto = await auth.login(loginAttempt);
+        const user: AppUserDto = response.data;
 
-            if (user && user.username) props.onClose();
-            if (response.message) setMessage(response.message);
-        } catch (error: any) {
-            const message: MessageResponseDto = error.message;
-            setMessage(message);
-        }
+        if (user && user.username) props.onClose();
+        if (response.message) setMessage(response.message);
     };
 
     const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -48,7 +53,7 @@ export default function LoginForm(props: Props) {
                 <TextField
                     fullWidth
                     autoFocus
-                    label="Emal/Username"
+                    label="Email/Korisničko ime"
                     name="credentials"
                     value={loginAttempt.credentials}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -60,7 +65,7 @@ export default function LoginForm(props: Props) {
                 />
                 <TextField
                     fullWidth
-                    label="Password"
+                    label="Lozinka"
                     name="password"
                     type="password"
                     value={loginAttempt.password}
@@ -70,9 +75,14 @@ export default function LoginForm(props: Props) {
                             password: e.target.value,
                         }))
                     }
-                    sx={{  fontFamily: 'Poppins, Arial, sans-serif'}}
+                    sx={{ fontFamily: "Poppins, Arial, sans-serif" }}
                 />
-                <Button  className={localStyles.myButton} variant="contained" type="submit">
+                <ForgotPassword />
+                <Button
+                    className={localStyles.myButton}
+                    variant="contained"
+                    type="submit"
+                >
                     Login
                 </Button>
             </form>

@@ -91,7 +91,7 @@ namespace TeachABit.Service.Services.Authentication
             if (user.Email == null) return ServiceResult.Failure(MessageDescriber.BadRequest("User does not have an email."));
 
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            string confirmationLink = $"https://teachabit.org/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
+            string confirmationLink = $"https://localhost:3000/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
 
             MailMessage message = new()
             {
@@ -162,6 +162,7 @@ namespace TeachABit.Service.Services.Authentication
                 {
                     Email = payload.Email,
                     UserName = googleSigninAttempt.Username,
+                    EmailConfirmed = true,
                 };
                 var result = await _userManager.CreateAsync(user);
                 if (!result.Succeeded && result.Errors.Any())
@@ -186,7 +187,7 @@ namespace TeachABit.Service.Services.Authentication
             if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid password reset request."));
 
             IdentityResult result = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
-            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid password reset request."));
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Invalid password reset request."));
 
             return ServiceResult.Success("Password has been reset.");
         }
@@ -199,7 +200,7 @@ namespace TeachABit.Service.Services.Authentication
             {
                 string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                 string encodedToken = HttpUtility.UrlEncode(resetToken);
-                string resetUrl = $"https://teachabit.org/reset-password?token={encodedToken}&email={HttpUtility.UrlEncode(user.Email)}";
+                string resetUrl = $"https://localhost:3000/reset-password?token={encodedToken}&email={HttpUtility.UrlEncode(user.Email)}";
 
                 MailMessage message = new()
                 {
@@ -221,8 +222,10 @@ namespace TeachABit.Service.Services.Authentication
             AppUser? user = await _userManager.FindByEmailAsync(confirmEmail.Email);
             if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
 
+            if (user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.BadRequest("Email has already been confirmed."));
+
             var result = await _userManager.ConfirmEmailAsync(user, confirmEmail.Token);
-            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Invalid mail confirmation request."));
 
             return ServiceResult.Success(MessageDescriber.EmailConfirmed());
         }
@@ -235,8 +238,6 @@ namespace TeachABit.Service.Services.Authentication
 
             if (user.EmailConfirmed)
                 return ServiceResult.Failure(MessageDescriber.BadRequest("Email is already confirmed."));
-
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var mailResult = await SendEmailConfirmationMail(user);
 
