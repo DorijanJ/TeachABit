@@ -75,9 +75,14 @@ export default function LoginForm(props: Props) {
                             password: e.target.value,
                         }))
                     }
+                    sx={{ fontFamily: "Poppins, Arial, sans-serif" }}
                 />
                 <ForgotPassword />
-                <Button sx={{ width: 150 }} variant="contained" type="submit">
+                <Button
+                    className={localStyles.myButton}
+                    variant="contained"
+                    type="submit"
+                >
                     Login
                 </Button>
             </form>

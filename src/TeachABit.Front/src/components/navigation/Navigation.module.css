@@ -1,0 +1,11 @@
+
+
+.navText{
+    font-size:1.5vw;
+    color: #922728;
+    font-weight: bold !important;
+}
+.navImage{
+    font-size: max(16px, 40px);
+    color: #922728;
+}

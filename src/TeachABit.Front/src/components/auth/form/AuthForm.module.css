@@ -16,3 +16,9 @@
     align-items: center;
     gap: 20px;
 }
+
+.myButton {
+    width: 165px;
+    background-color: #922728 !important;
+    font-family: Poppins, Arial, sans-serif !important;
+}
