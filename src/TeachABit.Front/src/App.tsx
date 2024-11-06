@@ -3,13 +3,17 @@ import "./App.css";
 import useAuth from "./hooks/useAuth";
 import { useEffect } from "react";
 import GenericRoute from "./components/auth/routing/GenericRoute";
-import Tecajevi from "./pages/Tecajevi/Tecajevi";
+import Tecajevi from "./pages/tecajevi/Tecajevi";
 import { observer } from "mobx-react";
 import globalStore from "./stores/GlobalStore";
 import { Backdrop, CircularProgress } from "@mui/material";
 import PublicRoute from "./components/auth/routing/PublicRoute";
-import ConfirmEmail from "./pages/ConfirmEmail/ConfirmEmail";
-import ResetPassword from "./pages/ResetPassword/ResetPassword";
+import ConfirmEmail from "./pages/confirmEmail/ConfirmEmail";
+import ResetPassword from "./pages/resetPassword/ResetPassword";
+import Forum from "./pages/forum/Forum";
+import PrivateRoute from "./components/auth/routing/PrivateRoute";
+import Profil from "./pages/profil/Profil";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const App = observer(() => {
     const auth = useAuth();
@@ -52,7 +56,7 @@ const App = observer(() => {
                         <Route
                             path="forumi"
                             element={
-                                <GenericRoute page={<></>} withNavigation  />
+                                <GenericRoute page={<Forum />} withNavigation />
                             }
                         />
                         <Route
@@ -69,6 +73,15 @@ const App = observer(() => {
                             element={
                                 <PublicRoute
                                     page={<ResetPassword />}
+                                    withNavigation
+                                />
+                            }
+                        />
+                        <Route
+                            path="profil"
+                            element={
+                                <PrivateRoute
+                                    page={<Profil />}
                                     withNavigation
                                 />
                             }

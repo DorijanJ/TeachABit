@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
 using System.Web;
 using TeachABit.Model.DTOs.Authentication;
+using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
-using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Service.Util.Mail;
 using TeachABit.Service.Util.Token;
@@ -88,14 +88,14 @@ namespace TeachABit.Service.Services.Authentication
 
         private async Task<ServiceResult> SendEmailConfirmationMail(Korisnik user)
         {
-            if (user.Email == null) return ServiceResult.Failure(MessageDescriber.BadRequest("User does not have an email."));
+            if (user.Email == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisnik nema spremit email."));
 
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             string confirmationLink = $"https://localhost:3000/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
 
             MailMessage message = new()
             {
-                Subject = "Mail confirmation for your TeachABit account",
+                Subject = "Potvrda mail adrese za TeachABit račun",
                 Body = MailDescriber.EmailConfirmationMail(confirmationLink),
                 IsBodyHtml = true
             };
@@ -149,7 +149,7 @@ namespace TeachABit.Service.Services.Authentication
             }
             catch (InvalidJwtException)
             {
-                return ServiceResult<KorisnikDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageSeverities.Error));
+                return ServiceResult<KorisnikDto>.Failure(new MessageResponse("Nevaljani GoogleIdToken.", MessageSeverities.Error));
             }
 
             Korisnik? user = await _userManager.FindByEmailAsync(payload.Email);
@@ -178,18 +178,18 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult<KorisnikDto>.Failure(cookieSetResult.Message);
             }
 
-            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user), "Successfully logged in.");
+            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user), "Uspješna prijava.");
         }
 
         public async Task<ServiceResult> ResetPassword(ResetPasswordDto resetPassword)
         {
             Korisnik? user = await _userManager.FindByEmailAsync(resetPassword.Email);
-            if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid password reset request."));
+            if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Loš zahtjev za oporavak lozinke."));
 
             IdentityResult result = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
-            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Invalid password reset request."));
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Loš zahtjev za oporavak lozinke."));
 
-            return ServiceResult.Success("Password has been reset.");
+            return ServiceResult.Success("Lozinka uspješno promijenjena.");
         }
 
         public async Task<ServiceResult> ForgotPassword(ForgotPasswordDto forgotPassword)
@@ -204,7 +204,7 @@ namespace TeachABit.Service.Services.Authentication
 
                 MailMessage message = new()
                 {
-                    Subject = "Password Recovery Code for Your TeachABit Account",
+                    Subject = "Oporavak lozinke za TeachABit račun",
                     Body = MailDescriber.PasswordResetMail(user.UserName ?? "", resetUrl),
                     IsBodyHtml = true
                 };
@@ -214,18 +214,18 @@ namespace TeachABit.Service.Services.Authentication
                 if (result.IsError) return result;
             }
 
-            return ServiceResult.Success("If an account with that email exists, a password reset link will be sent.");
+            return ServiceResult.Success("Ako račun sa danom mail adresom postoji, poslati će se email sa poveznicom za oporavak lozinke.");
         }
 
         public async Task<ServiceResult> ConfirmEmail(ConfirmEmailDto confirmEmail)
         {
             Korisnik? user = await _userManager.FindByEmailAsync(confirmEmail.Email);
-            if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
+            if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Loš zahtjev za potvrdom email-a."));
 
-            if (user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.BadRequest("Email has already been confirmed."));
+            if (user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.BadRequest("Email je već potvrđen."));
 
             var result = await _userManager.ConfirmEmailAsync(user, confirmEmail.Token);
-            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Invalid mail confirmation request."));
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Loš zahtjev za potvrdom email-a."));
 
             return ServiceResult.Success(MessageDescriber.EmailConfirmed());
         }
@@ -234,10 +234,10 @@ namespace TeachABit.Service.Services.Authentication
         {
             var user = await _userManager.FindByEmailAsync(resendConfirmEmail.Email);
             if (user == null)
-                return ServiceResult.Failure(MessageDescriber.BadRequest("No account associated with this email."));
+                return ServiceResult.Failure(MessageDescriber.BadRequest("Ako račun sa danom mail adresom postoji, poslati će se email sa poveznicom za oporavak lozinke."));
 
             if (user.EmailConfirmed)
-                return ServiceResult.Failure(MessageDescriber.BadRequest("Email is already confirmed."));
+                return ServiceResult.Failure(MessageDescriber.BadRequest("Email je već potvrđen."));
 
             var mailResult = await SendEmailConfirmationMail(user);
 

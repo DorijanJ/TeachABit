@@ -1,11 +1,21 @@
-
-
-.navText{
-    font-size:1.5vw;
-    color: #922728;
-    font-weight: bold !important;
+.navImage {
+    font-size: 30px !important;
 }
-.navImage{
-    font-size: max(16px, 40px);
-    color: #922728;
+.listItemText {
+    font-size: 25px !important;
+    text-align: end;
+    color: #922728 !important;
+}
+
+.navButton {
+    border-radius: 10px !important;
+    border: 1px solid transparent !important;
+    height: 45px !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 40px;
+}
+.activeItem {
+    border: 1px solid #922728 !important;
 }
