@@ -53,7 +53,7 @@ export default function LoginForm(props: Props) {
                 <TextField
                     fullWidth
                     autoFocus
-                    label="Email/Korisničko ime"
+                    label="Emal/Username"
                     name="credentials"
                     value={loginAttempt.credentials}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -65,7 +65,7 @@ export default function LoginForm(props: Props) {
                 />
                 <TextField
                     fullWidth
-                    label="Lozinka"
+                    label="Password"
                     name="password"
                     type="password"
                     value={loginAttempt.password}
