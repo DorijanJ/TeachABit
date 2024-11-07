@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20241104145223_ObjaveMigration")]
+    partial class ObjaveMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +157,7 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
+            modelBuilder.Entity("TeachABit.Model.Models.Forumi.Objava", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -313,7 +316,7 @@ namespace TeachABit.Model.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
+            modelBuilder.Entity("TeachABit.Model.Models.Forumi.Objava", b =>
                 {
                     b.HasOne("TeachABit.Model.Models.User.Korisnik", "Vlasnik")
                         .WithMany("Objave")

@@ -6,7 +6,7 @@
     padding: 20px;
     justify-content: flex-start;
     width: 400px;
-    height: 500px;
+    height: 550px;
 }
 
 .formContent {
@@ -19,6 +19,4 @@
 
 .myButton {
     width: 165px;
-    background-color: #922728 !important;
-    font-family: Poppins, Arial, sans-serif !important;
 }

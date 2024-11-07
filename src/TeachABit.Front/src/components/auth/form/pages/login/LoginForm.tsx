@@ -75,7 +75,6 @@ export default function LoginForm(props: Props) {
                             password: e.target.value,
                         }))
                     }
-                    sx={{ fontFamily: "Poppins, Arial, sans-serif" }}
                 />
                 <ForgotPassword />
                 <Button
@@ -83,7 +82,7 @@ export default function LoginForm(props: Props) {
                     variant="contained"
                     type="submit"
                 >
-                    Login
+                    Prijava
                 </Button>
             </form>
             {message && (
