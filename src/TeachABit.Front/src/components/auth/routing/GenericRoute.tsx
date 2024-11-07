@@ -1,6 +1,4 @@
-import Box from "@mui/material/Box";
 import Navigation from "../../navigation/Navigation";
-import SearchBox from "../../searchbox/SearchBox";
 
 interface GenericRouteProps {
     page: JSX.Element;
