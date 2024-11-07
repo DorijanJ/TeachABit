@@ -70,7 +70,7 @@ export default function SearchBox(props: SearchBoxProps) {
                     "& .MuiOutlinedInput-root": {
                         height: props.height ?? defaultHeight,
                         paddingInline: 1,
-                        borderRadius: 15,
+                        borderRadius: 3,
                         backgroundColor: "#d9d9d9",
                     },
                     "& .MuiInputBase-input::placeholder": {

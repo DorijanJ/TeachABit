@@ -74,22 +74,23 @@ export default function ObjavaDialog(props: Props) {
                     onClose={() => {
                         handleClose();
                     }}
-                    maxWidth={false}
+                    maxWidth={"md"}
                 >
-                    <DialogTitle>
+                    <DialogTitle sx={{ maxWidth: "100%" }}>
                         <div
                             style={{
                                 display: "flex",
                                 flexDirection: "row",
                                 justifyContent: "space-between",
                                 alignItems: "flex-start",
+                                width: "100%",
                             }}
                         >
                             <div
                                 style={{
                                     overflowX: "hidden",
                                     whiteSpace: "normal",
-                                    maxWidth: "90%",
+                                    maxWidth: "80%",
                                 }}
                             >
                                 {isCreating ? `Nova objava` : `${objava.naziv}`}
@@ -124,7 +125,7 @@ export default function ObjavaDialog(props: Props) {
                             gap: "20px",
                             paddingTop: "10px !important",
                             maxHeight: "70vh",
-                            width: "60vw",
+                            minWidth: "40vw",
                         }}
                     >
                         {isCreating && (
