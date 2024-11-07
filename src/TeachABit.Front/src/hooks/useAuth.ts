@@ -18,7 +18,6 @@ const useAuth = () => {
 
     const handleUserLoggedInCheck = () => {
         const username = localStorage.getItem(USERNAME_KEY);
-        console.log(username);
         if (username !== null) {
             globalContext.setLoggedInUser({ username: username });
             globalContext.setIsUserLoggedIn(true);

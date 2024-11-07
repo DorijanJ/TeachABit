@@ -66,7 +66,6 @@ const requests = {
             data,
             { loading } as RequestInjector
         );
-        console.log(JSON.stringify(response));
         return response;
     },
     delete: async (

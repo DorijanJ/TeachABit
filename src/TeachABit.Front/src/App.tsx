@@ -44,7 +44,6 @@ const App = observer(() => {
                                 <GenericRoute
                                     page={<Tecajevi />}
                                     withNavigation
-                                    withSearchBox
                                 />
                             }
                         />
