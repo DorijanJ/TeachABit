@@ -14,9 +14,13 @@ namespace TeachABit.Model.Mapping
         {
             CreateMap<Korisnik, KorisnikDto>().ForMember(x => x.Username, opt => opt.MapFrom(x => x.UserName));
             CreateMap<Tecaj, TecajDto>().ReverseMap();
-            CreateMap<Objava, ObjavaDto>()
-                .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName));
             CreateMap<ObjavaDto, Objava>();
+            CreateMap<Objava, ObjavaDto>()
+                .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
+                .Include<Objava, DetailedObjavaDto>();
+            CreateMap<Objava, DetailedObjavaDto>();
+            CreateMap<Komentar, KomentarDto>()
+                .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName));
         }
     }
 }

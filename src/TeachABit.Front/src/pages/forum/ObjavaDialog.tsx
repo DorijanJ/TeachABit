@@ -8,46 +8,71 @@ import {
     Avatar,
     Typography,
 } from "@mui/material";
-import { ChangeEvent, Dispatch, SetStateAction, useMemo } from "react";
-import { ObjavaDto } from "../../models/ObjavaDto";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { DetailedObjavaDto, ObjavaDto } from "../../models/ObjavaDto";
 import { EditorContent, EditorProvider, useEditor } from "@tiptap/react";
 import MenuBar from "../../components/editor/MenuBar";
 import { defaultEditorExtensions } from "../../components/editor/DefaultEditorExtensions";
 import requests from "../../api/agent";
 import StarterKit from "@tiptap/starter-kit";
+import { KomentarDto } from "../../models/KomentarDto";
+import { formatDistanceToNow } from "date-fns";
+import TeachABitEditor from "../../components/editor/TeachABitTextEditor";
+import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 
 interface Props {
-    objava: ObjavaDto;
-    setObjava: Dispatch<SetStateAction<ObjavaDto | undefined>>;
+    objavaId?: number;
     refreshData: () => Promise<any>;
+    onClose: () => void;
+    isOpen: boolean;
 }
 
 export default function ObjavaDialog(props: Props) {
-    const handleStvoriObjavu = async (objava: ObjavaDto) => {
-        const response = await requests.postWithLoading("objave", objava);
+    const [objava, setObjava] = useState<DetailedObjavaDto>({
+        sadrzaj: "",
+        naziv: "",
+    });
+
+    useEffect(() => {
+        if (props.objavaId) {
+            getObjavaById(props.objavaId);
+        }
+    }, [props.objavaId]);
+
+    const getObjavaById = async (objavaId: number) => {
+        const response = await requests.getWithLoading(`objave/${objavaId}`);
         if (response.data) {
-            props.setObjava(undefined);
-            props.refreshData();
+            setObjava(response.data);
         }
     };
 
-    const editor = useEditor({
-        extensions: [StarterKit],
-        content: props.objava.sadrzaj,
-        editable: false,
-    });
+    const handleClose = (reload: boolean = false) => {
+        setObjava({
+            naziv: "",
+            sadrzaj: "",
+        });
+        props.onClose();
+        if (reload) props.refreshData();
+    };
+
+    const handleStvoriObjavu = async (objava: ObjavaDto) => {
+        const response = await requests.postWithLoading("objave", objava);
+        if (response.data) {
+            handleClose(true);
+        }
+    };
 
     const isCreating = useMemo(() => {
-        return !props.objava.id;
-    }, [props.objava.id]);
+        return !props.objavaId;
+    }, [props.objavaId]);
 
     return (
         <>
-            {props.objava && (
+            {props.isOpen && (
                 <Dialog
-                    open={props.objava !== undefined}
+                    open={props.isOpen}
                     onClose={() => {
-                        props.setObjava(undefined);
+                        handleClose();
                     }}
                     maxWidth={false}
                 >
@@ -67,11 +92,9 @@ export default function ObjavaDialog(props: Props) {
                                     maxWidth: "90%",
                                 }}
                             >
-                                {isCreating
-                                    ? `Nova objava`
-                                    : `${props.objava.naziv}`}
+                                {isCreating ? `Nova objava` : `${objava.naziv}`}
                             </div>
-                            {props.objava.vlasnikUsername && (
+                            {objava.vlasnikUsername && (
                                 <div
                                     style={{
                                         display: "flex",
@@ -81,13 +104,13 @@ export default function ObjavaDialog(props: Props) {
                                     }}
                                 >
                                     <Avatar sx={{ width: 30, height: 30 }}>
-                                        {props.objava.vlasnikUsername[0]}{" "}
+                                        {objava.vlasnikUsername[0]}{" "}
                                     </Avatar>
                                     <Typography
                                         lineHeight={1}
                                         variant="caption"
                                     >
-                                        {props.objava.vlasnikUsername}
+                                        {objava.vlasnikUsername}
                                     </Typography>
                                 </div>
                             )}
@@ -96,11 +119,12 @@ export default function ObjavaDialog(props: Props) {
                     <DialogContent
                         sx={{
                             height: isCreating ? 600 : "auto",
-                            width: "60vw",
                             display: "flex",
                             flexDirection: "column",
                             gap: "20px",
                             paddingTop: "10px !important",
+                            maxHeight: "70vh",
+                            width: "60vw",
                         }}
                     >
                         {isCreating && (
@@ -109,9 +133,9 @@ export default function ObjavaDialog(props: Props) {
                                 autoFocus
                                 label="Naziv"
                                 variant="outlined"
-                                value={props.objava.naziv || ""}
+                                value={objava.naziv || ""}
                                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                    props.setObjava((prev: any) => ({
+                                    setObjava((prev: any) => ({
                                         ...prev,
                                         naziv: e.target.value,
                                     }))
@@ -119,40 +143,80 @@ export default function ObjavaDialog(props: Props) {
                             />
                         )}
                         {isCreating ? (
-                            <EditorProvider
-                                slotBefore={<MenuBar />}
-                                extensions={defaultEditorExtensions}
-                                content={props.objava.sadrzaj}
-                                editorProps={{
-                                    handleKeyDown(view, event) {
-                                        if (event.key === "Tab") {
-                                            event.preventDefault();
-                                            view.dispatch(
-                                                view.state.tr.insertText("\t")
-                                            );
-                                            return true;
-                                        }
-                                        return false;
-                                    },
-                                }}
-                                onUpdate={({ editor }) => {
-                                    props.setObjava((prev: any) => ({
+                            <TeachABitEditor
+                                content={objava.sadrzaj}
+                                onUpdate={(value: string) =>
+                                    setObjava((prev: any) => ({
                                         ...prev,
-                                        sadrzaj: editor.getHTML(),
-                                    }));
-                                }}
+                                        sadrzaj: value,
+                                    }))
+                                }
                             />
                         ) : (
-                            <div className={"readonly-editor"}>
-                                <EditorContent editor={editor} />
+                            <TeachABitRenderer content={objava.sadrzaj} />
+                        )}
+                        {!isCreating && (
+                            <div>
+                                {"Komentari:"}
+                                <hr style={{ width: "100%" }} />
+                            </div>
+                        )}
+
+                        {!isCreating && objava.komentari && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "20px",
+                                }}
+                            >
+                                {objava.komentari.map(
+                                    (komentar: KomentarDto) => (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                gap: "10px",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <Avatar>
+                                                {komentar.vlasnikUsername
+                                                    ? komentar
+                                                          .vlasnikUsername[0]
+                                                    : ""}
+                                            </Avatar>
+                                            <div>
+                                                {komentar.sadrzaj}
+
+                                                <p
+                                                    style={{
+                                                        margin: 0,
+                                                        color: "gray",
+                                                        fontSize: 15,
+                                                    }}
+                                                >
+                                                    {`${formatDistanceToNow(
+                                                        new Date(
+                                                            komentar.createdDateTime
+                                                        ),
+                                                        { addSuffix: true }
+                                                    )} by ${
+                                                        komentar.vlasnikUsername
+                                                    }`}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )
+                                )}
                             </div>
                         )}
                     </DialogContent>
                     <DialogActions>
-                        {!props.objava.id && (
+                        {!objava.id && (
                             <Button
                                 variant="contained"
-                                onClick={() => handleStvoriObjavu(props.objava)}
+                                onClick={() => handleStvoriObjavu(objava)}
                             >
                                 Stvori objavu
                             </Button>

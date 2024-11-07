@@ -1,7 +1,7 @@
 import SearchBox from "../../components/searchbox/SearchBox";
 
 // temp function
-function abc(query: string) {
+function abc(query?: string) {
     console.log("Search:", query);
 }
 

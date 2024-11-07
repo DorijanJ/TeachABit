@@ -36,4 +36,6 @@ body,
 
 .readonly-editor .ProseMirror {
     border: none !important;
+    height: auto;
+    background-color: whitesmoke;
 }

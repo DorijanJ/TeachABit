@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
-using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Objave;
 using TeachABit.Model.DTOs.Result;
-using TeachABit.Model.Models.Objave;
+using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Korisnici.Extensions;
+using TeachABit.Model.Models.Objave;
 using TeachABit.Repository.Repositories.Objave;
 using TeachABit.Service.Services.Authorization;
-using Microsoft.AspNetCore.Identity;
-using TeachABit.Model.Models.Korisnici.Extensions;
-using TeachABit.Model.DTOs.Result.Message;
 
 namespace TeachABit.Service.Services.Objave
 {
@@ -39,15 +37,15 @@ namespace TeachABit.Service.Services.Objave
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<ObjavaDto?>> GetObjavaById(int id)
+        public async Task<ServiceResult<DetailedObjavaDto?>> GetObjavaById(int id)
         {
-            ObjavaDto? objava = _mapper.Map<ObjavaDto?>(await _objaveRepository.GetObjavaById(id));
-            return ServiceResult<ObjavaDto?>.Success(objava);
+            DetailedObjavaDto? objava = _mapper.Map<DetailedObjavaDto?>(await _objaveRepository.GetObjavaById(id));
+            return ServiceResult<DetailedObjavaDto?>.Success(objava);
         }
 
-        public async Task<ServiceResult<List<ObjavaDto>>> GetObjavaList()
+        public async Task<ServiceResult<List<ObjavaDto>>> GetObjavaList(string? search)
         {
-            List<ObjavaDto> objave = _mapper.Map<List<ObjavaDto>>(await _objaveRepository.GetObjavaList());
+            List<ObjavaDto> objave = _mapper.Map<List<ObjavaDto>>(await _objaveRepository.GetObjavaList(search));
             return ServiceResult<List<ObjavaDto>>.Success(objave);
         }
 
