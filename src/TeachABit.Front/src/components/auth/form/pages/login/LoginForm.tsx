@@ -1,13 +1,4 @@
-import {
-    TextField,
-    Button,
-    Alert,
-    Link,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-} from "@mui/material";
+import { TextField, Button, Alert } from "@mui/material";
 import { useState, FormEvent, ChangeEvent } from "react";
 import useAuth from "../../../../../hooks/useAuth";
 import { AppUserDto } from "../../../../../models/AppUserDto";
@@ -15,7 +6,6 @@ import { ApiResponseDto } from "../../../../../models/common/ApiResponseDto";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
 import { LoginAttemptDto } from "../../../../../models/LoginAttemptDto";
 import localStyles from "../../AuthForm.module.css";
-import requests from "../../../../../api/agent";
 import ForgotPassword from "./ForgotPassword";
 
 interface Props {

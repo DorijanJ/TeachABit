@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Objave;
+using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Model.DTOs.Tecajevi;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Objave;
+using TeachABit.Model.Models.Radionice;
 using TeachABit.Model.Models.Tecajevi;
 
 namespace TeachABit.Model.Mapping
@@ -21,6 +23,7 @@ namespace TeachABit.Model.Mapping
             CreateMap<Objava, DetailedObjavaDto>();
             CreateMap<Komentar, KomentarDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName));
+            CreateMap<Radionica, RadionicaDto>().ReverseMap();
         }
     }
 }

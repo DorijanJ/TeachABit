@@ -13,7 +13,6 @@ import {
     DialogActions,
     DialogContent,
 } from "@mui/material";
-import { useGlobalContext } from "../../../../../context/Global.context";
 import useAuth from "../../../../../hooks/useAuth";
 
 interface GoogleAuthData {

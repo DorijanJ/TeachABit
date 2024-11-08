@@ -2,7 +2,6 @@ import requests from "../api/agent";
 import { useGlobalContext } from "../context/Global.context";
 import { AppUserDto } from "../models/AppUserDto";
 import { ApiResponseDto } from "../models/common/ApiResponseDto";
-import { MessageResponseDto } from "../models/common/MessageResponseDto";
 import { LoginAttemptDto } from "../models/LoginAttemptDto";
 import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
 
