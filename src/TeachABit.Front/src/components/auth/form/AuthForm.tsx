@@ -5,7 +5,6 @@ import GoogleAuth from "./pages/google/GoogleAuth";
 import LoginForm from "./pages/login/LoginForm";
 import RegisterForm from "./pages/register/RegisterForm";
 import LoginIcon from "@mui/icons-material/Login";
-import Logo from "../../../images/logo.png";
 import Divider from "@mui/material/Divider";
 
 const authFormTabs = ["Prijava", "Registracija"];
