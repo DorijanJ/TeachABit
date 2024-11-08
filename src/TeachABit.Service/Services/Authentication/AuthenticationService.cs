@@ -115,8 +115,8 @@ namespace TeachABit.Service.Services.Authentication
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
                 Expires = valid ? DateTime.UtcNow.AddHours(6) : DateTime.UtcNow.AddDays(-1),
             };
 
@@ -133,8 +133,8 @@ namespace TeachABit.Service.Services.Authentication
             httpContext.Response.Cookies.Delete("AuthToken", new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
             });
             return ServiceResult.Success();
         }
