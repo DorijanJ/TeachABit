@@ -91,7 +91,7 @@ namespace TeachABit.Service.Services.Authentication
             if (user.Email == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisnik nema spremit email."));
 
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            string confirmationLink = $"https://localhost:3000/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
+            string confirmationLink = $"http://teachabit.org/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
 
             MailMessage message = new()
             {
@@ -200,7 +200,7 @@ namespace TeachABit.Service.Services.Authentication
             {
                 string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                 string encodedToken = HttpUtility.UrlEncode(resetToken);
-                string resetUrl = $"https://localhost:3000/reset-password?token={encodedToken}&email={HttpUtility.UrlEncode(user.Email)}";
+                string resetUrl = $"http://teachabit.org/reset-password?token={encodedToken}&email={HttpUtility.UrlEncode(user.Email)}";
 
                 MailMessage message = new()
                 {
