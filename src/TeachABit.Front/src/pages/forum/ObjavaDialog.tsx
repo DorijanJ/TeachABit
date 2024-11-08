@@ -10,11 +10,7 @@ import {
 } from "@mui/material";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DetailedObjavaDto, ObjavaDto } from "../../models/ObjavaDto";
-import { EditorContent, EditorProvider, useEditor } from "@tiptap/react";
-import MenuBar from "../../components/editor/MenuBar";
-import { defaultEditorExtensions } from "../../components/editor/DefaultEditorExtensions";
 import requests from "../../api/agent";
-import StarterKit from "@tiptap/starter-kit";
 import { KomentarDto } from "../../models/KomentarDto";
 import { formatDistanceToNow } from "date-fns";
 import TeachABitEditor from "../../components/editor/TeachABitTextEditor";
