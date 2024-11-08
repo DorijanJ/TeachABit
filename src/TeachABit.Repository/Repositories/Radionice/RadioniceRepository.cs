@@ -13,7 +13,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
     {
         return await _context.Radionice.ToListAsync();
     }
-    
+
     public async Task<Radionica?> GetRadionica(int id)
     {
         return await _context.Radionice.FirstOrDefaultAsync(x => x.Id == id);
