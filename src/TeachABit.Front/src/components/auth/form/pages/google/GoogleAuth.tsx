@@ -114,7 +114,7 @@ export default function GoogleAuth(props: Props) {
                         />
                         {alertMessage && (
                             <Alert
-                                sx={{ maxWidth: 370, wordBreak: "break-all" }}
+                                sx={{ maxWidth: 370 }}
                                 severity={alertMessage.severity}
                             >
                                 {alertMessage.message}

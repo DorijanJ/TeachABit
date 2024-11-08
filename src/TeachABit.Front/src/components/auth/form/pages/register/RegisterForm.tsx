@@ -35,7 +35,7 @@ export default function RegisterForm() {
             >
                 <TextField
                     fullWidth
-                    label="Username"
+                    label="Korisničko ime"
                     name="username"
                     value={registerAttempt.username}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -59,7 +59,7 @@ export default function RegisterForm() {
                 />
                 <TextField
                     fullWidth
-                    label="Password"
+                    label="Lozinka"
                     name="password"
                     type="password"
                     value={registerAttempt.password}
@@ -70,8 +70,12 @@ export default function RegisterForm() {
                         }))
                     }
                 />
-                <Button sx={{ width: 150 }} variant="contained" type="submit">
-                    Register
+                <Button
+                    className={localStyles.myButton}
+                    variant="contained"
+                    type="submit"
+                >
+                    Registracija
                 </Button>
             </form>
             {message && (

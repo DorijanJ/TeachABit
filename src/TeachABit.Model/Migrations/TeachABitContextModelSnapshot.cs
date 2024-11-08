@@ -154,6 +154,33 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sadrzaj")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("VlasnikId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VlasnikId");
+
+                    b.ToTable("Objava");
+                });
+
             modelBuilder.Entity("TeachABit.Model.Models.Radionice.Radionica", b =>
                 {
                     b.Property<int>("Id")
@@ -188,7 +215,7 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("Tecaj");
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.User.AppUser", b =>
+            modelBuilder.Entity("TeachABit.Model.Models.User.Korisnik", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -263,7 +290,7 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("TeachABit.Model.Models.User.AppUser", null)
+                    b.HasOne("TeachABit.Model.Models.User.Korisnik", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -272,7 +299,7 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("TeachABit.Model.Models.User.AppUser", null)
+                    b.HasOne("TeachABit.Model.Models.User.Korisnik", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -287,7 +314,7 @@ namespace TeachABit.Model.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TeachABit.Model.Models.User.AppUser", null)
+                    b.HasOne("TeachABit.Model.Models.User.Korisnik", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -296,11 +323,27 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("TeachABit.Model.Models.User.AppUser", null)
+                    b.HasOne("TeachABit.Model.Models.User.Korisnik", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
+                {
+                    b.HasOne("TeachABit.Model.Models.User.Korisnik", "Vlasnik")
+                        .WithMany("Objave")
+                        .HasForeignKey("VlasnikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vlasnik");
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.User.Korisnik", b =>
+                {
+                    b.Navigation("Objave");
                 });
 #pragma warning restore 612, 618
         }

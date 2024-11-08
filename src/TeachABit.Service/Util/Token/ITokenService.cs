@@ -1,9 +1,9 @@
-﻿using TeachABit.Model.Models.User;
+﻿using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Service.Util.Token
 {
     public interface ITokenService
     {
-        string? CreateToken(AppUser user);
+        string? CreateToken(Korisnik user);
     }
 }

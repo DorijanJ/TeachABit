@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using TeachABit.Model.DTOs.Korisnici;
+using TeachABit.Model.DTOs.Objave;
 using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Model.DTOs.Tecajevi;
-using TeachABit.Model.DTOs.User;
+using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Objave;
 using TeachABit.Model.Models.Radionice;
 using TeachABit.Model.Models.Tecajevi;
-using TeachABit.Model.Models.User;
 
 namespace TeachABit.Model.Mapping
 {
@@ -12,8 +14,11 @@ namespace TeachABit.Model.Mapping
     {
         public AutoMapperProfile()
         {
-            CreateMap<AppUser, AppUserDto>().ForMember(x => x.Username, opt => opt.MapFrom(x => x.UserName));
+            CreateMap<Korisnik, KorisnikDto>().ForMember(x => x.Username, opt => opt.MapFrom(x => x.UserName));
             CreateMap<Tecaj, TecajDto>().ReverseMap();
+            CreateMap<Objava, ObjavaDto>()
+                .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName));
+            CreateMap<ObjavaDto, Objava>();
             CreateMap<Radionica, RadionicaDto>().ReverseMap();
         }
     }
