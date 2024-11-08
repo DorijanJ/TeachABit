@@ -4,17 +4,21 @@ using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Model.Models.Objave
 {
-    [Table("Objava")]
-    public class Objava
+    [Table("Komentar")]
+    public class Komentar
     {
         [Key]
         public int Id { get; set; }
-        public string Naziv { get; set; } = string.Empty;
         public string Sadrzaj { get; set; } = string.Empty;
-        public string VlasnikId { get; set; } = string.Empty;
+
+        public required string VlasnikId { get; set; }
         [ForeignKey(nameof(VlasnikId))]
         public required virtual Korisnik Vlasnik { get; set; }
 
-        public virtual List<Komentar> Komentari { get; set; } = [];
+        public required int ObjavaId { get; set; }
+        [ForeignKey(nameof(ObjavaId))]
+        public required virtual Objava Objava { get; set; }
+
+        public DateTime CreatedDateTime { get; set; }
     }
 }

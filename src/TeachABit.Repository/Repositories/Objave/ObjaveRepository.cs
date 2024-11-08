@@ -23,14 +23,25 @@ namespace TeachABit.Repository.Repositories.Objave
         {
             return await _context.Objave
                 .Include(x => x.Vlasnik)
+                .Include(x => x.Komentari)
+                .ThenInclude(x => x.Vlasnik)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Objava>> GetObjavaList()
+        public async Task<List<Objava>> GetObjavaList(string? search)
         {
-            return await _context.Objave
-                .Include(x => x.Vlasnik)
-                .ToListAsync();
+            IQueryable<Objava> objaveQuery = _context.Objave
+             .Include(x => x.Vlasnik)
+             .AsQueryable();
+
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                string lowerSearch = search.ToLower();
+                objaveQuery = objaveQuery.Where(x => x.Naziv.ToLower().Contains(lowerSearch));
+            }
+
+            return await objaveQuery.ToListAsync();
         }
 
         public Task<Objava> UpdateObjava(Objava objava)

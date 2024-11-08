@@ -1,21 +1,24 @@
 import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface SearchBoxProps {
-    onSearch: (query: string) => void;
+    onSearch: (query?: string) => void;
     height?: any;
     width?: any;
 }
 
 export default function SearchBox(props: SearchBoxProps) {
-
-    const [query, setQuery] = useState<string>("")
+    const [query, setQuery] = useState<string>("");
 
     const handleSearch = () => {
-        if (query.trim()) {
-            props.onSearch(query);
-        }
+        props.onSearch(query.trim());
+    };
+
+    const handleClear = () => {
+        setQuery("");
+        props.onSearch();
     };
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -24,11 +27,13 @@ export default function SearchBox(props: SearchBoxProps) {
         }
     };
 
+    const defaultHeight = 70;
+
     return (
         <Box
             sx={{
-                height: props.height,
-                width: props.width,
+                height: props.height ?? defaultHeight,
+                width: props.width ?? 400,
             }}
         >
             <TextField
@@ -36,23 +41,36 @@ export default function SearchBox(props: SearchBoxProps) {
                 placeholder="Pretraži..."
                 fullWidth
                 onChange={(e) => setQuery(e.target.value)}
+                value={query}
                 onKeyDown={handleKeyPress}
                 slotProps={{
                     input: {
                         endAdornment: (
                             <InputAdornment position="start">
+                                {query && (
+                                    <IconButton onClick={handleClear}>
+                                        <CloseIcon
+                                            color="primary"
+                                            fontSize="large"
+                                        />
+                                    </IconButton>
+                                )}
                                 <IconButton onClick={handleSearch}>
-                                    <SearchIcon color="primary" fontSize="large" />
+                                    <SearchIcon
+                                        color="primary"
+                                        fontSize="large"
+                                    />
                                 </IconButton>
                             </InputAdornment>
                         ),
+                        spellCheck: false,
                     },
                 }}
                 sx={{
                     "& .MuiOutlinedInput-root": {
-                        height: props.height,
-                        paddingInline: 2,
-                        borderRadius: 9,
+                        height: props.height ?? defaultHeight,
+                        paddingInline: 1,
+                        borderRadius: 3,
                         backgroundColor: "#d9d9d9",
                     },
                     "& .MuiInputBase-input::placeholder": {
@@ -64,6 +82,5 @@ export default function SearchBox(props: SearchBoxProps) {
                 }}
             />
         </Box>
-
     );
 }

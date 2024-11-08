@@ -54,7 +54,7 @@ export default function Navigation() {
                     >
                         <NavigateBeforeIcon color="primary" />
                     </IconButton>
-                    {isExpanded && (
+                    {isExpanded ? (
                         <img
                             src={Logo}
                             alt="Teach A Bit Logo"
@@ -63,6 +63,10 @@ export default function Navigation() {
                                 marginTop: "30px",
                             }}
                         />
+                    ) : (
+                        <Box
+                            style={{ height: "150px", marginTop: "30px" }}
+                        ></Box>
                     )}
                     <List
                         sx={{
