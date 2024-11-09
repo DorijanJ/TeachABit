@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using TeachABit.API.Middleware;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Repository.Repositories.Objave;
 using TeachABit.Repository.Repositories.Radionice;
@@ -29,6 +30,7 @@ namespace TeachABit.API.Configurations
             services.AddScoped<IObjaveService, ObjaveService>();
             services.AddScoped<IRadioniceRepository, RadioniceRepository>();
             services.AddScoped<IRadioniceService, RadioniceService>();
+            services.AddScoped<ModelStateFilter>();
             return services;
         }
     }
