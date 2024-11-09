@@ -9,6 +9,6 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         Task<Tecaj> CreateTecaj(Tecaj tecaj);
         //Task<Tecaj> UpdateTecaj(Tecaj tecaj);
         Task DeleteTecaj(int id);
-        Task<List<Tecaj>> GetTecajList(string search = null);
+        Task<List<Tecaj>> GetTecajList(string? search = null);
     }
 }
