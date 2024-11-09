@@ -5,6 +5,7 @@ using TeachABit.Model.DTOs.Tecajevi;
 using TeachABit.Model.Models.Tecajevi;
 using TeachABit.Repository.Repositories.Tecajevi;
 
+
 namespace TeachABit.Service.Services.Tecajevi
 {
     public class TecajeviService(ITecajeviRepository tecajeviRepository, IMapper mapper) : ITecajeviService
@@ -12,17 +13,18 @@ namespace TeachABit.Service.Services.Tecajevi
         private readonly ITecajeviRepository _TecajeviRepository = tecajeviRepository;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<ServiceResult<List<TecajDto>>> GetTecajList()
+        /*public async Task<ServiceResult<List<TecajDto>>> GetTecajList()
         {
             List<TecajDto> tecajevi = _mapper.Map<List<TecajDto>>(await _TecajeviRepository.GetTecajList());
             return ServiceResult<List<TecajDto>>.Success(tecajevi);
-        }
+        }*/
         public async Task<ServiceResult<TecajDto>> GetTecaj(int id)
         {
             TecajDto? tecaj = _mapper.Map<TecajDto>(await _TecajeviRepository.GetTecaj(id));
             if (tecaj == null) return ServiceResult<TecajDto>.Failure(MessageDescriber.ItemNotFound());
             return ServiceResult<TecajDto>.Success(tecaj);
         }
+        
         public async Task<ServiceResult<TecajDto>> CreateTecaj(TecajDto tecaj)
         {
             TecajDto createdTecaj = _mapper.Map<TecajDto>(await _TecajeviRepository.CreateTecaj(_mapper.Map<Tecaj>(tecaj)));
@@ -38,5 +40,13 @@ namespace TeachABit.Service.Services.Tecajevi
             await _TecajeviRepository.DeleteTecaj(id);
             return ServiceResult.Success();
         }
+        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string search = null)
+        {
+            var tecajevi = await _TecajeviRepository.GetTecajList(search);
+            var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
+            return ServiceResult<List<TecajDto>>.Success(tecajeviDto);
+        }
+
+
     }
 }

@@ -11,10 +11,12 @@ namespace TeachABit.API.Controllers
         private readonly ITecajeviService _tecajeviService = tecajeviService;
 
         [HttpGet]
-        public async Task<IActionResult> GetTecajList()
+        /*public async Task<IActionResult> GetTecajList()
         {
             return GetControllerResult(await _tecajeviService.GetTecajList());
-        }
+        }*/
+        
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTecaj(int id)
@@ -39,5 +41,13 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _tecajeviService.DeleteTecaj(id));
         }
+        
+        [HttpGet("{search}")]
+        public async Task<IActionResult> GetTecajList([FromQuery] string search = null)
+        {
+            var result = await _tecajeviService.GetTecajList(search);
+            return GetControllerResult(result);
+        }
+
     }
 }
