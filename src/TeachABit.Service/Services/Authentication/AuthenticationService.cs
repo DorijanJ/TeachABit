@@ -6,33 +6,33 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
 using System.Web;
 using TeachABit.Model.DTOs.Authentication;
+using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
-using TeachABit.Model.DTOs.User;
-using TeachABit.Model.Models.User;
+using TeachABit.Model.Models.Korisnici;
 using TeachABit.Service.Util.Mail;
 using TeachABit.Service.Util.Token;
 
 namespace TeachABit.Service.Services.Authentication
 {
-    public class AuthenticationService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService) : IAuthenticationService
+    public class AuthenticationService(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService) : IAuthenticationService
     {
-        private readonly UserManager<AppUser> _userManager = userManager;
-        private readonly SignInManager<AppUser> _signInManager = signInManager;
+        private readonly UserManager<Korisnik> _userManager = userManager;
+        private readonly SignInManager<Korisnik> _signInManager = signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ITokenService _tokenService = tokenService;
         private readonly IMailSenderService _mailSenderService = mailSenderService;
         private readonly IMapper _mapper = mapper;
 
 
-        public async Task<ServiceResult<AppUserDto>> Login(LoginAttemptDto loginAttempt)
+        public async Task<ServiceResult<KorisnikDto>> Login(LoginAttemptDto loginAttempt)
         {
-            AppUser? user = await _userManager.FindByEmailAsync(loginAttempt.Credentials)
+            Korisnik? user = await _userManager.FindByEmailAsync(loginAttempt.Credentials)
                 ?? await _userManager.FindByNameAsync(loginAttempt.Credentials);
 
             if (user == null)
             {
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.UserNotFound());
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.UserNotFound());
             }
 
 
@@ -40,16 +40,16 @@ namespace TeachABit.Service.Services.Authentication
             if (result.IsLockedOut)
             {
                 var lockoutEnd = await _userManager.GetLockoutEndDateAsync(user);
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.AccountLockedOut(lockoutEnd.Value));
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.AccountLockedOut(lockoutEnd.Value));
             }
-            if (!result.Succeeded) return ServiceResult<AppUserDto>.Failure(MessageDescriber.PasswordMismatch());
+            if (!result.Succeeded) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.PasswordMismatch());
 
-            if (!user.EmailConfirmed) return ServiceResult<AppUserDto>.Failure(MessageDescriber.EmailNotConfirmed());
+            if (!user.EmailConfirmed) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.EmailNotConfirmed());
 
             ServiceResult cookieSetResult = SetAuthCookie(user);
-            if (cookieSetResult.IsError) return ServiceResult<AppUserDto>.Failure(cookieSetResult.Message);
+            if (cookieSetResult.IsError) return ServiceResult<KorisnikDto>.Failure(cookieSetResult.Message);
 
-            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user));
+            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user));
         }
 
         public ServiceResult Logout()
@@ -58,15 +58,15 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<AppUserDto>> Register(RegisterAttemptDto registerAttempt)
+        public async Task<ServiceResult<KorisnikDto>> Register(RegisterAttemptDto registerAttempt)
         {
             if (await _userManager.Users.AnyAsync(x => x.UserName == registerAttempt.Username))
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.DuplicateUsername(registerAttempt.Username));
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.DuplicateUsername(registerAttempt.Username));
 
             if (await _userManager.Users.AnyAsync(x => x.Email == registerAttempt.Email))
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.DuplicateEmail(registerAttempt.Email));
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.DuplicateEmail(registerAttempt.Email));
 
-            AppUser user = new()
+            Korisnik user = new()
             {
                 Email = registerAttempt.Email,
                 UserName = registerAttempt.Username,
@@ -76,26 +76,26 @@ namespace TeachABit.Service.Services.Authentication
             if (!result.Succeeded && result.Errors.Any())
             {
                 string errorMessage = result.Errors.First().Description;
-                return ServiceResult<AppUserDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
+                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
             }
 
             ServiceResult mailResult = await SendEmailConfirmationMail(user);
 
-            if (mailResult.IsError) return ServiceResult<AppUserDto>.Failure(mailResult.Message);
+            if (mailResult.IsError) return ServiceResult<KorisnikDto>.Failure(mailResult.Message);
 
-            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user), MessageDescriber.EmailConfimationSent());
+            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user), MessageDescriber.EmailConfimationSent());
         }
 
-        private async Task<ServiceResult> SendEmailConfirmationMail(AppUser user)
+        private async Task<ServiceResult> SendEmailConfirmationMail(Korisnik user)
         {
-            if (user.Email == null) return ServiceResult.Failure(MessageDescriber.BadRequest("User does not have an email."));
+            if (user.Email == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisnik nema spremit email."));
 
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            string confirmationLink = $"https://localhost:3000/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
+            string confirmationLink = $"http://teachabit.org/confirm-email?email={user.Email}&token={Uri.EscapeDataString(token)}";
 
             MailMessage message = new()
             {
-                Subject = "Mail confirmation for your TeachABit account",
+                Subject = "Potvrda mail adrese za TeachABit račun",
                 Body = MailDescriber.EmailConfirmationMail(confirmationLink),
                 IsBodyHtml = true
             };
@@ -104,7 +104,7 @@ namespace TeachABit.Service.Services.Authentication
             return mailResult;
         }
 
-        private ServiceResult SetAuthCookie(AppUser? user = null, bool valid = true)
+        private ServiceResult SetAuthCookie(Korisnik? user = null, bool valid = true)
         {
             string? token = user == null ? "" : _tokenService.CreateToken(user);
 
@@ -115,8 +115,8 @@ namespace TeachABit.Service.Services.Authentication
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
                 Expires = valid ? DateTime.UtcNow.AddHours(6) : DateTime.UtcNow.AddDays(-1),
             };
 
@@ -124,7 +124,7 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        private ServiceResult ClearAuthCookie(AppUser? user = null, bool valid = true)
+        private ServiceResult ClearAuthCookie(Korisnik? user = null, bool valid = true)
         {
             var httpContext = _httpContextAccessor.HttpContext;
 
@@ -133,13 +133,13 @@ namespace TeachABit.Service.Services.Authentication
             httpContext.Response.Cookies.Delete("AuthToken", new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
             });
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<AppUserDto>> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
+        public async Task<ServiceResult<KorisnikDto>> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
         {
             GoogleJsonWebSignature.Payload payload;
 
@@ -149,16 +149,16 @@ namespace TeachABit.Service.Services.Authentication
             }
             catch (InvalidJwtException)
             {
-                return ServiceResult<AppUserDto>.Failure(new MessageResponse("Invalid GoogleIdToken.", MessageSeverities.Error));
+                return ServiceResult<KorisnikDto>.Failure(new MessageResponse("Nevaljani GoogleIdToken.", MessageSeverities.Error));
             }
 
-            AppUser? user = await _userManager.FindByEmailAsync(payload.Email);
+            Korisnik? user = await _userManager.FindByEmailAsync(payload.Email);
 
             if (user == null)
             {
-                if (String.IsNullOrEmpty(googleSigninAttempt.Username)) return ServiceResult<AppUserDto>.Failure(MessageDescriber.UsernameNotProvided());
+                if (String.IsNullOrEmpty(googleSigninAttempt.Username)) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.UsernameNotProvided());
 
-                user = new AppUser
+                user = new Korisnik
                 {
                     Email = payload.Email,
                     UserName = googleSigninAttempt.Username,
@@ -168,43 +168,43 @@ namespace TeachABit.Service.Services.Authentication
                 if (!result.Succeeded && result.Errors.Any())
                 {
                     string errorMessage = result.Errors.First().Description;
-                    return ServiceResult<AppUserDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
+                    return ServiceResult<KorisnikDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
                 }
             }
 
             var cookieSetResult = SetAuthCookie(user);
             if (cookieSetResult.IsError)
             {
-                return ServiceResult<AppUserDto>.Failure(cookieSetResult.Message);
+                return ServiceResult<KorisnikDto>.Failure(cookieSetResult.Message);
             }
 
-            return ServiceResult<AppUserDto>.Success(_mapper.Map<AppUserDto>(user), "Successfully logged in.");
+            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user), "Uspješna prijava.");
         }
 
         public async Task<ServiceResult> ResetPassword(ResetPasswordDto resetPassword)
         {
-            AppUser? user = await _userManager.FindByEmailAsync(resetPassword.Email);
-            if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid password reset request."));
+            Korisnik? user = await _userManager.FindByEmailAsync(resetPassword.Email);
+            if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Loš zahtjev za oporavak lozinke."));
 
             IdentityResult result = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
-            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Invalid password reset request."));
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Loš zahtjev za oporavak lozinke."));
 
-            return ServiceResult.Success("Password has been reset.");
+            return ServiceResult.Success("Lozinka uspješno promijenjena.");
         }
 
         public async Task<ServiceResult> ForgotPassword(ForgotPasswordDto forgotPassword)
         {
-            AppUser? user = await _userManager.FindByEmailAsync(forgotPassword.Email);
+            Korisnik? user = await _userManager.FindByEmailAsync(forgotPassword.Email);
 
             if (user != null && user.Email != null)
             {
                 string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                 string encodedToken = HttpUtility.UrlEncode(resetToken);
-                string resetUrl = $"https://localhost:3000/reset-password?token={encodedToken}&email={HttpUtility.UrlEncode(user.Email)}";
+                string resetUrl = $"http://teachabit.org/reset-password?token={encodedToken}&email={HttpUtility.UrlEncode(user.Email)}";
 
                 MailMessage message = new()
                 {
-                    Subject = "Password Recovery Code for Your TeachABit Account",
+                    Subject = "Oporavak lozinke za TeachABit račun",
                     Body = MailDescriber.PasswordResetMail(user.UserName ?? "", resetUrl),
                     IsBodyHtml = true
                 };
@@ -214,18 +214,18 @@ namespace TeachABit.Service.Services.Authentication
                 if (result.IsError) return result;
             }
 
-            return ServiceResult.Success("If an account with that email exists, a password reset link will be sent.");
+            return ServiceResult.Success("Ako račun sa danom mail adresom postoji, poslati će se email sa poveznicom za oporavak lozinke.");
         }
 
         public async Task<ServiceResult> ConfirmEmail(ConfirmEmailDto confirmEmail)
         {
-            AppUser? user = await _userManager.FindByEmailAsync(confirmEmail.Email);
-            if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Invalid mail confirmation request."));
+            Korisnik? user = await _userManager.FindByEmailAsync(confirmEmail.Email);
+            if (user == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Loš zahtjev za potvrdom email-a."));
 
-            if (user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.BadRequest("Email has already been confirmed."));
+            if (user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.BadRequest("Email je već potvrđen."));
 
             var result = await _userManager.ConfirmEmailAsync(user, confirmEmail.Token);
-            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Invalid mail confirmation request."));
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.BadRequest(result.Errors.FirstOrDefault()?.Description ?? "Loš zahtjev za potvrdom email-a."));
 
             return ServiceResult.Success(MessageDescriber.EmailConfirmed());
         }
@@ -234,10 +234,10 @@ namespace TeachABit.Service.Services.Authentication
         {
             var user = await _userManager.FindByEmailAsync(resendConfirmEmail.Email);
             if (user == null)
-                return ServiceResult.Failure(MessageDescriber.BadRequest("No account associated with this email."));
+                return ServiceResult.Failure(MessageDescriber.BadRequest("Ako račun sa danom mail adresom postoji, poslati će se email sa poveznicom za oporavak lozinke."));
 
             if (user.EmailConfirmed)
-                return ServiceResult.Failure(MessageDescriber.BadRequest("Email is already confirmed."));
+                return ServiceResult.Failure(MessageDescriber.BadRequest("Email je već potvrđen."));
 
             var mailResult = await SendEmailConfirmationMail(user);
 

@@ -2,7 +2,6 @@ import requests from "../api/agent";
 import { useGlobalContext } from "../context/Global.context";
 import { AppUserDto } from "../models/AppUserDto";
 import { ApiResponseDto } from "../models/common/ApiResponseDto";
-import { MessageResponseDto } from "../models/common/MessageResponseDto";
 import { LoginAttemptDto } from "../models/LoginAttemptDto";
 import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
 
@@ -18,7 +17,6 @@ const useAuth = () => {
 
     const handleUserLoggedInCheck = () => {
         const username = localStorage.getItem(USERNAME_KEY);
-        console.log(username);
         if (username !== null) {
             globalContext.setLoggedInUser({ username: username });
             globalContext.setIsUserLoggedIn(true);

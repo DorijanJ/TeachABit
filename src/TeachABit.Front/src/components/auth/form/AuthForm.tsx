@@ -5,11 +5,9 @@ import GoogleAuth from "./pages/google/GoogleAuth";
 import LoginForm from "./pages/login/LoginForm";
 import RegisterForm from "./pages/register/RegisterForm";
 import LoginIcon from "@mui/icons-material/Login";
-import Logo from "../../../images/logo.png";
-import Divider from '@mui/material/Divider';
+import Divider from "@mui/material/Divider";
 
-
-const authFormTabs = ["Login", "Register"];
+const authFormTabs = ["Prijava", "Registracija"];
 
 enum AuthFormEnum {
     Login = 0,
@@ -44,37 +42,31 @@ export default function AuthButton() {
                 startIcon={<LoginIcon />}
                 className={localStyles.myButton}
                 sx={{
-                    margin: 5
+                    margin: 5,
                 }}
                 onClick={() => setSelectedTab(0)}
             >
                 Prijava
             </Button>
             {selectedTab !== undefined && (
-                <Dialog open onClose={onClose}
+                <Dialog
+                    open
+                    onClose={onClose}
                     sx={{
-                        maxHeight: '500vh',
-                        padding:0
-                    }}>
+                        maxHeight: "500vh",
+                        padding: 0,
+                    }}
+                >
                     <div className={localStyles.authFormContainer}>
-                        <img src={Logo} alt="Teach A Bit Logo" style={{width: "20%", height: "auto", marginBottom: 0}}/>
-                        <Tabs
-                            variant="fullWidth"
-                            value={selectedTab}
-
-                            sx={{
-                                fontFamily: 'Poppins, Arial, sans-serif',
-
-                            }}
-                        >
+                        {/* <img src={Logo} alt="Teach A Bit Logo" style={{width: "20%", height: "auto", marginBottom: 0}}/> */}
+                        <Tabs variant="fullWidth" value={selectedTab}>
                             {authFormTabs.map((tab, index) => (
                                 <Tab
                                     key={tab}
                                     onClick={() => setSelectedTab(index)}
                                     label={tab}
                                     sx={{
-                                        textColor: "red" ,
-
+                                        textColor: "red",
                                     }}
                                 />
                             ))}
@@ -83,9 +75,12 @@ export default function AuthButton() {
                             selectedPage={selectedTab}
                             onClose={onClose}
                         />
-                        <Divider orientation="horizontal" flexItem color="black"
+                        <Divider
+                            orientation="horizontal"
+                            flexItem
+                            color="black"
                         />
-                        <GoogleAuth onClose={onClose}/>
+                        <GoogleAuth onClose={onClose} />
                     </div>
                 </Dialog>
             )}

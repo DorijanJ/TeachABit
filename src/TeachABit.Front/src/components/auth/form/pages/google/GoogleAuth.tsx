@@ -13,7 +13,6 @@ import {
     DialogActions,
     DialogContent,
 } from "@mui/material";
-import { useGlobalContext } from "../../../../../context/Global.context";
 import useAuth from "../../../../../hooks/useAuth";
 
 interface GoogleAuthData {
@@ -114,7 +113,7 @@ export default function GoogleAuth(props: Props) {
                         />
                         {alertMessage && (
                             <Alert
-                                sx={{ maxWidth: 370, wordBreak: "break-all" }}
+                                sx={{ maxWidth: 370 }}
                                 severity={alertMessage.severity}
                             >
                                 {alertMessage.message}

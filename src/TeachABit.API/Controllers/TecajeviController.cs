@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachABit.Model.DTOs.Tecajevi;
 using TeachABit.Service.Services.Tecajevi;
@@ -10,6 +11,7 @@ namespace TeachABit.API.Controllers
     {
         private readonly ITecajeviService _tecajeviService = tecajeviService;
 
+        [AllowAnonymous]
         [HttpGet]
         /*public async Task<IActionResult> GetTecajList()
         {
@@ -18,6 +20,7 @@ namespace TeachABit.API.Controllers
         
 
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTecaj(int id)
         {

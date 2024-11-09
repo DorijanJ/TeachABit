@@ -1,41 +1,34 @@
-import {
-    Box,
-    Button,
-    Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-} from "@mui/material";
+import { Box, Drawer, IconButton, List } from "@mui/material";
 import BookIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import ForumIcon from "@mui/icons-material/Forum";
-import LogoutIcon from "@mui/icons-material/Logout";
-import PersonIcon from "@mui/icons-material/Person";
-import { useNavigate } from "react-router-dom";
 import AuthForm from "../auth/form/AuthForm";
 import { useGlobalContext } from "../../context/Global.context";
-import useAuth from "../../hooks/useAuth";
-import localStyles from './Navigation.module.css'
-
-import Logo from '../../images/logo.png'
+import localStyles from "./Navigation.module.css";
+import Logo from "../../images/logo.png";
+import NavigationItem from "./NavigationItem";
+import { NavigationUser } from "./NavigationUser";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
 
 export default function Navigation() {
-    const navigate = useNavigate();
     const globalContext = useGlobalContext();
-    const auth = useAuth();
+    const location = useLocation();
+    const isActive = (route: string) => location.pathname === route;
+    const [isExpanded, setIsExpanded] = useState(true);
 
     return (
         <>
             <Drawer
-                variant="permanent"
+                variant="persistent"
                 anchor="left"
+                open
                 sx={{
-                    width: 300,
                     flexShrink: 0,
+                    width: isExpanded ? 300 : 65,
                     "& .MuiDrawer-paper": {
-                        width: 300,
+                        width: isExpanded ? 300 : 65,
                         boxSizing: "border-box",
                     },
                 }}
@@ -50,93 +43,90 @@ export default function Navigation() {
                         backgroundColor: "#D9D9D9",
                     }}
                 >
-                    <List sx={{ width: "100%" }}>
-                        <ListItem>
-                            <ListItemIcon sx={{
-                                display: 'flex',
-
-
-                            }}>
-
-
-                            </ListItemIcon>
-                            <img src={Logo} alt="Teach A Bit Logo"
-                                 style={{width: "50%", height: "50%", marginBottom: 40}}/>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton
-                                onClick={() => navigate("/tecajevi")}
-
-                            >
-                                <ListItemIcon>
-                                    <BookIcon  className={localStyles.navImage} />
-                                </ListItemIcon>
-                                <ListItemText  primary="Tečajevi"
-                                               primaryTypographyProps={{
-                                                   style: { fontFamily: 'Poppins, Arial, sans-serif' , fontSize: "1.5vw" , fontWeight: "bold"}
-                                               }}/>
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton
-                                onClick={() => navigate("/radionice")}
-                            >
-                                <ListItemIcon>
-                                    <GroupIcon  className={localStyles.navImage}/>
-                                </ListItemIcon>
-                                <ListItemText primary="Radionice"
-                                              primaryTypographyProps={{
-                                                  style: { fontFamily: 'Poppins, Arial, sans-serif' , fontSize: "1.5vw" , fontWeight: "bold"}
-                                              }}/>
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => navigate("/forumi")}>
-                                <ListItemIcon>
-                                    <ForumIcon className={localStyles.navImage}/>
-                                </ListItemIcon>
-                                <ListItemText primary="Forumi"
-                                              primaryTypographyProps={{
-                                                  style: { fontFamily: 'Poppins, Arial, sans-serif' , fontSize: "1.5vw" , fontWeight: "bold"}
-                                              }}/>
-                            </ListItemButton>
-                        </ListItem>
+                    <IconButton
+                        sx={{
+                            width: "60px",
+                            height: "60px",
+                            position: "absolute",
+                            alignSelf: "flex-end",
+                        }}
+                        onClick={() => setIsExpanded((prev) => !prev)}
+                    >
+                        <NavigateBeforeIcon color="primary" />
+                    </IconButton>
+                    {isExpanded ? (
+                        <img
+                            src={Logo}
+                            alt="Teach A Bit Logo"
+                            style={{
+                                width: "150px",
+                                marginTop: "30px",
+                            }}
+                        />
+                    ) : (
+                        <Box
+                            style={{ height: "150px", marginTop: "30px" }}
+                        ></Box>
+                    )}
+                    <List
+                        sx={{
+                            width: "100%",
+                            display: "flex",
+                            gap: "10px",
+                            flexDirection: "column",
+                            marginTop: "60px",
+                            padding: isExpanded ? "0 20px" : "0",
+                        }}
+                    >
+                        <NavigationItem
+                            route={"/tecajevi"}
+                            name={"Tečajevi"}
+                            isActive={isActive("/tecajevi")}
+                            icon={
+                                <BookIcon
+                                    color="primary"
+                                    className={localStyles.navImage}
+                                />
+                            }
+                            isExpanded={isExpanded}
+                        />
+                        <NavigationItem
+                            route={"/radionice"}
+                            name={"Radionice"}
+                            isActive={isActive("/radionice")}
+                            icon={
+                                <GroupIcon
+                                    color="primary"
+                                    className={localStyles.navImage}
+                                />
+                            }
+                            isExpanded={isExpanded}
+                        />
+                        <NavigationItem
+                            route={"/forumi"}
+                            name={"Forumi"}
+                            isActive={isActive("/forumi")}
+                            icon={
+                                <ForumIcon
+                                    color="primary"
+                                    className={localStyles.navImage}
+                                />
+                            }
+                            isExpanded={isExpanded}
+                        />
                     </List>
 
                     <Box sx={{ flexGrow: 1 }} />
 
                     {globalContext.userIsLoggedIn === true &&
-                        globalContext.loggedInUser && (
-                            <>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: "10px",
-                                        padding: "10px",
-                                        alignItems: "center",
-                                        width: "100%",
-                                        boxSizing: "border-box",
-                                    }}
-                                >
-                                    <Button
-                                        variant="outlined"
-                                        startIcon={<PersonIcon />}
-                                    >
-                                        {`Korisnik: ${globalContext.loggedInUser.username}`}
-                                    </Button>
-                                    <Button
-                                        startIcon={<LogoutIcon />}
-                                        variant="outlined"
-                                        onClick={() => auth.logout()}
-                                    >
-                                        {"Odjava"}
-                                    </Button>
-                                </div>
-                            </>
+                        globalContext.loggedInUser &&
+                        isExpanded && (
+                            <NavigationUser user={globalContext.loggedInUser} />
                         )}
 
-                    {globalContext.userIsLoggedIn === false && <AuthForm />}
+                    {globalContext.userIsLoggedIn === false && isExpanded && (
+                        <AuthForm />
+                    )}
                 </Box>
             </Drawer>
         </>

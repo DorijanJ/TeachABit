@@ -45,10 +45,10 @@ export default function ForgotPassword() {
                         setIsOpen(false);
                     }}
                 >
-                    <DialogTitle>Input the account's email address</DialogTitle>
+                    <DialogTitle>Upište email adresu</DialogTitle>
                     <DialogContent
                         sx={{
-                            width: 400,
+                            width: 450,
                             display: "flex",
                             flexDirection: "column",
                             gap: "20px",
@@ -66,7 +66,7 @@ export default function ForgotPassword() {
                         />
                         {message && (
                             <Alert
-                                sx={{ maxWidth: 370, wordBreak: "break-all" }}
+                                sx={{ maxWidth: 370 }}
                                 severity={message.severity}
                             >
                                 {message.message}
