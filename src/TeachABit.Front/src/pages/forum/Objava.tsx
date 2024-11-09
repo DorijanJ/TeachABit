@@ -1,5 +1,6 @@
 import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
 import { ObjavaDto } from "../../models/ObjavaDto";
+import UserLink from "../profil/UserLink";
 
 interface Props {
     objava: ObjavaDto;
@@ -50,16 +51,10 @@ export default function Objava(props: Props) {
                 alignItems="center"
                 gap={0.5}
             >
-                {props.objava.vlasnikUsername && (
-                    <>
-                        <Avatar sx={{ width: 20, height: 20 }}>
-                            {props.objava.vlasnikUsername[0]}{" "}
-                        </Avatar>
-                        <Typography lineHeight={1} variant="caption">
-                            {props.objava.vlasnikUsername}
-                        </Typography>
-                    </>
-                )}
+                <UserLink
+                    userId={props.objava.vlasnikId}
+                    username={props.objava.vlasnikUsername}
+                />
             </Box>
         </Card>
     );

@@ -66,6 +66,12 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(_authorizationService.GetKorisnikDto());
         }
 
+        [HttpGet("by-username/{username}")]
+        public async Task<IActionResult> GetUserByUsername(string username)
+        {
+            return GetControllerResult(await _authenticationService.GetKorisnikByUsername(username));
+        }
+
         [AllowAnonymous]
         [ServiceFilter(typeof(ModelStateFilter))]
         [HttpPost("confirm-email")]

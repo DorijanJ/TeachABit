@@ -4,7 +4,7 @@ export interface ObjavaDto {
     id?: number;
     naziv: string;
     sadrzaj: string;
-    vlasnikId?: number;
+    vlasnikId?: string;
     vlasnikUsername?: string;
 }
 

@@ -15,6 +15,7 @@ import { KomentarDto } from "../../models/KomentarDto";
 import { formatDistanceToNow } from "date-fns";
 import TeachABitEditor from "../../components/editor/TeachABitTextEditor";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
+import UserLink from "../profil/UserLink";
 
 interface Props {
     objavaId?: number;
@@ -91,26 +92,10 @@ export default function ObjavaDialog(props: Props) {
                             >
                                 {isCreating ? `Nova objava` : `${objava.naziv}`}
                             </div>
-                            {objava.vlasnikUsername && (
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        gap: "10px",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <Avatar sx={{ width: 30, height: 30 }}>
-                                        {objava.vlasnikUsername[0]}{" "}
-                                    </Avatar>
-                                    <Typography
-                                        lineHeight={1}
-                                        variant="caption"
-                                    >
-                                        {objava.vlasnikUsername}
-                                    </Typography>
-                                </div>
-                            )}
+                            <UserLink
+                                userId={objava.vlasnikId}
+                                username={objava.vlasnikUsername}
+                            />
                         </div>
                     </DialogTitle>
                     <DialogContent

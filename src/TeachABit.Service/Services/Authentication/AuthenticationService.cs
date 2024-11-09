@@ -246,5 +246,13 @@ namespace TeachABit.Service.Services.Authentication
 
             return ServiceResult.Success(MessageDescriber.EmailConfimationSent());
         }
+
+        public async Task<ServiceResult<KorisnikDto>> GetKorisnikByUsername(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.UserNotFound());
+
+            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user));
+        }
     }
 }

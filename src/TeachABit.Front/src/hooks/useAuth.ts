@@ -6,6 +6,7 @@ import { LoginAttemptDto } from "../models/LoginAttemptDto";
 import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
 
 const USERNAME_KEY = "username";
+const ID_KEY = "id";
 
 interface GoogleAuthRequest {
     token: string;
@@ -17,8 +18,9 @@ const useAuth = () => {
 
     const handleUserLoggedInCheck = () => {
         const username = localStorage.getItem(USERNAME_KEY);
-        if (username !== null) {
-            globalContext.setLoggedInUser({ username: username });
+        const id = localStorage.getItem(ID_KEY);
+        if (username !== null && id !== null) {
+            globalContext.setLoggedInUser({ username: username, id: id });
             globalContext.setIsUserLoggedIn(true);
         } else {
             globalContext.setLoggedInUser(undefined);
@@ -72,13 +74,18 @@ const useAuth = () => {
     const setAuthData = (appUser: AppUserDto) => {
         if (appUser.username) {
             localStorage.setItem(USERNAME_KEY, appUser.username);
-            globalContext.setLoggedInUser({ username: appUser.username });
+            localStorage.setItem(ID_KEY, appUser.id);
+            globalContext.setLoggedInUser({
+                username: appUser.username,
+                id: appUser.id,
+            });
             globalContext.setIsUserLoggedIn(true);
         }
     };
 
     const clearAuthData = () => {
         localStorage.removeItem(USERNAME_KEY);
+        localStorage.removeItem(ID_KEY);
         globalContext.setLoggedInUser(undefined);
         globalContext.setIsUserLoggedIn(false);
     };
