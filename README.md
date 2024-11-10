@@ -117,20 +117,20 @@ Kodeks ponašanja skup je provedivih pravila koja služe za jasnu komunikaciju o
 >* Ako se osjećate ugodno neposredno razgovarajte o problemu. Manje incidente trebalo bi rješavati izravno. Odvojite vrijeme i privatno razgovarajte s pogođenim članom tima te vjerujte u iskrenost.
 
 # 📝 Licence
-### Documentation License ![Documentation License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey)
+### Documentation License [![Documentation License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 The documentation for this project is licensed under the [Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. This means that:
 
 - You may share and adapt the documentation, provided you give appropriate credit (attribution), do not use it for commercial purposes, and distribute any derivative works under the same license.
 
-### Code License ![MIT License](https://img.shields.io/badge/License-MIT-blue)
+### Code License [![MIT License](https://img.shields.io/badge/License-MIT-blue)](https://opensource.org/licenses/MIT)
 
 The code in this project is licensed under the [MIT License](https://opensource.org/licenses/MIT). This means that:
 
 - You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the code.
 - The code is provided "as is", without warranty of any kind.
 
-### Media License ![MIT License](https://img.shields.io/badge/License-MIT-blue)
+### Media License [![MIT License](https://img.shields.io/badge/License-MIT-blue)](https://opensource.org/licenses/MIT)
 
 The media assets in this project (images, videos, etc.) are also licensed under the [MIT License](https://opensource.org/licenses/MIT). This means that:
 
