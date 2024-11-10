@@ -1,4 +1,5 @@
 import SearchBox from "../../components/searchbox/SearchBox";
+import localStyles from "./Tecajevi.module.css"
 
 // temp function
 function abc(query?: string) {
@@ -7,8 +8,9 @@ function abc(query?: string) {
 
 export default function Tecajevi() {
     return (
-        <>
-            <SearchBox height={65} width={500} onSearch={abc} />
+        <>  <div className={localStyles.center}>
+                <SearchBox height={"10vh"} width={"35vw"} onSearch={abc} />
+            </div>
         </>
     );
 }
