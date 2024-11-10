@@ -1,4 +1,4 @@
-# TeachABit
+# 💡TeachABit
 Ova platforma omogućuje korisnicima raznovrsne mogućnosti učenja i razmjene znanja. Korisnici mogu objavljivati vlastite tečajeve i radionice, te aktivno sudjelovati u diskusijama foruma. Forumi omogućuju razmjenu ideja, postavljanje pitanja i davanje odgovora. Cilj platforme je unaprijediti pristup obrazovanju i olakšati povezivanje između predavača i zainteresiranih korisnika.
 
 # Opis projekta
@@ -9,7 +9,7 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 
 > Dobro izrađen opis omogućuje vam da pokažete svoj rad drugim programerima, kao i potencijalnim poslodavcima. Ne samo da prvi dojam na stranici opisa često razlikuje dobar projekt od lošeg projekta već i predstavlja dobru praksu koju morate savladati.
 
-# Funkcionalni zahtjevi
+# 🚀Funkcionalni zahtjevi
 **Korisnik:**
 >Pretraživanje stavki (tečaj/radionica/objava)
 >* Pretraživanje po naslovu
@@ -73,7 +73,7 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 >* Spremanje podataka
 
 
-# Tehnologije
+# 🔧Tehnologije
 * Frontend: [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
 * Backend: [ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet)
 * Baza podataka: [PostgreSQL](https://www.postgresql.org/)
@@ -83,7 +83,7 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 * Mail: [Twilio SendGrid](https://sendgrid.com/en-us)
 
 #Instalcija
-# Članovi tima 
+# 💼Članovi tima 
 | Članovi           | Uloge             |
 |:------------------|:------------------|
 | Dorijan Jančić    | Devops            |
