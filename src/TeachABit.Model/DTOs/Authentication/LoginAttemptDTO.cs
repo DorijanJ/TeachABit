@@ -2,11 +2,11 @@
 
 namespace TeachABit.Model.DTOs.Authentication
 {
-    public class LoginAttemptDTO
+    public class LoginAttemptDto
     {
-        [Required(ErrorMessage = "Credentials can't be empty")]
+        [Required(ErrorMessage = "Email/Username ne smije biti prazan.")]
         public string Credentials { get; set; } = string.Empty;
-        [Required(ErrorMessage = "Password can't be empty")]
+        [Required(ErrorMessage = "Lozinka ne smije biti prazna.")]
         public string Password { get; set; } = string.Empty;
     }
 }

@@ -64,6 +64,50 @@ Ova platforma omogućuje korisnicima raznovrsne mogućnosti učenja i razmjene z
 >* Izmjena podataka
 >* Spremanje podataka
 
+> Kreiranje stavki (tečaj/radionica)
+>* Definirati naslov
+>* Definiranje opisa
+>* Upload slika
+>* Definirati lekcije (tečaj)
+>* Definiranje kategorije
+
+> Modificiranje stavki (tečaj/radionica/objava)
+>* Brisanje stavke
+>* Modificiranje stavke
+>* Označavanje točnog odgovora (objava)
+
+> Komentiranje stavki (tečaj/radionica/objava)
+>* Stvaranje objave kao komentar
+>* Lajkanje stavke
+>* Favoriziranje stavke
+
+> Personalizacija profila
+>* Promjena imena
+>* Promjena slike
+>* Resetiranje lozinke
+
+> Prijava korisnika za neprimjereno ponašanje
+
+> Prijava za verificiranje profila
+
+**Moderator:**
+> Brisanje stavke (tečaj/radionica/objava)
+
+> Verificiranje korisnika
+
+> Utišanje korisnika
+
+**Administrator:**
+> Brisanje profila
+
+> Davanje moderatorske uloge
+
+**Server:**
+> Obrada zahtjeva
+>* Dohvat podataka
+>* Izmjena podataka
+>* Spremanje podataka
+
 
 # 🔧Tehnologije
 * Frontend: [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
@@ -74,7 +118,57 @@ Ova platforma omogućuje korisnicima raznovrsne mogućnosti učenja i razmjene z
 * Autetnikacija: [Google Cloud](https://console.cloud.google.com/)
 * Mail: [Twilio SendGrid](https://sendgrid.com/en-us)
 
-#Instalcija
+# Instalacija
+
+### 1. Klonirati repozitorij
+
+Klonirati GitHub repozitorij:
+
+```console
+    git clone https://github.com/DorijanJ/TeachABit.git
+    cd TeachABit/src
+```
+
+### 2. Postavljanje backend okruženja
+
+1. Navigirajte do TeachABit.API direktorija.
+2. Stvorite "appsettings.development.json" datoteku.
+3. Kopirajte sadržaj "appsettings.development.json.txt" u stvorenu datoteku.
+4. Dodajte JWT ključ u datoteku.
+5. Dodajte ostale "secrets" ako ih imate.
+
+### 3. Postavljanje baze podataka
+
+1. Napravite novog PostgreSQL korisnika s imenom "teachabit_backend" i dodijeliti mu lozinku.
+2. Kreirajte bazu podataka s imenom "teachabit" i schemom "backend".
+3. Popunite ConnectionString u "appsettings.development.json" datoteci.
+4. Ako nemate instaliran dotnet tools, pokrenuti sljedeću naredbu:
+
+```console
+    dotnet tool install --global dotnet-ef --version 8.*
+```
+5. Za kreiranje tablica u bazi podataka, pokrenite iduću naredbu iz "TeachABit/src" direktorija:
+
+```console
+    dotnet ef database update -s TeachABit.API -p TeachABit.Model
+```
+### 4. Pokretanje backend-a
+```console
+    dotnet restore
+    dotnet run
+```
+### 5. Postavljanje i pokretanje frontend-a
+1. Navigirajte do "TeachABit.Front" direktorija.
+2. Kreirajte ".env.development" datoteku.
+3. Kopirajte sadržaj ".env.development.txt" u stvorenu datoteku.
+4. Pokrenite sljedeće naredbe iz "TeachABit.Front" direktorija:
+```console
+    npm install
+    npm run dev
+```
+### 6. Pristupanje aplikaciji
+Nakon ovih koraka otvoiti preglednik i navigirajte do https://localhost:3000 kako bi pristupili "TeachABit" aplikaciji.
+
 # 💼Članovi tima 
 | Članovi           | Uloge             |
 |:------------------|:------------------|

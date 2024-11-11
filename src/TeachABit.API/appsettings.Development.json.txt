@@ -12,5 +12,19 @@
     "Issuer": "TeachABitBackend",
     "Audience": "TeachABitUser",
     "Key": ""
+  },
+  "Authentication": {
+    "Google": {
+      "ClientId": "",
+      "ClientSecret": ""
+    }
+  },
+  "AllowedHosts": "localhost;https://localhost:3000",
+  "SMTP": {
+    "Server": "",
+    "Port": ,
+    "ApiKey": "",
+    "SenderEmail": "support@teachabit.org",
+    "SenderName":  "TeachABit"
   }
 }

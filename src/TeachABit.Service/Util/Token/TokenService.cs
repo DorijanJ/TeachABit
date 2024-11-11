@@ -3,15 +3,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using TeachABit.Model.Models.User;
+using TeachABit.Model.Models.Korisnici;
 
-namespace TeachABit.Service.Util
+namespace TeachABit.Service.Util.Token
 {
     public class TokenService(IConfiguration configuration) : ITokenService
     {
         private readonly IConfiguration _configuration = configuration;
 
-        public string? CreateToken(AppUser user)
+        public string? CreateToken(Korisnik user)
         {
             if (user.UserName == null || user.Email == null) return null;
             var claims = new List<Claim>

@@ -154,7 +154,68 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.User.AppUser", b =>
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sadrzaj")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("VlasnikId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VlasnikId");
+
+                    b.ToTable("Objava");
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.Radionice.Radionica", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Radionica");
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Tecaj", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tecaj");
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.User.Korisnik", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -218,6 +279,81 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Komentar", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ObjavaId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Sadrzaj")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("VlasnikId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObjavaId");
+
+                    b.HasIndex("VlasnikId");
+
+                    b.ToTable("Komentar");
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sadrzaj")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("VlasnikId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VlasnikId");
+
+                    b.ToTable("Objava");
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Tecaj", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tecaj");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -229,7 +365,7 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("TeachABit.Model.Models.User.AppUser", null)
+                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -238,7 +374,7 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("TeachABit.Model.Models.User.AppUser", null)
+                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -253,7 +389,7 @@ namespace TeachABit.Model.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TeachABit.Model.Models.User.AppUser", null)
+                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -262,11 +398,51 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("TeachABit.Model.Models.User.AppUser", null)
+                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Komentar", b =>
+                {
+                    b.HasOne("TeachABit.Model.Models.Objave.Objava", "Objava")
+                        .WithMany("Komentari")
+                        .HasForeignKey("ObjavaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Vlasnik")
+                        .WithMany()
+                        .HasForeignKey("VlasnikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Objava");
+
+                    b.Navigation("Vlasnik");
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
+                {
+                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Vlasnik")
+                        .WithMany("Objave")
+                        .HasForeignKey("VlasnikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vlasnik");
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.Korisnici.Korisnik", b =>
+                {
+                    b.Navigation("Objave");
+                });
+
+            modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
+                {
+                    b.Navigation("Komentari");
                 });
 #pragma warning restore 612, 618
         }

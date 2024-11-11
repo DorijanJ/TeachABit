@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +10,7 @@ using System.Threading.RateLimiting;
 using TeachABit.Model;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.Mapping;
-using TeachABit.Model.Models.User;
+using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.API.Configurations
 {
@@ -69,7 +70,7 @@ namespace TeachABit.API.Configurations
         }
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentityCore<AppUser>(options =>
+            services.AddIdentityCore<Korisnik>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequiredUniqueChars = 1;
@@ -78,11 +79,11 @@ namespace TeachABit.API.Configurations
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = false;
                 options.User.RequireUniqueEmail = true;
-
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
             })
-            .AddEntityFrameworkStores<TeachABitContext>();
+            .AddEntityFrameworkStores<TeachABitContext>()
+            .AddDefaultTokenProviders();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
             {
