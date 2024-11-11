@@ -9,10 +9,10 @@ namespace TeachABit.Repository.Repositories.Tecajevi
     {
         private readonly TeachABitContext _context = context;
 
-        public async Task<List<Tecaj>> GetTecajList()
+        /*public async Task<List<Tecaj>> GetTecajList()
         {
             return await _context.Tecajevi.ToListAsync();
-        }
+        }*/
 
         public async Task<Tecaj?> GetTecaj(int id)
         {
@@ -33,6 +33,18 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             await _context.Tecajevi.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
+        public async Task<List<Tecaj>> GetTecajList(string? search = null)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                string lowerSearch = search.ToLower();
+                return await _context.Tecajevi
+                    .Where(t => t.Naziv.ToLower().Contains(search))
+                    .ToListAsync();
+            }
+            return await _context.Tecajevi.ToListAsync();
+        }
+
 
     }
 }
