@@ -10,7 +10,7 @@ namespace TeachABit.API.Middleware
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            var modelStateError = context.ModelState.Values.First().Errors.FirstOrDefault();
+            var modelStateError = context.ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault();
 
             if (modelStateError != null)
             {

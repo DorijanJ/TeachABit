@@ -130,5 +130,5 @@ export default function Navigation() {
                 </Box>
             </Drawer>
         </>
-    );
+    )
 }
