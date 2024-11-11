@@ -6,6 +6,7 @@ export interface ObjavaDto {
     sadrzaj: string;
     vlasnikId?: string;
     vlasnikUsername?: string;
+    vlasnikProfilnaSlikaVersion?: string;
 }
 
 export interface DetailedObjavaDto extends ObjavaDto {

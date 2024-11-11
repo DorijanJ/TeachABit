@@ -52,8 +52,12 @@ export default function Objava(props: Props) {
                 gap={0.5}
             >
                 <UserLink
-                    userId={props.objava.vlasnikId}
-                    username={props.objava.vlasnikUsername}
+                    user={{
+                        id: props.objava.vlasnikId,
+                        username: props.objava.vlasnikUsername,
+                        profilnaSlikaVersion:
+                            props.objava.vlasnikProfilnaSlikaVersion,
+                    }}
                 />
             </Box>
         </Card>

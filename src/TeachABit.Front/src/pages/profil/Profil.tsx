@@ -41,6 +41,7 @@ export default function Profil() {
                 >
                     <Avatar sx={{ width: 100, height: 100 }}>
                         <img
+                            key={Date.now()}
                             style={{
                                 objectFit: "cover",
                                 width: "100%",
@@ -48,6 +49,10 @@ export default function Profil() {
                             }}
                             src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
                                 user.id
+                            }${
+                                user.profilnaSlikaVersion
+                                    ? "?version=" + user.profilnaSlikaVersion
+                                    : ""
                             }`}
                         />
                     </Avatar>

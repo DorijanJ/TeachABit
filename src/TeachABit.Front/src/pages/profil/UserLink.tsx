@@ -1,9 +1,9 @@
 import { Avatar, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { AppUserDto } from "../../models/AppUserDto";
 
 interface Props {
-    userId?: string;
-    username?: string;
+    user: AppUserDto;
 }
 
 export default function UserLink(props: Props) {
@@ -11,7 +11,7 @@ export default function UserLink(props: Props) {
 
     return (
         <div
-            onClick={() => navigate(`/profil/${props.username}`)}
+            onClick={() => navigate(`/profil/${props.user.username}`)}
             style={{
                 padding: "5px",
                 borderRadius: "3px",
@@ -24,19 +24,23 @@ export default function UserLink(props: Props) {
             }}
         >
             <Avatar sx={{ width: 20, height: 20 }}>
-                <img
-                    style={{
-                        objectFit: "cover",
-                        height: "100%",
-                        width: "100%",
-                    }}
-                    src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                        props.userId
-                    }`}
-                ></img>
+                {props.user.profilnaSlikaVersion ? (
+                    <img
+                        style={{
+                            objectFit: "cover",
+                            height: "100%",
+                            width: "100%",
+                        }}
+                        src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                            props.user.id
+                        }${"?version=" + props.user.profilnaSlikaVersion}`}
+                    ></img>
+                ) : (
+                    <>{props.user.username ? props.user.username[0] : ""}</>
+                )}
             </Avatar>
             <Typography lineHeight={1} variant="caption">
-                {props.username}
+                {props.user.username}
             </Typography>
         </div>
     );

@@ -8,6 +8,6 @@ namespace TeachABit.Model.Models.Korisnici
     public class Korisnik : IdentityUser
     {
         public virtual List<Objava> Objave { get; set; } = [];
-        public string SlikaUrl { get; set; } = string.Empty;
+        public string? ProfilnaSlikaVersion { get; set; } = string.Empty;
     }
 }
