@@ -27,13 +27,11 @@ export default function SearchBox(props: SearchBoxProps) {
         }
     };
 
-    const defaultHeight = 70;
-
     return (
         <Box
             sx={{
-                height: props.height ?? defaultHeight,
-                width: props.width ?? 400,
+                height: props.height ?? "70px",
+                width: props.width ?? "30vw",
             }}
         >
             <TextField
@@ -68,16 +66,15 @@ export default function SearchBox(props: SearchBoxProps) {
                 }}
                 sx={{
                     "& .MuiOutlinedInput-root": {
-                        height: props.height ?? defaultHeight,
-                        paddingInline: 1,
+                        height: props.height ?? "70px",
                         borderRadius: 3,
-                        backgroundColor: "#d9d9d9",
+                        backgroundColor: "#D9D9D9",
                     },
                     "& .MuiInputBase-input::placeholder": {
                         fontStyle: "italic",
                     },
                     "& .MuiInputBase-input": {
-                        fontSize: "24px",
+                        fontSize: "1.5rem",
                     },
                 }}
             />
