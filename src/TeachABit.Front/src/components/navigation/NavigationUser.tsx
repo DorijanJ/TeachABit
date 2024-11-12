@@ -41,7 +41,6 @@ export function NavigationUser(props: Props) {
                     {"Odjava"}
                 </Button>
             </div>
-            ;
         </>
     );
 }
