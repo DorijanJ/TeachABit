@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20241109213127_KorisnikSlikaMigration")]
+    partial class KorisnikSlikaMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,10 +199,11 @@ namespace TeachABit.Model.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ProfilnaSlikaVersion")
+                    b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
-                    b.Property<string>("SecurityStamp")
+                    b.Property<string>("SlikaUrl")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")

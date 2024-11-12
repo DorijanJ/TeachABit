@@ -2,17 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using TeachABit.API.Middleware;
 using TeachABit.Model.DTOs.Authentication;
+using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Service.Services.Authentication;
+using TeachABit.Service.Services.Korisnici;
 using IAuthorizationService = TeachABit.Service.Services.Authorization.IAuthorizationService;
 
 namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService) : BaseController
+    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService, IKorisniciService korisniciService) : BaseController
     {
         private readonly IAuthenticationService _authenticationService = authenticationService;
         private readonly IAuthorizationService _authorizationService = authorizationService;
+        private readonly IKorisniciService _korisniciService = korisniciService;
 
         [AllowAnonymous]
         [ServiceFilter(typeof(ModelStateFilter))]
@@ -63,7 +66,13 @@ namespace TeachABit.API.Controllers
         [HttpGet]
         public IActionResult GetCurrentUser()
         {
-            return GetControllerResult(_authorizationService.GetKorisnikDto());
+            return Ok(_authorizationService.GetKorisnikDto());
+        }
+
+        [HttpGet("by-username/{username}")]
+        public async Task<IActionResult> GetUserByUsername(string username)
+        {
+            return GetControllerResult(await _authenticationService.GetKorisnikByUsername(username));
         }
 
         [AllowAnonymous]
@@ -81,5 +90,13 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _authenticationService.ResendMailConfirmationLink(resendConfirmEmail));
         }
+
+        [HttpPost("update-korisnik")]
+        [ServiceFilter(typeof(ModelStateFilter))]
+        public async Task<IActionResult> UpdateKorisnik(UpdateKorisnikDto updateKorisnik)
+        {
+            return GetControllerResult(await _korisniciService.UpdateKorisnik(updateKorisnik));
+        }
+
     }
 }

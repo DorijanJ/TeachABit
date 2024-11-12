@@ -83,7 +83,7 @@ const App = observer(() => {
                             }
                         />
                         <Route
-                            path="profil"
+                            path="profil/:username"
                             element={
                                 <PrivateRoute
                                     page={<Profil />}

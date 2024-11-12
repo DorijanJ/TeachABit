@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using TeachABit.Model.DTOs.Korisnici;
-using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Service.Services.Authorization
 {
-    public class AuthorizationService(IHttpContextAccessor httpContextAccessor, IMapper mapper) : IAuthorizationService
+    public class AuthorizationService(IHttpContextAccessor httpContextAccessor, IMapper mapper, UserManager<Korisnik> userManager) : IAuthorizationService
     {
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IMapper _mapper = mapper;
+        private readonly UserManager<Korisnik> _userManager = userManager;
 
         public Korisnik GetKorisnik()
         {
@@ -29,9 +30,15 @@ namespace TeachABit.Service.Services.Authorization
             };
         }
 
-        public ServiceResult<KorisnikDto> GetKorisnikDto()
+        public KorisnikDto GetKorisnikDto()
         {
-            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(GetKorisnik()));
+            return _mapper.Map<KorisnikDto>(GetKorisnik());
+        }
+
+        public async Task<KorisnikDto> GetKorisnikFull()
+        {
+            var korisnik = GetKorisnik();
+            return _mapper.Map<KorisnikDto>(await _userManager.FindByIdAsync(korisnik.Id));
         }
     }
 }

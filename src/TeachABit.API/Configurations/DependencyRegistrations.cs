@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Amazon.S3;
+using Microsoft.AspNetCore.Identity;
 using TeachABit.API.Middleware;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Repository.Repositories.Objave;
@@ -6,10 +7,13 @@ using TeachABit.Repository.Repositories.Radionice;
 using TeachABit.Repository.Repositories.Tecajevi;
 using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Authorization;
+using TeachABit.Service.Services.Korisnici;
 using TeachABit.Service.Services.Objave;
 using TeachABit.Service.Services.Radionice;
 using TeachABit.Service.Services.Tecajevi;
+using TeachABit.Service.Util.Images;
 using TeachABit.Service.Util.Mail;
+using TeachABit.Service.Util.S3;
 using TeachABit.Service.Util.Token;
 
 namespace TeachABit.API.Configurations
@@ -31,6 +35,14 @@ namespace TeachABit.API.Configurations
             services.AddScoped<IRadioniceRepository, RadioniceRepository>();
             services.AddScoped<IRadioniceService, RadioniceService>();
             services.AddScoped<ModelStateFilter>();
+            services.AddScoped<IKorisniciService, KorisniciService>();
+            services.AddAWSService<IAmazonS3>();
+            services.AddSingleton<IS3BucketService>(provider =>
+            {
+                var s3Client = provider.GetRequiredService<IAmazonS3>();
+                return new S3BucketService(s3Client, "teachabit");
+            });
+            services.AddScoped<IImageManipulationService, ImageManipulationService>();
             return services;
         }
     }
