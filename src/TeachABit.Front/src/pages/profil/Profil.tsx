@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent";
 import { AppUserDto } from "../../models/AppUserDto";
 
+import EditProfilDialog from "./EditProfilDialog";
+
 export default function Profil() {
     const { username } = useParams();
     const globalContext = useGlobalContext();
@@ -56,6 +58,13 @@ export default function Profil() {
                             }`}
                         />
                     </Avatar>
+                    {globalContext.userIsLoggedIn === true && (
+                        <EditProfilDialog
+                            onClose={() => {
+                                if (username) GetUserByUsername(username);
+                            }}
+                        />
+                    )}
                     <Typography variant="h4" align="center">
                         Korisnički profil
                     </Typography>

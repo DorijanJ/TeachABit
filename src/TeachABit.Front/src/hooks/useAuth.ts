@@ -7,6 +7,7 @@ import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
 
 const USERNAME_KEY = "username";
 const ID_KEY = "id";
+const COOKIE_TTL = "cookie_ttl";
 
 interface GoogleAuthRequest {
     token: string;
@@ -19,7 +20,14 @@ const useAuth = () => {
     const handleUserLoggedInCheck = () => {
         const username = localStorage.getItem(USERNAME_KEY);
         const id = localStorage.getItem(ID_KEY);
-        if (username !== null && id !== null) {
+        const ttl = localStorage.getItem(COOKIE_TTL);
+
+        if (
+            username !== null &&
+            id !== null &&
+            ttl &&
+            new Date().getTime() < parseInt(ttl)
+        ) {
             globalContext.setLoggedInUser({ username: username, id: id });
             globalContext.setIsUserLoggedIn(true);
         } else {
@@ -72,9 +80,12 @@ const useAuth = () => {
     };
 
     const setAuthData = (appUser: AppUserDto) => {
-        if (appUser.username) {
+        if (appUser.username && appUser.id) {
+            const now = new Date();
+            const ttl = now.getTime() + 7 * 60 * 60 * 1000;
             localStorage.setItem(USERNAME_KEY, appUser.username);
             localStorage.setItem(ID_KEY, appUser.id);
+            localStorage.setItem(COOKIE_TTL, ttl.toString());
             globalContext.setLoggedInUser({
                 username: appUser.username,
                 id: appUser.id,

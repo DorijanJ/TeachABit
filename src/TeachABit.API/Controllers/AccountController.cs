@@ -92,6 +92,7 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpPost("update-korisnik")]
+        [ServiceFilter(typeof(ModelStateFilter))]
         public async Task<IActionResult> UpdateKorisnik(UpdateKorisnikDto updateKorisnik)
         {
             return GetControllerResult(await _korisniciService.UpdateKorisnik(updateKorisnik));
