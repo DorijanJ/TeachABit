@@ -17,7 +17,7 @@
     gap: 40px;
     padding: 10px;
 }
-.activeItem .listItemText{
-
-    font-weight: bold !important;
+.activeItem .listItemText {
+    font-weight: bold;
+    background-color: rgb(199, 193, 193) !important;
 }
