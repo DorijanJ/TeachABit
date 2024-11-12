@@ -15,6 +15,7 @@ import Forum from "./pages/forum/Forum";
 import PrivateRoute from "./components/auth/routing/PrivateRoute";
 import Profil from "./pages/profil/Profil";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import Radionice from "./pages/Radionice/Radionice";
 
 const App = observer(() => {
     const auth = useAuth();
@@ -51,7 +52,7 @@ const App = observer(() => {
                         <Route
                             path="radionice"
                             element={
-                                <GenericRoute page={<></>} withNavigation />
+                                <GenericRoute page={<Radionice />} withNavigation />
                             }
                         />
                         <Route

@@ -18,5 +18,6 @@
     padding: 10px;
 }
 .activeItem {
-    border: 1px solid #922728 !important;
+    border: 1px solid #922728 ;
+    background-color: rgb(199, 193, 193) !important;
 }

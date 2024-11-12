@@ -52,7 +52,15 @@ export default function Navigation() {
                         }}
                         onClick={() => setIsExpanded((prev) => !prev)}
                     >
-                        <NavigateBeforeIcon color="primary" />
+                        <NavigateBeforeIcon
+                            color="primary"
+                            sx={{
+                                transform: isExpanded
+                                    ? "rotate(0deg)"
+                                    : "rotate(180deg)",
+                                transition: "transform 0.3s ease", // dodaje animiranu tranziciju
+                            }}
+                        />
                     </IconButton>
                     {isExpanded ? (
                         <img
@@ -130,5 +138,5 @@ export default function Navigation() {
                 </Box>
             </Drawer>
         </>
-    )
+    );
 }

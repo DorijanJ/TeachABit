@@ -38,7 +38,7 @@ export default function Forum() {
                 width: "100%",
             }}
         >
-            {globalContext.userIsLoggedIn && (
+            
                 <div
                     style={{
                         display: "flex",
@@ -49,14 +49,16 @@ export default function Forum() {
                     }}
                 >
                     <SearchBox onSearch={GetObjavaList} />
+                    {globalContext.userIsLoggedIn && (              //ako korisnik nije prijavljen, ne može kreirati objave
                     <Button
                         variant="contained"
                         onClick={() => setIsOpenObjavaDialog(true)}
                     >
                         Stvori objavu
                     </Button>
+                    )}
                 </div>
-            )}
+            
             <div
                 style={{
                     display: "flex",
