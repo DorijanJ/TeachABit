@@ -1,8 +1,9 @@
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-import { Button, Dialog, IconButton } from "@mui/material";
+import { Alert, Button, Dialog, IconButton } from "@mui/material";
 import requests from "../../api/agent";
 import localStyles from "./EditProfilDialog.module.css";
+import { MessageResponseDto } from "../../models/common/MessageResponseDto";
 
 interface Props {
     onClose: () => void;
@@ -12,6 +13,7 @@ export default function EditProfilDialog(props: Props) {
     const [editDialogOpen, setEditDialogOpen] = useState(false);
 
     const [file, setFile] = useState<File | null>(null);
+    const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -35,7 +37,7 @@ export default function EditProfilDialog(props: Props) {
             formData
         );
         if (response.message && response.message.severity === "error")
-            alert(response.message);
+            setMessage(response.message);
         else {
             props.onClose();
             setEditDialogOpen(false);
@@ -51,7 +53,10 @@ export default function EditProfilDialog(props: Props) {
             <Dialog
                 maxWidth={false}
                 open={editDialogOpen}
-                onClose={() => setEditDialogOpen(false)}
+                onClose={() => {
+                    setEditDialogOpen(false);
+                    setFile(null);
+                }}
             >
                 <form className={localStyles.imageForm} onSubmit={handleSubmit}>
                     <input
@@ -84,6 +89,26 @@ export default function EditProfilDialog(props: Props) {
                         Spremi
                     </Button>
                 </form>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: 10,
+                        width: "100%",
+                        height: "100px",
+                        boxSizing: "border-box",
+                    }}
+                >
+                    {message && (
+                        <Alert
+                            sx={{ width: "80%" }}
+                            severity={message.severity}
+                        >
+                            {message.message}
+                        </Alert>
+                    )}
+                </div>
             </Dialog>
         </>
     );
