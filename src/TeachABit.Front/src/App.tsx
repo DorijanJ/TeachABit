@@ -85,7 +85,7 @@ const App = observer(() => {
                         <Route
                             path="profil/:username"
                             element={
-                                <PrivateRoute
+                                <GenericRoute
                                     page={<Profil />}
                                     withNavigation
                                 />
