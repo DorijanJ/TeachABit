@@ -6,7 +6,6 @@ import {
     DialogActions,
     Button,
     Avatar,
-    Typography,
 } from "@mui/material";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DetailedObjavaDto, ObjavaDto } from "../../models/ObjavaDto";
@@ -92,10 +91,16 @@ export default function ObjavaDialog(props: Props) {
                             >
                                 {isCreating ? `Nova objava` : `${objava.naziv}`}
                             </div>
-                            <UserLink
-                                userId={objava.vlasnikId}
-                                username={objava.vlasnikUsername}
-                            />
+                            {!isCreating && (
+                                <UserLink
+                                    user={{
+                                        id: objava.vlasnikId,
+                                        username: objava.vlasnikUsername,
+                                        profilnaSlikaVersion:
+                                            objava.vlasnikProfilnaSlikaVersion,
+                                    }}
+                                />
+                            )}
                         </div>
                     </DialogTitle>
                     <DialogContent

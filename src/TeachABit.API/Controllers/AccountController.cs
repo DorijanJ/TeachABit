@@ -69,6 +69,7 @@ namespace TeachABit.API.Controllers
             return Ok(_authorizationService.GetKorisnikDto());
         }
 
+        [AllowAnonymous]
         [HttpGet("by-username/{username}")]
         public async Task<IActionResult> GetUserByUsername(string username)
         {
