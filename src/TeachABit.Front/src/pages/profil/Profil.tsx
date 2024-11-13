@@ -13,9 +13,9 @@ export default function Profil() {
 
     const [user, setUser] = useState<AppUserDto>();
 
-    const isCurrentUser = useMemo(() => {
-        return globalContext.loggedInUser?.username === username;
-    }, [globalContext.loggedInUser?.username, username]);
+    // const isCurrentUser = useMemo(() => {
+    //     return globalContext.loggedInUser?.username === username;
+    // }, [globalContext.loggedInUser?.username, username]);
 
     const GetUserByUsername = async (username: string) => {
         const response = await requests.getWithLoading(

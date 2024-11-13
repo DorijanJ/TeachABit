@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
 
