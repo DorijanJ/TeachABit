@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useGlobalContext } from "../../context/Global.context";
 import { Card, CardContent, Typography, Avatar } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent";
 import { AppUserDto } from "../../models/AppUserDto";
 
@@ -13,9 +13,9 @@ export default function Profil() {
 
     const [user, setUser] = useState<AppUserDto>();
 
-    // const isCurrentUser = useMemo(() => {
-    //     return globalContext.loggedInUser?.username === username;
-    // }, [globalContext.loggedInUser?.username, username]);
+    const isCurrentUser = useMemo(() => {
+        return globalContext.loggedInUser?.username === username;
+    }, [globalContext.loggedInUser?.username, username]);
 
     const GetUserByUsername = async (username: string) => {
         const response = await requests.getWithLoading(
@@ -42,23 +42,29 @@ export default function Profil() {
                     }}
                 >
                     <Avatar sx={{ width: 100, height: 100 }}>
-                        <img
-                            key={Date.now()}
-                            style={{
-                                objectFit: "cover",
-                                width: "100%",
-                                height: "100%",
-                            }}
-                            src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                                user.id
-                            }${
-                                user.profilnaSlikaVersion
-                                    ? "?version=" + user.profilnaSlikaVersion
-                                    : ""
-                            }`}
-                        />
+                        {user.id && user.profilnaSlikaVersion ? (
+                            <>
+                                <img
+                                    style={{
+                                        objectFit: "cover",
+                                        width: "100%",
+                                        height: "100%",
+                                    }}
+                                    src={`${
+                                        import.meta.env.VITE_REACT_AWS_BUCKET
+                                    }${user.id}${
+                                        user.profilnaSlikaVersion
+                                            ? "?version=" +
+                                              user.profilnaSlikaVersion
+                                            : ""
+                                    }`}
+                                />
+                            </>
+                        ) : (
+                            <>{user.username ? user.username[0] : ""}</>
+                        )}
                     </Avatar>
-                    {globalContext.userIsLoggedIn === true && (
+                    {globalContext.userIsLoggedIn === true && isCurrentUser && (
                         <EditProfilDialog
                             onClose={() => {
                                 if (username) GetUserByUsername(username);
