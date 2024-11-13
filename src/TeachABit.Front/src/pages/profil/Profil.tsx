@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useGlobalContext } from "../../context/Global.context";
 import { Card, CardContent, Typography, Avatar } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import requests from "../../api/agent";
 import { AppUserDto } from "../../models/AppUserDto";
 
