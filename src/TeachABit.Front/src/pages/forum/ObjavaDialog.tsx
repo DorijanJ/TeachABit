@@ -91,14 +91,16 @@ export default function ObjavaDialog(props: Props) {
                             >
                                 {isCreating ? `Nova objava` : `${objava.naziv}`}
                             </div>
-                            <UserLink
-                                user={{
-                                    id: objava.vlasnikId,
-                                    username: objava.vlasnikUsername,
-                                    profilnaSlikaVersion:
-                                        objava.vlasnikProfilnaSlikaVersion,
-                                }}
-                            />
+                            {!isCreating && (
+                                <UserLink
+                                    user={{
+                                        id: objava.vlasnikId,
+                                        username: objava.vlasnikUsername,
+                                        profilnaSlikaVersion:
+                                            objava.vlasnikProfilnaSlikaVersion,
+                                    }}
+                                />
+                            )}
                         </div>
                     </DialogTitle>
                     <DialogContent
