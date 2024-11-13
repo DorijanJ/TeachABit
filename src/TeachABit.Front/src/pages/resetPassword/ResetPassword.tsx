@@ -35,6 +35,14 @@ export default function ResetPassword() {
     return (
         <>
             <form
+                style={{
+                    backgroundColor: "background",
+                    padding: "20px",
+                    boxSizing: "border-box",
+                    maxWidth: "fit-content",
+                    borderRadius: "5px",
+                    height: "300px",
+                }}
                 onSubmit={(e) => {
                     e.preventDefault();
                     handleReset();
