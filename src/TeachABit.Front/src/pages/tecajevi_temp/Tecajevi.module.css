@@ -1,0 +1,9 @@
+.center {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    height: 100vh; /* Optional: makes the div fill the viewport height */
+}
+
+.search{
+    background-color: #6a9955;
+}

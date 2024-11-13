@@ -1,0 +1,10 @@
+.tiptap .code-block {
+    position: relative;
+}
+
+.tiptap .code-block select {
+    position: absolute;
+    background-color: white;
+    right: 0.5rem;
+    top: 0.5rem;
+}

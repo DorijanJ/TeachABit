@@ -1,0 +1,12 @@
+.appContainer {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.pageView {
+    flex-grow: 1;
+    transition: width 0.5s ease;
+    padding: 20px;
+    overflow-y: auto;
+}

@@ -1,30 +1,184 @@
-# Programsko inženjerstvo
+# 💡TeachABit
+Ova platforma omogućuje korisnicima raznovrsne mogućnosti učenja i razmjene znanja. Korisnici mogu objavljivati vlastite tečajeve i radionice, te aktivno sudjelovati u diskusijama foruma. Forumi omogućuju razmjenu ideja, postavljanje pitanja i davanje odgovora. Cilj platforme je unaprijediti pristup obrazovanju i olakšati povezivanje između predavača i zainteresiranih korisnika.
 
-> Ime projekta u naslovu ima cilj opisati namjenu projekta te pomoći u podizanju početnog interesa za projekt prezentirajući osnovnu svrhu projekta.
-> Isključivo ovisi o Vama!
-> 
-> Naravno, nijedan predložak nije idealan za sve projekte jer su potrebe i ciljevi različiti. Ne bojte se naglasiti Vaš cilj u ovoj početnoj stranici projekta, podržat ćemo ga bez obzira usredotočili se Vi više na tenologiju ili marketing.
-> 
-> Zašto ovaj dokument? Samo manji dio timova je do sada propoznao potrebu (a i meni je lakše pratiti Vaš rad).  
+# 🚀Funkcionalni zahtjevi
+**Korisnik:**
+>Pretraživanje stavki (tečaj/radionica/objava)
+>* Pretraživanje po naslovu
+>* Pretraživanje po broju likeova
+>* Pretraživanje po vremenu
+>* Pretraživanje po popularnosti
+>* Pretraživanje po cijeni (tečaj/radionicu)
 
-# Opis projekta
-Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu. 
+> Pregled tuđih profila
 
-Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije »Zato što je to bio zadatak i nismo imali ideje za drugo.«). Koji problem rješavate?
-> Obzirom da je ovo zadani projekt navedite i što želite/jeste novo  naučili.
+> Prijava u sustav
+>* Autentifikacija
+>* Resetiranje lozinke ("Zaboravio/la sam lozinku.")
 
-> Dobro izrađen opis omogućuje vam da pokažete svoj rad drugim programerima, kao i potencijalnim poslodavcima. Ne samo da prvi dojam na stranici opisa često razlikuje dobar projekt od lošeg projekta već i predstavlja dobru praksu koju morate savladati.
+> Prijava na stavku (tečaj/radionica)
+>* Besplatna prijava (za besplatne stavke)
+>* Prijava s plaćanjem (za privatne stavke)
 
-# Funkcijski zahtjevi
-> Navedite ključne zahtjeve Vašeg projekta.
+> Kreiranje stavki (tečaj/radionica)
+>* Definirati naslov
+>* Definiranje opisa
+>* Upload slika
+>* Definirati lekcije (tečaj)
+>* Definiranje kategorije
+
+> Modificiranje stavki (tečaj/radionica/objava)
+>* Brisanje stavke
+>* Modificiranje stavke
+>* Označavanje točnog odgovora (objava)
+
+> Komentiranje stavki (tečaj/radionica/objava)
+>* Stvaranje objave kao komentar
+>* Lajkanje stavke
+>* Favoriziranje stavke
+
+> Personalizacija profila
+>* Promjena imena
+>* Promjena slike
+>* Resetiranje lozinke
+
+> Prijava korisnika za neprimjereno ponašanje
+
+> Prijava za verificiranje profila
+
+**Moderator:**
+> Brisanje stavke (tečaj/radionica/objava)
+
+> Verificiranje korisnika
+
+> Utišanje korisnika
+
+**Administrator:**
+> Brisanje profila
+
+> Davanje moderatorske uloge
+
+**Server:**
+> Obrada zahtjeva
+>* Dohvat podataka
+>* Izmjena podataka
+>* Spremanje podataka
+
+> Kreiranje stavki (tečaj/radionica)
+>* Definirati naslov
+>* Definiranje opisa
+>* Upload slika
+>* Definirati lekcije (tečaj)
+>* Definiranje kategorije
+
+> Modificiranje stavki (tečaj/radionica/objava)
+>* Brisanje stavke
+>* Modificiranje stavke
+>* Označavanje točnog odgovora (objava)
+
+> Komentiranje stavki (tečaj/radionica/objava)
+>* Stvaranje objave kao komentar
+>* Lajkanje stavke
+>* Favoriziranje stavke
+
+> Personalizacija profila
+>* Promjena imena
+>* Promjena slike
+>* Resetiranje lozinke
+
+> Prijava korisnika za neprimjereno ponašanje
+
+> Prijava za verificiranje profila
+
+**Moderator:**
+> Brisanje stavke (tečaj/radionica/objava)
+
+> Verificiranje korisnika
+
+> Utišanje korisnika
+
+**Administrator:**
+> Brisanje profila
+
+> Davanje moderatorske uloge
+
+**Server:**
+> Obrada zahtjeva
+>* Dohvat podataka
+>* Izmjena podataka
+>* Spremanje podataka
 
 
-# Tehnologije
+# 🔧Tehnologije
+* Frontend: [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
+* Backend: [ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet)
+* Baza podataka: [PostgreSQL](https://www.postgresql.org/)
+* Dokumentacija: [Github](https://github.com/)
+* Plačanje: [Stripe](https://stripe.com/en-hr)
+* Autetnikacija: [Google Cloud](https://console.cloud.google.com/)
+* Mail: [Twilio SendGrid](https://sendgrid.com/en-us)
 
-#Instalcija
-# Članovi tima 
-> Popis članova tima/linkovi/ glavni doprinos
->
+# Instalacija
+
+### 1. Klonirati repozitorij
+
+Klonirati GitHub repozitorij:
+
+```console
+    git clone https://github.com/DorijanJ/TeachABit.git
+    cd TeachABit/src
+```
+
+### 2. Postavljanje backend okruženja
+
+1. Navigirajte do TeachABit.API direktorija.
+2. Stvorite "appsettings.development.json" datoteku.
+3. Kopirajte sadržaj "appsettings.development.json.txt" u stvorenu datoteku.
+4. Dodajte JWT ključ u datoteku.
+5. Dodajte ostale "secrets" ako ih imate.
+
+### 3. Postavljanje baze podataka
+
+1. Napravite novog PostgreSQL korisnika s imenom "teachabit_backend" i dodijeliti mu lozinku.
+2. Kreirajte bazu podataka s imenom "teachabit" i schemom "backend".
+3. Popunite ConnectionString u "appsettings.development.json" datoteci.
+4. Ako nemate instaliran dotnet tools, pokrenuti sljedeću naredbu:
+
+```console
+    dotnet tool install --global dotnet-ef --version 8.*
+```
+5. Za kreiranje tablica u bazi podataka, pokrenite iduću naredbu iz "TeachABit/src" direktorija:
+
+```console
+    dotnet ef database update -s TeachABit.API -p TeachABit.Model
+```
+### 4. Pokretanje backend-a
+```console
+    dotnet restore
+    dotnet run
+```
+### 5. Postavljanje i pokretanje frontend-a
+1. Navigirajte do "TeachABit.Front" direktorija.
+2. Kreirajte ".env.development" datoteku.
+3. Kopirajte sadržaj ".env.development.txt" u stvorenu datoteku.
+4. Pokrenite sljedeće naredbe iz "TeachABit.Front" direktorija:
+```console
+    npm install
+    npm run dev
+```
+### 6. Pristupanje aplikaciji
+Nakon ovih koraka otvoiti preglednik i navigirajte do https://localhost:3000 kako bi pristupili "TeachABit" aplikaciji.
+
+# 💼Članovi tima 
+| Članovi           | Uloge             |
+|:------------------|:------------------|
+| Dorijan Jančić    | Devops            |
+| Matej Jurišić     | Full stack        |
+| Ivan Mitar        | Frontend          |
+| Dino Gabrić       | Frontend          |
+| Martin Vidmar     | Frontend, Dizajn  |
+| Mateo Toić        | Backend           |
+| Tomislav Sesar    | Backend           |
 
 # Kontribucije
 >Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
@@ -48,32 +202,25 @@ Kodeks ponašanja skup je provedivih pravila koja služe za jasnu komunikaciju o
 >* Razgovarajte s vašim asistentom jer ima najbolji uvid u dinamiku tima. Zajedno ćete saznati kako riješiti sukob i kako izbjeći daljnje utjecanje u vašem radu.
 >* Ako se osjećate ugodno neposredno razgovarajte o problemu. Manje incidente trebalo bi rješavati izravno. Odvojite vrijeme i privatno razgovarajte s pogođenim članom tima te vjerujte u iskrenost.
 
-# 📝 Licenca
-Važeča (1)
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+# 📝 Licence
+### Documentation License [![Documentation License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-Ovaj repozitorij sadrži otvoreni obrazovni sadržaji (eng. Open Educational Resources)  i licenciran je prema pravilima Creative Commons licencije koja omogućava da preuzmete djelo, podijelite ga s drugima uz 
-uvjet da navođenja autora, ne upotrebljavate ga u komercijalne svrhe te dijelite pod istim uvjetima [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License HR][cc-by-nc-sa].
->
-> ### Napomena:
->
-> Svi paketi distribuiraju se pod vlastitim licencama.
-> Svi upotrijebleni materijali  (slike, modeli, animacije, ...) distribuiraju se pod vlastitim licencama.
+The documentation for this project is licensed under the [Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. This means that:
 
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+- You may share and adapt the documentation, provided you give appropriate credit (attribution), do not use it for commercial purposes, and distribute any derivative works under the same license.
 
-[cc-by-nc-sa]: https://creativecommons.org/licenses/by-nc/4.0/deed.hr 
-[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
-[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
+### Code License [![MIT License](https://img.shields.io/badge/License-MIT-blue)](https://opensource.org/licenses/MIT)
 
-Orginal [![cc0-1.0][cc0-1.0-shield]][cc0-1.0]
->
->COPYING: All the content within this repository is dedicated to the public domain under the CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
->
-[![CC0-1.0][cc0-1.0-image]][cc0-1.0]
+The code in this project is licensed under the [MIT License](https://opensource.org/licenses/MIT). This means that:
 
-[cc0-1.0]: https://creativecommons.org/licenses/by/1.0/deed.en
-[cc0-1.0-image]: https://licensebuttons.net/l/by/1.0/88x31.png
-[cc0-1.0-shield]: https://img.shields.io/badge/License-CC0--1.0-lightgrey.svg
+- You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the code.
+- The code is provided "as is", without warranty of any kind.
 
-### Reference na licenciranje repozitorija
+### Media License [![MIT License](https://img.shields.io/badge/License-MIT-blue)](https://opensource.org/licenses/MIT)
+
+The media assets in this project (images, videos, etc.) are also licensed under the [MIT License](https://opensource.org/licenses/MIT). This means that:
+
+- You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the media.
+- The media is provided "as is", without warranty of any kind.
+
+#### 
