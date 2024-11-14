@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import requests from "../../api/agent";
 import { Button } from "@mui/material";
+import { useGlobalContext } from "../../context/Global.context";
 import Tecaj from "./Tecaj";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
@@ -9,6 +10,7 @@ import useRequestBuilder from "../../hooks/useRequestBuilder";
 export default function Tecajevi() {
 
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
+    const globalContext = useGlobalContext();
 
     const { buildRequest } = useRequestBuilder();
 
@@ -44,12 +46,14 @@ export default function Tecajevi() {
                 }}
             >
                 <SearchBox onSearch={GetTecajList} />
-                <Button
-                    variant="contained"
-                    onClick={() => console.log("stvori tecaj")}
-                >
-                    Stvori tecaj
-                </Button>
+                {globalContext.userIsLoggedIn && (
+                    <Button
+                        variant="contained"
+                        onClick={() => console.log("stvori tecaj")}
+                    >
+                        Stvori tecaj
+                    </Button>
+                )}
             </div>
             <div
                 style={{
