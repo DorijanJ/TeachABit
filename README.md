@@ -2,7 +2,7 @@
 
 Ova platforma omogućuje korisnicima raznovrsne mogućnosti učenja i razmjene znanja. Korisnici mogu objavljivati vlastite tečajeve i radionice, te aktivno sudjelovati u diskusijama foruma. Forumi omogućuju razmjenu ideja, postavljanje pitanja i davanje odgovora. Cilj platforme je unaprijediti pristup obrazovanju i olakšati povezivanje između predavača i zainteresiranih korisnika.
 
-Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
+Ovaj projekt je rezultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
 
 # 🚀Funkcionalni zahtjevi
 
