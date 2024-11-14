@@ -29,7 +29,7 @@ export function NavigationUser(props: Props) {
                 <Button
                     variant="outlined"
                     startIcon={<PersonIcon />}
-                    onClick={() => navigate("/profil")}
+                    onClick={() => navigate(`/profil/${props.user.username}`)}
                 >
                     {`Korisnik: ${props.user.username}`}
                 </Button>

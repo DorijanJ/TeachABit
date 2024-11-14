@@ -1,3 +1,5 @@
 export interface AppUserDto {
-    username: string;
+    username?: string;
+    id?: string;
+    profilnaSlikaVersion?: string;
 }

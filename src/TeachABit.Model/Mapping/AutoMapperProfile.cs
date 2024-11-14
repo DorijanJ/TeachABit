@@ -14,11 +14,12 @@ namespace TeachABit.Model.Mapping
     {
         public AutoMapperProfile()
         {
-            CreateMap<Korisnik, KorisnikDto>().ForMember(x => x.Username, opt => opt.MapFrom(x => x.UserName));
+            CreateMap<Korisnik, KorisnikDto>().ReverseMap();
             CreateMap<Tecaj, TecajDto>().ReverseMap();
             CreateMap<ObjavaDto, Objava>();
             CreateMap<Objava, ObjavaDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
+                .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
                 .Include<Objava, DetailedObjavaDto>();
             CreateMap<Objava, DetailedObjavaDto>();
             CreateMap<Komentar, KomentarDto>()

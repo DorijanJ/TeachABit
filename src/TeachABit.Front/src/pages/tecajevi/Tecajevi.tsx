@@ -1,6 +1,5 @@
 import SearchBox from "../../components/searchbox/SearchBox";
 
-// temp function
 function abc(query?: string) {
     console.log("Search:", query);
 }
@@ -8,7 +7,9 @@ function abc(query?: string) {
 export default function Tecajevi() {
     return (
         <>
-            <SearchBox height={65} width={500} onSearch={abc} />
+            <div>
+                <SearchBox onSearch={abc} />
+            </div>
         </>
     );
 }

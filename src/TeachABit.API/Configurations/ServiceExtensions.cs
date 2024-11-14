@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Amazon.S3;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
@@ -65,6 +66,18 @@ namespace TeachABit.API.Configurations
                        .WithOrigins(origins);
                 });
             });
+
+            var awsOptions = new Amazon.Extensions.NETCore.Setup.AWSOptions
+            {
+                Credentials = new Amazon.Runtime.BasicAWSCredentials(
+                    configuration["S3Bucket:AccessKey"],
+                    configuration["S3Bucket:SecretKey"]
+                    ),
+                Region = Amazon.RegionEndpoint.EUNorth1
+            };
+
+            services.AddDefaultAWSOptions(awsOptions);
+            services.AddAWSService<IAmazonS3>();
 
             return services;
         }
