@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Service.Services.Radionice;
@@ -11,11 +12,13 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     private readonly IRadioniceService _radioniceService = radioniceService;
 
     [HttpGet]
-    public async Task<IActionResult> GetRadionicaList()
+    public async Task<IActionResult> GetRadionicaList(string? search = null)
     {
-        return GetControllerResult(await _radioniceService.GetRadionicaList());
+        var result = await _radioniceService.GetRadionicaList(search);
+        return GetControllerResult(result);
     }
-
+    
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetRadionica(int id)
     {

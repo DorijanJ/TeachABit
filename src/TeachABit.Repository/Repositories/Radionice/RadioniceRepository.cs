@@ -9,9 +9,16 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 {
     private readonly TeachABitContext _context = context;
 
-    public async Task<List<Radionica>> GetRadionicaList()
+    public async Task<List<Radionica>> GetRadionicaList(string? search = null)
     {
-        return await _context.Radionice.ToListAsync();
+        if (string.IsNullOrWhiteSpace(search))
+        {
+            return await _context.Radionice.ToListAsync();
+        }
+
+        return await _context.Radionice
+            .Where(r => r.Naziv.ToLower().Contains(search))
+            .ToListAsync();
     }
 
     public async Task<Radionica?> GetRadionica(int id)
