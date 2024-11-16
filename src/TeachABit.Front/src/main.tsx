@@ -24,10 +24,11 @@ const theme = createTheme({
         },
     },
     typography: {
-        fontFamily: "Roboto, sans-serif",
+        fontFamily: "Poppins, Arial, sans-serif",
         h1: {
             fontSize: "2rem",
         },
+        fontWeightBold: "bolder"
     },
     spacing: 8,
 });

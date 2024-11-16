@@ -6,6 +6,8 @@ import { LoginAttemptDto } from "../models/LoginAttemptDto";
 import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
 
 const USERNAME_KEY = "username";
+const ID_KEY = "id";
+const COOKIE_TTL = "cookie_ttl";
 
 interface GoogleAuthRequest {
     token: string;
@@ -17,8 +19,16 @@ const useAuth = () => {
 
     const handleUserLoggedInCheck = () => {
         const username = localStorage.getItem(USERNAME_KEY);
-        if (username !== null) {
-            globalContext.setLoggedInUser({ username: username });
+        const id = localStorage.getItem(ID_KEY);
+        const ttl = localStorage.getItem(COOKIE_TTL);
+
+        if (
+            username !== null &&
+            id !== null &&
+            ttl &&
+            new Date().getTime() < parseInt(ttl)
+        ) {
+            globalContext.setLoggedInUser({ username: username, id: id });
             globalContext.setIsUserLoggedIn(true);
         } else {
             globalContext.setLoggedInUser(undefined);
@@ -70,15 +80,23 @@ const useAuth = () => {
     };
 
     const setAuthData = (appUser: AppUserDto) => {
-        if (appUser.username) {
+        if (appUser.username && appUser.id) {
+            const now = new Date();
+            const ttl = now.getTime() + 7 * 60 * 60 * 1000;
             localStorage.setItem(USERNAME_KEY, appUser.username);
-            globalContext.setLoggedInUser({ username: appUser.username });
+            localStorage.setItem(ID_KEY, appUser.id);
+            localStorage.setItem(COOKIE_TTL, ttl.toString());
+            globalContext.setLoggedInUser({
+                username: appUser.username,
+                id: appUser.id,
+            });
             globalContext.setIsUserLoggedIn(true);
         }
     };
 
     const clearAuthData = () => {
         localStorage.removeItem(USERNAME_KEY);
+        localStorage.removeItem(ID_KEY);
         globalContext.setLoggedInUser(undefined);
         globalContext.setIsUserLoggedIn(false);
     };

@@ -11,5 +11,6 @@ namespace TeachABit.Model.DTOs.Objave
         public string Sadrzaj { get; set; } = string.Empty;
         public string VlasnikId { get; set; } = string.Empty;
         public string? VlasnikUsername { get; set; }
+        public string? VlasnikProfilnaSlikaVersion { get; set; }
     }
 }

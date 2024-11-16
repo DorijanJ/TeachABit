@@ -6,7 +6,6 @@ import {
     DialogActions,
     Button,
     Avatar,
-    Typography,
 } from "@mui/material";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DetailedObjavaDto, ObjavaDto } from "../../models/ObjavaDto";
@@ -15,6 +14,7 @@ import { KomentarDto } from "../../models/KomentarDto";
 import { formatDistanceToNow } from "date-fns";
 import TeachABitEditor from "../../components/editor/TeachABitTextEditor";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
+import UserLink from "../profil/UserLink";
 
 interface Props {
     objavaId?: number;
@@ -91,25 +91,15 @@ export default function ObjavaDialog(props: Props) {
                             >
                                 {isCreating ? `Nova objava` : `${objava.naziv}`}
                             </div>
-                            {objava.vlasnikUsername && (
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        gap: "10px",
-                                        alignItems: "center",
+                            {!isCreating && (
+                                <UserLink
+                                    user={{
+                                        id: objava.vlasnikId,
+                                        username: objava.vlasnikUsername,
+                                        profilnaSlikaVersion:
+                                            objava.vlasnikProfilnaSlikaVersion,
                                     }}
-                                >
-                                    <Avatar sx={{ width: 30, height: 30 }}>
-                                        {objava.vlasnikUsername[0]}{" "}
-                                    </Avatar>
-                                    <Typography
-                                        lineHeight={1}
-                                        variant="caption"
-                                    >
-                                        {objava.vlasnikUsername}
-                                    </Typography>
-                                </div>
+                                />
                             )}
                         </div>
                     </DialogTitle>

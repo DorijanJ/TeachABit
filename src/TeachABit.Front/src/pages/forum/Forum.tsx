@@ -38,25 +38,26 @@ export default function Forum() {
                 width: "100%",
             }}
         >
-            {globalContext.userIsLoggedIn && (
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: "20px",
-                        width: "100%",
-                        alignItems: "center",
-                    }}
-                >
-                    <SearchBox onSearch={GetObjavaList} />
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "20px",
+                    width: "100%",
+                    alignItems: "center",
+                }}
+            >
+                <SearchBox onSearch={GetObjavaList} />
+                {globalContext.userIsLoggedIn && ( //ako korisnik nije prijavljen, ne može kreirati objave
                     <Button
                         variant="contained"
                         onClick={() => setIsOpenObjavaDialog(true)}
                     >
                         Stvori objavu
                     </Button>
-                </div>
-            )}
+                )}
+            </div>
+
             <div
                 style={{
                     display: "flex",

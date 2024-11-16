@@ -15,12 +15,15 @@ obj/
 *.njsproj
 *.sln
 *.sw?
+
 *.cer
 appsettings.Development.json
 appsettings.json
 
+
 # Datoteke specifične za korisnika
 *.rsuser
+*.suo
 *.user
 *.userosscache
 *.sln.docstates
@@ -46,8 +49,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-# VS Code direktoriji
 .vscode/
 
 # Node.js

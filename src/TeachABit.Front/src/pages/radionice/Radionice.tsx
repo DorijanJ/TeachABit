@@ -5,10 +5,10 @@ function abc(query?: string) {
     console.log("Search:", query);
 }
 
-export default function Tecajevi() {
+export default function Radionice() {
     return (
         <>
-            <SearchBox height={65} width={500} onSearch={abc} />
+            <SearchBox onSearch={abc} />
         </>
     );
 }

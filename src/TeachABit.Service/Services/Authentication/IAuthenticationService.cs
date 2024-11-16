@@ -1,6 +1,6 @@
 ﻿using TeachABit.Model.DTOs.Authentication;
-using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Korisnici;
+using TeachABit.Model.DTOs.Result;
 
 namespace TeachABit.Service.Services.Authentication
 {
@@ -14,5 +14,6 @@ namespace TeachABit.Service.Services.Authentication
         Task<ServiceResult> ConfirmEmail(ConfirmEmailDto confirmEmail);
         Task<ServiceResult> ResendMailConfirmationLink(ResendConfirmEmailDto resendConfirmEmail);
         ServiceResult Logout();
+        Task<ServiceResult<KorisnikDto>> GetKorisnikByUsername(string username);
     }
 }
