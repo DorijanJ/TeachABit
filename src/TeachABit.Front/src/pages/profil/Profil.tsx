@@ -42,23 +42,29 @@ export default function Profil() {
                     }}
                 >
                     <Avatar sx={{ width: 100, height: 100 }}>
-                        <img
-                            key={Date.now()}
-                            style={{
-                                objectFit: "cover",
-                                width: "100%",
-                                height: "100%",
-                            }}
-                            src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                                user.id
-                            }${
-                                user.profilnaSlikaVersion
-                                    ? "?version=" + user.profilnaSlikaVersion
-                                    : ""
-                            }`}
-                        />
+                        {user.id && user.profilnaSlikaVersion ? (
+                            <>
+                                <img
+                                    style={{
+                                        objectFit: "cover",
+                                        width: "100%",
+                                        height: "100%",
+                                    }}
+                                    src={`${
+                                        import.meta.env.VITE_REACT_AWS_BUCKET
+                                    }${user.id}${
+                                        user.profilnaSlikaVersion
+                                            ? "?version=" +
+                                              user.profilnaSlikaVersion
+                                            : ""
+                                    }`}
+                                />
+                            </>
+                        ) : (
+                            <>{user.username ? user.username[0] : ""}</>
+                        )}
                     </Avatar>
-                    {globalContext.userIsLoggedIn === true && (
+                    {globalContext.userIsLoggedIn === true && isCurrentUser && (
                         <EditProfilDialog
                             onClose={() => {
                                 if (username) GetUserByUsername(username);
