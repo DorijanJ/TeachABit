@@ -8,7 +8,6 @@ import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
 
 export default function Tecajevi() {
-
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
     const globalContext = useGlobalContext();
 
@@ -18,7 +17,7 @@ export default function Tecajevi() {
         const response = await requests.getWithLoading(
             buildRequest("tecajevi", { search })
         );
-        setTecajList(response.data);
+        if (response.data) setTecajList(response.data);
     };
 
     useEffect(() => {
@@ -69,12 +68,11 @@ export default function Tecajevi() {
                         key={"tecaj" + tecaj.id}
                         tecaj={tecaj}
                         onClick={() => {
-                            console.log("clicked tecaj ", tecaj.naziv)
+                            console.log("clicked tecaj ", tecaj.naziv);
                         }}
                     />
                 ))}
             </div>
-            
         </div>
     );
 }
