@@ -20,7 +20,7 @@ export default function Forum() {
         const response = await requests.getWithLoading(
             buildRequest("objave", { search })
         );
-        setObjavaList(response.data);
+        if (response.data) setObjavaList(response.data);
     };
 
     useEffect(() => {
