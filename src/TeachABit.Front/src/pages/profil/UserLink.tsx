@@ -13,7 +13,7 @@ export default function UserLink(props: Props) {
         <div
             onClick={() => navigate(`/profil/${props.user.username}`)}
             style={{
-                padding: "5px",
+                padding: "8px",
                 borderRadius: "3px",
                 backgroundColor: "#f1f1f1",
                 display: "flex",

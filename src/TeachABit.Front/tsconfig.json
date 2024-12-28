@@ -5,6 +5,6 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "allowJs": true,          
+    "jsx": "react-jsx"         
   },
 }

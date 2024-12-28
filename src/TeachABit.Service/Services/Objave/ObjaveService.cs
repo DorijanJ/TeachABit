@@ -15,6 +15,19 @@ namespace TeachABit.Service.Services.Objave
         private readonly IMapper _mapper = mapper;
         private readonly IObjaveRepository _objaveRepository = objaveRepository;
         private readonly IAuthorizationService _authorizationService = authorizationService;
+
+        public async Task<ServiceResult<KomentarDto>> CreateKomentar(KomentarDto komentar, int objavaId)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+
+            komentar.VlasnikId = korisnik.Id;
+            komentar.CreatedDateTime = DateTime.UtcNow;
+            komentar.ObjavaId = objavaId;
+
+            KomentarDto createdKomentar = _mapper.Map<KomentarDto>(await _objaveRepository.CreateKomentar(_mapper.Map<Komentar>(komentar)));
+            return ServiceResult<KomentarDto>.Success(createdKomentar);
+        }
+
         public async Task<ServiceResult<ObjavaDto>> CreateObjava(ObjavaDto objava)
         {
             Korisnik korisnik = _authorizationService.GetKorisnik();
@@ -25,27 +38,45 @@ namespace TeachABit.Service.Services.Objave
             return ServiceResult<ObjavaDto>.Success(createdObjava);
         }
 
+        public async Task<ServiceResult> DeleteKomentar(int id)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+
+            KomentarDto? komentar = _mapper.Map<KomentarDto>(await _objaveRepository.GetKomentarById(id));
+
+            if (komentar == null || !korisnik.Owns(komentar)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            await _objaveRepository.DeleteKomentar(id);
+            return ServiceResult.Success();
+        }
+
         public async Task<ServiceResult> DeleteObjava(int id)
         {
             Korisnik korisnik = _authorizationService.GetKorisnik();
 
             ObjavaDto? objava = _mapper.Map<ObjavaDto?>(await _objaveRepository.GetObjavaById(id));
 
-            if (objava == null || !korisnik.Owns(objava)) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
+            if (objava == null || !korisnik.Owns(objava)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             await _objaveRepository.DeleteObjava(id);
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<DetailedObjavaDto?>> GetObjavaById(int id)
+        public async Task<ServiceResult<List<KomentarDto>>> GetKomentarListByObjavaId(int id)
         {
-            DetailedObjavaDto? objava = _mapper.Map<DetailedObjavaDto?>(await _objaveRepository.GetObjavaById(id));
-            return ServiceResult<DetailedObjavaDto?>.Success(objava);
+            List<KomentarDto> komentari = _mapper.Map<List<KomentarDto>>(await _objaveRepository.GetKomentarListByObjavaId(id));
+            return ServiceResult<List<KomentarDto>>.Success(komentari);
         }
 
-        public async Task<ServiceResult<List<ObjavaDto>>> GetObjavaList(string? search)
+        public async Task<ServiceResult<ObjavaDto?>> GetObjavaById(int id)
         {
-            List<ObjavaDto> objave = _mapper.Map<List<ObjavaDto>>(await _objaveRepository.GetObjavaList(search));
+            ObjavaDto? objava = _mapper.Map<ObjavaDto?>(await _objaveRepository.GetObjavaById(id));
+            return ServiceResult<ObjavaDto?>.Success(objava);
+        }
+
+        public async Task<ServiceResult<List<ObjavaDto>>> GetObjavaList(string? search, string? username)
+        {
+            List<ObjavaDto> objave = _mapper.Map<List<ObjavaDto>>(await _objaveRepository.GetObjavaList(search, username));
             return ServiceResult<List<ObjavaDto>>.Success(objave);
         }
 
