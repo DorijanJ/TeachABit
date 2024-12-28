@@ -13,6 +13,17 @@ interface Props {
 export default function ObjavaKomentari(props: Props) {
     const [komentari, setKomentari] = useState<KomentarDto[]>([]);
     const [isOpenKomentarDialog, setIsOpenKomentarDialog] = useState(false);
+    const [collapsedComments, setCollapsedComments] = useState<
+        Record<number, boolean>
+    >({});
+
+    const toggleCollapse = (komentarId: number | undefined) => {
+        if (komentarId === undefined) return;
+        setCollapsedComments((prevState) => ({
+            ...prevState,
+            [komentarId]: !prevState[komentarId],
+        }));
+    };
 
     const getKomentarListByObjavaId = async (objavaId: number) => {
         const response = await requests.getWithLoading(
@@ -40,7 +51,6 @@ export default function ObjavaKomentari(props: Props) {
                 style={{
                     display: "flex",
                     flexDirection: "column",
-                    borderTop: "1px solid lightgray",
                 }}
             >
                 <Komentar
@@ -51,14 +61,21 @@ export default function ObjavaKomentari(props: Props) {
                         getKomentarListByObjavaId(props.objavaId)
                     }
                     level={level}
+                    collapsedComments={collapsedComments}
+                    toggleCollapse={toggleCollapse}
                 />
                 {/* Recursive call for nested comments */}
                 {komentar.podKomentarList &&
+                    komentar.id !== undefined &&
                     komentar.podKomentarList.length > 0 && (
-                        <div style={{ marginTop: "10px" }}>
-                            {renderKomentari(
-                                komentar.podKomentarList,
-                                level + 1
+                        <div>
+                            {!collapsedComments[komentar.id] && (
+                                <div>
+                                    {renderKomentari(
+                                        komentar.podKomentarList,
+                                        level + 1
+                                    )}
+                                </div>
                             )}
                         </div>
                     )}
@@ -105,7 +122,6 @@ export default function ObjavaKomentari(props: Props) {
                 style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: "10px",
                     width: "100%",
                 }}
             >

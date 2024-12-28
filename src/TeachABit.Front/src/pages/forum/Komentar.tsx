@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import { KomentarDto } from "../../models/KomentarDto";
@@ -7,7 +7,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ReplyIcon from "@mui/icons-material/Reply";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import CreateKomentar from "./CreateKomentar";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 
 interface Props {
     komentar: KomentarDto;
@@ -15,89 +15,153 @@ interface Props {
     selectedNadKomentarId?: number | undefined;
     setSelectedNadKomentarId: Dispatch<SetStateAction<number | undefined>>;
     level?: number | undefined;
+    collapsedComments: Record<number, boolean>;
+    toggleCollapse: (komentarId: number | undefined) => void;
 }
 
 export default function Komentar(props: Props) {
+    const isHidden = useMemo(() => {
+        return (
+            props.komentar.id !== undefined &&
+            props.collapsedComments[props.komentar.id]
+        );
+    }, [props.collapsedComments, props.komentar.id]);
+
     return (
         <>
             <div
                 style={{
                     display: "flex",
                     flexDirection: "row",
-                    gap: "20px",
-                    alignItems: "flex-start",
-                    paddingTop: "10px",
-                    paddingRight: "0px",
-                    paddingBottom: "0px",
-                    paddingLeft: (props.level ?? 0) * 30,
                     width: "100%",
+                    justifyContent: "flex-start",
+                    marginTop: "4px",
                 }}
             >
-                <UserLink
-                    user={{
-                        id: props.komentar.vlasnikId,
-                        username: props.komentar.vlasnikUsername,
-                        profilnaSlikaVersion:
-                            props.komentar.vlasnikProfilnaSlikaVersion,
+                <div
+                    style={{
+                        backgroundColor:
+                            isHidden &&
+                            props.komentar.podKomentarList !== undefined &&
+                            props.komentar.podKomentarList.length > 0
+                                ? "#922728"
+                                : "lightgray",
+                        width: "8px",
+                        padding: "0 5px",
+                        borderRadius: "5px",
+                        marginLeft: (props.level ?? 0) * 30,
                     }}
-                />
+                    onClick={() => {
+                        const selection = window.getSelection();
+                        if (selection) {
+                            selection.removeAllRanges();
+                        }
+                        props.toggleCollapse(props.komentar.id);
+                    }}
+                ></div>
                 <div
                     style={{
                         display: "flex",
-                        flexDirection: "column",
-                        gap: "5px",
+                        flexDirection: "row",
+                        alignItems: "flex-start",
                         width: "100%",
+                        padding: "10px",
+                        gap: "10px",
                     }}
                 >
-                    <TeachABitRenderer content={props.komentar.sadrzaj} />
                     <div
                         style={{
                             display: "flex",
-                            flexDirection: "row",
+                            flexDirection: "column",
+                            gap: "5px",
                             width: "100%",
-                            justifyContent: "space-between",
                         }}
                     >
-                        {props.komentar.createdDateTime && (
-                            <p
-                                style={{
-                                    margin: 0,
-                                    color: "gray",
-                                    fontSize: 14,
-                                }}
-                            >
-                                {`${formatDistanceToNow(
-                                    new Date(props.komentar.createdDateTime),
-                                    { addSuffix: true }
-                                )} by ${props.komentar.vlasnikUsername}`}
-                            </p>
-                        )}
+                        <TeachABitRenderer content={props.komentar.sadrzaj} />
+
                         <div
                             style={{
                                 display: "flex",
                                 flexDirection: "row",
-                                gap: "10px",
+                                width: "100%",
+
+                                justifyContent: "space-between",
                             }}
                         >
-                            <IconButton sx={{ width: "30px", height: "30px" }}>
-                                <ThumbUpIcon color="primary" fontSize="small" />
-                            </IconButton>
-                            <IconButton sx={{ width: "30px", height: "30px" }}>
-                                <ThumbDownIcon
-                                    color="primary"
-                                    fontSize="small"
-                                />
-                            </IconButton>
-                            <IconButton
-                                sx={{ width: "30px", height: "30px" }}
-                                onClick={() => {
-                                    props.setSelectedNadKomentarId(
-                                        props.komentar.id
-                                    );
+                            {props.komentar.createdDateTime && (
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        gap: "5px",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            margin: 0,
+                                            color: "gray",
+                                            fontSize: 14,
+                                            userSelect: "none",
+                                            cursor: "default",
+                                        }}
+                                    >
+                                        {`${formatDistanceToNow(
+                                            new Date(
+                                                props.komentar.createdDateTime
+                                            ),
+                                            { addSuffix: true }
+                                        )} by`}
+                                    </p>
+                                    <UserLink
+                                        user={{
+                                            id: props.komentar.vlasnikId,
+                                            username:
+                                                props.komentar.vlasnikUsername,
+                                            profilnaSlikaVersion:
+                                                props.komentar
+                                                    .vlasnikProfilnaSlikaVersion,
+                                        }}
+                                    />
+                                </div>
+                            )}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    gap: "10px",
                                 }}
                             >
-                                <ReplyIcon color="primary" fontSize="small" />
-                            </IconButton>
+                                <IconButton
+                                    sx={{ width: "30px", height: "30px" }}
+                                >
+                                    <ThumbUpIcon
+                                        color="primary"
+                                        fontSize="small"
+                                    />
+                                </IconButton>
+                                <IconButton
+                                    sx={{ width: "30px", height: "30px" }}
+                                >
+                                    <ThumbDownIcon
+                                        color="primary"
+                                        fontSize="small"
+                                    />
+                                </IconButton>
+                                <IconButton
+                                    sx={{ width: "30px", height: "30px" }}
+                                    onClick={() => {
+                                        props.setSelectedNadKomentarId(
+                                            props.komentar.id
+                                        );
+                                    }}
+                                >
+                                    <ReplyIcon
+                                        color="primary"
+                                        fontSize="small"
+                                    />
+                                </IconButton>
+                            </div>
                         </div>
                     </div>
                 </div>

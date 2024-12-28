@@ -13,7 +13,7 @@ export default function UserLink(props: Props) {
         <div
             onClick={() => navigate(`/profil/${props.user.username}`)}
             style={{
-                padding: "8px",
+                padding: "4px 6px",
                 borderRadius: "3px",
                 backgroundColor: "#f1f1f1",
                 display: "flex",
@@ -39,7 +39,14 @@ export default function UserLink(props: Props) {
                     <>{props.user.username ? props.user.username[0] : ""}</>
                 )}
             </Avatar>
-            <Typography lineHeight={1} variant="caption">
+            <Typography
+                lineHeight={1}
+                variant="caption"
+                sx={{
+                    userSelect: "none",
+                    cursor: "default",
+                }}
+            >
                 {props.user.username}
             </Typography>
         </div>
