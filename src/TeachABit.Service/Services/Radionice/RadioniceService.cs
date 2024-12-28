@@ -12,11 +12,13 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
     private readonly IRadioniceRepository _radioniceRepository = radioniceRepository;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList()
+    public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null)
     {
-        List<RadionicaDto> radionice = _mapper.Map<List<RadionicaDto>>(await _radioniceRepository.GetRadionicaList());
-        return ServiceResult<List<RadionicaDto>>.Success(radionice);
+        var radionice = await _radioniceRepository.GetRadionicaList(search);
+        var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
+        return ServiceResult<List<RadionicaDto>>.Success(radioniceDto);
     }
+    
     public async Task<ServiceResult<RadionicaDto>> GetRadionica(int id)
     {
         RadionicaDto? radionica = _mapper.Map<RadionicaDto>(await _radioniceRepository.GetRadionica(id));
@@ -24,6 +26,7 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
         if(radionica == null) return ServiceResult<RadionicaDto>.Failure(MessageDescriber.ItemNotFound());
         return ServiceResult<RadionicaDto>.Success(radionica);
     }
+    
     public async Task<ServiceResult<RadionicaDto>> CreateRadionica(RadionicaDto radionica)
     {
         RadionicaDto createdRadionica = _mapper.Map<RadionicaDto>(await _radioniceRepository.CreateRadionica(_mapper.Map<Radionica>(radionica)));

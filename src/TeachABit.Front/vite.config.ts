@@ -7,5 +7,8 @@ export default defineConfig({
     plugins: [react(), basicSsl()],
     server: {
         port: 3000,
+        watch: {
+            usePolling: true,
+        },
     },
 });
