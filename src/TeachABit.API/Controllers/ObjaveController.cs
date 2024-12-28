@@ -13,9 +13,9 @@ namespace TeachABit.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetObjavaList(string? search)
+        public async Task<IActionResult> GetObjavaList(string? search, string? username)
         {
-            return GetControllerResult(await _objaveService.GetObjavaList(search));
+            return GetControllerResult(await _objaveService.GetObjavaList(search, username));
         }
 
         [AllowAnonymous]
@@ -35,6 +35,20 @@ namespace TeachABit.API.Controllers
         public async Task<IActionResult> DeleteObjava(int id)
         {
             return GetControllerResult(await _objaveService.DeleteObjava(id));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/komentari")]
+        public async Task<IActionResult> GetKomentarListByObjavaId(int id)
+        {
+            return GetControllerResult(await _objaveService.GetKomentarListByObjavaId(id));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("{id}/komentari")]
+        public async Task<IActionResult> CreateKomentar([FromBody] KomentarDto komentar, int id)
+        {
+            return GetControllerResult(await _objaveService.CreateKomentar(komentar, id));
         }
 
     }

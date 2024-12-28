@@ -18,6 +18,7 @@ export default function TeachABitEditor(props: Props) {
                     editor.view.dom.setAttribute("spellcheck", "false");
                     editor.view.dom.setAttribute("autocomplete", "off");
                     editor.view.dom.setAttribute("autocapitalize", "off");
+                    editor.commands.focus("start");
                 }}
                 editorProps={{
                     handleKeyDown(view, event) {

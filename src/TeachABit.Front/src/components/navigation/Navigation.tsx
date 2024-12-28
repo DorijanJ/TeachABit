@@ -111,9 +111,9 @@ export default function Navigation() {
                             isExpanded={isExpanded}
                         />
                         <NavigationItem
-                            route={"/forumi"}
-                            name={"Forumi"}
-                            isActive={isActive("/forumi")}
+                            route={"/forum"}
+                            name={"Forum"}
+                            isActive={isActive("/forum")}
                             icon={
                                 <ForumIcon
                                     color="primary"

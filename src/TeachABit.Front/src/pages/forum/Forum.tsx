@@ -4,15 +4,16 @@ import requests from "../../api/agent";
 import { Button } from "@mui/material";
 import Objava from "./Objava";
 import { useGlobalContext } from "../../context/Global.context";
-import ObjavaDialog from "./ObjavaDialog";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
+import { useNavigate } from "react-router-dom";
+import CreateObjavaDialog from "./CreateObjavaDialog";
 
 export default function Forum() {
     const [objavaList, setObjavaList] = useState<ObjavaDto[]>([]);
-    const [selectedObjavaId, setSelectedObjavaId] = useState<number>();
     const [isOpenObjavaDialog, setIsOpenObjavaDialog] = useState(false);
     const globalContext = useGlobalContext();
+    const navigate = useNavigate();
 
     const { buildRequest } = useRequestBuilder();
 
@@ -72,21 +73,18 @@ export default function Forum() {
                         key={"objava" + objava.id}
                         objava={objava}
                         onClick={() => {
-                            setIsOpenObjavaDialog(true);
-                            setSelectedObjavaId(objava.id);
+                            navigate(`/objava/${objava.id}`);
                         }}
                     />
                 ))}
             </div>
 
-            <ObjavaDialog
+            <CreateObjavaDialog
                 refreshData={() => GetObjavaList()}
                 onClose={() => {
                     setIsOpenObjavaDialog(false);
-                    setSelectedObjavaId(undefined);
                 }}
                 isOpen={isOpenObjavaDialog}
-                objavaId={selectedObjavaId}
             />
         </div>
     );

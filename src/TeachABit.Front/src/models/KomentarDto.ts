@@ -1,7 +1,9 @@
 export interface KomentarDto {
     id?: number;
     sadrzaj: string;
-    vlasnikId: number;
+    vlasnikId?: string;
     vlasnikUsername?: string;
-    createdDateTime: Date;
+    createdDateTime?: Date;
+    vlasnikProfilnaSlikaVersion?: string;
+    objavaId?: number;
 }
