@@ -6,6 +6,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Button, Typography } from "@mui/material";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import CreateKomentarDialog from "./CreateKomentar";
+import { useGlobalContext } from "../../context/Global.context";
 
 interface Props {
     objavaId: number;
@@ -23,6 +24,8 @@ export default function ObjavaKomentari(props: Props) {
             setKomentari(response.data);
         }
     };
+
+    const globalContext = useGlobalContext();
 
     useEffect(() => {
         getKomentarListByObjavaId(props.objavaId);
@@ -49,7 +52,7 @@ export default function ObjavaKomentari(props: Props) {
                 <Typography color="primary" variant="h5" component="div">
                     Komentari
                 </Typography>
-                {!isOpenKomentarDialog && (
+                {!isOpenKomentarDialog && globalContext.userIsLoggedIn && (
                     <Button
                         onClick={() => setIsOpenKomentarDialog((prev) => !prev)}
                         variant="contained"
