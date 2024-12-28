@@ -12,5 +12,7 @@ namespace TeachABit.Model.DTOs.Objave
         public DateTime CreatedDateTime { get; set; }
         public string? VlasnikProfilnaSlikaVersion { get; set; }
         public int ObjavaId { get; set; }
+        public int? NadKomentarId { get; set; } = null;
+        public List<KomentarDto> PodKomentarList { get; set; } = [];
     }
 }
