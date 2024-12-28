@@ -9,6 +9,7 @@ interface Props {
     refreshData: () => Promise<any>;
     onClose: () => void;
     isOpen: boolean;
+    nadKomentarId?: number | undefined;
 }
 
 export default function CreateKomentar(props: Props) {
@@ -20,6 +21,7 @@ export default function CreateKomentar(props: Props) {
 
     const handleStvoriKomentar = async () => {
         if (!objavaId) return;
+        if (props.nadKomentarId) komentar.nadKomentarId = props.nadKomentarId;
         komentar.objavaId = parseInt(objavaId);
         const response = await requests.postWithLoading(
             `objave/${objavaId}/komentari`,

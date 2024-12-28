@@ -47,6 +47,24 @@ namespace TeachABit.Repository.Repositories.Objave
                 .ToListAsync();
         }
 
+        public async Task<List<Komentar>> GetPodKomentarList(int objavaId, int? nadKomentarId = null)
+        {
+            var komentari = await _context.Komentari
+                .Include(c => c.Vlasnik)
+                .Include(c => c.Objava)
+                .Where(c => c.ObjavaId == objavaId && c.NadKomentarId == nadKomentarId)
+                .OrderByDescending(c => c.CreatedDateTime)
+                .ToListAsync();
+
+            foreach (var komentar in komentari)
+            {
+                komentar.PodKomentarList = await GetPodKomentarList(objavaId, komentar.Id);
+            }
+
+            return komentari;
+        }
+
+
         public async Task<Objava?> GetObjavaById(int id)
         {
             return await _context.Objave

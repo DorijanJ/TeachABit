@@ -6,4 +6,6 @@ export interface KomentarDto {
     createdDateTime?: Date;
     vlasnikProfilnaSlikaVersion?: string;
     objavaId?: number;
+    nadKomentarId?: number;
+    podKomentarList?: KomentarDto[];
 }

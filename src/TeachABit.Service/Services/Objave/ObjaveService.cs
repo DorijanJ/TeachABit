@@ -64,7 +64,7 @@ namespace TeachABit.Service.Services.Objave
 
         public async Task<ServiceResult<List<KomentarDto>>> GetKomentarListByObjavaId(int id)
         {
-            List<KomentarDto> komentari = _mapper.Map<List<KomentarDto>>(await _objaveRepository.GetKomentarListByObjavaId(id));
+            List<KomentarDto> komentari = _mapper.Map<List<KomentarDto>>(await _objaveRepository.GetPodKomentarList(id));
             return ServiceResult<List<KomentarDto>>.Success(komentari);
         }
 
