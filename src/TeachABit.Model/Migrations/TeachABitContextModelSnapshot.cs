@@ -235,6 +235,9 @@ namespace TeachABit.Model.Migrations
                     b.Property<int?>("NadKomentarId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("NadKomentarId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("ObjavaId")
                         .HasColumnType("integer");
 
@@ -247,6 +250,8 @@ namespace TeachABit.Model.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NadKomentarId");
 
                     b.HasIndex("NadKomentarId");
 
@@ -429,6 +434,10 @@ namespace TeachABit.Model.Migrations
                         .WithMany("PodKomentarList")
                         .HasForeignKey("NadKomentarId");
 
+                    b.HasOne("TeachABit.Model.Models.Objave.Komentar", "NadKomentar")
+                        .WithMany("PodKomentarList")
+                        .HasForeignKey("NadKomentarId");
+
                     b.HasOne("TeachABit.Model.Models.Objave.Objava", "Objava")
                         .WithMany("Komentari")
                         .HasForeignKey("ObjavaId")
@@ -440,6 +449,8 @@ namespace TeachABit.Model.Migrations
                         .HasForeignKey("VlasnikId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("NadKomentar");
 
                     b.Navigation("NadKomentar");
 

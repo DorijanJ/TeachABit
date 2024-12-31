@@ -12,6 +12,7 @@ export default function Forum() {
     const [objavaList, setObjavaList] = useState<ObjavaDto[]>([]);
     const [isOpenObjavaDialog, setIsOpenObjavaDialog] = useState(false);
     const globalContext = useGlobalContext();
+    const navigate = useNavigate();
 
     const { buildRequest } = useRequestBuilder();
 
