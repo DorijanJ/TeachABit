@@ -15,24 +15,11 @@ namespace TeachABit.Repository.Repositories.Objave
             return createdKomentar.Entity;
         }
 
-
-        public async Task<Komentar> CreateKomentar(Komentar komentar)
-        {
-            var createdKomentar = await _context.Komentari.AddAsync(komentar);
-            await _context.SaveChangesAsync();
-            return createdKomentar.Entity;
-        }
-
         public async Task<Objava> CreateObjava(Objava objava)
         {
             var createdObjava = await _context.Objave.AddAsync(objava);
             await _context.SaveChangesAsync();
             return createdObjava.Entity;
-        }
-
-        public async Task DeleteKomentar(int id)
-        {
-            await _context.Komentari.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
         public async Task DeleteKomentar(int id)
@@ -86,7 +73,6 @@ namespace TeachABit.Repository.Repositories.Objave
         }
 
         public async Task<List<Objava>> GetObjavaList(string? search, string? username)
-        public async Task<List<Objava>> GetObjavaList(string? search, string? username)
         {
             IQueryable<Objava> objaveQuery = _context.Objave
              .Include(x => x.Vlasnik)
@@ -98,11 +84,6 @@ namespace TeachABit.Repository.Repositories.Objave
             {
                 string lowerSearch = search.ToLower();
                 objaveQuery = objaveQuery.Where(x => x.Naziv.ToLower().Contains(lowerSearch));
-            }
-
-            if (!string.IsNullOrEmpty(username))
-            {
-                objaveQuery = objaveQuery.Where(x => x.Vlasnik.UserName == username);
             }
 
             if (!string.IsNullOrEmpty(username))
