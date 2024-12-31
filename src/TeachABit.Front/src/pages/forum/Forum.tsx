@@ -6,7 +6,6 @@ import Objava from "./Objava";
 import { useGlobalContext } from "../../context/Global.context";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
-import { useNavigate } from "react-router-dom";
 import CreateObjavaDialog from "./CreateObjavaDialog";
 
 export default function Forum() {

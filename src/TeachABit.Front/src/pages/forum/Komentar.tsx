@@ -8,7 +8,6 @@ import CreateKomentar from "./CreateKomentar";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import LikeInfo from "./LikeInfo";
 import requests from "../../api/agent";
-import { ObjavaDto } from "../../models/ObjavaDto";
 
 interface Props {
     komentar: KomentarDto;
