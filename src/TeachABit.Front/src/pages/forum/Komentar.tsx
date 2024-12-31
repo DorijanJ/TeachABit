@@ -1,13 +1,14 @@
-import { Button, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import { KomentarDto } from "../../models/KomentarDto";
 import UserLink from "../profil/UserLink";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ReplyIcon from "@mui/icons-material/Reply";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import CreateKomentar from "./CreateKomentar";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import LikeInfo from "./LikeInfo";
+import requests from "../../api/agent";
+import { ObjavaDto } from "../../models/ObjavaDto";
 
 interface Props {
     komentar: KomentarDto;
@@ -27,6 +28,40 @@ export default function Komentar(props: Props) {
         );
     }, [props.collapsedComments, props.komentar.id]);
 
+    const [likeCount, setLikeCount] = useState<number | undefined>(
+        props.komentar.likeCount
+    );
+    const [liked, setLiked] = useState<boolean | undefined>(
+        props.komentar.liked
+    );
+
+    const likeKomentar = async () => {
+        await requests.postWithLoading(
+            `objave/${props.komentar.objavaId}/komentari/${props.komentar.id}/like`
+        );
+        const wasDisliked = liked === false;
+        setLikeCount((prev) => (prev ?? 0) + (wasDisliked ? 2 : 1));
+        setLiked(true);
+    };
+
+    const dislikeKomentar = async () => {
+        await requests.postWithLoading(
+            `objave/${props.komentar.objavaId}/komentari/${props.komentar.id}/dislike`
+        );
+        const wasLiked = liked === true;
+        setLikeCount((prev) => (prev ?? 0) - (wasLiked ? 2 : 1));
+        setLiked(false);
+    };
+
+    const clearReaction = async () => {
+        await requests.deleteWithLoading(
+            `objave/${props.komentar.objavaId}/komentari/${props.komentar.id}/reakcija`
+        );
+        const shouldLower = liked === true;
+        setLikeCount((prev) => (prev ?? 0) + (shouldLower ? -1 : +1));
+        setLiked(undefined);
+    };
+
     return (
         <>
             <div
@@ -40,16 +75,17 @@ export default function Komentar(props: Props) {
             >
                 <div
                     style={{
-                        backgroundColor:
-                            isHidden &&
+                        visibility:
                             props.komentar.podKomentarList !== undefined &&
                             props.komentar.podKomentarList.length > 0
-                                ? "#922728"
-                                : "lightgray",
+                                ? "visible"
+                                : "hidden",
+                        backgroundColor: isHidden ? "#922728" : "lightgray",
                         width: "8px",
                         padding: "0 5px",
                         borderRadius: "5px",
                         marginLeft: (props.level ?? 0) * 30,
+                        cursor: "pointer",
                     }}
                     onClick={() => {
                         const selection = window.getSelection();
@@ -129,25 +165,18 @@ export default function Komentar(props: Props) {
                                 style={{
                                     display: "flex",
                                     flexDirection: "row",
+                                    alignItems: "center",
                                     gap: "10px",
                                 }}
                             >
-                                <IconButton
-                                    sx={{ width: "30px", height: "30px" }}
-                                >
-                                    <ThumbUpIcon
-                                        color="primary"
-                                        fontSize="small"
-                                    />
-                                </IconButton>
-                                <IconButton
-                                    sx={{ width: "30px", height: "30px" }}
-                                >
-                                    <ThumbDownIcon
-                                        color="primary"
-                                        fontSize="small"
-                                    />
-                                </IconButton>
+                                <LikeInfo
+                                    likeCount={likeCount}
+                                    onClear={clearReaction}
+                                    onDislike={dislikeKomentar}
+                                    onLike={likeKomentar}
+                                    liked={liked}
+                                    size="small"
+                                />
                                 <IconButton
                                     sx={{ width: "30px", height: "30px" }}
                                     onClick={() => {

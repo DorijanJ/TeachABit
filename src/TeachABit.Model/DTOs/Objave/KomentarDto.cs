@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TeachABit.Model.DTOs.Objave
 {
@@ -14,5 +15,8 @@ namespace TeachABit.Model.DTOs.Objave
         public int ObjavaId { get; set; }
         public int? NadKomentarId { get; set; } = null;
         public List<KomentarDto> PodKomentarList { get; set; } = [];
+        public int LikeCount { get; set; } = 0;
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? Liked { get; set; } = null;
     }
 }

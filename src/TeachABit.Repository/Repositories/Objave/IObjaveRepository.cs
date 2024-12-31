@@ -14,5 +14,14 @@ namespace TeachABit.Repository.Repositories.Objave
         public Task<Komentar?> GetKomentarById(int id);
         public Task<List<Komentar>> GetKomentarListByObjavaId(int id);
         public Task<List<Komentar>> GetPodKomentarList(int objavaId, int? nadKomentarId = null);
+        public Task<ObjavaReakcija> CreateObjavaReakcija(ObjavaReakcija objavaReakcija);
+        public Task DeleteObjavaReakcija(int objavaId, string korisnikId);
+        public Task DeleteObjavaReakcija(int id);
+        public Task<int> GetObjavaLikeCount(int id);
+        public Task<ObjavaReakcija?> GetObjavaReakcija(int objavaId, string korisnikId);
+        public Task DeleteKomentarReakcija(int komentarId, string korisnikId);
+        public Task DeleteKomentarReakcija(int id);
+        public Task<KomentarReakcija> CreateKomentarReakcija(KomentarReakcija komentarReakcija);
+        public Task<KomentarReakcija?> GetKomentarReakcija(int komentarId, string korisnikId);
     }
 }

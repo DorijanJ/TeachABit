@@ -8,4 +8,6 @@ export interface KomentarDto {
     objavaId?: number;
     nadKomentarId?: number;
     podKomentarList?: KomentarDto[];
+    likeCount?: number | undefined;
+    liked?: boolean;
 }

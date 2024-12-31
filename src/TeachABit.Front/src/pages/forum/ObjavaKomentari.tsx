@@ -88,11 +88,12 @@ export default function ObjavaKomentari(props: Props) {
             style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "20px",
+                gap: "10px",
                 alignItems: "flex-start",
                 width: "100%",
             }}
         >
+            <hr style={{ width: "100%", margin: "0 auto" }} />
             <div
                 style={{
                     display: "flex",
@@ -101,8 +102,8 @@ export default function ObjavaKomentari(props: Props) {
                     width: "100%",
                 }}
             >
-                <Typography color="primary" variant="h5" component="div">
-                    Komentari
+                <Typography color="textDisabled" variant="h6" component="div">
+                    Komentari:
                 </Typography>
                 {!isOpenKomentarDialog && globalContext.userIsLoggedIn && (
                     <Button

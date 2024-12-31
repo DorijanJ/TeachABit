@@ -16,5 +16,6 @@ namespace TeachABit.Model.Models.Objave
         public required virtual Korisnik Vlasnik { get; set; }
 
         public virtual List<Komentar> Komentari { get; set; } = [];
+        public virtual List<ObjavaReakcija> ObjavaReakcijaList { get; set; } = [];
     }
 }

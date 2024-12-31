@@ -12,6 +12,7 @@ import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
 import ObjavaKomentari from "./ObjavaKomentari";
+import LikeInfo from "./LikeInfo";
 
 export default function ObjavaPage() {
     const [objava, setObjava] = useState<ObjavaDto>({
@@ -35,6 +36,33 @@ export default function ObjavaPage() {
     };
 
     const navigate = useNavigate();
+
+    const likeObjava = async () => {
+        await requests.postWithLoading(`objave/${objavaId}/like`);
+        setObjava((prev: ObjavaDto) => ({
+            ...prev,
+            likeCount: (prev.likeCount ?? 0) + (prev.liked === false ? 2 : 1),
+            liked: true,
+        }));
+    };
+
+    const dislikeObjava = async () => {
+        await requests.postWithLoading(`objave/${objavaId}/dislike`);
+        setObjava((prev: ObjavaDto) => ({
+            ...prev,
+            likeCount: (prev.likeCount ?? 0) - (prev.liked === true ? 2 : 1),
+            liked: false,
+        }));
+    };
+
+    const clearReaction = async () => {
+        await requests.deleteWithLoading(`objave/${objavaId}/reakcija`);
+        setObjava((prev: ObjavaDto) => ({
+            ...prev,
+            likeCount: (prev.likeCount ?? 0) + (prev.liked === true ? -1 : 1),
+            liked: undefined,
+        }));
+    };
 
     return (
         <>
@@ -99,6 +127,13 @@ export default function ObjavaPage() {
                         />
                     </div>
                     <TeachABitRenderer content={objava.sadrzaj} />
+                    <LikeInfo
+                        likeCount={objava.likeCount}
+                        onClear={clearReaction}
+                        onDislike={dislikeObjava}
+                        onLike={likeObjava}
+                        liked={objava.liked}
+                    />
                     {objava.id && <ObjavaKomentari objavaId={objava.id} />}
                 </CardContent>
             </Card>

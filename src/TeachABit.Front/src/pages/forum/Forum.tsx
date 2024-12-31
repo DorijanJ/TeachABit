@@ -13,7 +13,6 @@ export default function Forum() {
     const [objavaList, setObjavaList] = useState<ObjavaDto[]>([]);
     const [isOpenObjavaDialog, setIsOpenObjavaDialog] = useState(false);
     const globalContext = useGlobalContext();
-    const navigate = useNavigate();
 
     const { buildRequest } = useRequestBuilder();
 
@@ -69,13 +68,7 @@ export default function Forum() {
                 }}
             >
                 {objavaList.map((objava) => (
-                    <Objava
-                        key={"objava" + objava.id}
-                        objava={objava}
-                        onClick={() => {
-                            navigate(`/objava/${objava.id}`);
-                        }}
-                    />
+                    <Objava key={"objava" + objava.id} objava={objava} />
                 ))}
             </div>
 

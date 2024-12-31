@@ -1,16 +1,18 @@
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
-
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { useNavigate } from "react-router-dom";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 interface Props {
     objava: ObjavaDto;
-    onClick: () => void;
 }
 
 export default function Objava(props: Props) {
+    const navigate = useNavigate();
+
     return (
         <Card
-            onClick={props.onClick}
             sx={{
                 width: "500px",
                 borderRadius: "2px",
@@ -25,7 +27,8 @@ export default function Objava(props: Props) {
                 sx={{
                     textAlign: "center",
                     display: "flex",
-                    flexDirection: "column",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
                     gap: 1,
                 }}
             >
@@ -42,14 +45,25 @@ export default function Objava(props: Props) {
                 >
                     {props.objava.naziv}
                 </Typography>
+
+                <IconButton
+                    color="primary"
+                    onClick={() => {
+                        navigate(`/objava/${props.objava.id}`);
+                    }}
+                    size="small"
+                    sx={{ border: "1px solid #922728" }}
+                >
+                    <KeyboardArrowRightIcon />
+                </IconButton>
             </CardContent>
             <Box
                 m={2}
-                justifyContent={"flex-end"}
+                justifyContent={"space-between"}
                 display="flex"
                 flexDirection={"row"}
                 alignItems="center"
-                gap={0.5}
+                gap={2}
             >
                 <UserLink
                     user={{
@@ -59,6 +73,23 @@ export default function Objava(props: Props) {
                             props.objava.vlasnikProfilnaSlikaVersion,
                     }}
                 />
+                <Box
+                    display={"flex"}
+                    alignItems={"flex-end"}
+                    flexDirection={"row"}
+                    gap={0.7}
+                >
+                    <p
+                        style={{
+                            margin: 0,
+                            display: "inline",
+                            lineHeight: "18px",
+                        }}
+                    >
+                        {props.objava.likeCount}
+                    </p>
+                    <ThumbUpIcon color="action" fontSize="small" />
+                </Box>
             </Box>
         </Card>
     );

@@ -65,8 +65,8 @@ const useAuth = () => {
     };
 
     const logout = async () => {
-        await requests.postWithLoading("account/logout");
         clearAuthData();
+        await requests.postWithLoading("account/logout");
     };
 
     const register = async (
@@ -81,6 +81,7 @@ const useAuth = () => {
 
     const setAuthData = (appUser: AppUserDto) => {
         if (appUser.username && appUser.id) {
+            window.location.reload();
             const now = new Date();
             const ttl = now.getTime() + 7 * 60 * 60 * 1000;
             localStorage.setItem(USERNAME_KEY, appUser.username);
@@ -95,6 +96,7 @@ const useAuth = () => {
     };
 
     const clearAuthData = () => {
+        window.location.reload();
         localStorage.removeItem(USERNAME_KEY);
         localStorage.removeItem(ID_KEY);
         globalContext.setLoggedInUser(undefined);
