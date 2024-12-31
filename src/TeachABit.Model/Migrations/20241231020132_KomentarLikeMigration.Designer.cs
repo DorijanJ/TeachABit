@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20241231020132_KomentarLikeMigration")]
+    partial class KomentarLikeMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,9 +238,6 @@ namespace TeachABit.Model.Migrations
                     b.Property<int?>("NadKomentarId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("NadKomentarId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("ObjavaId")
                         .HasColumnType("integer");
 
@@ -250,8 +250,6 @@ namespace TeachABit.Model.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NadKomentarId");
 
                     b.HasIndex("NadKomentarId");
 
@@ -434,10 +432,6 @@ namespace TeachABit.Model.Migrations
                         .WithMany("PodKomentarList")
                         .HasForeignKey("NadKomentarId");
 
-                    b.HasOne("TeachABit.Model.Models.Objave.Komentar", "NadKomentar")
-                        .WithMany("PodKomentarList")
-                        .HasForeignKey("NadKomentarId");
-
                     b.HasOne("TeachABit.Model.Models.Objave.Objava", "Objava")
                         .WithMany("Komentari")
                         .HasForeignKey("ObjavaId")
@@ -449,8 +443,6 @@ namespace TeachABit.Model.Migrations
                         .HasForeignKey("VlasnikId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("NadKomentar");
 
                     b.Navigation("NadKomentar");
 

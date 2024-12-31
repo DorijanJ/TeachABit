@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20241231001453_ObjavaReakcijaPopravakMigration")]
+    partial class ObjavaReakcijaPopravakMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,9 +238,6 @@ namespace TeachABit.Model.Migrations
                     b.Property<int?>("NadKomentarId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("NadKomentarId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("ObjavaId")
                         .HasColumnType("integer");
 
@@ -253,40 +253,11 @@ namespace TeachABit.Model.Migrations
 
                     b.HasIndex("NadKomentarId");
 
-                    b.HasIndex("NadKomentarId");
-
                     b.HasIndex("ObjavaId");
 
                     b.HasIndex("VlasnikId");
 
                     b.ToTable("Komentar");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Objave.KomentarReakcija", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("KomentarId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("KorisnikId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Liked")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("KomentarId");
-
-                    b.HasIndex("KorisnikId");
-
-                    b.ToTable("KomentarReakcije");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
@@ -327,9 +298,6 @@ namespace TeachABit.Model.Migrations
                     b.Property<string>("KorisnikId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("Liked")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("ObjavaId")
                         .HasColumnType("integer");
@@ -434,10 +402,6 @@ namespace TeachABit.Model.Migrations
                         .WithMany("PodKomentarList")
                         .HasForeignKey("NadKomentarId");
 
-                    b.HasOne("TeachABit.Model.Models.Objave.Komentar", "NadKomentar")
-                        .WithMany("PodKomentarList")
-                        .HasForeignKey("NadKomentarId");
-
                     b.HasOne("TeachABit.Model.Models.Objave.Objava", "Objava")
                         .WithMany("Komentari")
                         .HasForeignKey("ObjavaId")
@@ -452,30 +416,9 @@ namespace TeachABit.Model.Migrations
 
                     b.Navigation("NadKomentar");
 
-                    b.Navigation("NadKomentar");
-
                     b.Navigation("Objava");
 
                     b.Navigation("Vlasnik");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Objave.KomentarReakcija", b =>
-                {
-                    b.HasOne("TeachABit.Model.Models.Objave.Komentar", "Komentar")
-                        .WithMany("KomentarReakcijaList")
-                        .HasForeignKey("KomentarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Korisnik")
-                        .WithMany("KomentarReakcijaList")
-                        .HasForeignKey("KorisnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Komentar");
-
-                    b.Navigation("Korisnik");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
@@ -510,8 +453,6 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("TeachABit.Model.Models.Korisnici.Korisnik", b =>
                 {
-                    b.Navigation("KomentarReakcijaList");
-
                     b.Navigation("ObjavaReakcijaList");
 
                     b.Navigation("Objave");
@@ -519,8 +460,6 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("TeachABit.Model.Models.Objave.Komentar", b =>
                 {
-                    b.Navigation("KomentarReakcijaList");
-
                     b.Navigation("PodKomentarList");
                 });
 

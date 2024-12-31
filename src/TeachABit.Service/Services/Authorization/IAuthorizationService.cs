@@ -8,5 +8,6 @@ namespace TeachABit.Service.Services.Authorization
         Korisnik GetKorisnik();
         KorisnikDto GetKorisnikDto();
         Task<KorisnikDto> GetKorisnikFull();
+        Korisnik? GetKorisnikOptional();
     }
 }

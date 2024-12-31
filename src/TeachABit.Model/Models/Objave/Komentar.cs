@@ -26,5 +26,6 @@ namespace TeachABit.Model.Models.Objave
         public virtual Komentar? NadKomentar { get; set; }
 
         public virtual List<Komentar> PodKomentarList { get; set; } = [];
+        public virtual List<KomentarReakcija> KomentarReakcijaList { get; set; } = [];
     }
 }

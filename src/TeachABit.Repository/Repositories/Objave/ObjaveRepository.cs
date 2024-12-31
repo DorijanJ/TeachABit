@@ -15,11 +15,24 @@ namespace TeachABit.Repository.Repositories.Objave
             return createdKomentar.Entity;
         }
 
+
+        public async Task<Komentar> CreateKomentar(Komentar komentar)
+        {
+            var createdKomentar = await _context.Komentari.AddAsync(komentar);
+            await _context.SaveChangesAsync();
+            return createdKomentar.Entity;
+        }
+
         public async Task<Objava> CreateObjava(Objava objava)
         {
             var createdObjava = await _context.Objave.AddAsync(objava);
             await _context.SaveChangesAsync();
             return createdObjava.Entity;
+        }
+
+        public async Task DeleteKomentar(int id)
+        {
+            await _context.Komentari.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
         public async Task DeleteKomentar(int id)
@@ -42,6 +55,7 @@ namespace TeachABit.Repository.Repositories.Objave
             return await _context.Komentari
                 .Include(x => x.Vlasnik)
                 .Include(x => x.Objava)
+                .Include(x => x.KomentarReakcijaList)
                 .Where(x => x.Objava.Id == id)
                 .OrderByDescending(x => x.CreatedDateTime)
                 .ToListAsync();
@@ -52,14 +66,10 @@ namespace TeachABit.Repository.Repositories.Objave
             var komentari = await _context.Komentari
                 .Include(c => c.Vlasnik)
                 .Include(c => c.Objava)
+                .Include(c => c.KomentarReakcijaList)
                 .Where(c => c.ObjavaId == objavaId && c.NadKomentarId == nadKomentarId)
                 .OrderByDescending(c => c.CreatedDateTime)
                 .ToListAsync();
-
-            foreach (var komentar in komentari)
-            {
-                komentar.PodKomentarList = await GetPodKomentarList(objavaId, komentar.Id);
-            }
 
             return komentari;
         }
@@ -71,13 +81,16 @@ namespace TeachABit.Repository.Repositories.Objave
                 .Include(x => x.Vlasnik)
                 .Include(x => x.Komentari)
                 .ThenInclude(x => x.Vlasnik)
+                .Include(x => x.ObjavaReakcijaList)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Objava>> GetObjavaList(string? search, string? username)
+        public async Task<List<Objava>> GetObjavaList(string? search, string? username)
         {
             IQueryable<Objava> objaveQuery = _context.Objave
              .Include(x => x.Vlasnik)
+             .Include(x => x.ObjavaReakcijaList)
              .AsQueryable();
 
 
@@ -92,6 +105,11 @@ namespace TeachABit.Repository.Repositories.Objave
                 objaveQuery = objaveQuery.Where(x => x.Vlasnik.UserName == username);
             }
 
+            if (!string.IsNullOrEmpty(username))
+            {
+                objaveQuery = objaveQuery.Where(x => x.Vlasnik.UserName == username);
+            }
+
             return await objaveQuery.ToListAsync();
         }
 
@@ -99,6 +117,61 @@ namespace TeachABit.Repository.Repositories.Objave
         {
             // on wait
             throw new NotImplementedException();
+        }
+
+        public async Task<ObjavaReakcija> CreateObjavaReakcija(ObjavaReakcija objavaReakcija)
+        {
+            var createdObjavaReakcija = await _context.ObjavaReakcije.AddAsync(objavaReakcija);
+            await _context.SaveChangesAsync();
+            return createdObjavaReakcija.Entity;
+        }
+
+        public async Task DeleteObjavaReakcija(int objavaId, string korisnikId)
+        {
+            await _context.ObjavaReakcije
+                .Where(x => x.KorisnikId == korisnikId && x.ObjavaId == objavaId)
+                .ExecuteDeleteAsync();
+        }
+
+        public async Task<ObjavaReakcija?> GetObjavaReakcija(int objavaId, string korisnikId)
+        {
+            return await _context.ObjavaReakcije.FirstOrDefaultAsync(x => x.ObjavaId == objavaId && x.KorisnikId == korisnikId);
+        }
+
+        public async Task DeleteObjavaReakcija(int id)
+        {
+            await _context.ObjavaReakcije.Where(x => x.Id == id).ExecuteDeleteAsync();
+        }
+
+        public async Task<int> GetObjavaLikeCount(int id)
+        {
+            return await _context.ObjavaReakcije.Where(x => x.ObjavaId == id).Select(x => x.Liked ? 1 : -1).SumAsync();
+        }
+
+        public async Task DeleteKomentarReakcija(int komentarId, string korisnikId)
+        {
+            await _context.KomentarReakcije
+               .Where(x => x.KorisnikId == korisnikId && x.KomentarId == komentarId)
+               .ExecuteDeleteAsync();
+        }
+
+        public async Task DeleteKomentarReakcija(int id)
+        {
+            await _context.KomentarReakcije
+               .Where(x => x.Id == id)
+               .ExecuteDeleteAsync();
+        }
+
+        public async Task<KomentarReakcija> CreateKomentarReakcija(KomentarReakcija komentarReakcija)
+        {
+            var createdKomentarReakcija = await _context.KomentarReakcije.AddAsync(komentarReakcija);
+            await _context.SaveChangesAsync();
+            return createdKomentarReakcija.Entity;
+        }
+
+        public async Task<KomentarReakcija?> GetKomentarReakcija(int komentarId, string korisnikId)
+        {
+            return await _context.KomentarReakcije.FirstOrDefaultAsync(x => x.KomentarId == komentarId && x.KorisnikId == korisnikId);
         }
     }
 }
