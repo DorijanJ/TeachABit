@@ -11,12 +11,13 @@ using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.Models.Korisnici;
+using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Util.Mail;
 using TeachABit.Service.Util.Token;
 
 namespace TeachABit.Service.Services.Authentication
 {
-    public class AuthenticationService(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
+    public class AuthenticationService(UserManager<Korisnik> userManager, IAuthorizationService authorizationService, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
     {
         private readonly UserManager<Korisnik> _userManager = userManager;
         private readonly SignInManager<Korisnik> _signInManager = signInManager;
@@ -25,6 +26,7 @@ namespace TeachABit.Service.Services.Authentication
         private readonly IMailSenderService _mailSenderService = mailSenderService;
         private readonly IMapper _mapper = mapper;
         private readonly IConfiguration _configuration = configuration;
+        private readonly IAuthorizationService _authorizationService = authorizationService;
 
         public async Task<ServiceResult<KorisnikDto>> Login(LoginAttemptDto loginAttempt)
         {
@@ -47,10 +49,15 @@ namespace TeachABit.Service.Services.Authentication
 
             if (!user.EmailConfirmed) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.EmailNotConfirmed());
 
-            ServiceResult cookieSetResult = SetAuthCookie(user);
+            ServiceResult cookieSetResult = await SetAuthCookie(user);
             if (cookieSetResult.IsError) return ServiceResult<KorisnikDto>.Failure(cookieSetResult.Message);
 
-            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user));
+            var korisnikDto = _mapper.Map<KorisnikDto>(user);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            korisnikDto.Roles = [.. roles];
+
+            return ServiceResult<KorisnikDto>.Success(korisnikDto);
         }
 
         public ServiceResult Logout()
@@ -82,7 +89,11 @@ namespace TeachABit.Service.Services.Authentication
 
             ServiceResult mailResult = await SendEmailConfirmationMail(user);
 
-            if (mailResult.IsError) return ServiceResult<KorisnikDto>.Failure(mailResult.Message);
+            if (mailResult.IsError)
+            {
+                await _userManager.DeleteAsync(user);
+                return ServiceResult<KorisnikDto>.Failure(mailResult.Message);
+            }
 
             return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user), MessageDescriber.EmailConfimationSent());
         }
@@ -108,9 +119,9 @@ namespace TeachABit.Service.Services.Authentication
             return mailResult;
         }
 
-        private ServiceResult SetAuthCookie(Korisnik? user = null, bool valid = true)
+        private async Task<ServiceResult> SetAuthCookie(Korisnik? user = null, bool valid = true)
         {
-            string? token = user == null ? "" : _tokenService.CreateToken(user);
+            string? token = user == null ? "" : await _tokenService.CreateToken(user);
 
             var httpContext = _httpContextAccessor.HttpContext;
 
@@ -176,13 +187,19 @@ namespace TeachABit.Service.Services.Authentication
                 }
             }
 
-            var cookieSetResult = SetAuthCookie(user);
+            var cookieSetResult = await SetAuthCookie(user);
             if (cookieSetResult.IsError)
             {
                 return ServiceResult<KorisnikDto>.Failure(cookieSetResult.Message);
             }
 
-            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user), "Uspješna prijava.");
+            var korisnikDto = _mapper.Map<KorisnikDto>(user);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            korisnikDto.Roles = [.. roles];
+
+            return ServiceResult<KorisnikDto>.Success(korisnikDto);
+
         }
 
         public async Task<ServiceResult> ResetPassword(ResetPasswordDto resetPassword)
@@ -249,7 +266,9 @@ namespace TeachABit.Service.Services.Authentication
             var mailResult = await SendEmailConfirmationMail(user);
 
             if (mailResult.IsError)
+            {
                 return ServiceResult.Failure(mailResult.Message);
+            }
 
             return ServiceResult.Success(MessageDescriber.EmailConfimationSent());
         }
@@ -259,7 +278,11 @@ namespace TeachABit.Service.Services.Authentication
             var user = await _userManager.FindByNameAsync(username);
             if (user == null) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.UserNotFound());
 
-            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user));
+            var userDto = _mapper.Map<KorisnikDto>(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            userDto.Roles = [.. roles];
+            
+            return ServiceResult<KorisnikDto>.Success(userDto);
         }
     }
 }

@@ -127,9 +127,9 @@ export default function Navigation() {
                     <Box sx={{ flexGrow: 1 }} />
 
                     {globalContext.userIsLoggedIn === true &&
-                        globalContext.loggedInUser &&
+                        globalContext.currentUser &&
                         isExpanded && (
-                            <NavigationUser user={globalContext.loggedInUser} />
+                            <NavigationUser user={globalContext.currentUser} />
                         )}
 
                     {globalContext.userIsLoggedIn === false && isExpanded && (

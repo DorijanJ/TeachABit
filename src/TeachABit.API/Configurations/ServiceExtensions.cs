@@ -95,6 +95,7 @@ namespace TeachABit.API.Configurations
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
             })
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<TeachABitContext>()
             .AddDefaultTokenProviders();
 

@@ -1,6 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import globalStore from "../stores/GlobalStore";
 import { ApiResponseDto } from "../models/common/ApiResponseDto";
+import { MessageResponseDto } from "../models/common/MessageResponseDto";
 
 interface RequestInjector extends InternalAxiosRequestConfig {
     loading?: boolean;
@@ -27,6 +28,11 @@ axios.interceptors.response.use(
         }
         if (config.loading) {
             globalStore.decrementPageLoading();
+        }
+        const message: MessageResponseDto | undefined = response.data.message;
+        if (message?.severity == "error") {
+            alert(message.message);
+            return Promise.reject({ message: "Something went wrong :(" })
         }
         return response.data;
     },

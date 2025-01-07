@@ -16,7 +16,6 @@ namespace TeachABit.API.Controllers
         public async Task<IActionResult> GetObjavaList(string? search, string? username)
         {
             return GetControllerResult(await _objaveService.GetObjavaList(search, username));
-            return GetControllerResult(await _objaveService.GetObjavaList(search, username));
         }
 
         [AllowAnonymous]

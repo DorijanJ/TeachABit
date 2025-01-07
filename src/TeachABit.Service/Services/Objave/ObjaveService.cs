@@ -70,8 +70,9 @@ namespace TeachABit.Service.Services.Objave
 
             ObjavaDto? objava = _mapper.Map<ObjavaDto?>(await _objaveRepository.GetObjavaById(id));
 
-            if (objava == null || !korisnik.Owns(objava)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
-            if (objava == null || !korisnik.Owns(objava)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            bool isAdmin = await _authorizationService.IsAdmin();
+
+            if (!isAdmin && (objava == null || !korisnik.Owns(objava))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             await _objaveRepository.DeleteObjava(id);
             return ServiceResult.Success();
