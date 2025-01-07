@@ -49,5 +49,12 @@ namespace TeachABit.Service.Services.Authorization
             var korisnik = GetKorisnik();
             return _mapper.Map<KorisnikDto>(await _userManager.FindByIdAsync(korisnik.Id));
         }
+
+        public async Task<bool> IsAdmin()
+        {
+            var korisnik = GetKorisnik();
+            var roles = await _userManager.GetRolesAsync(korisnik);
+            return roles.Contains("Admin");
+        }
     }
 }

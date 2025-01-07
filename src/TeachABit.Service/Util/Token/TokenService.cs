@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -7,19 +8,26 @@ using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Service.Util.Token
 {
-    public class TokenService(IConfiguration configuration) : ITokenService
+    public class TokenService(IConfiguration configuration, UserManager<Korisnik> userManager) : ITokenService
     {
         private readonly IConfiguration _configuration = configuration;
+        private readonly UserManager<Korisnik> _userManager = userManager;
 
-        public string? CreateToken(Korisnik user)
+        public async Task<string?> CreateToken(Korisnik user)
         {
             if (user.UserName == null || user.Email == null) return null;
+
+            var roles = await _userManager.GetRolesAsync(user);
+            List<Claim> roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, user.UserName),
                 new(ClaimTypes.NameIdentifier, user.Id),
                 new(ClaimTypes.Email, user.Email),
             };
+
+            claims.AddRange(roleClaims);
 
             var secretKey = _configuration["JwtSettings:Key"];
             if (secretKey == null) return null;

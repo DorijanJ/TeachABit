@@ -14,8 +14,8 @@ export default function Profil() {
     const [user, setUser] = useState<AppUserDto>();
 
     const isCurrentUser = useMemo(() => {
-        return globalContext.loggedInUser?.username === username;
-    }, [globalContext.loggedInUser?.username, username]);
+        return globalContext.currentUser?.username === username;
+    }, [globalContext.currentUser?.username, username]);
 
     const GetUserByUsername = async (username: string) => {
         const response = await requests.getWithLoading(
@@ -50,14 +50,12 @@ export default function Profil() {
                                         width: "100%",
                                         height: "100%",
                                     }}
-                                    src={`${
-                                        import.meta.env.VITE_REACT_AWS_BUCKET
-                                    }${user.id}${
-                                        user.profilnaSlikaVersion
+                                    src={`${import.meta.env.VITE_REACT_AWS_BUCKET
+                                        }${user.id}${user.profilnaSlikaVersion
                                             ? "?version=" +
-                                              user.profilnaSlikaVersion
+                                            user.profilnaSlikaVersion
                                             : ""
-                                    }`}
+                                        }`}
                                 />
                             </>
                         ) : (
@@ -77,6 +75,9 @@ export default function Profil() {
                     <Typography variant="h6" sx={{ marginBottom: 1 }}>
                         <b>Username:</b> {user.username}
                     </Typography>
+                    {user.roles && user.roles.length > 0 && (
+                        user.roles.map(role => <p>{role}</p>)
+                    )}
                 </CardContent>
             </Card>
         )

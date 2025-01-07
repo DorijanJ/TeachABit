@@ -4,6 +4,8 @@ import {
     Typography,
     CardContent,
     Link,
+    Box,
+    IconButton,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -12,7 +14,9 @@ import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
 import ObjavaKomentari from "./ObjavaKomentari";
+import DeleteIcon from '@mui/icons-material/Delete';
 import LikeInfo from "./LikeInfo";
+import { useGlobalContext } from "../../context/Global.context";
 
 export default function ObjavaPage() {
     const [objava, setObjava] = useState<ObjavaDto>({
@@ -32,10 +36,13 @@ export default function ObjavaPage() {
         const response = await requests.getWithLoading(`objave/${objavaId}`);
         if (response.data) {
             setObjava(response.data);
+        } else {
+            navigate("/forum")
         }
     };
 
     const navigate = useNavigate();
+    const globalContext = useGlobalContext();
 
     const likeObjava = async () => {
         await requests.postWithLoading(`objave/${objavaId}/like`);
@@ -63,6 +70,12 @@ export default function ObjavaPage() {
             liked: undefined,
         }));
     };
+
+    const deleteObjava = async () => {
+        const response = await requests.deleteWithLoading(`objave/${objavaId}`);
+        if (response.message && response.message.severity === "success")
+            navigate("/forum")
+    }
 
     return (
         <>
@@ -117,14 +130,28 @@ export default function ObjavaPage() {
                         >
                             {objava.naziv}
                         </Typography>
-                        <UserLink
-                            user={{
-                                id: objava.vlasnikId,
-                                username: objava.vlasnikUsername,
-                                profilnaSlikaVersion:
-                                    objava.vlasnikProfilnaSlikaVersion,
-                            }}
-                        />
+                        <Box flexDirection={"row"} alignItems={"center"} display={"flex"} justifyContent={"space-between"} gap="10px">
+                            {(globalContext.currentUser?.id === objava.vlasnikId || globalContext.isAdmin) && (
+
+                                <IconButton
+                                    onClick={() => deleteObjava()}
+                                    sx={{
+                                        width: "40px",
+                                        height: "40px",
+                                    }}
+                                >
+                                    <DeleteIcon color="primary"></DeleteIcon>
+                                </IconButton>
+                            )}
+                            <UserLink
+                                user={{
+                                    id: objava.vlasnikId,
+                                    username: objava.vlasnikUsername,
+                                    profilnaSlikaVersion:
+                                        objava.vlasnikProfilnaSlikaVersion,
+                                }}
+                            />
+                        </Box>
                     </div>
                     <TeachABitRenderer content={objava.sadrzaj} />
                     <LikeInfo

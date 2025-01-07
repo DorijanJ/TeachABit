@@ -8,6 +8,7 @@ import CreateKomentar from "./CreateKomentar";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import LikeInfo from "./LikeInfo";
 import requests from "../../api/agent";
+import { useGlobalContext } from "../../context/Global.context";
 
 interface Props {
     komentar: KomentarDto;
@@ -33,6 +34,8 @@ export default function Komentar(props: Props) {
     const [liked, setLiked] = useState<boolean | undefined>(
         props.komentar.liked
     );
+
+    const globalContext = useGlobalContext();
 
     const likeKomentar = async () => {
         await requests.postWithLoading(
@@ -76,7 +79,7 @@ export default function Komentar(props: Props) {
                     style={{
                         visibility:
                             props.komentar.podKomentarList !== undefined &&
-                            props.komentar.podKomentarList.length > 0
+                                props.komentar.podKomentarList.length > 0
                                 ? "visible"
                                 : "hidden",
                         backgroundColor: isHidden ? "#922728" : "lightgray",
@@ -176,19 +179,21 @@ export default function Komentar(props: Props) {
                                     liked={liked}
                                     size="small"
                                 />
-                                <IconButton
-                                    sx={{ width: "30px", height: "30px" }}
-                                    onClick={() => {
-                                        props.setSelectedNadKomentarId(
-                                            props.komentar.id
-                                        );
-                                    }}
-                                >
-                                    <ReplyIcon
-                                        color="primary"
-                                        fontSize="small"
-                                    />
-                                </IconButton>
+                                {globalContext.userIsLoggedIn && (
+                                    <IconButton
+                                        sx={{ width: "30px", height: "30px" }}
+                                        onClick={() => {
+                                            props.setSelectedNadKomentarId(
+                                                props.komentar.id
+                                            );
+                                        }}
+                                    >
+                                        <ReplyIcon
+                                            color="primary"
+                                            fontSize="small"
+                                        />
+                                    </IconButton>
+                                )}
                             </div>
                         </div>
                     </div>

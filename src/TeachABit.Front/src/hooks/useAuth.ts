@@ -8,6 +8,7 @@ import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
 const USERNAME_KEY = "username";
 const ID_KEY = "id";
 const COOKIE_TTL = "cookie_ttl";
+const ROLES = "roles";
 
 interface GoogleAuthRequest {
     token: string;
@@ -21,17 +22,19 @@ const useAuth = () => {
         const username = localStorage.getItem(USERNAME_KEY);
         const id = localStorage.getItem(ID_KEY);
         const ttl = localStorage.getItem(COOKIE_TTL);
+        const roles = localStorage.getItem(ROLES);
 
         if (
             username !== null &&
             id !== null &&
             ttl &&
+            roles &&
             new Date().getTime() < parseInt(ttl)
         ) {
-            globalContext.setLoggedInUser({ username: username, id: id });
+            globalContext.setCurrentUser({ username: username, id: id, roles: JSON.parse(roles) });
             globalContext.setIsUserLoggedIn(true);
         } else {
-            globalContext.setLoggedInUser(undefined);
+            globalContext.setCurrentUser(undefined);
             globalContext.setIsUserLoggedIn(false);
         }
     };
@@ -81,15 +84,16 @@ const useAuth = () => {
 
     const setAuthData = (appUser: AppUserDto) => {
         if (appUser.username && appUser.id) {
-            window.location.reload();
             const now = new Date();
             const ttl = now.getTime() + 7 * 60 * 60 * 1000;
             localStorage.setItem(USERNAME_KEY, appUser.username);
             localStorage.setItem(ID_KEY, appUser.id);
             localStorage.setItem(COOKIE_TTL, ttl.toString());
-            globalContext.setLoggedInUser({
+            localStorage.setItem(ROLES, JSON.stringify(appUser.roles))
+            globalContext.setCurrentUser({
                 username: appUser.username,
                 id: appUser.id,
+                roles: appUser.roles
             });
             globalContext.setIsUserLoggedIn(true);
         }
@@ -99,7 +103,8 @@ const useAuth = () => {
         window.location.reload();
         localStorage.removeItem(USERNAME_KEY);
         localStorage.removeItem(ID_KEY);
-        globalContext.setLoggedInUser(undefined);
+        localStorage.removeItem(ROLES);
+        globalContext.setCurrentUser(undefined);
         globalContext.setIsUserLoggedIn(false);
     };
 
