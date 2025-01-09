@@ -31,7 +31,11 @@ const useAuth = () => {
             roles &&
             new Date().getTime() < parseInt(ttl)
         ) {
-            globalContext.setCurrentUser({ username: username, id: id, roles: JSON.parse(roles) });
+            globalContext.setCurrentUser({
+                username: username,
+                id: id,
+                roles: JSON.parse(roles),
+            });
             globalContext.setIsUserLoggedIn(true);
         } else {
             globalContext.setCurrentUser(undefined);
@@ -41,28 +45,32 @@ const useAuth = () => {
 
     const login = async (
         loginAttempt: LoginAttemptDto
-    ): Promise<ApiResponseDto> => {
+    ): Promise<ApiResponseDto | undefined> => {
         const response = await requests.postWithLoading(
             "account/login",
             loginAttempt
         );
-        const user: AppUserDto = response.data;
-        if (user && user.username) {
-            setAuthData(user);
+        if (response) {
+            const user: AppUserDto = response.data;
+            if (user && user.username) {
+                setAuthData(user);
+            }
         }
         return response;
     };
 
     const loginGoogle = async (
         googleAuthRequest: GoogleAuthRequest
-    ): Promise<ApiResponseDto> => {
-        const response: ApiResponseDto = await requests.postWithLoading(
+    ): Promise<ApiResponseDto | undefined> => {
+        const response = await requests.postWithLoading(
             "account/google-signin",
             googleAuthRequest
         );
-        const user: AppUserDto = response.data;
-        if (user && user.username) {
-            setAuthData(user);
+        if (response) {
+            const user: AppUserDto = response.data;
+            if (user && user.username) {
+                setAuthData(user);
+            }
         }
         return response;
     };
@@ -74,8 +82,8 @@ const useAuth = () => {
 
     const register = async (
         registerAttempt: RegisterAttemptDto
-    ): Promise<ApiResponseDto> => {
-        const response: ApiResponseDto = await requests.postWithLoading(
+    ): Promise<ApiResponseDto | undefined> => {
+        const response = await requests.postWithLoading(
             "account/register",
             registerAttempt
         );
@@ -89,11 +97,11 @@ const useAuth = () => {
             localStorage.setItem(USERNAME_KEY, appUser.username);
             localStorage.setItem(ID_KEY, appUser.id);
             localStorage.setItem(COOKIE_TTL, ttl.toString());
-            localStorage.setItem(ROLES, JSON.stringify(appUser.roles))
+            localStorage.setItem(ROLES, JSON.stringify(appUser.roles));
             globalContext.setCurrentUser({
                 username: appUser.username,
                 id: appUser.id,
-                roles: appUser.roles
+                roles: appUser.roles,
             });
             globalContext.setIsUserLoggedIn(true);
         }

@@ -30,7 +30,6 @@ export function NavigationUser(props: Props) {
                     variant="outlined"
                     sx={{
                         width: "100%",
-                        height: "30px"
                     }}
                     startIcon={<PersonIcon />}
                     onClick={() => navigate(`/profil/${props.user.username}`)}

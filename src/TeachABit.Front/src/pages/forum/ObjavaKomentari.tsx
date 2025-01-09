@@ -29,7 +29,7 @@ export default function ObjavaKomentari(props: Props) {
         const response = await requests.getWithLoading(
             `objave/${objavaId}/komentari`
         );
-        if (response.data) {
+        if (response && response.data) {
             setKomentari(response.data);
         }
     };

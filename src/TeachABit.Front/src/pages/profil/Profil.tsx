@@ -21,7 +21,7 @@ export default function Profil() {
         const response = await requests.getWithLoading(
             `account/by-username/${username}`
         );
-        if (response.data) {
+        if (response && response.data) {
             setUser(response.data);
         }
     };
@@ -50,12 +50,14 @@ export default function Profil() {
                                         width: "100%",
                                         height: "100%",
                                     }}
-                                    src={`${import.meta.env.VITE_REACT_AWS_BUCKET
-                                        }${user.id}${user.profilnaSlikaVersion
+                                    src={`${
+                                        import.meta.env.VITE_REACT_AWS_BUCKET
+                                    }${user.id}${
+                                        user.profilnaSlikaVersion
                                             ? "?version=" +
-                                            user.profilnaSlikaVersion
+                                              user.profilnaSlikaVersion
                                             : ""
-                                        }`}
+                                    }`}
                                 />
                             </>
                         ) : (
@@ -75,9 +77,9 @@ export default function Profil() {
                     <Typography variant="h6" sx={{ marginBottom: 1 }}>
                         <b>Username:</b> {user.username}
                     </Typography>
-                    {user.roles && user.roles.length > 0 && (
-                        user.roles.map(role => <p>{role}</p>)
-                    )}
+                    {user.roles &&
+                        user.roles.length > 0 &&
+                        user.roles.map((role) => <p>{role}</p>)}
                 </CardContent>
             </Card>
         )

@@ -22,7 +22,6 @@ export default function LikeInfo(props: Props) {
                     display: "flex",
                     flexDirection: "row",
                     alignItems: "center",
-                    width: "100%",
                     justifyContent: "flex-end",
                     gap: props.size === "small" ? "4px" : "10px",
                 }}

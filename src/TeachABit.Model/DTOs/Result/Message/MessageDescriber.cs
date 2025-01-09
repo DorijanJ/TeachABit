@@ -9,8 +9,8 @@
         public static MessageResponse DuplicateUsername(string username) => new($"Korisničko ime '{username}' je zauzeto.", MessageSeverities.Error, MessageStatusCode.Conflict);
         public static MessageResponse DuplicateEmail(string email) => new($"Račun sa mail adresom '{email}' već postoji.", MessageSeverities.Error, MessageStatusCode.Conflict);
         public static MessageResponse RegistrationError(string errorMessage) => new(errorMessage, MessageSeverities.Error, MessageStatusCode.BadRequest);
-        public static MessageResponse Unauthenticated() => new("Unauthenticated.", MessageSeverities.Error, MessageStatusCode.Unauthorized);
-        public static MessageResponse Unauthorized() => new("Unauthorized.", MessageSeverities.Error, MessageStatusCode.Forbidden);
+        public static MessageResponse Unauthenticated() => new("Niste prijavljeni.", MessageSeverities.Error, MessageStatusCode.Unauthorized);
+        public static MessageResponse Unauthorized() => new("Nemate prava za tu akciju.", MessageSeverities.Error, MessageStatusCode.Forbidden);
         public static MessageResponse InvalidModelState(string errorMessage) => new(errorMessage, MessageSeverities.Error, MessageStatusCode.BadRequest);
         public static MessageResponse MethodNotAllowed() => new("Method not allowed.", MessageSeverities.Error, MessageStatusCode.MethodNotAllowed);
         public static MessageResponse BadRequest(string errorMessage) => new(errorMessage, MessageSeverities.Error, MessageStatusCode.BadRequest);
@@ -28,7 +28,7 @@
                 ? new MessageResponse("Vaš račun je zaključan na kratko vrijeme zbog višestrukih neuspijelih pokušaja prijave.", MessageSeverities.Error, MessageStatusCode.Forbidden)
                 : new MessageResponse($"Vaš račun je zaključan još {string.Format("{0}:{1:00}s", (int)time.TotalMinutes, time.Seconds)} zbog višestrukih neuspijelih pokušaja prijave.", MessageSeverities.Error, MessageStatusCode.Forbidden);
         }
-        public static MessageResponse SuccessMessage(string? message = null) => new(message ?? "Request completed successfully", MessageSeverities.Success);
+        public static MessageResponse SuccessMessage(string? message = null) => new(message ?? "Uspješno.", MessageSeverities.Success);
     }
 
     public static class MessageCodes

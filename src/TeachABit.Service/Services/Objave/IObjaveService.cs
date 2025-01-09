@@ -19,5 +19,7 @@ namespace TeachABit.Service.Services.Objave
         public Task<ServiceResult> DislikeKomentar(int id);
         public Task<ServiceResult> ClearObjavaReaction(int id);
         public Task<ServiceResult> ClearKomentarReaction(int id);
+        public Task<ServiceResult<ObjavaDto>> UpdateObjava(UpdateObjavaDto updateObjava);
     }
 }
+

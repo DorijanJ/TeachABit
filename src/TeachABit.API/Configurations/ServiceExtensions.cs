@@ -156,7 +156,9 @@ namespace TeachABit.API.Configurations
         {
             services.AddDbContext<TeachABitContext>(opt =>
             {
+                opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 opt.UseNpgsql(connectionString, x => x.MigrationsHistoryTable("__EFMigrationsHistory", "backend"));
+                opt.EnableSensitiveDataLogging();
             });
 
             return services;

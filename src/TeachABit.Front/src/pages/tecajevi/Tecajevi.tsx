@@ -17,7 +17,7 @@ export default function Tecajevi() {
         const response = await requests.getWithLoading(
             buildRequest("tecajevi", { search })
         );
-        if (response.data) setTecajList(response.data);
+        if (response && response.data) setTecajList(response.data);
     };
 
     useEffect(() => {

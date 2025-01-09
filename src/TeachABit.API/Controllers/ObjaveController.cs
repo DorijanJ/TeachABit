@@ -31,6 +31,12 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _objaveService.CreateObjava(objava));
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateObjava(UpdateObjavaDto updateObjava)
+        {
+            return GetControllerResult(await _objaveService.UpdateObjava(updateObjava));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteObjava(int id)
         {
@@ -85,7 +91,5 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _objaveService.ClearKomentarReaction(komentarId));
         }
-
-
     }
 }

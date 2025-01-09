@@ -14,15 +14,19 @@ import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
 import ObjavaKomentari from "./ObjavaKomentari";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import LikeInfo from "./LikeInfo";
 import { useGlobalContext } from "../../context/Global.context";
+import EditIcon from "@mui/icons-material/Edit";
+import ObjavaEditor from "./ObjavaEditor";
 
 export default function ObjavaPage() {
     const [objava, setObjava] = useState<ObjavaDto>({
         sadrzaj: "",
         naziv: "",
     });
+
+    const [isEditing, setIsEditing] = useState(false);
 
     const { objavaId } = useParams();
 
@@ -34,10 +38,10 @@ export default function ObjavaPage() {
 
     const getObjavaById = async (objavaId: number) => {
         const response = await requests.getWithLoading(`objave/${objavaId}`);
-        if (response.data) {
+        if (response?.data) {
             setObjava(response.data);
         } else {
-            navigate("/forum")
+            navigate("/forum");
         }
     };
 
@@ -45,12 +49,17 @@ export default function ObjavaPage() {
     const globalContext = useGlobalContext();
 
     const likeObjava = async () => {
-        await requests.postWithLoading(`objave/${objavaId}/like`);
-        setObjava((prev: ObjavaDto) => ({
-            ...prev,
-            likeCount: (prev.likeCount ?? 0) + (prev.liked === false ? 2 : 1),
-            liked: true,
-        }));
+        try {
+            await requests.postWithLoading(`objave/${objavaId}/like`);
+            setObjava((prev: ObjavaDto) => ({
+                ...prev,
+                likeCount:
+                    (prev.likeCount ?? 0) + (prev.liked === false ? 2 : 1),
+                liked: true,
+            }));
+        } catch (exception) {
+            console.log(exception);
+        }
     };
 
     const dislikeObjava = async () => {
@@ -73,12 +82,26 @@ export default function ObjavaPage() {
 
     const deleteObjava = async () => {
         const response = await requests.deleteWithLoading(`objave/${objavaId}`);
-        if (response.message && response.message.severity === "success")
-            navigate("/forum")
-    }
+        if (response && response.message?.severity === "success")
+            navigate("/forum");
+    };
+
+    const refreshData = async () => {
+        if (!objavaId) return;
+        const parsedObjavaId = parseInt(objavaId);
+        await getObjavaById(parsedObjavaId);
+    };
 
     return (
         <>
+            {isEditing && (
+                <ObjavaEditor
+                    isOpen={isEditing}
+                    onClose={() => setIsEditing(false)}
+                    refreshData={refreshData}
+                    objava={objava}
+                />
+            )}
             <Card
                 sx={{
                     width: "100%",
@@ -130,19 +153,13 @@ export default function ObjavaPage() {
                         >
                             {objava.naziv}
                         </Typography>
-                        <Box flexDirection={"row"} alignItems={"center"} display={"flex"} justifyContent={"space-between"} gap="10px">
-                            {(globalContext.currentUser?.id === objava.vlasnikId || globalContext.isAdmin) && (
-
-                                <IconButton
-                                    onClick={() => deleteObjava()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <DeleteIcon color="primary"></DeleteIcon>
-                                </IconButton>
-                            )}
+                        <Box
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                            display={"flex"}
+                            justifyContent={"space-between"}
+                            gap="5px"
+                        >
                             <UserLink
                                 user={{
                                     id: objava.vlasnikId,
@@ -154,13 +171,44 @@ export default function ObjavaPage() {
                         </Box>
                     </div>
                     <TeachABitRenderer content={objava.sadrzaj} />
-                    <LikeInfo
-                        likeCount={objava.likeCount}
-                        onClear={clearReaction}
-                        onDislike={dislikeObjava}
-                        onLike={likeObjava}
-                        liked={objava.liked}
-                    />
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"flex-end"}
+                        alignItems={"center"}
+                        gap="10px"
+                    >
+                        {(globalContext.currentUser?.id === objava.vlasnikId ||
+                            globalContext.isAdmin) && (
+                            <>
+                                <IconButton
+                                    onClick={() => setIsEditing(true)}
+                                    sx={{
+                                        width: "40px",
+                                        height: "40px",
+                                    }}
+                                >
+                                    <EditIcon color="primary"></EditIcon>
+                                </IconButton>
+                                <IconButton
+                                    onClick={() => deleteObjava()}
+                                    sx={{
+                                        width: "40px",
+                                        height: "40px",
+                                    }}
+                                >
+                                    <DeleteIcon color="primary"></DeleteIcon>
+                                </IconButton>
+                            </>
+                        )}
+                        <LikeInfo
+                            likeCount={objava.likeCount}
+                            onClear={clearReaction}
+                            onDislike={dislikeObjava}
+                            onLike={likeObjava}
+                            liked={objava.liked}
+                        />
+                    </Box>
                     {objava.id && <ObjavaKomentari objavaId={objava.id} />}
                 </CardContent>
             </Card>
