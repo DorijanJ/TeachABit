@@ -178,18 +178,20 @@ export default function ObjavaPage() {
                         alignItems={"center"}
                         gap="10px"
                     >
+                        {globalContext.currentUser?.id === objava.vlasnikId && (
+                            <IconButton
+                                onClick={() => setIsEditing(true)}
+                                sx={{
+                                    width: "40px",
+                                    height: "40px",
+                                }}
+                            >
+                                <EditIcon color="primary"></EditIcon>
+                            </IconButton>
+                        )}
                         {(globalContext.currentUser?.id === objava.vlasnikId ||
                             globalContext.isAdmin) && (
                             <>
-                                <IconButton
-                                    onClick={() => setIsEditing(true)}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <EditIcon color="primary"></EditIcon>
-                                </IconButton>
                                 <IconButton
                                     onClick={() => deleteObjava()}
                                     sx={{

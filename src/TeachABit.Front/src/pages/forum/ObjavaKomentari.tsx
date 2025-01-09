@@ -4,7 +4,7 @@ import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
 import { Button, Typography } from "@mui/material";
 import Komentar from "./Komentar";
-import CreateKomentar from "./CreateKomentar";
+import CreateKomentar from "./KomentarEditor";
 
 interface Props {
     objavaId: number;
