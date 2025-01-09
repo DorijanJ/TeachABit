@@ -228,10 +228,19 @@ namespace TeachABit.Service.Services.Objave
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<ObjavaDto>> UpdateObjava(ObjavaDto objava)
+        public async Task<ServiceResult<KomentarDto>> UpdateKomentar(UpdateKomentarDto updateKomentar)
         {
-            ObjavaDto updatedObjava = _mapper.Map<ObjavaDto>(await _objaveRepository.UpdateObjava(_mapper.Map<Objava>(objava)));
-            return ServiceResult.Success(updatedObjava);
+            var komentar = await _objaveRepository.GetKomentarById(updateKomentar.Id);
+            var user = _authorizationService.GetKorisnik();
+
+            if (komentar == null || !user.Owns(komentar)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            komentar.Sadrzaj = updateKomentar.Sadrzaj;
+
+            var updatedKomentar = _mapper.Map<KomentarDto>(await _objaveRepository.UpdateKomentar(komentar));
+
+            return ServiceResult.Success(updatedKomentar);
+
         }
 
         public async Task<ServiceResult<ObjavaDto>> UpdateObjava(UpdateObjavaDto updateObjava)

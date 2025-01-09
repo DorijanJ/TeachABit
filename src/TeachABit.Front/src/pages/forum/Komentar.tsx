@@ -39,7 +39,7 @@ export default function Komentar(props: Props) {
 
     const likeKomentar = async () => {
         await requests.postWithLoading(
-            `objave/${props.komentar.objavaId}/komentari/${props.komentar.id}/like`
+            `objave/komentari/${props.komentar.id}/like`
         );
         const wasDisliked = liked === false;
         setLikeCount((prev) => (prev ?? 0) + (wasDisliked ? 2 : 1));
@@ -48,7 +48,7 @@ export default function Komentar(props: Props) {
 
     const dislikeKomentar = async () => {
         await requests.postWithLoading(
-            `objave/${props.komentar.objavaId}/komentari/${props.komentar.id}/dislike`
+            `objave/komentari/${props.komentar.id}/dislike`
         );
         const wasLiked = liked === true;
         setLikeCount((prev) => (prev ?? 0) - (wasLiked ? 2 : 1));
@@ -57,7 +57,7 @@ export default function Komentar(props: Props) {
 
     const clearReaction = async () => {
         await requests.deleteWithLoading(
-            `objave/${props.komentar.objavaId}/komentari/${props.komentar.id}/reakcija`
+            `objave/komentari/${props.komentar.id}/reakcija`
         );
         const shouldLower = liked === true;
         setLikeCount((prev) => (prev ?? 0) + (shouldLower ? -1 : +1));
@@ -79,7 +79,7 @@ export default function Komentar(props: Props) {
                     style={{
                         visibility:
                             props.komentar.podKomentarList !== undefined &&
-                                props.komentar.podKomentarList.length > 0
+                            props.komentar.podKomentarList.length > 0
                                 ? "visible"
                                 : "hidden",
                         backgroundColor: isHidden ? "#922728" : "lightgray",
