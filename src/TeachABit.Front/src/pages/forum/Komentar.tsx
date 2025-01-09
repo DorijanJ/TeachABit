@@ -4,11 +4,12 @@ import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import { KomentarDto } from "../../models/KomentarDto";
 import UserLink from "../profil/UserLink";
 import ReplyIcon from "@mui/icons-material/Reply";
-import CreateKomentar from "./CreateKomentar";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import LikeInfo from "./LikeInfo";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
+import KomentarEditor from "./KomentarEditor";
+import EditIcon from "@mui/icons-material/Edit";
 
 interface Props {
     komentar: KomentarDto;
@@ -34,6 +35,7 @@ export default function Komentar(props: Props) {
     const [liked, setLiked] = useState<boolean | undefined>(
         props.komentar.liked
     );
+    const [isEditing, setIsEditing] = useState(false);
 
     const globalContext = useGlobalContext();
 
@@ -66,6 +68,14 @@ export default function Komentar(props: Props) {
 
     return (
         <>
+            {isEditing && (
+                <KomentarEditor
+                    isOpen
+                    onClose={() => setIsEditing(false)}
+                    refreshData={props.refreshData}
+                    komentar={props.komentar}
+                />
+            )}
             <div
                 style={{
                     display: "flex",
@@ -171,6 +181,20 @@ export default function Komentar(props: Props) {
                                     gap: "10px",
                                 }}
                             >
+                                {globalContext.currentUser?.id ===
+                                    props.komentar.vlasnikId && (
+                                    <IconButton
+                                        sx={{ width: "30px", height: "30px" }}
+                                        onClick={() => {
+                                            setIsEditing(true);
+                                        }}
+                                    >
+                                        <EditIcon
+                                            color="primary"
+                                            fontSize="small"
+                                        />
+                                    </IconButton>
+                                )}
                                 <LikeInfo
                                     likeCount={likeCount}
                                     onClear={clearReaction}
@@ -199,7 +223,7 @@ export default function Komentar(props: Props) {
                     </div>
                 </div>
             </div>
-            <CreateKomentar
+            <KomentarEditor
                 refreshData={() => props.refreshData()}
                 isOpen={props.selectedNadKomentarId === props.komentar.id}
                 onClose={() => props.setSelectedNadKomentarId(undefined)}
