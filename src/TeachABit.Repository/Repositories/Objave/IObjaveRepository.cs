@@ -23,5 +23,6 @@ namespace TeachABit.Repository.Repositories.Objave
         public Task DeleteKomentarReakcija(int id);
         public Task<KomentarReakcija> CreateKomentarReakcija(KomentarReakcija komentarReakcija);
         public Task<KomentarReakcija?> GetKomentarReakcija(int komentarId, string korisnikId);
+        public Task<Objava?> GetObjavaByIdForUpdate(int id);
     }
 }

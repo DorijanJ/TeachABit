@@ -32,13 +32,13 @@ namespace TeachABit.Service.Services.Korisnici
                     await _s3BucketService.UploadImageAsync(korisnikId, resizedSlika);
                     korisnik.ProfilnaSlikaVersion = profilnaSlikaVersion;
                     await _userManager.UpdateAsync(korisnik);
-                    return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(korisnik));
+                    return ServiceResult.Success(_mapper.Map<KorisnikDto>(korisnik));
                 }
-                return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(korisnik));
+                return ServiceResult.Success(_mapper.Map<KorisnikDto>(korisnik));
             }
             catch (Exception ex)
             {
-                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.DefaultError(ex.Message));
+                return ServiceResult.Failure(MessageDescriber.DefaultError(ex.Message));
             }
         }
     }

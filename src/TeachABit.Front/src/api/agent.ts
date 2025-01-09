@@ -29,11 +29,7 @@ axios.interceptors.response.use(
         if (config.loading) {
             globalStore.decrementPageLoading();
         }
-        const message: MessageResponseDto | undefined = response.data.message;
-        if (message?.severity == "error") {
-            alert(message.message);
-            return Promise.reject({ message: "Something went wrong :(" })
-        }
+
         return response.data;
     },
     (error) => {
@@ -45,44 +41,78 @@ axios.interceptors.response.use(
             globalStore.decrementPageLoading();
         }
 
-        if (error.response?.data) return error.response.data;
+        const message: MessageResponseDto | undefined = error.response?.data;
 
-        return Promise.reject({ message: "Something went wrong :(" });
+        globalStore.addNotification({
+            message: message?.message || "An unexpected error occurred.",
+            severity: message?.severity || "error",
+        });
+
+        return Promise.reject({
+            message: message?.message || "Something went wrong :(",
+        });
     }
 );
+
+const handleRequest = async <T>(
+    promise: Promise<T>
+): Promise<T | undefined> => {
+    try {
+        return await promise;
+    } catch (error) {
+        console.error("API Error:", error);
+        return undefined;
+    }
+};
 
 const requests = {
     get: async (
         endpoint: string,
         loading: boolean = false
-    ): Promise<ApiResponseDto> => {
-        const response = await axios.get(
-            `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
-            { loading } as RequestInjector
+    ): Promise<ApiResponseDto | undefined> => {
+        return handleRequest(
+            axios.get(`${import.meta.env.VITE_REACT_API_URL}/${endpoint}`, {
+                loading,
+            } as RequestInjector)
         );
-        return response;
     },
     post: async (
         endpoint: string,
         data: any,
         loading: boolean = false
-    ): Promise<ApiResponseDto> => {
-        const response = await axios.post(
-            `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
-            data,
-            { loading } as RequestInjector
+    ): Promise<ApiResponseDto | undefined> => {
+        return handleRequest(
+            axios.post(
+                `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
+                data,
+                { loading } as RequestInjector
+            )
         );
-        return response;
     },
     delete: async (
         endpoint: string,
         loading: boolean = false
-    ): Promise<ApiResponseDto> => {
-        const response = await axios.delete(
-            `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
-            { loading } as RequestInjector
+    ): Promise<ApiResponseDto | undefined> => {
+        return handleRequest(
+            axios.delete(`${import.meta.env.VITE_REACT_API_URL}/${endpoint}`, {
+                loading,
+            } as RequestInjector)
         );
-        return response;
+    },
+    put: async (
+        endpoint: string,
+        data: any,
+        loading: boolean = false
+    ): Promise<ApiResponseDto | undefined> => {
+        return handleRequest(
+            axios.put(
+                `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
+                data,
+                {
+                    loading,
+                } as RequestInjector
+            )
+        );
     },
     getWithLoading: async (endpoint: string) => {
         return requests.get(endpoint, true);
@@ -92,6 +122,9 @@ const requests = {
     },
     deleteWithLoading: async (endpoint: string) => {
         return requests.delete(endpoint, true);
+    },
+    putWithLoading: async (endpoint: string, data?: any) => {
+        return requests.put(endpoint, data, true);
     },
 };
 

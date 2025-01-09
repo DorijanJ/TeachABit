@@ -16,29 +16,29 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
     {
         var radionice = await _radioniceRepository.GetRadionicaList(search);
         var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
-        return ServiceResult<List<RadionicaDto>>.Success(radioniceDto);
+        return ServiceResult.Success(radioniceDto);
     }
-    
+
     public async Task<ServiceResult<RadionicaDto>> GetRadionica(int id)
     {
         RadionicaDto? radionica = _mapper.Map<RadionicaDto>(await _radioniceRepository.GetRadionica(id));
         // Ovaj MessageDescriber još nije dodan u codebase
-        if(radionica == null) return ServiceResult<RadionicaDto>.Failure(MessageDescriber.ItemNotFound());
-        return ServiceResult<RadionicaDto>.Success(radionica);
+        if (radionica == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
+        return ServiceResult.Success(radionica);
     }
-    
+
     public async Task<ServiceResult<RadionicaDto>> CreateRadionica(RadionicaDto radionica)
     {
         RadionicaDto createdRadionica = _mapper.Map<RadionicaDto>(await _radioniceRepository.CreateRadionica(_mapper.Map<Radionica>(radionica)));
-        return ServiceResult<RadionicaDto>.Success(createdRadionica);
+        return ServiceResult.Success(createdRadionica);
     }
     /*public async Task<ServiceResult<RadionicaDto>> UpdateRadionica(RadionicaDto radionica)
     {
         // Moram provjeriti najbolji način implementacije za update.
         ...
     }*/
-    
-    
+
+
     public async Task<ServiceResult> DeleteRadionica(int id)
     {
         await _radioniceRepository.DeleteRadionica(id);

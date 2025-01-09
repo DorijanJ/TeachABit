@@ -21,14 +21,14 @@ namespace TeachABit.Service.Services.Tecajevi
         public async Task<ServiceResult<TecajDto>> GetTecaj(int id)
         {
             TecajDto? tecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.GetTecaj(id));
-            if (tecaj == null) return ServiceResult<TecajDto>.Failure(MessageDescriber.ItemNotFound());
-            return ServiceResult<TecajDto>.Success(tecaj);
+            if (tecaj == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
+            return ServiceResult.Success(tecaj);
         }
 
         public async Task<ServiceResult<TecajDto>> CreateTecaj(TecajDto tecaj)
         {
             TecajDto createdTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.CreateTecaj(_mapper.Map<Tecaj>(tecaj)));
-            return ServiceResult<TecajDto>.Success(createdTecaj);
+            return ServiceResult.Success(createdTecaj);
         }
         /*public async Task<ServiceResult<TecajDto>> UpdateTecaj(TecajDto tecaj)
         {
@@ -44,7 +44,7 @@ namespace TeachABit.Service.Services.Tecajevi
         {
             var tecajevi = await _tecajeviRepository.GetTecajList(search);
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
-            return ServiceResult<List<TecajDto>>.Success(tecajeviDto);
+            return ServiceResult.Success(tecajeviDto);
         }
 
 

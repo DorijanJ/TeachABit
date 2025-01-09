@@ -2,7 +2,6 @@ import { TextField, Button, Alert } from "@mui/material";
 import { useState, FormEvent, ChangeEvent } from "react";
 import useAuth from "../../../../../hooks/useAuth";
 import { AppUserDto } from "../../../../../models/AppUserDto";
-import { ApiResponseDto } from "../../../../../models/common/ApiResponseDto";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
 import { LoginAttemptDto } from "../../../../../models/LoginAttemptDto";
 import localStyles from "../../AuthForm.module.css";
@@ -22,7 +21,8 @@ export default function LoginForm(props: Props) {
     const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleLogin = async (loginAttempt: LoginAttemptDto) => {
-        const response: ApiResponseDto = await auth.login(loginAttempt);
+        const response = await auth.login(loginAttempt);
+        if (!response) return;
         const user: AppUserDto = response.data;
 
         if (user && user.username) props.onClose();

@@ -27,7 +27,7 @@ export default function CreateKomentar(props: Props) {
             `objave/${objavaId}/komentari`,
             komentar
         );
-        if (response.data) {
+        if (response && response.data) {
             handleClose(true);
         }
     };

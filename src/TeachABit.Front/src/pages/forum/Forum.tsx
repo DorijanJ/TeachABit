@@ -6,7 +6,7 @@ import Objava from "./Objava";
 import { useGlobalContext } from "../../context/Global.context";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
-import CreateObjavaDialog from "./CreateObjavaDialog";
+import ObjavaEditor from "./ObjavaEditor";
 
 export default function Forum() {
     const [objavaList, setObjavaList] = useState<ObjavaDto[]>([]);
@@ -19,7 +19,7 @@ export default function Forum() {
         const response = await requests.getWithLoading(
             buildRequest("objave", { search })
         );
-        if (response.data) setObjavaList(response.data);
+        if (response && response.data) setObjavaList(response.data);
     };
 
     useEffect(() => {
@@ -71,7 +71,7 @@ export default function Forum() {
                 ))}
             </div>
 
-            <CreateObjavaDialog
+            <ObjavaEditor
                 refreshData={() => GetObjavaList()}
                 onClose={() => {
                     setIsOpenObjavaDialog(false);

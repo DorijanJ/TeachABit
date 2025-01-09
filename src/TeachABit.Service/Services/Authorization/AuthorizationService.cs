@@ -16,8 +16,7 @@ namespace TeachABit.Service.Services.Authorization
         public Korisnik GetKorisnik()
         {
             var korisnik = GetKorisnikOptional();
-            if (korisnik == null) throw new UnauthorizedAccessException();
-            return korisnik;
+            return korisnik ?? throw new UnauthorizedAccessException();
         }
 
         public Korisnik? GetKorisnikOptional()

@@ -35,7 +35,7 @@ namespace TeachABit.Service.Services.Authentication
 
             if (user == null)
             {
-                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.UserNotFound());
+                return ServiceResult.Failure(MessageDescriber.UserNotFound());
             }
 
 
@@ -43,21 +43,21 @@ namespace TeachABit.Service.Services.Authentication
             if (result.IsLockedOut)
             {
                 var lockoutEnd = await _userManager.GetLockoutEndDateAsync(user);
-                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.AccountLockedOut(lockoutEnd.Value));
+                return ServiceResult.Failure(MessageDescriber.AccountLockedOut(lockoutEnd.Value));
             }
-            if (!result.Succeeded) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.PasswordMismatch());
+            if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.PasswordMismatch());
 
-            if (!user.EmailConfirmed) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.EmailNotConfirmed());
+            if (!user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.EmailNotConfirmed());
 
             ServiceResult cookieSetResult = await SetAuthCookie(user);
-            if (cookieSetResult.IsError) return ServiceResult<KorisnikDto>.Failure(cookieSetResult.Message);
+            if (cookieSetResult.IsError) return ServiceResult.Failure(cookieSetResult.Message);
 
             var korisnikDto = _mapper.Map<KorisnikDto>(user);
 
             var roles = await _userManager.GetRolesAsync(user);
             korisnikDto.Roles = [.. roles];
 
-            return ServiceResult<KorisnikDto>.Success(korisnikDto);
+            return ServiceResult.Success(korisnikDto);
         }
 
         public ServiceResult Logout()
@@ -69,10 +69,10 @@ namespace TeachABit.Service.Services.Authentication
         public async Task<ServiceResult<KorisnikDto>> Register(RegisterAttemptDto registerAttempt)
         {
             if (await _userManager.Users.AnyAsync(x => x.UserName == registerAttempt.Username))
-                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.DuplicateUsername(registerAttempt.Username));
+                return ServiceResult.Failure(MessageDescriber.DuplicateUsername(registerAttempt.Username));
 
             if (await _userManager.Users.AnyAsync(x => x.Email == registerAttempt.Email))
-                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.DuplicateEmail(registerAttempt.Email));
+                return ServiceResult.Failure(MessageDescriber.DuplicateEmail(registerAttempt.Email));
 
             Korisnik user = new()
             {
@@ -84,7 +84,7 @@ namespace TeachABit.Service.Services.Authentication
             if (!result.Succeeded && result.Errors.Any())
             {
                 string errorMessage = result.Errors.First().Description;
-                return ServiceResult<KorisnikDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
+                return ServiceResult.Failure(MessageDescriber.RegistrationError(errorMessage));
             }
 
             ServiceResult mailResult = await SendEmailConfirmationMail(user);
@@ -92,10 +92,10 @@ namespace TeachABit.Service.Services.Authentication
             if (mailResult.IsError)
             {
                 await _userManager.DeleteAsync(user);
-                return ServiceResult<KorisnikDto>.Failure(mailResult.Message);
+                return ServiceResult.Failure(mailResult.Message);
             }
 
-            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(user), MessageDescriber.EmailConfimationSent());
+            return ServiceResult.Success(_mapper.Map<KorisnikDto>(user), MessageDescriber.EmailConfimationSent());
         }
 
         private async Task<ServiceResult> SendEmailConfirmationMail(Korisnik user)
@@ -164,14 +164,14 @@ namespace TeachABit.Service.Services.Authentication
             }
             catch (InvalidJwtException)
             {
-                return ServiceResult<KorisnikDto>.Failure(new MessageResponse("Nevaljani GoogleIdToken.", MessageSeverities.Error));
+                return ServiceResult.Failure(new MessageResponse("Nevaljani GoogleIdToken.", MessageSeverities.Error));
             }
 
             Korisnik? user = await _userManager.FindByEmailAsync(payload.Email);
 
             if (user == null)
             {
-                if (String.IsNullOrEmpty(googleSigninAttempt.Username)) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.UsernameNotProvided());
+                if (String.IsNullOrEmpty(googleSigninAttempt.Username)) return ServiceResult.Failure(MessageDescriber.UsernameNotProvided());
 
                 user = new Korisnik
                 {
@@ -183,14 +183,14 @@ namespace TeachABit.Service.Services.Authentication
                 if (!result.Succeeded && result.Errors.Any())
                 {
                     string errorMessage = result.Errors.First().Description;
-                    return ServiceResult<KorisnikDto>.Failure(MessageDescriber.RegistrationError(errorMessage));
+                    return ServiceResult.Failure(MessageDescriber.RegistrationError(errorMessage));
                 }
             }
 
             var cookieSetResult = await SetAuthCookie(user);
             if (cookieSetResult.IsError)
             {
-                return ServiceResult<KorisnikDto>.Failure(cookieSetResult.Message);
+                return ServiceResult.Failure(cookieSetResult.Message);
             }
 
             var korisnikDto = _mapper.Map<KorisnikDto>(user);
@@ -198,7 +198,7 @@ namespace TeachABit.Service.Services.Authentication
             var roles = await _userManager.GetRolesAsync(user);
             korisnikDto.Roles = [.. roles];
 
-            return ServiceResult<KorisnikDto>.Success(korisnikDto);
+            return ServiceResult.Success(korisnikDto);
 
         }
 
@@ -276,13 +276,13 @@ namespace TeachABit.Service.Services.Authentication
         public async Task<ServiceResult<KorisnikDto>> GetKorisnikByUsername(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
-            if (user == null) return ServiceResult<KorisnikDto>.Failure(MessageDescriber.UserNotFound());
+            if (user == null) return ServiceResult.Failure(MessageDescriber.UserNotFound());
 
             var userDto = _mapper.Map<KorisnikDto>(user);
             var roles = await _userManager.GetRolesAsync(user);
             userDto.Roles = [.. roles];
-            
-            return ServiceResult<KorisnikDto>.Success(userDto);
+
+            return ServiceResult.Success(userDto);
         }
     }
 }

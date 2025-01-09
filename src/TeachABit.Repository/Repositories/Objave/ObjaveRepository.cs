@@ -72,6 +72,11 @@ namespace TeachABit.Repository.Repositories.Objave
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<Objava?> GetObjavaByIdForUpdate(int id)
+        {
+            return await _context.Objave.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<List<Objava>> GetObjavaList(string? search, string? username)
         {
             IQueryable<Objava> objaveQuery = _context.Objave
@@ -94,10 +99,11 @@ namespace TeachABit.Repository.Repositories.Objave
             return await objaveQuery.ToListAsync();
         }
 
-        public Task<Objava> UpdateObjava(Objava objava)
+        public async Task<Objava> UpdateObjava(Objava objava)
         {
-            // on wait
-            throw new NotImplementedException();
+            var updatedObjava = _context.Objave.Update(objava);
+            await _context.SaveChangesAsync();
+            return updatedObjava.Entity;
         }
 
         public async Task<ObjavaReakcija> CreateObjavaReakcija(ObjavaReakcija objavaReakcija)

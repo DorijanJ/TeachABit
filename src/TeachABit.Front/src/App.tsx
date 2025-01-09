@@ -16,6 +16,7 @@ import Radionice from "./pages/radionice/Radionice";
 import ConfirmEmail from "./pages/confirmEmail_temp/ConfirmEmail";
 import ResetPassword from "./pages/resetPassword/ResetPassword";
 import ObjavaPage from "./pages/forum/ObjavaPage";
+import Notification from "./components/notification/Notification";
 
 const App = observer(() => {
     const auth = useAuth();
@@ -37,6 +38,16 @@ const App = observer(() => {
                     <CircularProgress color="inherit" />
                 </Backdrop>
             )}
+
+            {globalStore.globalNotifications.map((n) => (
+                <Notification
+                    key={n.id}
+                    message={n.message}
+                    severity={n.severity}
+                    onClose={() => globalStore.clearNotification(n.id)}
+                />
+            ))}
+
             <BrowserRouter>
                 <div className="appContainer">
                     <Routes>
