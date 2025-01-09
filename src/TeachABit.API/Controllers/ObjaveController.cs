@@ -62,8 +62,8 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _objaveService.LikeObjava(id));
         }
 
-        [HttpPost("{objavaId}/komentari/{komentarId}/like")]
-        public async Task<IActionResult> Like(int objavaId, int komentarId)
+        [HttpPost("komentari/{komentarId}/like")]
+        public async Task<IActionResult> Like(int komentarId)
         {
             return GetControllerResult(await _objaveService.LikeKomentar(komentarId));
         }
@@ -74,8 +74,8 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _objaveService.DislikeObjava(id));
         }
 
-        [HttpPost("{objavaId}/komentari/{komentarId}/dislike")]
-        public async Task<IActionResult> DislikeKomentar(int objavaId, int komentarId)
+        [HttpPost("komentari/{komentarId}/dislike")]
+        public async Task<IActionResult> DislikeKomentar(int komentarId)
         {
             return GetControllerResult(await _objaveService.DislikeKomentar(komentarId));
         }
@@ -86,10 +86,16 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _objaveService.ClearObjavaReaction(id));
         }
 
-        [HttpDelete("{objavaId}/komentari/{komentarId}/reakcija")]
-        public async Task<IActionResult> ClearKomentarReaction(string objavaId, int komentarId)
+        [HttpDelete("komentari/{komentarId}/reakcija")]
+        public async Task<IActionResult> ClearKomentarReaction(int komentarId)
         {
             return GetControllerResult(await _objaveService.ClearKomentarReaction(komentarId));
+        }
+
+        [HttpPut("komentari")]
+        public async Task<IActionResult> UpdateKomentar(UpdateKomentarDto updateKomentar)
+        {
+            return GetControllerResult(await _objaveService.UpdateKomentar(updateKomentar));
         }
     }
 }

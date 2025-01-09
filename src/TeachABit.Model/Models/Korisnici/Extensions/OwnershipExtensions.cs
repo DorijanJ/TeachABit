@@ -19,5 +19,10 @@ namespace TeachABit.Model.Models.Korisnici.Extensions
         {
             return komentar.VlasnikId == korisnik.Id;
         }
+
+        public static bool Owns(this Korisnik korisnik, Komentar komentar)
+        {
+            return komentar.VlasnikId == korisnik.Id;
+        }
     }
 }

@@ -74,7 +74,7 @@ namespace TeachABit.Repository.Repositories.Objave
 
         public async Task<Objava?> GetObjavaByIdForUpdate(int id)
         {
-            return await _context.Objave.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Objave.FindAsync(id);
         }
 
         public async Task<List<Objava>> GetObjavaList(string? search, string? username)
@@ -159,6 +159,18 @@ namespace TeachABit.Repository.Repositories.Objave
         public async Task<KomentarReakcija?> GetKomentarReakcija(int komentarId, string korisnikId)
         {
             return await _context.KomentarReakcije.FirstOrDefaultAsync(x => x.KomentarId == komentarId && x.KorisnikId == korisnikId);
+        }
+
+        public async Task<Komentar> UpdateKomentar(Komentar komentar)
+        {
+            var updatedKomentar = _context.Komentari.Update(komentar);
+            await _context.SaveChangesAsync();
+            return updatedKomentar.Entity;
+        }
+
+        public async Task<Komentar?> GetKomentarByIdForUpdate(int id)
+        {
+            return await _context.Komentari.FindAsync(id);
         }
     }
 }

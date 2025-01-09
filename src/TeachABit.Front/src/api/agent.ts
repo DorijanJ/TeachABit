@@ -44,12 +44,12 @@ axios.interceptors.response.use(
         const message: MessageResponseDto | undefined = error.response?.data;
 
         globalStore.addNotification({
-            message: message?.message || "An unexpected error occurred.",
+            message: message?.message || "Nešto je pošlo po krivu.",
             severity: message?.severity || "error",
         });
 
         return Promise.reject({
-            message: message?.message || "Something went wrong :(",
+            message: message?.message || "Nešto je pošlo po krivu.",
         });
     }
 );
