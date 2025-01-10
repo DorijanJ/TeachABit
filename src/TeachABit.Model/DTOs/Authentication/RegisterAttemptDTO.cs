@@ -12,7 +12,7 @@ namespace TeachABit.Model.DTOs.Authentication
         public string Username { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Lozinka ne smije biti prazna.")]
-        [RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$", ErrorMessage = "Password doesn't meet requirements.")]
+        [RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$", ErrorMessage = "Lozinka nije dovoljno kompleksna.")]
         public string Password { get; set; } = string.Empty;
     }
 }

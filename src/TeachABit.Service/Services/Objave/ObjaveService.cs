@@ -56,11 +56,17 @@ namespace TeachABit.Service.Services.Objave
         {
             Korisnik korisnik = _authorizationService.GetKorisnik();
 
-            KomentarDto? komentar = _mapper.Map<KomentarDto>(await _objaveRepository.GetKomentarById(id));
+            Komentar? komentar = await _objaveRepository.GetKomentarById(id);
 
-            if (komentar == null || !korisnik.Owns(komentar)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            bool isAdmin = await _authorizationService.IsAdmin();
 
-            await _objaveRepository.DeleteKomentar(id);
+            if (komentar == null || (!isAdmin && !korisnik.Owns(komentar))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            if (komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.BadRequest("Komentar je već izbrisan."));
+
+            var hasPodkomentari = await _objaveRepository.HasPodkomentari(id);
+
+            await _objaveRepository.DeleteKomentar(id, keepEntry: hasPodkomentari);
             return ServiceResult.Success();
         }
 
@@ -230,12 +236,13 @@ namespace TeachABit.Service.Services.Objave
 
         public async Task<ServiceResult<KomentarDto>> UpdateKomentar(UpdateKomentarDto updateKomentar)
         {
-            var komentar = await _objaveRepository.GetKomentarById(updateKomentar.Id);
+            var komentar = await _objaveRepository.GetKomentarByIdWithTracking(updateKomentar.Id);
             var user = _authorizationService.GetKorisnik();
 
-            if (komentar == null || !user.Owns(komentar)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (komentar == null || !user.Owns(komentar) || komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             komentar.Sadrzaj = updateKomentar.Sadrzaj;
+            komentar.LastUpdatedDateTime = DateTime.UtcNow;
 
             var updatedKomentar = _mapper.Map<KomentarDto>(await _objaveRepository.UpdateKomentar(komentar));
 
@@ -245,7 +252,7 @@ namespace TeachABit.Service.Services.Objave
 
         public async Task<ServiceResult<ObjavaDto>> UpdateObjava(UpdateObjavaDto updateObjava)
         {
-            var objava = await _objaveRepository.GetObjavaByIdForUpdate(updateObjava.Id);
+            var objava = await _objaveRepository.GetObjavaByIdWithTracking(updateObjava.Id);
             var user = _authorizationService.GetKorisnik();
 
             if (objava == null || !user.Owns(objava)) return ServiceResult.Failure(MessageDescriber.Unauthorized());

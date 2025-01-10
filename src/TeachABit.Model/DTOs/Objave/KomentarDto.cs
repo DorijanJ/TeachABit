@@ -10,7 +10,10 @@ namespace TeachABit.Model.DTOs.Objave
         public string Sadrzaj { get; set; } = string.Empty;
         public string VlasnikId { get; set; } = string.Empty;
         public string VlasnikUsername { get; set; } = string.Empty;
-        public DateTime CreatedDateTime { get; set; }
+        public DateTime? CreatedDateTime { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public DateTime? LastUpdatedDateTime { get; set; } = null;
+        public bool IsDeleted { get; set; }
         public string? VlasnikProfilnaSlikaVersion { get; set; }
         public int ObjavaId { get; set; }
         public int? NadKomentarId { get; set; } = null;

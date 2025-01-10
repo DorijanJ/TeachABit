@@ -22,9 +22,12 @@ namespace TeachABit.Repository.Repositories.Objave
             return createdObjava.Entity;
         }
 
-        public async Task DeleteKomentar(int id)
+        public async Task DeleteKomentar(int id, bool keepEntry = false)
         {
-            await _context.Komentari.Where(x => x.Id == id).ExecuteDeleteAsync();
+            if (keepEntry)
+                await _context.Komentari.Where(x => x.Id == id).ExecuteUpdateAsync(x => x.SetProperty(p => p.IsDeleted, true));
+            else
+                await _context.Komentari.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
         public async Task DeleteObjava(int id)
@@ -61,6 +64,11 @@ namespace TeachABit.Repository.Repositories.Objave
             return komentari;
         }
 
+        public async Task<bool> HasPodkomentari(int komentarId)
+        {
+            return await _context.Komentari.AnyAsync(x => x.NadKomentarId == komentarId);
+        }
+
 
         public async Task<Objava?> GetObjavaById(int id)
         {
@@ -72,9 +80,9 @@ namespace TeachABit.Repository.Repositories.Objave
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Objava?> GetObjavaByIdForUpdate(int id)
+        public async Task<Objava?> GetObjavaByIdWithTracking(int id)
         {
-            return await _context.Objave.FindAsync(id);
+            return await _context.Objave.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Objava>> GetObjavaList(string? search, string? username)
@@ -101,9 +109,8 @@ namespace TeachABit.Repository.Repositories.Objave
 
         public async Task<Objava> UpdateObjava(Objava objava)
         {
-            var updatedObjava = _context.Objave.Update(objava);
             await _context.SaveChangesAsync();
-            return updatedObjava.Entity;
+            return objava;
         }
 
         public async Task<ObjavaReakcija> CreateObjavaReakcija(ObjavaReakcija objavaReakcija)
@@ -163,14 +170,13 @@ namespace TeachABit.Repository.Repositories.Objave
 
         public async Task<Komentar> UpdateKomentar(Komentar komentar)
         {
-            var updatedKomentar = _context.Komentari.Update(komentar);
             await _context.SaveChangesAsync();
-            return updatedKomentar.Entity;
+            return komentar;
         }
 
-        public async Task<Komentar?> GetKomentarByIdForUpdate(int id)
+        public async Task<Komentar?> GetKomentarByIdWithTracking(int id)
         {
-            return await _context.Komentari.FindAsync(id);
+            return await _context.Komentari.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }
