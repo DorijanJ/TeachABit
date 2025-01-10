@@ -23,7 +23,7 @@ export default function Notification(props: Props) {
                     variant="filled"
                     sx={{ width: "100%" }}
                 >
-                    {props.message}
+                    <>{props.message}</>
                 </Alert>
             </Snackbar>
         </>

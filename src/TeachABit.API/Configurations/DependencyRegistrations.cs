@@ -34,7 +34,10 @@ namespace TeachABit.API.Configurations
             services.AddScoped<IObjaveService, ObjaveService>();
             services.AddScoped<IRadioniceRepository, RadioniceRepository>();
             services.AddScoped<IRadioniceService, RadioniceService>();
-            services.AddScoped<ModelStateFilter>();
+            services.AddScoped<Func<string, ModelStateFilter>>(provider => (messageType) =>
+            {
+                return new ModelStateFilter(messageType);
+            });
             services.AddScoped<IKorisniciService, KorisniciService>();
             services.AddAWSService<IAmazonS3>();
             services.AddSingleton<IS3BucketService>(provider =>

@@ -4,6 +4,8 @@ export interface KomentarDto {
     vlasnikId?: string;
     vlasnikUsername?: string;
     createdDateTime?: Date;
+    lastUpdatedDateTime?: Date;
+    isDeleted?: boolean;
     vlasnikProfilnaSlikaVersion?: string;
     objavaId?: number;
     nadKomentarId?: number;

@@ -10,6 +10,8 @@ import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
 import KomentarEditor from "./KomentarEditor";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { hr } from "date-fns/locale";
 
 interface Props {
     komentar: KomentarDto;
@@ -64,6 +66,14 @@ export default function Komentar(props: Props) {
         const shouldLower = liked === true;
         setLikeCount((prev) => (prev ?? 0) + (shouldLower ? -1 : +1));
         setLiked(undefined);
+    };
+
+    const deleteKomentar = async () => {
+        if (!props.komentar.id) return;
+        const response = await requests.deleteWithLoading(
+            `objave/komentari/${props.komentar.id}`
+        );
+        if (response?.message?.severity === "success") props.refreshData();
     };
 
     return (
@@ -145,22 +155,6 @@ export default function Komentar(props: Props) {
                                         alignItems: "center",
                                     }}
                                 >
-                                    <p
-                                        style={{
-                                            margin: 0,
-                                            color: "gray",
-                                            fontSize: 14,
-                                            userSelect: "none",
-                                            cursor: "default",
-                                        }}
-                                    >
-                                        {`${formatDistanceToNow(
-                                            new Date(
-                                                props.komentar.createdDateTime
-                                            ),
-                                            { addSuffix: true }
-                                        )} by`}
-                                    </p>
                                     <UserLink
                                         user={{
                                             id: props.komentar.vlasnikId,
@@ -171,6 +165,36 @@ export default function Komentar(props: Props) {
                                                     .vlasnikProfilnaSlikaVersion,
                                         }}
                                     />
+                                    <p
+                                        style={{
+                                            margin: 0,
+                                            color: "gray",
+                                            fontSize: 14,
+                                            userSelect: "none",
+                                            cursor: "default",
+                                        }}
+                                    >
+                                        {!props.komentar.lastUpdatedDateTime
+                                            ? `Komentirano ${formatDistanceToNow(
+                                                  new Date(
+                                                      props.komentar.createdDateTime
+                                                  ),
+                                                  {
+                                                      addSuffix: true,
+                                                      locale: hr,
+                                                  }
+                                              )}`
+                                            : `Izmijenjeno ${formatDistanceToNow(
+                                                  new Date(
+                                                      props.komentar.lastUpdatedDateTime
+                                                  ),
+                                                  {
+                                                      addSuffix: true,
+                                                      locale: hr,
+                                                  }
+                                              )}`}
+                                        <br></br>
+                                    </p>
                                 </div>
                             )}
                             <div
@@ -181,20 +205,41 @@ export default function Komentar(props: Props) {
                                     gap: "10px",
                                 }}
                             >
-                                {globalContext.currentUser?.id ===
-                                    props.komentar.vlasnikId && (
-                                    <IconButton
-                                        sx={{ width: "30px", height: "30px" }}
-                                        onClick={() => {
-                                            setIsEditing(true);
-                                        }}
-                                    >
-                                        <EditIcon
-                                            color="primary"
-                                            fontSize="small"
-                                        />
-                                    </IconButton>
-                                )}
+                                {(globalContext.currentUser?.id ===
+                                    props.komentar.vlasnikId &&
+                                    !props.komentar.isDeleted) ||
+                                    (globalContext.isAdmin && (
+                                        <>
+                                            <IconButton
+                                                sx={{
+                                                    width: "30px",
+                                                    height: "30px",
+                                                }}
+                                                onClick={() => {
+                                                    setIsEditing(true);
+                                                }}
+                                            >
+                                                <EditIcon
+                                                    color="primary"
+                                                    fontSize="small"
+                                                />
+                                            </IconButton>
+                                            <IconButton
+                                                sx={{
+                                                    width: "30px",
+                                                    height: "30px",
+                                                }}
+                                                onClick={() => {
+                                                    deleteKomentar();
+                                                }}
+                                            >
+                                                <DeleteIcon
+                                                    color="primary"
+                                                    fontSize="small"
+                                                />
+                                            </IconButton>
+                                        </>
+                                    ))}
                                 <LikeInfo
                                     likeCount={likeCount}
                                     onClear={clearReaction}

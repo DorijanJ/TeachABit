@@ -97,5 +97,11 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _objaveService.UpdateKomentar(updateKomentar));
         }
+
+        [HttpDelete("komentari/{komentarId}")]
+        public async Task<IActionResult> DeleteKomentar(int komentarId)
+        {
+            return GetControllerResult(await _objaveService.DeleteKomentar(komentarId));
+        }
     }
 }
