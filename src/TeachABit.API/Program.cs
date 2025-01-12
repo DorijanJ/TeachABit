@@ -22,6 +22,7 @@ if (app.Environment.IsDevelopment())
 
 var scope = app.Services.CreateScope();
 await SeedData.SeedRolesAsync(scope.ServiceProvider);
+await SeedData.SeedUser(scope.ServiceProvider);
 
 app.UseHttpsRedirection();
 
