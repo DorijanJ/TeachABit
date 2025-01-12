@@ -198,6 +198,7 @@ export default function ObjavaPage() {
                                         width: "40px",
                                         height: "40px",
                                     }}
+                                    id="objavaPage-deleteButton"
                                 >
                                     <DeleteIcon color="primary"></DeleteIcon>
                                 </IconButton>

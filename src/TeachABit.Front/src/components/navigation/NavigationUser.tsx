@@ -33,6 +33,7 @@ export function NavigationUser(props: Props) {
                     }}
                     startIcon={<PersonIcon />}
                     onClick={() => navigate(`/profil/${props.user.username}`)}
+                    id="navigationUser-korisnik"
                 >
                     {`Korisnik: ${props.user.username}`}
                 </Button>

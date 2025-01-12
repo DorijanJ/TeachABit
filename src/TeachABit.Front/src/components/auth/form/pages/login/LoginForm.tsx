@@ -39,6 +39,7 @@ export default function LoginForm(props: Props) {
             <form
                 className={localStyles.formContent}
                 onSubmit={handleFormSubmit}
+                id="loginForm"
             >
                 <TextField
                     fullWidth
@@ -71,6 +72,7 @@ export default function LoginForm(props: Props) {
                     className={localStyles.myButton}
                     variant="contained"
                     type="submit"
+                    id="loginForm-prijavaButton"
                 >
                     Prijava
                 </Button>
