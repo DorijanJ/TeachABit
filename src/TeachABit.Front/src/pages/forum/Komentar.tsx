@@ -206,9 +206,9 @@ export default function Komentar(props: Props) {
                                 }}
                             >
                                 {(globalContext.currentUser?.id ===
-                                    props.komentar.vlasnikId &&
-                                    !props.komentar.isDeleted) ||
-                                    (globalContext.isAdmin && (
+                                    props.komentar.vlasnikId ||
+                                    globalContext.isAdmin) &&
+                                    !props.komentar.isDeleted && (
                                         <>
                                             <IconButton
                                                 sx={{
@@ -239,7 +239,7 @@ export default function Komentar(props: Props) {
                                                 />
                                             </IconButton>
                                         </>
-                                    ))}
+                                    )}
                                 <LikeInfo
                                     likeCount={likeCount}
                                     onClear={clearReaction}
