@@ -47,7 +47,9 @@ namespace TeachABit.Service.Services.Authentication
             }
             if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.PasswordMismatch());
 
-            if (!user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.EmailNotConfirmed());
+            bool useMailConfirmation = _configuration.GetValue<bool>("UseMailConfirmation");
+
+            if (useMailConfirmation && !user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.EmailNotConfirmed());
 
             ServiceResult cookieSetResult = await SetAuthCookie(user);
             if (cookieSetResult.IsError) return ServiceResult.Failure(cookieSetResult.Message);
@@ -74,10 +76,13 @@ namespace TeachABit.Service.Services.Authentication
             if (await _userManager.Users.AnyAsync(x => x.Email == registerAttempt.Email))
                 return ServiceResult.Failure(MessageDescriber.DuplicateEmail(registerAttempt.Email));
 
+            bool useMailConfirmation = _configuration.GetValue<bool>("UseMailConfirmation");
+
             Korisnik user = new()
             {
                 Email = registerAttempt.Email,
                 UserName = registerAttempt.Username,
+                EmailConfirmed = !useMailConfirmation,
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, registerAttempt.Password);
@@ -86,6 +91,8 @@ namespace TeachABit.Service.Services.Authentication
                 string errorMessage = result.Errors.First().Description;
                 return ServiceResult.Failure(MessageDescriber.RegistrationError(errorMessage));
             }
+
+            if (!useMailConfirmation) return ServiceResult.Success("Račun kreiran.");
 
             ServiceResult mailResult = await SendEmailConfirmationMail(user);
 
