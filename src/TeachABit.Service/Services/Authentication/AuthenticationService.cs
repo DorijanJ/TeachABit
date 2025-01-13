@@ -10,14 +10,16 @@ using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
+using TeachABit.Model.DTOs.Uloge;
 using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Uloge;
 using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Util.Mail;
 using TeachABit.Service.Util.Token;
 
 namespace TeachABit.Service.Services.Authentication
 {
-    public class AuthenticationService(UserManager<Korisnik> userManager, IAuthorizationService authorizationService, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
+    public class AuthenticationService(UserManager<Korisnik> userManager, RoleManager<Uloga> roleManager, IAuthorizationService authorizationService, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
     {
         private readonly UserManager<Korisnik> _userManager = userManager;
         private readonly SignInManager<Korisnik> _signInManager = signInManager;
@@ -27,6 +29,7 @@ namespace TeachABit.Service.Services.Authentication
         private readonly IMapper _mapper = mapper;
         private readonly IConfiguration _configuration = configuration;
         private readonly IAuthorizationService _authorizationService = authorizationService;
+        private readonly RoleManager<Uloga> _roleManager = roleManager;
 
         public async Task<ServiceResult<KorisnikDto>> Login(LoginAttemptDto loginAttempt)
         {
@@ -57,7 +60,7 @@ namespace TeachABit.Service.Services.Authentication
             var korisnikDto = _mapper.Map<KorisnikDto>(user);
 
             var roles = await _userManager.GetRolesAsync(user);
-            korisnikDto.Roles = [.. roles];
+            korisnikDto.Roles = _mapper.Map<List<UlogaDto>>(await _roleManager.Roles.Where(role => !string.IsNullOrEmpty(role.Name) && roles.Contains(role.Name)).ToListAsync());
 
             return ServiceResult.Success(korisnikDto);
         }
@@ -91,6 +94,8 @@ namespace TeachABit.Service.Services.Authentication
                 string errorMessage = result.Errors.First().Description;
                 return ServiceResult.Failure(MessageDescriber.RegistrationError(errorMessage));
             }
+
+            await _userManager.AddToRoleAsync(user, "Korisnik");
 
             if (!useMailConfirmation) return ServiceResult.Success("Račun kreiran.");
 
@@ -203,7 +208,7 @@ namespace TeachABit.Service.Services.Authentication
             var korisnikDto = _mapper.Map<KorisnikDto>(user);
 
             var roles = await _userManager.GetRolesAsync(user);
-            korisnikDto.Roles = [.. roles];
+            korisnikDto.Roles = _mapper.Map<List<UlogaDto>>(await _roleManager.Roles.Where(role => !string.IsNullOrEmpty(role.Name) && roles.Contains(role.Name)).ToListAsync());
 
             return ServiceResult.Success(korisnikDto);
 
@@ -285,11 +290,12 @@ namespace TeachABit.Service.Services.Authentication
             var user = await _userManager.FindByNameAsync(username);
             if (user == null) return ServiceResult.Failure(MessageDescriber.UserNotFound());
 
-            var userDto = _mapper.Map<KorisnikDto>(user);
-            var roles = await _userManager.GetRolesAsync(user);
-            userDto.Roles = [.. roles];
+            var korisnikDto = _mapper.Map<KorisnikDto>(user);
 
-            return ServiceResult.Success(userDto);
+            var roles = await _userManager.GetRolesAsync(user);
+            korisnikDto.Roles = _mapper.Map<List<UlogaDto>>(await _roleManager.Roles.Where(role => !string.IsNullOrEmpty(role.Name) && roles.Contains(role.Name)).ToListAsync());
+
+            return ServiceResult.Success(korisnikDto);
         }
     }
 }

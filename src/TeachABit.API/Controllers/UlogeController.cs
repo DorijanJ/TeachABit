@@ -6,15 +6,15 @@ namespace TeachABit.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RolesController(IRolesService rolesService) : BaseController
+    public class UlogeController(IUlogeService rolesService) : BaseController
     {
-        private readonly IRolesService _rolesService = rolesService;
+        private readonly IUlogeService _rolesService = rolesService;
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetAllRoles()
+        public async Task<IActionResult> GetAllUloge()
         {
-            return GetControllerResult(await _rolesService.GetAllRoles());
+            return GetControllerResult(await _rolesService.GetAllUloge());
         }
     }
 }

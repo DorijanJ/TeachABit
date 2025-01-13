@@ -8,17 +8,11 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Typography,
 } from "@mui/material";
 import { AppUserDto } from "../../models/AppUserDto";
-import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import SaveIcon from "@mui/icons-material/Save";
 
 interface Props {
     user: AppUserDto;
@@ -44,7 +38,13 @@ export default function AdminPanel(props: Props) {
 
     return (
         <Box sx={{ padding: 2, display: "flex", justifyContent: "center" }}>
-            <Card sx={{ width: "400px", boxShadow: 3 }}>
+            <Card
+                sx={{
+                    width: "500px",
+                    height: "130px",
+                    boxShadow: 3,
+                }}
+            >
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
                         Upravljanje ulogama korisnika
@@ -57,8 +57,8 @@ export default function AdminPanel(props: Props) {
                         width="100%"
                         marginBottom={2}
                     >
-                        <InputLabel id="uloga-select-label">Role</InputLabel>
-                        <div style={{ width: "calc(100% - 100px)" }}>
+                        <InputLabel id="uloga-select-label">Uloga</InputLabel>
+                        <div style={{ width: "calc(100% - 120px)" }}>
                             <Select
                                 id="uloga-select"
                                 value={selectedRole}
@@ -76,79 +76,14 @@ export default function AdminPanel(props: Props) {
                         </div>
                         <IconButton
                             sx={{
-                                width: "30px",
-                                height: "30px",
+                                width: "50px",
+                                height: "50px",
                                 border: "1px solid #922728",
                             }}
                         >
-                            <AddIcon color="primary" />
+                            <SaveIcon color="primary" />
                         </IconButton>
                     </Box>
-                    <TableContainer>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "#f5f5f5",
-                                            fontWeight: "bold",
-                                            borderBottom: "2px solid #ddd",
-                                        }}
-                                    >
-                                        Uloga
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "#f5f5f5",
-                                            fontWeight: "bold",
-                                            borderBottom: "2px solid #ddd",
-                                        }}
-                                    />
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {userRoles.length > 0 ? (
-                                    userRoles.map((role, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell
-                                                sx={{
-                                                    padding: "10px",
-                                                    borderBottom:
-                                                        "1px solid #ddd",
-                                                }}
-                                            >
-                                                {role}
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                <IconButton
-                                                    sx={{
-                                                        width: "30px",
-                                                        height: "30px",
-                                                        border: "1px solid #922728",
-                                                    }}
-                                                >
-                                                    <RemoveIcon color="primary" />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell
-                                            colSpan={1}
-                                            align="center"
-                                            sx={{
-                                                padding: "10px",
-                                                borderBottom: "1px solid #ddd",
-                                            }}
-                                        >
-                                            Nema uloga.
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
                 </CardContent>
             </Card>
         </Box>

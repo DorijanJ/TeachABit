@@ -12,6 +12,7 @@ using TeachABit.Model;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.Mapping;
 using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Uloge;
 
 namespace TeachABit.API.Configurations
 {
@@ -95,7 +96,7 @@ namespace TeachABit.API.Configurations
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
             })
-            .AddRoles<IdentityRole>()
+            .AddRoles<Uloga>()
             .AddEntityFrameworkStores<TeachABitContext>()
             .AddDefaultTokenProviders();
 

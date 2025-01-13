@@ -13,12 +13,12 @@ namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService, IKorisniciService korisniciService, IRolesService rolesService) : BaseController
+    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService, IKorisniciService korisniciService, IUlogeService rolesService) : BaseController
     {
         private readonly IAuthenticationService _authenticationService = authenticationService;
         private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly IKorisniciService _korisniciService = korisniciService;
-        private readonly IRolesService _rolesService = rolesService;
+        private readonly IUlogeService _rolesService = rolesService;
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -102,10 +102,10 @@ namespace TeachABit.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("{username}/dodaj-ulogu")]
+        [HttpPost("{username}/postavi-ulogu")]
         public async Task<IActionResult> AddKorisnikToRole(string username, [FromBody] AddKorisnikToRoleDto addKorisnikToRole)
         {
-            return GetControllerResult(await _rolesService.AddUserToRole(username, addKorisnikToRole.RoleName));
+            return GetControllerResult(await _rolesService.AddUserToUloga(username, addKorisnikToRole.RoleName));
         }
     }
 }
