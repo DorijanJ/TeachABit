@@ -13,4 +13,8 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="DTOs\Tecajevi\DetailedTecaj.cs" />
+  </ItemGroup>
+
 </Project>
