@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useGlobalContext } from "../../context/Global.context";
-import { Card, CardContent, Typography, Avatar } from "@mui/material";
+import { Card, CardContent, Typography, Avatar, Box } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent";
 import { AppUserDto } from "../../models/AppUserDto";
 
 import EditProfilDialog from "./EditProfilDialog";
+import AdminPanel from "./AdminPanel";
 
 export default function Profil() {
     const { username } = useParams();
@@ -32,56 +33,59 @@ export default function Profil() {
 
     return (
         user && (
-            <Card sx={{ width: 400 }}>
-                <CardContent
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        gap: "10px",
-                    }}
-                >
-                    <Avatar sx={{ width: 100, height: 100 }}>
-                        {user.id && user.profilnaSlikaVersion ? (
-                            <>
-                                <img
-                                    style={{
-                                        objectFit: "cover",
-                                        width: "100%",
-                                        height: "100%",
-                                    }}
-                                    src={`${
-                                        import.meta.env.VITE_REACT_AWS_BUCKET
-                                    }${user.id}${
-                                        user.profilnaSlikaVersion
-                                            ? "?version=" +
-                                              user.profilnaSlikaVersion
-                                            : ""
-                                    }`}
-                                />
-                            </>
-                        ) : (
-                            <>{user.username ? user.username[0] : ""}</>
+            <Box display="flex" flexDirection={"row"} justifyContent={"flex-start"} gap="10px" >
+                <Card sx={{ width: 400 }}>
+                    <CardContent
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "10px",
+                        }}
+                    >
+                        <Avatar sx={{ width: 100, height: 100 }}>
+                            {user.id && user.profilnaSlikaVersion ? (
+                                <>
+                                    <img
+                                        style={{
+                                            objectFit: "cover",
+                                            width: "100%",
+                                            height: "100%",
+                                        }}
+                                        src={`${import.meta.env.VITE_REACT_AWS_BUCKET
+                                            }${user.id}${user.profilnaSlikaVersion
+                                                ? "?version=" +
+                                                user.profilnaSlikaVersion
+                                                : ""
+                                            }`}
+                                    />
+                                </>
+                            ) : (
+                                <>{user.username ? user.username[0] : ""}</>
+                            )}
+                        </Avatar>
+                        {globalContext.userIsLoggedIn === true && isCurrentUser && (
+                            <EditProfilDialog
+                                onClose={() => {
+                                    if (username) GetUserByUsername(username);
+                                }}
+                            />
                         )}
-                    </Avatar>
-                    {globalContext.userIsLoggedIn === true && isCurrentUser && (
-                        <EditProfilDialog
-                            onClose={() => {
-                                if (username) GetUserByUsername(username);
-                            }}
-                        />
-                    )}
-                    <Typography variant="h4" align="center">
-                        Korisnički profil
-                    </Typography>
-                    <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                        <b>Username:</b> {user.username}
-                    </Typography>
-                    {user.roles &&
-                        user.roles.length > 0 &&
-                        user.roles.map((role) => <p>{role}</p>)}
-                </CardContent>
-            </Card>
+                        <Typography variant="h4" align="center">
+                            Korisnički profil
+                        </Typography>
+                        <Typography variant="h6" sx={{ marginBottom: 1 }}>
+                            <b>Username:</b> {user.username}
+                        </Typography>
+                        {user.roles &&
+                            user.roles.length > 0 &&
+                            user.roles.map((role) => <p>{role}</p>)}
+                    </CardContent>
+                </Card>
+                {globalContext.isAdmin && user && (
+                    <AdminPanel user={user} />
+                )}
+            </Box>
         )
     );
 }

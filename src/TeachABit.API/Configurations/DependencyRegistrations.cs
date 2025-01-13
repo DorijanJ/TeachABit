@@ -11,6 +11,7 @@ using TeachABit.Service.Services.Korisnici;
 using TeachABit.Service.Services.Objave;
 using TeachABit.Service.Services.Radionice;
 using TeachABit.Service.Services.Tecajevi;
+using TeachABit.Service.Services.Uloge;
 using TeachABit.Service.Util.Images;
 using TeachABit.Service.Util.Mail;
 using TeachABit.Service.Util.S3;
@@ -34,6 +35,7 @@ namespace TeachABit.API.Configurations
             services.AddScoped<IObjaveService, ObjaveService>();
             services.AddScoped<IRadioniceRepository, RadioniceRepository>();
             services.AddScoped<IRadioniceService, RadioniceService>();
+            services.AddScoped<IRolesService, RolesService>();
             services.AddScoped<Func<string, ModelStateFilter>>(provider => (messageType) =>
             {
                 return new ModelStateFilter(messageType);
