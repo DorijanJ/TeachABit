@@ -20,7 +20,6 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             return await _context.Tecajevi
                 .Include(x => x.Vlasnik)
                 .Include(x => x.Lekcije)
-                .ThenInclude(x => x.Vlasnik)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
         /*public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)

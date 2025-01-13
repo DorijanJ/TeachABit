@@ -6,24 +6,31 @@
     }
   },
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=teachabit;Username=backend;Password=back;SearchPath=backend"
+    "DefaultConnection": ""
   },
   "JwtSettings": {
-    "Issuer": "TeachABitBackend",
-    "Audience": "TeachABitUser",
-    "Key": "77da88bb64e8009b854fe90d30be74020a0bfb30711f78475a234b59c901cf7ff756e44bb31be2c31eee04f9d9e2c9742f5ecd1a0f7a7e7a0fa2db0dad72df01f27fa5c8c099e515d2457db912a892c46b89925885ad11053b7c49ef89ea7182064813bdae40d03618d8c6a4a24d30b04f4bc03fab120d00dcff4d3168c8608da75836f7850a5f76cea0361bcdc0fedfd9fc5ebe6527a1781a2ec10007c11d81328d32165711788da14aa00965a0d235a65deea27e1a6b8609063c6137ab21d1a0b7cc3a788ae999cb6dbe4886c685e7814528ae1107bed7faf1b5f45a46c959e02657d67f9e1faf451865c0c70fe5efe66eed496bba23bc9bba3ecce69d9003"
+    "Issuer": "",
+    "Audience": "",
+    "Key": ""
   },
   "Authentication": {
     "Google": {
-      "ClientId": "86969155950-3vmmii088p148opeuri7pgpbe8f1b4h4.apps.googleusercontent.com",
+      "ClientId": "",
       "ClientSecret": ""
     }
   },
+  "UseMailConfirmation": false,
   "SMTP": {
-    "Server": "smtp.sendgrid.net",
-    "Port": 587,
-    "ApiKey": "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",
-    "SenderEmail": "support@teachabit.org",
-    "SenderName":  "TeachABit"
+    "Server": "",
+    "Port": ,
+    "ApiKey": "",
+    "SenderEmail": "",
+    "SenderName": ""
+  },
+  "AllowedHosts": "",
+  "ClientUrl": "",
+  "S3Bucket": {
+    "AccessKey": "",
+    "SecretKey": ""
   }
 }

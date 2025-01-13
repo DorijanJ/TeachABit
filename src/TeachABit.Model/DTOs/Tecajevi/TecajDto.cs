@@ -4,5 +4,7 @@ namespace TeachABit.Model.DTOs.Tecajevi
     {
         public int Id { get; set; }
         public string Naziv { get; set; } = string.Empty;
+        public required string VlasnikId { get; set; }
+        public required string VlasnikUsername { get; set; }
     }
 }
