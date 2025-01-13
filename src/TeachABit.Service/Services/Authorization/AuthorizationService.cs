@@ -1,27 +1,36 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using TeachABit.Model.DTOs.Korisnici;
-using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Service.Services.Authorization
 {
-    public class AuthorizationService(IHttpContextAccessor httpContextAccessor, IMapper mapper) : IAuthorizationService
+    public class AuthorizationService(IHttpContextAccessor httpContextAccessor, IMapper mapper, UserManager<Korisnik> userManager) : IAuthorizationService
     {
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IMapper _mapper = mapper;
+        private readonly UserManager<Korisnik> _userManager = userManager;
 
         public Korisnik GetKorisnik()
         {
-            var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("No HTTP context available.");
-            var token = httpContext.Request.Cookies["AuthToken"] ?? throw new UnauthorizedAccessException();
+            var korisnik = GetKorisnikOptional();
+            return korisnik ?? throw new UnauthorizedAccessException();
+        }
+
+        public Korisnik? GetKorisnikOptional()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null) return null;
+            var token = httpContext.Request.Cookies["AuthToken"];
+            if (token == null) return null;
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwt = jwtHandler.ReadJwtToken(token);
             var usernameClaim = jwt.Claims.FirstOrDefault(claim => claim.Type == "unique_name");
             var idClaim = jwt.Claims.FirstOrDefault(claim => claim.Type == "nameid");
             var emailClaim = jwt.Claims.FirstOrDefault(claim => claim.Type == "email");
-            return (usernameClaim == null || idClaim == null || emailClaim == null) ? throw new UnauthorizedAccessException() : new Korisnik()
+            return (usernameClaim == null || idClaim == null || emailClaim == null) ? null : new Korisnik()
             {
                 Email = emailClaim.Value,
                 UserName = usernameClaim.Value,
@@ -29,9 +38,22 @@ namespace TeachABit.Service.Services.Authorization
             };
         }
 
-        public ServiceResult<KorisnikDto> GetKorisnikDto()
+        public KorisnikDto GetKorisnikDto()
         {
-            return ServiceResult<KorisnikDto>.Success(_mapper.Map<KorisnikDto>(GetKorisnik()));
+            return _mapper.Map<KorisnikDto>(GetKorisnik());
+        }
+
+        public async Task<KorisnikDto> GetKorisnikFull()
+        {
+            var korisnik = GetKorisnik();
+            return _mapper.Map<KorisnikDto>(await _userManager.FindByIdAsync(korisnik.Id));
+        }
+
+        public async Task<bool> IsAdmin()
+        {
+            var korisnik = GetKorisnik();
+            var roles = await _userManager.GetRolesAsync(korisnik);
+            return roles.Contains("Admin");
         }
     }
 }

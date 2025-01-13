@@ -44,7 +44,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             {
                 string lowerSearch = search.ToLower();
                 return await _context.Tecajevi
-                    .Where(t => t.Naziv.ToLower().Contains(search))
+                    .Where(t => t.Naziv.ToLower().Contains(lowerSearch))
                     .ToListAsync();
             }
             return await _context.Tecajevi.ToListAsync();

@@ -11,6 +11,7 @@ namespace TeachABit.API.Controllers
     {
         private readonly ITecajeviService _tecajeviService = tecajeviService;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetTecajList(string? search = null)
         {

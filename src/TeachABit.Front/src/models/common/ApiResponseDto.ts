@@ -1,6 +1,6 @@
 import { MessageResponseDto } from "./MessageResponseDto";
 
-export interface ApiResponseDto {
+export class ApiResponseDto {
     data?: any;
     message?: MessageResponseDto;
 }

@@ -1,7 +1,6 @@
 import { TextField, Button, Alert } from "@mui/material";
 import { useState, FormEvent, ChangeEvent } from "react";
 import useAuth from "../../../../../hooks/useAuth";
-import { ApiResponseDto } from "../../../../../models/common/ApiResponseDto";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
 import { RegisterAttemptDto } from "../../../../../models/RegistetAttemptDto";
 import localStyles from "../../AuthForm.module.css";
@@ -18,8 +17,8 @@ export default function RegisterForm() {
     const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleRegister = async (registerAttempt: RegisterAttemptDto) => {
-        const response: ApiResponseDto = await auth.register(registerAttempt);
-        if (response.message) setMessage(response.message);
+        const response = await auth.register(registerAttempt);
+        if (response && response.message) setMessage(response.message);
     };
 
     const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {

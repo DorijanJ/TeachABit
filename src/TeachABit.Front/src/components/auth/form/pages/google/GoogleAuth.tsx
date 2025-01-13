@@ -2,7 +2,6 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useState, FormEvent, ChangeEvent } from "react";
 import { MessageCodes } from "../../../../../enums/MessageCodes";
 import { AppUserDto } from "../../../../../models/AppUserDto";
-import { ApiResponseDto } from "../../../../../models/common/ApiResponseDto";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
 import {
     Dialog,
@@ -39,7 +38,10 @@ export default function GoogleAuth(props: Props) {
     };
 
     const handleGoogleLogin = async (authRequest: GoogleAuthData) => {
-        const response: ApiResponseDto = await auth.loginGoogle(authRequest);
+        const response = await auth.loginGoogle(authRequest);
+
+        if (!response) return;
+
         const user: AppUserDto = response.data;
         if (user?.username) props.onClose();
 

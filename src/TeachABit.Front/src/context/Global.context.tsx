@@ -5,21 +5,24 @@ import {
     SetStateAction,
     useContext,
     ReactNode,
+    useMemo,
 } from "react";
 import { AppUserDto } from "../models/AppUserDto";
 
 interface GlobalContextProps {
     userIsLoggedIn: boolean | undefined;
     setIsUserLoggedIn: Dispatch<SetStateAction<boolean | undefined>>;
-    loggedInUser: AppUserDto | undefined;
-    setLoggedInUser: Dispatch<SetStateAction<AppUserDto | undefined>>;
+    currentUser: AppUserDto | undefined;
+    setCurrentUser: Dispatch<SetStateAction<AppUserDto | undefined>>;
+    isAdmin: boolean;
 }
 
 const GlobalContext = createContext<GlobalContextProps>({
-    loggedInUser: undefined,
-    setIsUserLoggedIn: () => {},
+    currentUser: undefined,
+    setIsUserLoggedIn: () => { },
     userIsLoggedIn: undefined,
-    setLoggedInUser: () => {},
+    setCurrentUser: () => { },
+    isAdmin: false,
 });
 
 interface ProviderProps {
@@ -31,15 +34,21 @@ export const useGlobalContext = () => {
 };
 
 export function GlobalContextProvider({ children }: ProviderProps) {
-    const [loggedInUser, setLoggedInUser] = useState<AppUserDto>();
+    const [currentUser, setCurrentUser] = useState<AppUserDto>();
     const [userIsLoggedIn, setIsUserLoggedIn] = useState<boolean>();
+
+    const isAdmin = useMemo(() => {
+        return currentUser?.roles?.find(x => x === "Admin") !== undefined
+    }, [currentUser]);
+
     return (
         <GlobalContext.Provider
             value={{
                 userIsLoggedIn,
                 setIsUserLoggedIn,
-                loggedInUser,
-                setLoggedInUser,
+                currentUser,
+                setCurrentUser,
+                isAdmin,
             }}
         >
             {children}

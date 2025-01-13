@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 interface Props {
     content: string;
+    height?: number | string;
 }
 
 export default function TeachABitRenderer(props: Props) {
@@ -23,7 +24,13 @@ export default function TeachABitRenderer(props: Props) {
     });
 
     return (
-        <div className={"readonly-editor"}>
+        <div
+            className={"readonly-editor"}
+            style={{
+                height: props.height ?? "auto",
+                minHeight: props.height ?? "unset",
+            }}
+        >
             <EditorContent editor={editor} />
         </div>
     );

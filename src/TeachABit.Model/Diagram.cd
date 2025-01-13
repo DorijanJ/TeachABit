@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TeachABit.Model.DTOs.Authentication.ConfirmEmailDto">
+    <Position X="6" Y="7.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>DTOs\Authentication\ConfirmEmailDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Authentication.ForgotPasswordDto">
+    <Position X="6" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Authentication\ForgotPasswordDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Authentication.GoogleSignInAttempt">
+    <Position X="6" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>DTOs\Authentication\GoogleSignInAttempt.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Authentication.LoginAttemptDto">
+    <Position X="6" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAACAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Authentication\LoginAttemptDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Authentication.RegisterAttemptDto">
+    <Position X="6" Y="9.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Authentication\RegisterAttemptDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Authentication.ResendConfirmEmailDto">
+    <Position X="6" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Authentication\ResendConfirmEmailDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Authentication.ResetPasswordDto">
+    <Position X="6" Y="6" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAABAAA=</HashCode>
+      <FileName>DTOs\Authentication\ResetPasswordDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Korisnici.KorisnikDto">
+    <Position X="8.25" Y="2.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAABQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Korisnici\KorisnikDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Korisnici.UpdateKorisnikDto">
+    <Position X="8.25" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Korisnici\UpdateKorisnikDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Objave.DetailedObjavaDto">
+    <Position X="15.75" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Objave\DetailedObjavaDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Objave.KomentarDto">
+    <Position X="14" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAACAAAAAAAQAIAAAAAAAAAAAQA=</HashCode>
+      <FileName>DTOs\Objave\KomentarDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Objave.ObjavaDto">
+    <Position X="15.75" Y="2.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAAAAAAAACAAAAAAAQAAAAAAAAAgAAAQA=</HashCode>
+      <FileName>DTOs\Objave\ObjavaDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Radionice.RadionicaDto">
+    <Position X="10.25" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Radionice\RadionicaDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Result.Message.MessageDescriber">
+    <Position X="3.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AqAAEAABAAAAAAAEEAMAAAAAAAEBAAAAAAQgAQAgCQA=</HashCode>
+      <FileName>DTOs\Result\Message\MessageDescriber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Result.Message.MessageCodes">
+    <Position X="3.5" Y="11" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Result\Message\MessageDescriber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Result.Message.MessageResponse">
+    <Position X="3.5" Y="5.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAgAAAAAAAAAAAAAAAAIAQAAAA=</HashCode>
+      <FileName>DTOs\Result\Message\MessageResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Result.Message.MessageSeverities">
+    <Position X="3.5" Y="9" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAABAAAgAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>DTOs\Result\Message\MessageResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Result.Message.MessageTypes">
+    <Position X="3.5" Y="7.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAFAAA=</HashCode>
+      <FileName>DTOs\Result\Message\MessageResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Result.ControllerResult">
+    <Position X="1.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAIAAAAAA=</HashCode>
+      <FileName>DTOs\Result\ControllerResult.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Result.ServiceResult">
+    <Position X="1.25" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgABAACAAAAAIAAAAAA=</HashCode>
+      <FileName>DTOs\Result\ServiceResult.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Result.ServiceResult&lt;T&gt;">
+    <Position X="1.25" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAABCAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Result\ServiceResult.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.DTOs.Tecajevi.TecajDto">
+    <Position X="12.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Tecajevi\TecajDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.Mapping.AutoMapperProfile">
+    <Position X="19" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mapping\AutoMapperProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.Models.Korisnici.Extensions.OwnershipExtensions">
+    <Position X="8.25" Y="5.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Korisnici\Extensions\OwnershipExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.Models.Korisnici.Korisnik">
+    <Position X="8.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Korisnici\Korisnik.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.Models.Objave.Komentar">
+    <Position X="14" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAABAAAAAAAGAAAAAAAQCIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Objave\Komentar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.Models.Objave.Objava">
+    <Position X="15.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAAAAAAAAGAQAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Objave\Objava.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.Models.Radionice.Radionica">
+    <Position X="10.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Radionice\Radionica.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.Models.Tecajevi.Tecaj">
+    <Position X="12.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Tecajevi\Tecaj.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.ValidationAttributes.ImageFileAttribute">
+    <Position X="19" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>BAAAABAAAAAAAAAAAAgAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ValidationAttributes\ImageFileAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Model.TeachABitContext">
+    <Position X="19" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAEIAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>TeachABitContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="TeachABit.Model.DTOs.Result.Message.MessageStatusCode">
+    <Position X="3.5" Y="12.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>CAEAAAAIAAAAAAAgAAEAAAAAAAEAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>DTOs\Result\Message\MessageResponse.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
