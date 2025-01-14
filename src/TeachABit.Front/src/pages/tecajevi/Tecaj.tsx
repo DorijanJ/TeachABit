@@ -1,6 +1,7 @@
 import { Card, CardContent, Typography } from "@mui/material";
 import { TecajDto } from "../../models/TecajDto";
 
+
 interface Props {
     tecaj: TecajDto;
     onClick: () => void;
