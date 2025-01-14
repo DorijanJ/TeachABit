@@ -14,6 +14,7 @@ namespace TeachABit.Model
         public DbSet<Objava> Objave { get; set; }
         public DbSet<Radionica> Radionice { get; set; }
         public DbSet<Komentar> Komentari { get; set; }
+        public DbSet<Lekcija> Lekcije { get; set; }
         public DbSet<ObjavaReakcija> ObjavaReakcije { get; set; }
         public DbSet<KomentarReakcija> KomentarReakcije { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)

@@ -8,6 +8,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
     public class TecajeviRepository(TeachABitContext context) : ITecajeviRepository
     {
         private readonly TeachABitContext _context = context;
+        
 
         /*public async Task<List<Tecaj>> GetTecajList()
         {
@@ -49,6 +50,46 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             return await _context.Tecajevi.ToListAsync();
         }
 
+        public async Task<Lekcija?> GetLekcijaByIdWithTracking(int id)
+        {
+            return await _context.Lekcije.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Lekcija> CreateLekcija(Lekcija lekcija)
+        {
+            var createdLekcija = await _context.Lekcije.AddAsync(lekcija);
+            await _context.SaveChangesAsync();
+            return createdLekcija.Entity;
+        }
+
+        public async Task DeleteLekcija(int id, bool keepEntry = false)
+        {
+            if (keepEntry)
+                await _context.Lekcije.Where(x => x.Id == id).ExecuteUpdateAsync(x => x.SetProperty(p => p.IsDeleted, true));
+            else
+                await _context.Lekcije.Where(x => x.Id == id).ExecuteDeleteAsync();
+        }
+
+        public async Task<Lekcija> UpdateLekcija(Lekcija lekcija)
+        {
+            await _context.SaveChangesAsync();
+            return lekcija;
+        }
+
+        public async Task<Lekcija?> GetLekcijaById(int id)
+        {
+            return await _context.Lekcije.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<List<Lekcija>> GetLekcijaListByTecajId(int id)
+        {
+            return await _context.Lekcije
+                .Include(x => x.Tecaj)
+                .ThenInclude(x => x.Vlasnik)
+                .Where(x => x.Tecaj.Id == id)
+                .OrderByDescending(x => x.CreatedDateTime)
+                .ToListAsync();
+        }
 
     }
 }

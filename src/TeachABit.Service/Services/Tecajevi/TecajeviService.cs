@@ -1,10 +1,13 @@
 using AutoMapper;
+using TeachABit.Model.DTOs.Objave;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.DTOs.Tecajevi;
+using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Objave;
 using TeachABit.Model.Models.Tecajevi;
 using TeachABit.Repository.Repositories.Tecajevi;
-
+using TeachABit.Service.Services.Tecajevi;
 
 namespace TeachABit.Service.Services.Tecajevi
 {
@@ -47,6 +50,25 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success(tecajeviDto);
         }
 
+        public async Task<ServiceResult<LekcijaDto>> CreateLekcija(LekcijaDto lekcijaDto, int id)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+            
+            lekcijaDto.CreatedDateTime = DateTime.UtcNow;
+            lekcijaDto.Id = id;
 
+            KomentarDto createdLekcija = _mapper.Map<KomentarDto>(await _tecajeviRepository.CreateLekcija(_mapper.Map<Lekcija>(lekcijaDto)));
+            return ServiceResult.Success(createdLekcija);
+        }
+
+        public Task<ServiceResult> DeleteLekcija(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult<LekcijaDto>> UpdateLekcija(UpdatedLekcijaDto updateLekcija)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
