@@ -47,17 +47,11 @@ export default function SearchBox(props: SearchBoxProps) {
                             <InputAdornment position="start">
                                 {query && (
                                     <IconButton onClick={handleClear}>
-                                        <CloseIcon
-                                            color="primary"
-                                            fontSize="large"
-                                        />
+                                        <CloseIcon fontSize="large" />
                                     </IconButton>
                                 )}
                                 <IconButton onClick={handleSearch}>
-                                    <SearchIcon
-                                        color="primary"
-                                        fontSize="large"
-                                    />
+                                    <SearchIcon fontSize="large" />
                                 </IconButton>
                             </InputAdornment>
                         ),
@@ -68,13 +62,14 @@ export default function SearchBox(props: SearchBoxProps) {
                     "& .MuiOutlinedInput-root": {
                         height: props.height ?? "70px",
                         borderRadius: 3,
-                        backgroundColor: "#D9D9D9",
+                        backgroundColor: "white",
                     },
                     "& .MuiInputBase-input::placeholder": {
                         fontStyle: "italic",
                     },
                     "& .MuiInputBase-input": {
                         fontSize: "1.5rem",
+                        //color: "primary",
                     },
                 }}
             />
