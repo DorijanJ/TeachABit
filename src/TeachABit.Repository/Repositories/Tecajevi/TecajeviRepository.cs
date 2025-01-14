@@ -8,7 +8,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
     public class TecajeviRepository(TeachABitContext context) : ITecajeviRepository
     {
         private readonly TeachABitContext _context = context;
-        
+
 
         /*public async Task<List<Tecaj>> GetTecajList()
         {
@@ -24,10 +24,10 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
-           {
-               await _context.SaveChangesAsync();
-               return tecaj;
-           }
+        {
+            await _context.SaveChangesAsync();
+            return tecaj;
+        }
         public async Task<Tecaj> CreateTecaj(Tecaj tecaj)
         {
             EntityEntry<Tecaj> createdTecaj = await _context.Tecajevi.AddAsync(tecaj);
@@ -49,7 +49,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             }
             return await _context.Tecajevi.ToListAsync();
         }
-        
+
         public async Task<Tecaj?> GetTecajByIdWithTracking(int id)
         {
             return await _context.Tecajevi.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -69,10 +69,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
         public async Task DeleteLekcija(int id, bool keepEntry = false)
         {
-            if (keepEntry)
-                await _context.Lekcije.Where(x => x.Id == id).ExecuteUpdateAsync(x => x.SetProperty(p => p.IsDeleted, true));
-            else
-                await _context.Lekcije.Where(x => x.Id == id).ExecuteDeleteAsync();
+            await _context.Lekcije.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
         public async Task<Lekcija> UpdateLekcija(Lekcija lekcija)
