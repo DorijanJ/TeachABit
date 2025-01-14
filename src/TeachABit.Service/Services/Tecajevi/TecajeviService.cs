@@ -2,10 +2,11 @@ using AutoMapper;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.DTOs.Tecajevi;
+using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Korisnici.Extensions;
 using TeachABit.Model.Models.Tecajevi;
 using TeachABit.Repository.Repositories.Tecajevi;
 using TeachABit.Service.Services.Authorization;
-using TeachABit.Model.Models.Korisnici.Extensions;
 
 namespace TeachABit.Service.Services.Tecajevi
 {
@@ -48,20 +49,67 @@ namespace TeachABit.Service.Services.Tecajevi
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
-        public async Task<ServiceResult<TecajDto>> UpdateTecaj(UpdateTecajDto updateObjava)
+
+
+
+
+        public async Task<ServiceResult<TecajDto>> UpdateTecaj(UpdateTecajDto updateTecaj)
         {
-            var tecaj = await _tecajeviRepository.GetTecajByIdWithTracking(updateObjava.Id);
+            var tecaj = await _tecajeviRepository.GetTecajByIdWithTracking(updateTecaj.Id);
             var user = _authorizationService.GetKorisnik();
 
             if (tecaj == null || !user.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
-            tecaj.Naziv = updateObjava.Naziv;
-            tecaj.Sadrzaj = updateObjava.Sadrzaj;
+            tecaj.Naziv = updateTecaj.Naziv;
+            tecaj.Sadrzaj = updateTecaj.Sadrzaj;
 
-            var updatedObjava = _mapper.Map<TecajDto>(await _tecajeviRepository.UpdateTecaj(tecaj));
+            var updatedTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.UpdateTecaj(tecaj));
 
-            return ServiceResult.Success(updatedObjava);
+            return ServiceResult.Success(updatedTecaj);
         }
 
+        public async Task<ServiceResult<LekcijaDto>> CreateLekcija(LekcijaDto lekcijaDto, int id)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+
+            lekcijaDto.CreatedDateTime = DateTime.UtcNow;
+            lekcijaDto.Id = id;
+
+
+            LekcijaDto createdLekcija = _mapper.Map<LekcijaDto>(await _tecajeviRepository.CreateLekcija(_mapper.Map<Lekcija>(lekcijaDto)));
+            return ServiceResult.Success(createdLekcija);
+        }
+
+
+
+
+        public async Task<ServiceResult> DeleteLekcija(int id)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+
+            Lekcija? lekcija = await _tecajeviRepository.GetLekcijaById(id);
+
+            bool isAdmin = await _authorizationService.IsAdmin();
+
+            if (lekcija == null || (!isAdmin && !korisnik.Owns(lekcija.Tecaj))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            await _tecajeviRepository.DeleteLekcija(id, false);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult<LekcijaDto>> UpdateLekcija(UpdatedLekcijaDto updateLekcija)
+        {
+            var lekcija = await _tecajeviRepository.GetLekcijaByIdWithTracking(updateLekcija.Id);
+            var user = _authorizationService.GetKorisnik();
+
+            if (lekcija == null || !user.Owns(lekcija.Tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            lekcija.Sadrzaj = updateLekcija.Sadrzaj;
+            lekcija.LastUpdatedDateTime = DateTime.UtcNow;
+
+            var updatedLekcija = _mapper.Map<LekcijaDto>(await _tecajeviRepository.UpdateLekcija(lekcija));
+
+            return ServiceResult.Success(updatedLekcija);
+        }
     }
 }
