@@ -111,9 +111,9 @@ export default function Navigation() {
                             isExpanded={isExpanded}
                         />
                         <NavigationItem
-                            route={"/forumi"}
-                            name={"Forumi"}
-                            isActive={isActive("/forumi")}
+                            route={"/forum"}
+                            name={"Forum"}
+                            isActive={isActive("/forum")}
                             icon={
                                 <ForumIcon
                                     color="primary"
@@ -127,9 +127,9 @@ export default function Navigation() {
                     <Box sx={{ flexGrow: 1 }} />
 
                     {globalContext.userIsLoggedIn === true &&
-                        globalContext.loggedInUser &&
+                        globalContext.currentUser &&
                         isExpanded && (
-                            <NavigationUser user={globalContext.loggedInUser} />
+                            <NavigationUser user={globalContext.currentUser} />
                         )}
 
                     {globalContext.userIsLoggedIn === false && isExpanded && (

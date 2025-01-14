@@ -19,11 +19,15 @@ namespace TeachABit.Model.Mapping
             CreateMap<ObjavaDto, Objava>();
             CreateMap<Objava, ObjavaDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
-                .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
-                .Include<Objava, DetailedObjavaDto>();
-            CreateMap<Objava, DetailedObjavaDto>();
+                .ForMember(x => x.LikeCount, opt => opt.MapFrom(x => x.ObjavaReakcijaList.Select(x => x.Liked ? 1 : -1).Sum()))
+                .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion));
+            CreateMap<KomentarDto, Komentar>();
             CreateMap<Komentar, KomentarDto>()
-                .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName));
+                .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
+                .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
+                .ForMember(x => x.Sadrzaj, opt => opt.MapFrom(x => x.IsDeleted ? "[Removed]" : x.Sadrzaj))
+                .ForMember(x => x.LikeCount, opt => opt.MapFrom(x => x.KomentarReakcijaList.Select(x => x.Liked ? 1 : -1).Sum()))
+                .ForMember(x => x.NadKomentarId, opt => opt.MapFrom(x => x.NadKomentarId));
             CreateMap<Radionica, RadionicaDto>().ReverseMap();
         }
     }

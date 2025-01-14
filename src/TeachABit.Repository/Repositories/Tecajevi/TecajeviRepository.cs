@@ -16,7 +16,11 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
         public async Task<Tecaj?> GetTecaj(int id)
         {
-            return await _context.Tecajevi.FirstOrDefaultAsync(x => x.Id == id);
+            //return await _context.Tecajevi.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Tecajevi
+                .Include(x => x.Vlasnik)
+                .Include(x => x.Lekcije)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
         /*public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
         {
@@ -39,7 +43,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             {
                 string lowerSearch = search.ToLower();
                 return await _context.Tecajevi
-                    .Where(t => t.Naziv.ToLower().Contains(search))
+                    .Where(t => t.Naziv.ToLower().Contains(lowerSearch))
                     .ToListAsync();
             }
             return await _context.Tecajevi.ToListAsync();

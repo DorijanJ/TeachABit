@@ -1,3 +1,4 @@
+// @ts-nocheck
 import StarterKit from "@tiptap/starter-kit";
 import TextStyle from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
@@ -18,6 +19,7 @@ export const defaultEditorExtensions = [
             keepMarks: true,
             keepAttributes: false,
         },
+        codeBlock: false,
     }),
     TextStyle,
     Color,
@@ -40,6 +42,7 @@ export const defaultReadOnlyEditorExtensions = [
             keepMarks: true,
             keepAttributes: false,
         },
+        codeBlock: false,
     }),
     TextStyle,
     Color,

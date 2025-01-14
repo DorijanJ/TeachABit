@@ -1,6 +1,8 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import globalStore from "../stores/GlobalStore";
 import { ApiResponseDto } from "../models/common/ApiResponseDto";
+import { MessageResponseDto } from "../models/common/MessageResponseDto";
+import Notification from "../models/common/Notification";
 
 interface RequestInjector extends InternalAxiosRequestConfig {
     loading?: boolean;
@@ -28,6 +30,7 @@ axios.interceptors.response.use(
         if (config.loading) {
             globalStore.decrementPageLoading();
         }
+
         return response.data;
     },
     (error) => {
@@ -39,44 +42,83 @@ axios.interceptors.response.use(
             globalStore.decrementPageLoading();
         }
 
-        if (error.response?.data) return error.response.data;
+        const responseData: ApiResponseDto | undefined = error.response?.data;
 
-        return Promise.reject({ message: "Something went wrong :(" });
+        if (
+            responseData?.message?.type === "global" ||
+            responseData?.message?.type === undefined
+        ) {
+            globalStore.addNotification({
+                message:
+                    responseData?.message?.message ??
+                    "Nešto je pošlo po krivu.",
+                severity: responseData?.message?.severity ?? "error",
+            });
+        }
+        return Promise.reject({
+            data: responseData,
+        });
     }
 );
+
+const handleRequest = async (
+    promise: Promise<any>
+): Promise<ApiResponseDto | undefined> => {
+    try {
+        return await promise;
+    } catch (error: any) {
+        return error?.data ?? undefined;
+    }
+};
 
 const requests = {
     get: async (
         endpoint: string,
         loading: boolean = false
-    ): Promise<ApiResponseDto> => {
-        const response = await axios.get(
-            `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
-            { loading } as RequestInjector
+    ): Promise<ApiResponseDto | undefined> => {
+        return handleRequest(
+            axios.get(`${import.meta.env.VITE_REACT_API_URL}/${endpoint}`, {
+                loading,
+            } as RequestInjector)
         );
-        return response;
     },
     post: async (
         endpoint: string,
         data: any,
         loading: boolean = false
-    ): Promise<ApiResponseDto> => {
-        const response = await axios.post(
-            `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
-            data,
-            { loading } as RequestInjector
+    ): Promise<ApiResponseDto | undefined> => {
+        return handleRequest(
+            axios.post(
+                `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
+                data,
+                { loading } as RequestInjector
+            )
         );
-        return response;
     },
     delete: async (
         endpoint: string,
         loading: boolean = false
-    ): Promise<ApiResponseDto> => {
-        const response = await axios.delete(
-            `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
-            { loading } as RequestInjector
+    ): Promise<ApiResponseDto | undefined> => {
+        return handleRequest(
+            axios.delete(`${import.meta.env.VITE_REACT_API_URL}/${endpoint}`, {
+                loading,
+            } as RequestInjector)
         );
-        return response;
+    },
+    put: async (
+        endpoint: string,
+        data: any,
+        loading: boolean = false
+    ): Promise<ApiResponseDto | undefined> => {
+        return handleRequest(
+            axios.put(
+                `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
+                data,
+                {
+                    loading,
+                } as RequestInjector
+            )
+        );
     },
     getWithLoading: async (endpoint: string) => {
         return requests.get(endpoint, true);
@@ -86,6 +128,9 @@ const requests = {
     },
     deleteWithLoading: async (endpoint: string) => {
         return requests.delete(endpoint, true);
+    },
+    putWithLoading: async (endpoint: string, data?: any) => {
+        return requests.put(endpoint, data, true);
     },
 };
 

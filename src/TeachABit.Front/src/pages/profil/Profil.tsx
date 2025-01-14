@@ -14,14 +14,14 @@ export default function Profil() {
     const [user, setUser] = useState<AppUserDto>();
 
     const isCurrentUser = useMemo(() => {
-        return globalContext.loggedInUser?.username === username;
-    }, [globalContext.loggedInUser?.username, username]);
+        return globalContext.currentUser?.username === username;
+    }, [globalContext.currentUser?.username, username]);
 
     const GetUserByUsername = async (username: string) => {
         const response = await requests.getWithLoading(
             `account/by-username/${username}`
         );
-        if (response.data) {
+        if (response && response.data) {
             setUser(response.data);
         }
     };
@@ -42,23 +42,29 @@ export default function Profil() {
                     }}
                 >
                     <Avatar sx={{ width: 100, height: 100 }}>
-                        <img
-                            key={Date.now()}
-                            style={{
-                                objectFit: "cover",
-                                width: "100%",
-                                height: "100%",
-                            }}
-                            src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                                user.id
-                            }${
-                                user.profilnaSlikaVersion
-                                    ? "?version=" + user.profilnaSlikaVersion
-                                    : ""
-                            }`}
-                        />
+                        {user.id && user.profilnaSlikaVersion ? (
+                            <>
+                                <img
+                                    style={{
+                                        objectFit: "cover",
+                                        width: "100%",
+                                        height: "100%",
+                                    }}
+                                    src={`${
+                                        import.meta.env.VITE_REACT_AWS_BUCKET
+                                    }${user.id}${
+                                        user.profilnaSlikaVersion
+                                            ? "?version=" +
+                                              user.profilnaSlikaVersion
+                                            : ""
+                                    }`}
+                                />
+                            </>
+                        ) : (
+                            <>{user.username ? user.username[0] : ""}</>
+                        )}
                     </Avatar>
-                    {globalContext.userIsLoggedIn === true && (
+                    {globalContext.userIsLoggedIn === true && isCurrentUser && (
                         <EditProfilDialog
                             onClose={() => {
                                 if (username) GetUserByUsername(username);
@@ -71,6 +77,9 @@ export default function Profil() {
                     <Typography variant="h6" sx={{ marginBottom: 1 }}>
                         <b>Username:</b> {user.username}
                     </Typography>
+                    {user.roles &&
+                        user.roles.length > 0 &&
+                        user.roles.map((role) => <p>{role}</p>)}
                 </CardContent>
             </Card>
         )

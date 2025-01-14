@@ -28,7 +28,7 @@ const theme = createTheme({
         h1: {
             fontSize: "2rem",
         },
-        fontWeightBold: "bolder"
+        fontWeightBold: "bolder",
     },
     spacing: 8,
 });

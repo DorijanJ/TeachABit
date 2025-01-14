@@ -8,6 +8,7 @@ import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
 const USERNAME_KEY = "username";
 const ID_KEY = "id";
 const COOKIE_TTL = "cookie_ttl";
+const ROLES = "roles";
 
 interface GoogleAuthRequest {
     token: string;
@@ -21,58 +22,68 @@ const useAuth = () => {
         const username = localStorage.getItem(USERNAME_KEY);
         const id = localStorage.getItem(ID_KEY);
         const ttl = localStorage.getItem(COOKIE_TTL);
+        const roles = localStorage.getItem(ROLES);
 
         if (
             username !== null &&
             id !== null &&
             ttl &&
+            roles &&
             new Date().getTime() < parseInt(ttl)
         ) {
-            globalContext.setLoggedInUser({ username: username, id: id });
+            globalContext.setCurrentUser({
+                username: username,
+                id: id,
+                roles: JSON.parse(roles),
+            });
             globalContext.setIsUserLoggedIn(true);
         } else {
-            globalContext.setLoggedInUser(undefined);
+            globalContext.setCurrentUser(undefined);
             globalContext.setIsUserLoggedIn(false);
         }
     };
 
     const login = async (
         loginAttempt: LoginAttemptDto
-    ): Promise<ApiResponseDto> => {
+    ): Promise<ApiResponseDto | undefined> => {
         const response = await requests.postWithLoading(
             "account/login",
             loginAttempt
         );
-        const user: AppUserDto = response.data;
-        if (user && user.username) {
-            setAuthData(user);
+        if (response) {
+            const user: AppUserDto = response.data;
+            if (user && user.username) {
+                setAuthData(user);
+            }
         }
         return response;
     };
 
     const loginGoogle = async (
         googleAuthRequest: GoogleAuthRequest
-    ): Promise<ApiResponseDto> => {
-        const response: ApiResponseDto = await requests.postWithLoading(
+    ): Promise<ApiResponseDto | undefined> => {
+        const response = await requests.postWithLoading(
             "account/google-signin",
             googleAuthRequest
         );
-        const user: AppUserDto = response.data;
-        if (user && user.username) {
-            setAuthData(user);
+        if (response) {
+            const user: AppUserDto = response.data;
+            if (user && user.username) {
+                setAuthData(user);
+            }
         }
         return response;
     };
 
     const logout = async () => {
-        await requests.postWithLoading("account/logout");
         clearAuthData();
+        await requests.postWithLoading("account/logout");
     };
 
     const register = async (
         registerAttempt: RegisterAttemptDto
-    ): Promise<ApiResponseDto> => {
-        const response: ApiResponseDto = await requests.postWithLoading(
+    ): Promise<ApiResponseDto | undefined> => {
+        const response = await requests.postWithLoading(
             "account/register",
             registerAttempt
         );
@@ -86,18 +97,22 @@ const useAuth = () => {
             localStorage.setItem(USERNAME_KEY, appUser.username);
             localStorage.setItem(ID_KEY, appUser.id);
             localStorage.setItem(COOKIE_TTL, ttl.toString());
-            globalContext.setLoggedInUser({
+            localStorage.setItem(ROLES, JSON.stringify(appUser.roles));
+            globalContext.setCurrentUser({
                 username: appUser.username,
                 id: appUser.id,
+                roles: appUser.roles,
             });
             globalContext.setIsUserLoggedIn(true);
         }
     };
 
     const clearAuthData = () => {
+        window.location.reload();
         localStorage.removeItem(USERNAME_KEY);
         localStorage.removeItem(ID_KEY);
-        globalContext.setLoggedInUser(undefined);
+        localStorage.removeItem(ROLES);
+        globalContext.setCurrentUser(undefined);
         globalContext.setIsUserLoggedIn(false);
     };
 

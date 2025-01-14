@@ -36,7 +36,7 @@ export default function EditProfilDialog(props: Props) {
             "account/update-korisnik",
             formData
         );
-        if (response.message && response.message.severity === "error")
+        if (response && response.message?.severity === "error")
             setMessage(response.message);
         else {
             props.onClose();

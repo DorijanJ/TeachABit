@@ -1,15 +1,14 @@
 import SearchBox from "../../components/searchbox/SearchBox";
 
+// temp function
 function abc(query?: string) {
     console.log("Search:", query);
 }
 
-export default function Tecajevi() {
+export default function Radionice() {
     return (
         <>
-            <div>
-                <SearchBox onSearch={abc} />
-            </div>
+            <SearchBox onSearch={abc} />
         </>
     );
 }

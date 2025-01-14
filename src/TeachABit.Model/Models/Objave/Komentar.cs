@@ -20,5 +20,15 @@ namespace TeachABit.Model.Models.Objave
         public required virtual Objava Objava { get; set; }
 
         public DateTime CreatedDateTime { get; set; }
+        public DateTime? LastUpdatedDateTime { get; set; } = null;
+
+        public bool IsDeleted { get; set; } = false;
+
+        public int? NadKomentarId { get; set; } = null;
+        [ForeignKey(nameof(NadKomentarId))]
+        public virtual Komentar? NadKomentar { get; set; }
+
+        public virtual List<Komentar> PodKomentarList { get; set; } = [];
+        public virtual List<KomentarReakcija> KomentarReakcijaList { get; set; } = [];
     }
 }

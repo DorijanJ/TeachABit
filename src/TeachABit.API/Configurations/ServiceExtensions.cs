@@ -95,6 +95,7 @@ namespace TeachABit.API.Configurations
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
             })
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<TeachABitContext>()
             .AddDefaultTokenProviders();
 
@@ -155,6 +156,7 @@ namespace TeachABit.API.Configurations
         {
             services.AddDbContext<TeachABitContext>(opt =>
             {
+                opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 opt.UseNpgsql(connectionString, x => x.MigrationsHistoryTable("__EFMigrationsHistory", "backend"));
             });
 

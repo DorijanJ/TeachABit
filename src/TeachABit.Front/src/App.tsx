@@ -4,18 +4,19 @@ import "./styles/tiptap.css";
 import useAuth from "./hooks/useAuth";
 import { useEffect } from "react";
 import GenericRoute from "./components/auth/routing/GenericRoute";
-import Tecajevi from "./pages/tecajevi_temp/Tecajevi";
 import { observer } from "mobx-react";
 import globalStore from "./stores/GlobalStore";
 import { Backdrop, CircularProgress } from "@mui/material";
 import PublicRoute from "./components/auth/routing/PublicRoute";
-import ConfirmEmail from "./pages/confirmEmail/ConfirmEmail";
-import ResetPassword from "./pages/resetPassword_temp/ResetPassword";
 import Forum from "./pages/forum/Forum";
-import PrivateRoute from "./components/auth/routing/PrivateRoute";
 import Profil from "./pages/profil/Profil";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Radionice from "./pages/radionice_temp/Radionice";
+import Tecajevi from "./pages/tecajevi/Tecajevi";
+import Radionice from "./pages/radionice/Radionice";
+import ConfirmEmail from "./pages/confirmEmail_temp/ConfirmEmail";
+import ResetPassword from "./pages/resetPassword/ResetPassword";
+import ObjavaPage from "./pages/forum/ObjavaPage";
+import Notification from "./components/notification/Notification";
 
 const App = observer(() => {
     const auth = useAuth();
@@ -37,6 +38,16 @@ const App = observer(() => {
                     <CircularProgress color="inherit" />
                 </Backdrop>
             )}
+
+            {globalStore.globalNotifications.map((n) => (
+                <Notification
+                    key={n.id}
+                    message={n.message}
+                    severity={n.severity}
+                    onClose={() => globalStore.clearNotification(n.id)}
+                />
+            ))}
+
             <BrowserRouter>
                 <div className="appContainer">
                     <Routes>
@@ -59,7 +70,7 @@ const App = observer(() => {
                             }
                         />
                         <Route
-                            path="forumi"
+                            path="forum"
                             element={
                                 <GenericRoute page={<Forum />} withNavigation />
                             }
@@ -85,8 +96,17 @@ const App = observer(() => {
                         <Route
                             path="profil/:username"
                             element={
-                                <PrivateRoute
+                                <GenericRoute
                                     page={<Profil />}
+                                    withNavigation
+                                />
+                            }
+                        />
+                        <Route
+                            path="objava/:objavaId"
+                            element={
+                                <GenericRoute
+                                    page={<ObjavaPage />}
                                     withNavigation
                                 />
                             }

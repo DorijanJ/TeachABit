@@ -1,5 +1,3 @@
-import { KomentarDto } from "./KomentarDto";
-
 export interface ObjavaDto {
     id?: number;
     naziv: string;
@@ -7,8 +5,6 @@ export interface ObjavaDto {
     vlasnikId?: string;
     vlasnikUsername?: string;
     vlasnikProfilnaSlikaVersion?: string;
-}
-
-export interface DetailedObjavaDto extends ObjavaDto {
-    komentari?: KomentarDto[];
+    liked?: boolean;
+    likeCount?: number;
 }

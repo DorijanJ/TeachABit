@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TeachABit.Service.Services.Authentication.AuthenticationService" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>IAAABAABgBAAEUAAAABBAgIAAAABAIAAAAEQBAAQAAA=</HashCode>
+      <FileName>Services\Authentication\AuthenticationService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TeachABit.Service.Services.Authorization.AuthorizationService" BaseTypeListCollapsed="true">
+    <Position X="3" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAIABAAAAAAAAABAAAAABAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Services\Authorization\AuthorizationService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TeachABit.Service.Services.Korisnici.KorisniciService" BaseTypeListCollapsed="true">
+    <Position X="13.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAADAAAAAAAAAAAAAABAAAAAAEAAAAAEAAAAABAAAA=</HashCode>
+      <FileName>Services\Korisnici\KorisniciService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TeachABit.Service.Services.Objave.ObjaveService" BaseTypeListCollapsed="true">
+    <Position X="16.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAgABAAAAAABAAAAABAAAAAAEAAACAABAAA=</HashCode>
+      <FileName>Services\Objave\ObjaveService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TeachABit.Service.Services.Radionice.RadioniceService" BaseTypeListCollapsed="true">
+    <Position X="18.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABgACACAAAAAAAEAAAAAAAAAg=</HashCode>
+      <FileName>Services\Radionice\RadioniceService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TeachABit.Service.Services.Tecajevi.TecajeviService" BaseTypeListCollapsed="true">
+    <Position X="15" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAABAAAAAAAAAABAAABAAAAAEACAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Tecajevi\TecajeviService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TeachABit.Service.Util.Images.ImageManipulationService" BaseTypeListCollapsed="true">
+    <Position X="6.75" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Util\Images\ImageManipulationService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TeachABit.Service.Util.Mail.MailDescriber">
+    <Position X="9.25" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAg=</HashCode>
+      <FileName>Util\Mail\MailDescriber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TeachABit.Service.Util.Mail.MailSenderService" BaseTypeListCollapsed="true">
+    <Position X="9.25" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Util\Mail\MailSenderService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TeachABit.Service.Util.S3.S3BucketService" BaseTypeListCollapsed="true">
+    <Position X="11.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAAAA=</HashCode>
+      <FileName>Util\S3\S3BucketService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TeachABit.Service.Util.Token.TokenService" BaseTypeListCollapsed="true">
+    <Position X="5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Util\Token\TokenService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="TeachABit.Service.Services.Authentication.IAuthenticationService">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAABAAAAAUAAAAAAAAIAAAABAIAAAAEQAAAAAAA=</HashCode>
+      <FileName>Services\Authentication\IAuthenticationService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TeachABit.Service.Services.Authorization.IAuthorizationService">
+    <Position X="3" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Services\Authorization\IAuthorizationService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TeachABit.Service.Services.Korisnici.IKorisniciService">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Korisnici\IKorisniciService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TeachABit.Service.Services.Objave.IObjaveService">
+    <Position X="16.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAABAAAAAAAAAAAABAAAAAAAAAACAABAAA=</HashCode>
+      <FileName>Services\Objave\IObjaveService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TeachABit.Service.Services.Radionice.IRadioniceService">
+    <Position X="18.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACACAAAAAAAEAAAAAAAAAg=</HashCode>
+      <FileName>Services\Radionice\IRadioniceService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TeachABit.Service.Services.Tecajevi.ITecajeviService">
+    <Position X="15" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAABAAAAAAAAAAAAAABAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Tecajevi\ITecajeviService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TeachABit.Service.Util.Images.IImageManipulationService">
+    <Position X="6.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Util\Images\IImageManipulationService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TeachABit.Service.Util.Mail.IMailSenderService">
+    <Position X="9.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Util\Mail\IMailSenderService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TeachABit.Service.Util.S3.IS3BucketService">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Util\S3\IS3BucketService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TeachABit.Service.Util.Token.ITokenService">
+    <Position X="5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Util\Token\ITokenService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
