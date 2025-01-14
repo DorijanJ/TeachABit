@@ -6,12 +6,19 @@ import { useGlobalContext } from "../../context/Global.context";
 import Tecaj from "./Tecaj";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
+import TecajPopup from "./TecajPopup";
+
 
 export default function Tecajevi() {
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
     const globalContext = useGlobalContext();
 
     const { buildRequest } = useRequestBuilder();
+
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    const handleOpen = () => setDialogOpen(true);
+    const handleClose = () => setDialogOpen(false);
 
     const GetTecajList = async (search: string | undefined = undefined) => {
         const response = await requests.getWithLoading(
@@ -45,14 +52,15 @@ export default function Tecajevi() {
                 }}
             >
                 <SearchBox onSearch={GetTecajList} />
-                {globalContext.userIsLoggedIn && (
-                    <Button
+
+                { globalContext.userIsLoggedIn && (<Button
                         variant="contained"
-                        onClick={() => console.log("stvori tecaj")}
+                        onClick={() => {handleOpen()}}
                     >
                         Stvori tecaj
-                    </Button>
-                )}
+                    </Button>)}
+                <TecajPopup isOpen={dialogOpen} onClose={handleClose} />
+
             </div>
             <div
                 style={{
@@ -73,6 +81,7 @@ export default function Tecajevi() {
                     />
                 ))}
             </div>
+
         </div>
     );
 }

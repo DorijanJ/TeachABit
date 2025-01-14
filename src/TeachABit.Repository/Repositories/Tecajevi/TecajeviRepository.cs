@@ -23,11 +23,11 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 .Include(x => x.Lekcije)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-        /*public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
-        {
-            // Moram provjeriti najbolji način implementacije za update.
-            ...
-        }*/
+        public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
+           {
+               await _context.SaveChangesAsync();
+               return tecaj;
+           }
         public async Task<Tecaj> CreateTecaj(Tecaj tecaj)
         {
             EntityEntry<Tecaj> createdTecaj = await _context.Tecajevi.AddAsync(tecaj);
@@ -48,6 +48,11 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                     .ToListAsync();
             }
             return await _context.Tecajevi.ToListAsync();
+        }
+        
+        public async Task<Tecaj?> GetTecajByIdWithTracking(int id)
+        {
+            return await _context.Tecajevi.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Lekcija?> GetLekcijaByIdWithTracking(int id)
