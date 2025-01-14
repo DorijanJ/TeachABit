@@ -10,5 +10,6 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         Task<Tecaj> UpdateTecaj(Tecaj tecaj);
         Task DeleteTecaj(int id);
         Task<List<Tecaj>> GetTecajList(string? search = null);
+        Task<Tecaj?> GetTecajByIdWithTracking(int id);
     }
 }

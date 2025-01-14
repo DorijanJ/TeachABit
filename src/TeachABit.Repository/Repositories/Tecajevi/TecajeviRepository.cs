@@ -47,7 +47,11 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             }
             return await _context.Tecajevi.ToListAsync();
         }
-
+        
+        public async Task<Tecaj?> GetTecajByIdWithTracking(int id)
+        {
+            return await _context.Tecajevi.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
 
     }
 }

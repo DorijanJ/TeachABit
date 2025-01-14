@@ -33,7 +33,7 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateTecaj(TecajDto tecaj)
+        public async Task<IActionResult> UpdateTecaj(UpdateTecajDto tecaj)
         {
             return GetControllerResult(await _tecajeviService.UpdateTecaj(tecaj));
         }
