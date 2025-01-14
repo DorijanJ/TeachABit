@@ -32,11 +32,11 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _tecajeviService.CreateTecaj(tecaj));
         }
 
-        /*[HttpPut]
+        [HttpPut]
         public async Task<IActionResult> UpdateTecaj(TecajDto tecaj)
         {
             return GetControllerResult(await _tecajeviService.UpdateTecaj(tecaj));
-        }*/
+        }u
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTecaj(int id)
