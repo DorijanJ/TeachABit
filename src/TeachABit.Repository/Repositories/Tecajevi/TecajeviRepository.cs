@@ -16,17 +16,16 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
         public async Task<Tecaj?> GetTecaj(int id)
         {
-            //return await _context.Tecajevi.FirstOrDefaultAsync(x => x.Id == id);
             return await _context.Tecajevi
                 .Include(x => x.Vlasnik)
                 .Include(x => x.Lekcije)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-        /*public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
-        {
-            // Moram provjeriti najbolji način implementacije za update.
-            ...
-        }*/
+        public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
+           {
+               await _context.SaveChangesAsync();
+               return tecaj;
+           }
         public async Task<Tecaj> CreateTecaj(Tecaj tecaj)
         {
             EntityEntry<Tecaj> createdTecaj = await _context.Tecajevi.AddAsync(tecaj);

@@ -36,7 +36,7 @@ namespace TeachABit.API.Controllers
         public async Task<IActionResult> UpdateTecaj(TecajDto tecaj)
         {
             return GetControllerResult(await _tecajeviService.UpdateTecaj(tecaj));
-        }u
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTecaj(int id)
