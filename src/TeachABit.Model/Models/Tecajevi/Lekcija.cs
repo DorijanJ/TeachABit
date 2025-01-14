@@ -1,21 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Model.Models.Tecajevi
 {
-    [Table("Tecaj")]
-    public class Tecaj
+    [Table("Lekcija")]
+    public class Lekcija
     {
         [Key]
         public int Id { get; set; }
         public string Naziv { get; set; } = string.Empty;
         public string Sadrzaj { get; set; } = string.Empty;
 
-        public required string VlasnikId { get; set; } = string.Empty;
-        [ForeignKey(nameof(VlasnikId))]
-        public required virtual Korisnik Vlasnik { get; set; }
+        public required int TecajId { get; set; }
+        [ForeignKey(nameof(TecajId))]
+        public required virtual Tecaj Tecaj { get; set; }
 
-        public virtual List<Lekcija> Lekcije { get; set; } = [];
+        public DateTime CreatedDateTime { get; set; }
     }
 }

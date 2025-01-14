@@ -11,5 +11,6 @@ namespace TeachABit.Service.Services.Tecajevi
         //Task<ServiceResult<TecajDto>> UpdateTecaj(TecajDto Tecaj);
         Task<ServiceResult> DeleteTecaj(int id);
         Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null);
+        Task<ServiceResult<TecajDto>> UpdateTecaj(UpdateTecajDto updateObjava);
     }
 }
