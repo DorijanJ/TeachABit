@@ -36,6 +36,7 @@ export default function RegisterForm() {
                     fullWidth
                     label="Korisničko ime"
                     name="username"
+                    color="primary"
                     value={registerAttempt.username}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setRegisterAttempt((prev: RegisterAttemptDto) => ({
@@ -46,6 +47,7 @@ export default function RegisterForm() {
                 />
                 <TextField
                     fullWidth
+                    color="primary"
                     label="Email"
                     name="email"
                     value={registerAttempt.email}
@@ -58,6 +60,7 @@ export default function RegisterForm() {
                 />
                 <TextField
                     fullWidth
+                    color="primary"
                     label="Lozinka"
                     name="password"
                     type="password"
@@ -73,6 +76,7 @@ export default function RegisterForm() {
                     className={localStyles.myButton}
                     variant="contained"
                     type="submit"
+                    color="primary"
                 >
                     Registracija
                 </Button>

@@ -27,7 +27,13 @@ export default function NavigationItem(props: Props) {
                     (props.isActive ? ` ${localStyles.activeItem}` : "")
                 }
             >
-                <ListItemIcon sx={{ width: "30px", minWidth: "unset" }}>
+                <ListItemIcon
+                    sx={{
+                        width: "30px",
+                        minWidth: "unset",
+                        padding: props.isExpanded ? "20px" : "0px",
+                    }}
+                >
                     {props.icon}
                 </ListItemIcon>
                 {props.isExpanded && (
