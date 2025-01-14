@@ -4,7 +4,7 @@
 .listItemText {
     font-size: 25px !important;
     text-align: center !important;
-    color: #922728 !important;
+    color: WHITE !important;
 }
 
 .navButton {
@@ -19,5 +19,5 @@
 }
 .activeItem {
     border: 1px solid #922728 !important;
-    background-color: rgb(199, 193, 193) !important;
+    background-color: #9c27b0 !important;
 }

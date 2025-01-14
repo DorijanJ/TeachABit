@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import requests from "../../api/agent";
-import { Button } from "@mui/material";
+import {Box, Button} from "@mui/material";
 import { useGlobalContext } from "../../context/Global.context";
 import Tecaj from "./Tecaj";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
 import TecajPopup from "./TecajPopup";
+
 
 
 export default function Tecajevi() {
@@ -49,9 +50,17 @@ export default function Tecajevi() {
                     gap: "20px",
                     width: "100%",
                     alignItems: "center",
+                    justifyContent: "center", // Center horizontally
                 }}
             >
-                <SearchBox onSearch={GetTecajList} />
+                <Box sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}>
+                    <SearchBox onSearch={GetTecajList} />
+                </Box>
+
 
                 { globalContext.userIsLoggedIn && (<Button
                         variant="contained"

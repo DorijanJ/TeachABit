@@ -59,18 +59,24 @@ export default function AuthButton() {
                 >
                     <div className={localStyles.authFormContainer}>
                         {/* <img src={Logo} alt="Teach A Bit Logo" style={{width: "20%", height: "auto", marginBottom: 0}}/> */}
-                        <Tabs variant="fullWidth" value={selectedTab}>
+                        <Tabs
+                            variant="fullWidth"
+                            value={selectedTab}
+                            textColor="secondary" // Use predefined textColor value
+                            indicatorColor="secondary" // Use predefined indicatorColor value
+                        >
                             {authFormTabs.map((tab, index) => (
                                 <Tab
                                     key={tab}
                                     onClick={() => setSelectedTab(index)}
                                     label={tab}
-                                    sx={{
-                                        textColor: "red",
-                                    }}
+
                                 />
                             ))}
                         </Tabs>
+
+
+
                         <AuthPageDelegator
                             selectedPage={selectedTab}
                             onClose={onClose}

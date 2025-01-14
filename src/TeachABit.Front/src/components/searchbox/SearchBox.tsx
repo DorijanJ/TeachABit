@@ -32,6 +32,7 @@ export default function SearchBox(props: SearchBoxProps) {
             sx={{
                 height: props.height ?? "70px",
                 width: props.width ?? "30vw",
+
             }}
         >
             <TextField
@@ -48,14 +49,14 @@ export default function SearchBox(props: SearchBoxProps) {
                                 {query && (
                                     <IconButton onClick={handleClear}>
                                         <CloseIcon
-                                            color="primary"
+                                            color="secondary"
                                             fontSize="large"
                                         />
                                     </IconButton>
                                 )}
                                 <IconButton onClick={handleSearch}>
                                     <SearchIcon
-                                        color="primary"
+                                        color="secondary"
                                         fontSize="large"
                                     />
                                 </IconButton>
@@ -68,13 +69,15 @@ export default function SearchBox(props: SearchBoxProps) {
                     "& .MuiOutlinedInput-root": {
                         height: props.height ?? "70px",
                         borderRadius: 3,
-                        backgroundColor: "#D9D9D9",
+                        backgroundColor:"#720D5D",
                     },
                     "& .MuiInputBase-input::placeholder": {
                         fontStyle: "italic",
+
                     },
                     "& .MuiInputBase-input": {
                         fontSize: "1.5rem",
+                        color: "white",
                     },
                 }}
             />

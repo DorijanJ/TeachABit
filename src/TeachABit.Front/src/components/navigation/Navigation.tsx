@@ -40,7 +40,7 @@ export default function Navigation() {
                         flexDirection: "column",
                         height: "100%",
                         width: "100%",
-                        backgroundColor: "#D9D9D9",
+                        backgroundColor: "#720D5D",
                     }}
                 >
                     <IconButton
