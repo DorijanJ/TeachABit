@@ -4,14 +4,16 @@ using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.DTOs.Tecajevi;
 using TeachABit.Model.Models.Tecajevi;
 using TeachABit.Repository.Repositories.Tecajevi;
-
+using TeachABit.Service.Services.Authorization;
+using TeachABit.Model.Models.Korisnici.Extensions;
 
 namespace TeachABit.Service.Services.Tecajevi
 {
-    public class TecajeviService(ITecajeviRepository tecajeviRepository, IMapper mapper) : ITecajeviService
+    public class TecajeviService(ITecajeviRepository tecajeviRepository, IMapper mapper, IAuthorizationService authorizationService) : ITecajeviService
     {
         private readonly ITecajeviRepository _tecajeviRepository = tecajeviRepository;
         private readonly IMapper _mapper = mapper;
+        private readonly IAuthorizationService _authorizationService = authorizationService;
 
         /*public async Task<ServiceResult<List<TecajDto>>> GetTecajList()
         {
@@ -46,7 +48,20 @@ namespace TeachABit.Service.Services.Tecajevi
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
+        public async Task<ServiceResult<TecajDto>> UpdateTecaj(UpdateTecajDto updateObjava)
+        {
+            var tecaj = await _tecajeviRepository.GetTecajByIdWithTracking(updateObjava.Id);
+            var user = _authorizationService.GetKorisnik();
 
+            if (tecaj == null || !user.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            tecaj.Naziv = updateObjava.Naziv;
+            tecaj.Sadrzaj = updateObjava.Sadrzaj;
+
+            var updatedObjava = _mapper.Map<TecajDto>(await _tecajeviRepository.UpdateTecaj(tecaj));
+
+            return ServiceResult.Success(updatedObjava);
+        }
 
     }
 }
