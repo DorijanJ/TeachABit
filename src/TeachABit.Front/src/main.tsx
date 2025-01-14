@@ -8,19 +8,15 @@ import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 const theme = createTheme({
     palette: {
         primary: {
-            main: "#FFFFFF",
+            main: "#3a7ca5",
+            light: "#F0F3FA",
+            dark: "#254F6A",
         },
         secondary: {
-            main: "#9c27b0",
+            main: "#D9DBF1",
         },
         background: {
-            default: "#5D1049",
-        },
-        info: {
-            main: "#9c27b0",
-        },
-        error: {
-            main: "#922728",
+            default: "#F0F3FA",
         },
     },
     typography: {

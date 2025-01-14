@@ -32,7 +32,6 @@ export default function SearchBox(props: SearchBoxProps) {
             sx={{
                 height: props.height ?? "70px",
                 width: props.width ?? "30vw",
-
             }}
         >
             <TextField
@@ -48,17 +47,11 @@ export default function SearchBox(props: SearchBoxProps) {
                             <InputAdornment position="start">
                                 {query && (
                                     <IconButton onClick={handleClear}>
-                                        <CloseIcon
-                                            color="secondary"
-                                            fontSize="large"
-                                        />
+                                        <CloseIcon fontSize="large" />
                                     </IconButton>
                                 )}
                                 <IconButton onClick={handleSearch}>
-                                    <SearchIcon
-                                        color="secondary"
-                                        fontSize="large"
-                                    />
+                                    <SearchIcon fontSize="large" />
                                 </IconButton>
                             </InputAdornment>
                         ),
@@ -69,15 +62,14 @@ export default function SearchBox(props: SearchBoxProps) {
                     "& .MuiOutlinedInput-root": {
                         height: props.height ?? "70px",
                         borderRadius: 3,
-                        backgroundColor:"#720D5D",
+                        backgroundColor: "white",
                     },
                     "& .MuiInputBase-input::placeholder": {
                         fontStyle: "italic",
-
                     },
                     "& .MuiInputBase-input": {
                         fontSize: "1.5rem",
-                        color: "white",
+                        //color: "primary",
                     },
                 }}
             />

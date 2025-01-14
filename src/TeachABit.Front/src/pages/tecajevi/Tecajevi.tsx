@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import requests from "../../api/agent";
-import {Box, Button} from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useGlobalContext } from "../../context/Global.context";
 import Tecaj from "./Tecaj";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
-import TecajPopup from "./TecajPopup";
-
-
+//import TecajPopup from "./TecajPopup";
 
 export default function Tecajevi() {
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
@@ -38,7 +36,7 @@ export default function Tecajevi() {
                 display: "flex",
                 flexDirection: "column",
                 gap: "20px",
-                alignItems: "flex-start",
+                alignItems: "center",
                 height: "100%",
                 width: "100%",
             }}
@@ -48,28 +46,23 @@ export default function Tecajevi() {
                     display: "flex",
                     flexDirection: "row",
                     gap: "20px",
-                    width: "100%",
                     alignItems: "center",
-                    justifyContent: "center", // Center horizontally
+                    width: "50%",
                 }}
             >
-                <Box sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}>
-                    <SearchBox onSearch={GetTecajList} />
-                </Box>
+                <SearchBox onSearch={GetTecajList} />
 
-
-                { globalContext.userIsLoggedIn && (<Button
+                {globalContext.userIsLoggedIn && (
+                    <Button
                         variant="contained"
-                        onClick={() => {handleOpen()}}
+                        onClick={() => {
+                            handleOpen();
+                        }}
                     >
                         Stvori tecaj
-                    </Button>)}
-                <TecajPopup isOpen={dialogOpen} onClose={handleClose} />
-
+                    </Button>
+                )}
+                {/* <TecajPopup isOpen={dialogOpen} onClose={handleClose} /> */}
             </div>
             <div
                 style={{
@@ -78,6 +71,7 @@ export default function Tecajevi() {
                     flexWrap: "wrap",
                     gap: "20px",
                     maxWidth: "100%",
+                    width: "100%",
                 }}
             >
                 {tecajList.map((tecaj) => (
@@ -90,7 +84,6 @@ export default function Tecajevi() {
                     />
                 ))}
             </div>
-
         </div>
     );
 }

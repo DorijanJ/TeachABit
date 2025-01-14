@@ -62,20 +62,17 @@ export default function AuthButton() {
                         <Tabs
                             variant="fullWidth"
                             value={selectedTab}
-                            textColor="secondary" // Use predefined textColor value
-                            indicatorColor="secondary" // Use predefined indicatorColor value
+                            textColor="primary" // Use predefined textColor value
+                            indicatorColor="primary" // Use predefined indicatorColor value
                         >
                             {authFormTabs.map((tab, index) => (
                                 <Tab
                                     key={tab}
                                     onClick={() => setSelectedTab(index)}
                                     label={tab}
-
                                 />
                             ))}
                         </Tabs>
-
-
 
                         <AuthPageDelegator
                             selectedPage={selectedTab}
