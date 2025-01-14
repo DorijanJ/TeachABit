@@ -68,7 +68,7 @@ export default function Tecajevi() {
                     >
                         Stvori tecaj
                     </Button>)}
-                <TecajPopup isOpen={dialogOpen} onClose={handleClose} />
+                <TecajPopup isOpen={dialogOpen} onClose={handleClose}  refreshData={() => GetTecajList()}/>
 
             </div>
             <div
