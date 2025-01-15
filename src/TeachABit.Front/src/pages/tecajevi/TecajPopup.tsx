@@ -112,7 +112,9 @@ export default function TecajPopup(props: Props) {
                 <TextField
                     label="Cijena"
                     name="cijena"
-                    fullWidth
+                    sx={{
+                        width: "200px",
+                    }}
                     variant="outlined"
                     type="number"
                     slotProps={{
