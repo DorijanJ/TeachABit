@@ -20,32 +20,32 @@ import {
     const navigate = useNavigate();
   
     return (
-      <ListItem disablePadding>
-        <ListItemButton
-          onClick={() => navigate(props.route)}
-          className={
-            localStyles.navButton +
-            (props.isActive ? ` ${localStyles.activeItem}` : "")
-          }
-        >
-          <ListItemIcon
-            sx={{
-              width: "30px",
-              minWidth: "unset",
-              justifyContent: props.isExpanded ? "flex-start" : "center",
-            }}
-          >
-            {props.icon}
-          </ListItemIcon>
-          {props.isExpanded && (
-            <ListItemText
-              primary={props.name}
-              classes={{
-                primary: localStyles.listItemText,
-              }}
-            />
-          )}
-        </ListItemButton>
-      </ListItem>
+        <ListItem disablePadding>
+            <ListItemButton
+                onClick={() => navigate(props.route)}
+                className={
+                    localStyles.navButton +
+                    (props.isActive ? ` ${localStyles.activeItem}` : "")
+                }
+            >
+                <ListItemIcon
+                    sx={{
+                        width: "30px",
+                        minWidth: "unset",
+                        padding: props.isExpanded ? "20px" : "0px",
+                    }}
+                >
+                    {props.icon}
+                </ListItemIcon>
+                {props.isExpanded && (
+                    <ListItemText
+                        primary={props.name}
+                        classes={{
+                            primary: localStyles.listItemText,
+                        }}
+                    />
+                )}
+            </ListItemButton>
+        </ListItem>
     );
   }

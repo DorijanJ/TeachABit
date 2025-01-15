@@ -9,6 +9,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
     {
         private readonly TeachABitContext _context = context;
 
+
         /*public async Task<List<Tecaj>> GetTecajList()
         {
             return await _context.Tecajevi.ToListAsync();
@@ -22,11 +23,11 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 .Include(x => x.Lekcije)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-        /*public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
+        public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
         {
-            // Moram provjeriti najbolji način implementacije za update.
-            ...
-        }*/
+            await _context.SaveChangesAsync();
+            return tecaj;
+        }
         public async Task<Tecaj> CreateTecaj(Tecaj tecaj)
         {
             EntityEntry<Tecaj> createdTecaj = await _context.Tecajevi.AddAsync(tecaj);
@@ -49,6 +50,60 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             return await _context.Tecajevi.ToListAsync();
         }
 
+        public async Task<Tecaj?> GetTecajByIdWithTracking(int id)
+        {
+            return await _context.Tecajevi.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
 
+        public async Task<Lekcija?> GetLekcijaByIdWithTracking(int id)
+        {
+            return await _context.Lekcije.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Lekcija> CreateLekcija(Lekcija lekcija)
+        {
+            var createdLekcija = await _context.Lekcije.AddAsync(lekcija);
+            await _context.SaveChangesAsync();
+            return createdLekcija.Entity;
+        }
+
+        public async Task DeleteLekcija(int id, bool keepEntry = false)
+        {
+            await _context.Lekcije.Where(x => x.Id == id).ExecuteDeleteAsync();
+        }
+
+        public async Task<Lekcija> UpdateLekcija(Lekcija lekcija)
+        {
+            await _context.SaveChangesAsync();
+            return lekcija;
+        }
+
+        public async Task<Lekcija?> GetLekcijaById(int id)
+        {
+            return await _context.Lekcije.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<List<Lekcija>> GetLekcijaListByTecajId(int id)
+        {
+            return await _context.Lekcije
+                .Include(x => x.Tecaj)
+                .ThenInclude(x => x.Vlasnik)
+                .Where(x => x.Tecaj.Id == id)
+                .OrderByDescending(x => x.CreatedDateTime)
+                .ToListAsync();
+        }
+
+        public async Task<bool> CheckIfTecajPlacen(string korisnikId, int tecajId)
+        {
+            var placanje = await _context.TecajPlacanja.FirstOrDefaultAsync(x => x.KorisnikId == korisnikId && x.TecajId == tecajId);
+            return placanje != null;
+        }
+
+        public async Task<TecajPlacanje> CreateTecajPlacanje(TecajPlacanje tecajPlacanje)
+        {
+            var created = await _context.TecajPlacanja.AddAsync(tecajPlacanje);
+            await _context.SaveChangesAsync();
+            return created.Entity;
+        }
     }
 }
