@@ -46,5 +46,10 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _tecajeviService.DeleteTecaj(id));
         }
+        public async Task<IActionResult> GetLekcijeList(string? search = null)
+        {
+            var result = await _tecajeviService.GetLekcijaList(search);
+            return GetControllerResult(result);
+        }
     }
 }

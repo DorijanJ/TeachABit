@@ -19,5 +19,6 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public Task<List<Lekcija>> GetLekcijaListByTecajId(int id);
         public Task<bool> CheckIfTecajPlacen(string korisnikId, int tecajId);
         public Task<TecajPlacanje> CreateTecajPlacanje(TecajPlacanje tecajPlacanje);
+        public Task<List<Lekcija>> GetLekcijaList(string? search = null);
     }
 }

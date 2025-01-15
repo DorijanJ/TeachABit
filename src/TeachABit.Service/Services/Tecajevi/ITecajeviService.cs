@@ -14,5 +14,6 @@ namespace TeachABit.Service.Services.Tecajevi
         public Task<ServiceResult<LekcijaDto>> CreateLekcija(LekcijaDto lekcijaDto, int id);
         public Task<ServiceResult> DeleteLekcija(int id);
         public Task<ServiceResult<LekcijaDto>> UpdateLekcija(UpdatedLekcijaDto updateLekcija);
+        public Task<ServiceResult<List<LekcijaDto>>> GetLekcijaList(string? search = null);
     }
 }

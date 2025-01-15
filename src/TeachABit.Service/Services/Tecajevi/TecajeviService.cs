@@ -64,7 +64,12 @@ namespace TeachABit.Service.Services.Tecajevi
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
-
+        public async Task<ServiceResult<List<LekcijaDto>>> GetLekcijaList(string? search = null)
+        {
+            var lekcije = await _tecajeviRepository.GetLekcijaList(search);
+            var lekcijeDto = _mapper.Map<List<LekcijaDto>>(lekcije);
+            return ServiceResult.Success(lekcijeDto);
+        }
 
 
 
