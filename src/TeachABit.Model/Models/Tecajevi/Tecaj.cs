@@ -11,6 +11,8 @@ namespace TeachABit.Model.Models.Tecajevi
         public int Id { get; set; }
         public string Naziv { get; set; } = string.Empty;
         public string Sadrzaj { get; set; } = string.Empty;
+        public bool Favorit { get; set; } = false;
+        public int Cijena { get; set; } = 0;
 
         public required string VlasnikId { get; set; } = string.Empty;
         [ForeignKey(nameof(VlasnikId))]

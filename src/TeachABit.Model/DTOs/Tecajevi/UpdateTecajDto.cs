@@ -9,4 +9,6 @@ public class UpdateTecajDto
     public string Naziv { get; set; } = string.Empty;
     [StringLength(30000, ErrorMessage = "Sadržaj je previše dugačak.")]
     public string Sadrzaj { get; set; } = string.Empty;
+    public bool Favorit { get; set; } = false;
+    public int Cijena { get; set; } = 0;
 }

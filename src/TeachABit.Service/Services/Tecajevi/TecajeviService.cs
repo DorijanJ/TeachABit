@@ -62,6 +62,8 @@ namespace TeachABit.Service.Services.Tecajevi
 
             tecaj.Naziv = updateTecaj.Naziv;
             tecaj.Sadrzaj = updateTecaj.Sadrzaj;
+            tecaj.Cijena = updateTecaj.Cijena;
+            tecaj.Favorit  = updateTecaj.Favorit;
 
             var updatedTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.UpdateTecaj(tecaj));
 
