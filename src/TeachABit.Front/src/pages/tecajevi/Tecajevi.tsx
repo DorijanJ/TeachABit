@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import requests from "../../api/agent";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useGlobalContext } from "../../context/Global.context";
 import Tecaj from "./Tecaj";
 import SearchBox from "../../components/searchbox/SearchBox";
