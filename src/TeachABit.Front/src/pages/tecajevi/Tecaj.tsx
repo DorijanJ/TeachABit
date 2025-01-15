@@ -1,7 +1,6 @@
 import { Card, CardContent, Typography } from "@mui/material";
 import { TecajDto } from "../../models/TecajDto";
 
-
 interface Props {
     tecaj: TecajDto;
     onClick: () => void;
@@ -12,13 +11,11 @@ export default function Tecaj(props: Props) {
         <Card
             onClick={props.onClick}
             sx={{
-                width: "500px",
-                borderRadius: "2px",
+                width: "32%",
+                height: "400px",
+                borderRadius: "10px",
                 boxSizing: "border-box",
-                border: "1px solid transparent",
-                "&:hover": {
-                    border: "1px solid #922728",
-                },
+                border: "1px solid lightgray",
             }}
         >
             <CardContent
@@ -42,8 +39,11 @@ export default function Tecaj(props: Props) {
                 >
                     {props.tecaj.naziv}
                 </Typography>
+                <div>
+                    {props.tecaj.opis}
+                    <div>{props.tecaj.cijena}€</div>
+                </div>
             </CardContent>
-            
         </Card>
     );
 }
