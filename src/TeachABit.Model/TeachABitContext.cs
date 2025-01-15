@@ -18,6 +18,7 @@ namespace TeachABit.Model
         public DbSet<ObjavaReakcija> ObjavaReakcije { get; set; }
         public DbSet<KomentarReakcija> KomentarReakcije { get; set; }
         public DbSet<TecajFavorit> TecajFavoriti { get; set; }
+        public DbSet<TecajPlacanje> TecajPlacanja { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

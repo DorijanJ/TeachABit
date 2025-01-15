@@ -5,8 +5,7 @@ namespace TeachABit.Service.Services.Tecajevi
 {
     public interface ITecajeviService
     {
-        //Task<ServiceResult<List<TecajDto>>> GetTecajList();
-        public  Task<ServiceResult<TecajDto>> GetTecaj(int id);
+        public Task<ServiceResult<TecajDto>> GetTecaj(int id);
         public Task<ServiceResult<TecajDto>> CreateTecaj(TecajDto tecaj);
         //Task<ServiceResult<TecajDto>> UpdateTecaj(TecajDto Tecaj);
         Task<ServiceResult<TecajDto>> UpdateTecaj(UpdateTecajDto updateObjava);
