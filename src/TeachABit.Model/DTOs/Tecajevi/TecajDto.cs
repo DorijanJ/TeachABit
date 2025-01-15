@@ -13,6 +13,7 @@ namespace TeachABit.Model.DTOs.Tecajevi
         public decimal? Cijena { get; set; } = null;
         public string VlasnikId { get; set; } = string.Empty;
         public string? VlasnikUsername { get; set; }
+        public bool? Kupljen { get; set; } = false;
         public List<LekcijaDto>? Lekcije { get; set; } = [];
     }
 }

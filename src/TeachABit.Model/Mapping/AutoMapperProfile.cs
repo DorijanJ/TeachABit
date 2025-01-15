@@ -15,7 +15,9 @@ namespace TeachABit.Model.Mapping
         public AutoMapperProfile()
         {
             CreateMap<Korisnik, KorisnikDto>().ReverseMap();
-            CreateMap<Tecaj, TecajDto>().ReverseMap();
+            CreateMap<Tecaj, TecajDto>()
+                .ForMember(x => x.Kupljen, opt => opt.MapFrom(x => x.TecajPlacanja.Count > 0));
+            CreateMap<TecajDto, Tecaj>();
             CreateMap<ObjavaDto, Objava>();
             CreateMap<Objava, ObjavaDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))

@@ -4,6 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
 import globalStore from "../../stores/GlobalStore";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
@@ -76,11 +77,16 @@ export default function Tecaj(props: Props) {
                         width: "100%",
                         justifyContent: "flex-end",
                         gap: "10px",
+                        alignItems: "center",
                     }}
                 >
                     {props.tecaj.cijena && props.tecaj.cijena > 0 && (
                         <>
+                            {props.tecaj.kupljen && (
+                                <CheckCircleIcon color="info" />
+                            )}
                             <Button
+                                disabled={props.tecaj.kupljen}
                                 variant="contained"
                                 onClick={() => handleCheckout(props.tecaj.id)}
                             >
