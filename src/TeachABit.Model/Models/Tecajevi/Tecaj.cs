@@ -20,5 +20,6 @@ namespace TeachABit.Model.Models.Tecajevi
         public required virtual Korisnik Vlasnik { get; set; }
 
         public virtual List<Lekcija> Lekcije { get; set; } = [];
+        public virtual List<TecajPlacanje> TecajPlacanja { get; set; } = [];
     }
 }

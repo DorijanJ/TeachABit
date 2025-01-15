@@ -3,4 +3,5 @@ export interface TecajDto {
     naziv: string;
     opis: string;
     cijena?: number;
+    kupljen?: boolean;
 }
