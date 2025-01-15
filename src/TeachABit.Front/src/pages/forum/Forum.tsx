@@ -6,14 +6,12 @@ import Objava from "./Objava";
 import { useGlobalContext } from "../../context/Global.context";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
-import { useNavigate } from "react-router-dom";
-import CreateObjavaDialog from "./CreateObjavaDialog";
+import ObjavaEditor from "./ObjavaEditor";
 
 export default function Forum() {
     const [objavaList, setObjavaList] = useState<ObjavaDto[]>([]);
     const [isOpenObjavaDialog, setIsOpenObjavaDialog] = useState(false);
     const globalContext = useGlobalContext();
-    const navigate = useNavigate();
 
     const { buildRequest } = useRequestBuilder();
 
@@ -21,7 +19,7 @@ export default function Forum() {
         const response = await requests.getWithLoading(
             buildRequest("objave", { search })
         );
-        if (response.data) setObjavaList(response.data);
+        if (response && response.data) setObjavaList(response.data);
     };
 
     useEffect(() => {
@@ -34,7 +32,7 @@ export default function Forum() {
                 display: "flex",
                 flexDirection: "column",
                 gap: "20px",
-                alignItems: "flex-start",
+                alignItems: "center",
                 height: "100%",
                 width: "100%",
             }}
@@ -44,8 +42,8 @@ export default function Forum() {
                     display: "flex",
                     flexDirection: "row",
                     gap: "20px",
-                    width: "100%",
                     alignItems: "center",
+                    width: "50%",
                 }}
             >
                 <SearchBox onSearch={GetObjavaList} />
@@ -62,24 +60,18 @@ export default function Forum() {
             <div
                 style={{
                     display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
+                    flexDirection: "column",
                     gap: "20px",
                     maxWidth: "100%",
+                    width: "100%",
                 }}
             >
                 {objavaList.map((objava) => (
-                    <Objava
-                        key={"objava" + objava.id}
-                        objava={objava}
-                        onClick={() => {
-                            navigate(`/objava/${objava.id}`);
-                        }}
-                    />
+                    <Objava key={"objava" + objava.id} objava={objava} />
                 ))}
             </div>
 
-            <CreateObjavaDialog
+            <ObjavaEditor
                 refreshData={() => GetObjavaList()}
                 onClose={() => {
                     setIsOpenObjavaDialog(false);

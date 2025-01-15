@@ -1,7 +1,6 @@
 import { TextField, Button, Alert } from "@mui/material";
 import { useState, FormEvent, ChangeEvent } from "react";
 import useAuth from "../../../../../hooks/useAuth";
-import { ApiResponseDto } from "../../../../../models/common/ApiResponseDto";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
 import { RegisterAttemptDto } from "../../../../../models/RegistetAttemptDto";
 import localStyles from "../../AuthForm.module.css";
@@ -18,8 +17,8 @@ export default function RegisterForm() {
     const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleRegister = async (registerAttempt: RegisterAttemptDto) => {
-        const response: ApiResponseDto = await auth.register(registerAttempt);
-        if (response.message) setMessage(response.message);
+        const response = await auth.register(registerAttempt);
+        if (response && response.message) setMessage(response.message);
     };
 
     const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -37,6 +36,7 @@ export default function RegisterForm() {
                     fullWidth
                     label="Korisničko ime"
                     name="username"
+                    color="primary"
                     value={registerAttempt.username}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setRegisterAttempt((prev: RegisterAttemptDto) => ({
@@ -47,6 +47,7 @@ export default function RegisterForm() {
                 />
                 <TextField
                     fullWidth
+                    color="primary"
                     label="Email"
                     name="email"
                     value={registerAttempt.email}
@@ -59,6 +60,7 @@ export default function RegisterForm() {
                 />
                 <TextField
                     fullWidth
+                    color="primary"
                     label="Lozinka"
                     name="password"
                     type="password"
@@ -74,6 +76,7 @@ export default function RegisterForm() {
                     className={localStyles.myButton}
                     variant="contained"
                     type="submit"
+                    color="primary"
                 >
                     Registracija
                 </Button>

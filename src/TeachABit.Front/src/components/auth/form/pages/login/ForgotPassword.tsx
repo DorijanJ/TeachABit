@@ -23,7 +23,7 @@ export default function ForgotPassword() {
             "account/forgot-password",
             { email: email }
         );
-        if (response.message) setMessage(response.message);
+        if (response && response.message) setMessage(response.message);
     };
 
     return (
@@ -31,6 +31,7 @@ export default function ForgotPassword() {
             <Link
                 type="button"
                 component="button"
+                color="primary"
                 onClick={() => {
                     setIsOpen(true);
                 }}

@@ -5,4 +5,6 @@ export interface ObjavaDto {
     vlasnikId?: string;
     vlasnikUsername?: string;
     vlasnikProfilnaSlikaVersion?: string;
+    liked?: boolean;
+    likeCount?: number;
 }

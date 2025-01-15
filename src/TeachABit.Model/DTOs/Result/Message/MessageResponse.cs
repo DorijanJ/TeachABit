@@ -2,29 +2,31 @@
 
 namespace TeachABit.Model.DTOs.Result.Message
 {
-    public class MessageResponse(string message, string severity, MessageStatusCode? messageStatusCode = null, string? code = null)
+    public class MessageResponse(string message, string severity, string type = "global", string? code = null, MessageStatusCode? messageStatusCode = null)
     {
         public string Message { get; } = message;
-        public string? Code { get; } = code;
         public string Severity { get; } = severity;
+        public string Type { get; } = type;
+        public string? Code { get; } = code;
         [JsonIgnore]
         public MessageStatusCode? MessageStatusCode { get; } = messageStatusCode;
     }
 
     public static class MessageSeverities
     {
-        public static readonly string Warning = "warning";
-        public static readonly string Error = "error";
-        public static readonly string Success = "success";
-        public static readonly string Info = "info";
+        public const string Warning = "warning";
+        public const string Error = "error";
+        public const string Success = "success";
+        public const string Info = "info";
     }
 
     // Ovo sluzi kako bi frontend znao gdje prikazati koju poruku
-    public static class MessageTypes
+    public class MessageTypes
     {
-        public static readonly string Authentication = "authentication";
-        public static readonly string Global = "global";
-        public static readonly string Hidden = "hidden";
+        // Prikažu globalnu obavijest
+        public const string Global = "global";
+        // Ne prikažu globalnu obavijest
+        public const string Hidden = "hidden";
     }
 
     public enum MessageStatusCode

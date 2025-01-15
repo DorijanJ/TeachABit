@@ -31,6 +31,12 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _objaveService.CreateObjava(objava));
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateObjava(UpdateObjavaDto updateObjava)
+        {
+            return GetControllerResult(await _objaveService.UpdateObjava(updateObjava));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteObjava(int id)
         {
@@ -41,15 +47,61 @@ namespace TeachABit.API.Controllers
         [HttpGet("{id}/komentari")]
         public async Task<IActionResult> GetKomentarListByObjavaId(int id)
         {
-            return GetControllerResult(await _objaveService.GetKomentarListByObjavaId(id));
+            return GetControllerResult(await _objaveService.GetKomentarListRecursive(id));
         }
 
-        [AllowAnonymous]
         [HttpPost("{id}/komentari")]
         public async Task<IActionResult> CreateKomentar([FromBody] KomentarDto komentar, int id)
         {
             return GetControllerResult(await _objaveService.CreateKomentar(komentar, id));
         }
 
+        [HttpPost("{id}/like")]
+        public async Task<IActionResult> LikeObjava(int id)
+        {
+            return GetControllerResult(await _objaveService.LikeObjava(id));
+        }
+
+        [HttpPost("komentari/{komentarId}/like")]
+        public async Task<IActionResult> Like(int komentarId)
+        {
+            return GetControllerResult(await _objaveService.LikeKomentar(komentarId));
+        }
+
+        [HttpPost("{id}/dislike")]
+        public async Task<IActionResult> DislikeObjava(int id)
+        {
+            return GetControllerResult(await _objaveService.DislikeObjava(id));
+        }
+
+        [HttpPost("komentari/{komentarId}/dislike")]
+        public async Task<IActionResult> DislikeKomentar(int komentarId)
+        {
+            return GetControllerResult(await _objaveService.DislikeKomentar(komentarId));
+        }
+
+        [HttpDelete("{id}/reakcija")]
+        public async Task<IActionResult> ClearObjavaReaction(int id)
+        {
+            return GetControllerResult(await _objaveService.ClearObjavaReaction(id));
+        }
+
+        [HttpDelete("komentari/{komentarId}/reakcija")]
+        public async Task<IActionResult> ClearKomentarReaction(int komentarId)
+        {
+            return GetControllerResult(await _objaveService.ClearKomentarReaction(komentarId));
+        }
+
+        [HttpPut("komentari")]
+        public async Task<IActionResult> UpdateKomentar(UpdateKomentarDto updateKomentar)
+        {
+            return GetControllerResult(await _objaveService.UpdateKomentar(updateKomentar));
+        }
+
+        [HttpDelete("komentari/{komentarId}")]
+        public async Task<IActionResult> DeleteKomentar(int komentarId)
+        {
+            return GetControllerResult(await _objaveService.DeleteKomentar(komentarId));
+        }
     }
 }

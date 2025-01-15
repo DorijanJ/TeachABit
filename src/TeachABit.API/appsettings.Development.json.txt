@@ -1,4 +1,4 @@
-﻿{
+{
   "Logging": {
     "LogLevel": {
       "Default": "Information",
@@ -6,11 +6,11 @@
     }
   },
   "ConnectionStrings": {
-    "DefaultConnection": "Host=;Port=;Database=;Username=;Password=;SearchPath="
+    "DefaultConnection": ""
   },
   "JwtSettings": {
-    "Issuer": "TeachABitBackend",
-    "Audience": "TeachABitUser",
+    "Issuer": "",
+    "Audience": "",
     "Key": ""
   },
   "Authentication": {
@@ -19,12 +19,18 @@
       "ClientSecret": ""
     }
   },
-  "AllowedHosts": "localhost;https://localhost:3000",
+  "UseMailConfirmation": false,
   "SMTP": {
     "Server": "",
     "Port": ,
     "ApiKey": "",
-    "SenderEmail": "support@teachabit.org",
-    "SenderName":  "TeachABit"
+    "SenderEmail": "",
+    "SenderName": ""
+  },
+  "AllowedHosts": "",
+  "ClientUrl": "",
+  "S3Bucket": {
+    "AccessKey": "",
+    "SecretKey": ""
   }
 }

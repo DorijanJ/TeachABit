@@ -2,7 +2,6 @@ import { TextField, Button, Alert } from "@mui/material";
 import { useState, FormEvent, ChangeEvent } from "react";
 import useAuth from "../../../../../hooks/useAuth";
 import { AppUserDto } from "../../../../../models/AppUserDto";
-import { ApiResponseDto } from "../../../../../models/common/ApiResponseDto";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
 import { LoginAttemptDto } from "../../../../../models/LoginAttemptDto";
 import localStyles from "../../AuthForm.module.css";
@@ -22,7 +21,8 @@ export default function LoginForm(props: Props) {
     const [message, setMessage] = useState<MessageResponseDto>();
 
     const handleLogin = async (loginAttempt: LoginAttemptDto) => {
-        const response: ApiResponseDto = await auth.login(loginAttempt);
+        const response = await auth.login(loginAttempt);
+        if (!response) return;
         const user: AppUserDto = response.data;
 
         if (user && user.username) props.onClose();
@@ -43,6 +43,7 @@ export default function LoginForm(props: Props) {
                 <TextField
                     fullWidth
                     autoFocus
+                    color="primary"
                     label="Email/Korisničko ime"
                     name="credentials"
                     value={loginAttempt.credentials}
@@ -58,6 +59,7 @@ export default function LoginForm(props: Props) {
                     label="Lozinka"
                     name="password"
                     type="password"
+                    color="primary"
                     value={loginAttempt.password}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setLoginAttempt((prev: LoginAttemptDto) => ({
@@ -71,6 +73,7 @@ export default function LoginForm(props: Props) {
                     className={localStyles.myButton}
                     variant="contained"
                     type="submit"
+                    color="primary"
                 >
                     Prijava
                 </Button>

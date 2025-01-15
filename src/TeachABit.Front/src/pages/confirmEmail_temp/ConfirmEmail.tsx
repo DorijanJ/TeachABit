@@ -2,7 +2,6 @@ import { useLocation } from "react-router-dom";
 import requests from "../../api/agent";
 import { useEffect, useRef, useState } from "react";
 import { MessageResponseDto } from "../../models/common/MessageResponseDto";
-import { ApiResponseDto } from "../../models/common/ApiResponseDto";
 import { Alert } from "@mui/material";
 
 export default function ConfirmEmail() {
@@ -19,11 +18,11 @@ export default function ConfirmEmail() {
     const handleConfirmation = async () => {
         if (email && token && !sentRequest.current) {
             sentRequest.current = true;
-            const response: ApiResponseDto = await requests.postWithLoading(
+            const response = await requests.postWithLoading(
                 "account/confirm-email",
                 { email, token }
             );
-            if (response.message) setMessage(response.message);
+            if (response?.message) setMessage(response.message);
         }
     };
 

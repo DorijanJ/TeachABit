@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TeachABit.API.Middleware;
 using TeachABit.Model.DTOs.Tecajevi;
 using TeachABit.Service.Services.Tecajevi;
 
@@ -26,17 +27,19 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _tecajeviService.GetTecaj(id));
         }
 
+        [ModelStateFilter]
         [HttpPost]
         public async Task<IActionResult> CreateTecaj(TecajDto tecaj)
         {
             return GetControllerResult(await _tecajeviService.CreateTecaj(tecaj));
         }
 
-        /*[HttpPut]
-        public async Task<IActionResult> UpdateTecaj(TecajDto tecaj)
+        [ModelStateFilter]
+        [HttpPut]
+        public async Task<IActionResult> UpdateTecaj(UpdateTecajDto tecaj)
         {
             return GetControllerResult(await _tecajeviService.UpdateTecaj(tecaj));
-        }*/
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTecaj(int id)

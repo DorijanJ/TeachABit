@@ -2,7 +2,6 @@ import { useLocation } from "react-router-dom";
 import requests from "../../api/agent";
 import { useState } from "react";
 import { MessageResponseDto } from "../../models/common/MessageResponseDto";
-import { ApiResponseDto } from "../../models/common/ApiResponseDto";
 import { Alert, Button, InputAdornment, Stack, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -20,7 +19,7 @@ export default function ResetPassword() {
 
     const handleReset = async () => {
         if (email && token) {
-            const response: ApiResponseDto = await requests.postWithLoading(
+            const response = await requests.postWithLoading(
                 "account/reset-password",
                 {
                     email: email,
@@ -28,7 +27,7 @@ export default function ResetPassword() {
                     password: newPassword,
                 }
             );
-            if (response.message) setMessage(response.message);
+            if (response?.message) setMessage(response.message);
         }
     };
 

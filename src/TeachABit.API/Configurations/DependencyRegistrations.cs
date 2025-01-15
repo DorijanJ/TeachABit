@@ -9,6 +9,7 @@ using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Services.Korisnici;
 using TeachABit.Service.Services.Objave;
+using TeachABit.Service.Services.Placanja;
 using TeachABit.Service.Services.Radionice;
 using TeachABit.Service.Services.Tecajevi;
 using TeachABit.Service.Util.Images;
@@ -34,7 +35,11 @@ namespace TeachABit.API.Configurations
             services.AddScoped<IObjaveService, ObjaveService>();
             services.AddScoped<IRadioniceRepository, RadioniceRepository>();
             services.AddScoped<IRadioniceService, RadioniceService>();
-            services.AddScoped<ModelStateFilter>();
+            services.AddScoped<IPlacanjaService, PlacanjaService>();
+            services.AddScoped<Func<string, ModelStateFilter>>(provider => (messageType) =>
+            {
+                return new ModelStateFilter(messageType);
+            });
             services.AddScoped<IKorisniciService, KorisniciService>();
             services.AddAWSService<IAmazonS3>();
             services.AddSingleton<IS3BucketService>(provider =>
