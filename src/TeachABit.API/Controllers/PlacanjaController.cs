@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Stripe;
 using TeachABit.Model.DTOs.Placanja;
@@ -11,10 +12,11 @@ namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlacanjaController(IOptions<StripeSettings> stripeSettings, IPlacanjaService placanjaService) : BaseController
+    public class PlacanjaController(IOptions<StripeSettings> stripeSettings, IPlacanjaService placanjaService, IConfiguration configuration) : BaseController
     {
         private readonly StripeSettings _stripeSettings = stripeSettings.Value;
         private readonly IPlacanjaService _placanjaService = placanjaService;
+        private readonly IConfiguration _configuration = configuration;
 
         [HttpGet]
         public IActionResult Checkout()
@@ -52,11 +54,13 @@ namespace TeachABit.API.Controllers
             });
         }
 
+        [AllowAnonymous]
         [HttpPost("stripe-webhook")]
         public async Task<IActionResult> StripeWebhook()
         {
-            var json = new StreamReader(HttpContext.Request.Body).ReadToEnd();
-            var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], "your_webhook_secret");
+            var webHookSecret = _configuration["Stripe:WebhookSecret"];
+            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], webHookSecret);
 
             if (stripeEvent.Type == "checkout.session.completed")
             {

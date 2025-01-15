@@ -60,7 +60,8 @@ namespace TeachABit.Service.Services.Tecajevi
         }
         public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null)
         {
-            var tecajevi = await _tecajeviRepository.GetTecajList(search);
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id);
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
