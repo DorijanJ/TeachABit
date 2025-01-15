@@ -6,7 +6,7 @@ import { useGlobalContext } from "../../context/Global.context";
 import Tecaj from "./Tecaj";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
-//import TecajPopup from "./TecajPopup";
+import TecajPopup from "./TecajPopup";
 
 export default function Tecajevi() {
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
@@ -62,7 +62,11 @@ export default function Tecajevi() {
                         Stvori tecaj
                     </Button>
                 )}
-                {/* <TecajPopup isOpen={dialogOpen} onClose={handleClose} /> */}
+                <TecajPopup
+                    isOpen={dialogOpen}
+                    onClose={handleClose}
+                    refreshData={() => GetTecajList()}
+                />
             </div>
             <div
                 style={{

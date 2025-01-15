@@ -9,4 +9,5 @@ public class LekcijaDto
     public string Sadrzaj { get; set; } = string.Empty;
     [StringLength(30000, ErrorMessage = "Sadržaj je previše dugačak.")]
     public DateTime CreatedDateTime { get; set; }
+    public int? TecajId { get; set; }
 }

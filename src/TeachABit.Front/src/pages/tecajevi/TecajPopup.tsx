@@ -1,129 +1,158 @@
-
 import Dialog from "@mui/material/Dialog";
-import { Box, Button, DialogContent, DialogTitle, TextField } from "@mui/material";
+import {
+    Box,
+    Button,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    InputAdornment,
+    TextField,
+} from "@mui/material";
 import localStyles from "../../components/auth/form/AuthForm.module.css";
 
-import {TecajDto} from "../../models/TecajDto.ts";
-import {ChangeEvent, useState} from "react";
+import { TecajDto } from "../../models/TecajDto.ts";
+import { ChangeEvent, useState } from "react";
 import requests from "../../api/agent.ts";
 
 interface Props {
-    refreshData: () =>  Promise<any>;
+    refreshData: () => Promise<any>;
     onClose: () => void;
     isOpen: boolean;
-    tecajObj?: TecajDto;
+    tecaj?: TecajDto;
 }
 
 export default function TecajPopup(props: Props) {
-
-    const [objava, setObjava] = useState<TecajDto>({
-        naziv: props.tecajObj?.naziv ?? "",
-        id: props.tecajObj?.id ?? 0, // Fallback to 0 if id is undefined
+    const [tecaj, setTecaj] = useState<TecajDto>({
+        naziv: props.tecaj?.naziv ?? "",
+        id: props.tecaj?.id,
+        opis: props.tecaj?.opis ?? "",
     });
 
     const handleClose = (reload: boolean = false) => {
-        setObjava({
+        setTecaj({
             naziv: "",
-            id: 0,
+            opis: "",
         });
         props.onClose();
         if (reload) props.refreshData();
     };
 
-    const handleStvoriObjavu = async (objava: TecajDto) => {
-        const response = await requests.postWithLoading("tecajevi", objava);
+    const handleStvoriTecaj = async (tecaj: TecajDto) => {
+        const response = await requests.postWithLoading("tecajevi", tecaj);
         if (response && response.data) {
             handleClose(true);
         }
     };
 
     return (
-        <Dialog
-            open={props.isOpen}
-            onClose={props.onClose}
-            sx={{
-                "& .MuiPaper-root": {
-                    width: "40vw",
-                    margin: "2rem",
-                },
-            }}
-        >
+        <Dialog open={props.isOpen} onClose={props.onClose} maxWidth={"md"}>
             <DialogTitle
                 sx={{
-                    textAlign: "center",
-                    margin: "1rem",
-                    fontWeight: "bold",
-                    fontSize: "2rem"
+                    maxWidth: "100%",
                 }}
             >
-                Stvori tečaj
-            </DialogTitle>
-            <DialogContent>
-                <Box
-                    sx={{
+                <div
+                    style={{
                         display: "flex",
-                        flexDirection: "column",
-                        m: "auto",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        width: "100%",
                     }}
                 >
-                    <TextField
-                        label="Naziv"
-                        name="tecaj"
-                        color="secondary"
-                        required={true}
-                        fullWidth
-                        sx={{
-                            fontSize: "1.5rem",
-                            marginBottom: "1rem",
+                    <div
+                        style={{
+                            overflowX: "hidden",
+                            whiteSpace: "normal",
+                            maxWidth: "80%",
                         }}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            setObjava((prev: any) => ({
-                                ...prev,
-                                naziv: e.target.value,
-                            }))
-                        }
-                    />
-                    <TextField
-                        label="Opis"
-                        name="tecaj"
-                        color="secondary"
-                        required={true}
-                        fullWidth
-                        multiline
-                        rows={4}
+                    >
+                        {`Stvori tečaj`}
+                    </div>
+                </div>
+            </DialogTitle>
+            <DialogContent
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "20px",
+                    paddingTop: "10px !important",
+                    maxHeight: "70vh",
+                    minWidth: "40vw",
+                }}
+            >
+                <TextField
+                    label="Naziv"
+                    name="naziv"
+                    variant="outlined"
+                    required={true}
+                    fullWidth
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setTecaj((prev: any) => ({
+                            ...prev,
+                            naziv: e.target.value,
+                        }))
+                    }
+                />
+                <TextField
+                    label="Opis"
+                    name="opis"
+                    required={true}
+                    fullWidth
+                    multiline
+                    rows={4}
+                    variant="outlined"
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setTecaj((prev: any) => ({
+                            ...prev,
+                            opis: e.target.value,
+                        }))
+                    }
+                />
+                <TextField
+                    label="Cijena"
+                    name="cijena"
+                    fullWidth
+                    variant="outlined"
+                    type="number"
+                    slotProps={{
+                        input: {
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    €
+                                </InputAdornment>
+                            ),
+                        },
+                    }}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setTecaj((prev: any) => ({
+                            ...prev,
+                            cijena: e.target.value,
+                        }))
+                    }
+                />
+
+                <DialogActions>
+                    <Button
+                        className={localStyles.myButton}
                         variant="outlined"
-                        sx={{
-                            fontSize: "16px",
-                            minHeight: "100px",
+                        onClick={props.onClose}
+                    >
+                        Odustani
+                    </Button>
+                    <Button
+                        className={localStyles.myButton}
+                        variant="contained"
+                        onClick={() => {
+                            if (!tecaj.id) {
+                                handleStvoriTecaj(tecaj);
+                            }
                         }}
-                    />
-                    <Box sx={{ display: "flex", gap: 2, mt: 2, justifyContent: "space-evenly" }}>
-                        <Button
-                            className={localStyles.myButton}
-                            variant="outlined"
-                            onClick={props.onClose} // Close dialog on cancel
-                            color="error"
-                        >
-                            Odustani
-                        </Button>
-                        <Button className={localStyles.myButton}
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => {
-                                if (objava.id!=0) {
-                                    setObjava((prev: any) => ({
-                                        ...prev,
-                                        id: 1,
-                                    }))
-                                    handleStvoriObjavu(objava);
-                                }}}>
-                            Stvori
-                        </Button>
-                    </Box>
-                </Box>
+                    >
+                        Stvori
+                    </Button>
+                </DialogActions>
             </DialogContent>
         </Dialog>
     );
 }
-
-
