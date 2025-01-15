@@ -1,4 +1,6 @@
 export interface TecajDto {
-    id: number;
+    id?: number;
     naziv: string;
+    opis: string;
+    cijena?: number;
 }

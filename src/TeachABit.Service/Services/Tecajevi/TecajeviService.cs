@@ -63,7 +63,6 @@ namespace TeachABit.Service.Services.Tecajevi
             tecaj.Naziv = updateTecaj.Naziv;
             tecaj.Sadrzaj = updateTecaj.Sadrzaj;
             tecaj.Cijena = updateTecaj.Cijena;
-            tecaj.Favorit  = updateTecaj.Favorit;
 
             var updatedTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.UpdateTecaj(tecaj));
 
@@ -74,9 +73,12 @@ namespace TeachABit.Service.Services.Tecajevi
         {
             Korisnik korisnik = _authorizationService.GetKorisnik();
 
-            lekcijaDto.CreatedDateTime = DateTime.UtcNow;
-            lekcijaDto.Id = id;
+            var tecaj = await _tecajeviRepository.GetTecajByIdWithTracking(id);
 
+            if (tecaj == null || !korisnik.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            lekcijaDto.CreatedDateTime = DateTime.UtcNow;
+            lekcijaDto.TecajId = id;
 
             LekcijaDto createdLekcija = _mapper.Map<LekcijaDto>(await _tecajeviRepository.CreateLekcija(_mapper.Map<Lekcija>(lekcijaDto)));
             return ServiceResult.Success(createdLekcija);
