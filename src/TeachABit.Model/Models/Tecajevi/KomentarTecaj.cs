@@ -4,7 +4,7 @@ using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Model.Models.Tecajevi
 {
-
+    [Table("KomentarTecaj")]
     public class KomentarTecaj
     {
         [Key] 

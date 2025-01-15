@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using TeachABit.Model.Models.Korisnici;
 namespace TeachABit.Model.Models.Tecajevi
 {
-
+    [Table("KomentarTecajReakcija")]
     public class KomentarTecajReakcija
     {
         [Key]
