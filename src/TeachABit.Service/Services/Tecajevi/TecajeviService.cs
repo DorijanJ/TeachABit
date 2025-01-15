@@ -25,19 +25,34 @@ namespace TeachABit.Service.Services.Tecajevi
         {
             TecajDto? tecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.GetTecaj(id));
             if (tecaj == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
+
+            var korisnik = _authorizationService.GetKorisnikOptional();
+
+            if (tecaj.Cijena != null)
+            {
+                if (korisnik == null)
+                    return ServiceResult.Failure(MessageDescriber.Unauthorized());
+                else
+                {
+                    var tecajPlacen = await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id);
+                    if (!tecajPlacen) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+                }
+            }
+
             return ServiceResult.Success(tecaj);
         }
 
         public async Task<ServiceResult<TecajDto>> CreateTecaj(TecajDto tecaj)
         {
+            if (tecaj.Cijena.HasValue)
+            {
+                tecaj.Cijena = Math.Round(tecaj.Cijena.Value, 2);
+            }
+
             TecajDto createdTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.CreateTecaj(_mapper.Map<Tecaj>(tecaj)));
             return ServiceResult.Success(createdTecaj);
         }
-        /*public async Task<ServiceResult<TecajDto>> UpdateTecaj(TecajDto tecaj)
-        {
-            // Moram provjeriti najbolji način implementacije za update.
-            ...
-        }*/
+
         public async Task<ServiceResult> DeleteTecaj(int id)
         {
             await _tecajeviRepository.DeleteTecaj(id);

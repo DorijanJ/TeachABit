@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Model.Models.Tecajevi
@@ -11,7 +12,8 @@ namespace TeachABit.Model.Models.Tecajevi
         public int Id { get; set; }
         public string Naziv { get; set; } = string.Empty;
         public string Sadrzaj { get; set; } = string.Empty;
-        public int Cijena { get; set; } = 0;
+        [AllowNull]
+        public decimal? Cijena { get; set; } = null;
 
         public required string VlasnikId { get; set; } = string.Empty;
         [ForeignKey(nameof(VlasnikId))]

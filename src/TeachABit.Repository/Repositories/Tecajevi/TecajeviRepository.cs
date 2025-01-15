@@ -93,5 +93,17 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 .ToListAsync();
         }
 
+        public async Task<bool> CheckIfTecajPlacen(string korisnikId, int tecajId)
+        {
+            var placanje = await _context.TecajPlacanja.FirstOrDefaultAsync(x => x.KorisnikId == korisnikId && x.TecajId == tecajId);
+            return placanje != null;
+        }
+
+        public async Task<TecajPlacanje> CreateTecajPlacanje(TecajPlacanje tecajPlacanje)
+        {
+            var created = await _context.TecajPlacanja.AddAsync(tecajPlacanje);
+            await _context.SaveChangesAsync();
+            return created.Entity;
+        }
     }
 }
