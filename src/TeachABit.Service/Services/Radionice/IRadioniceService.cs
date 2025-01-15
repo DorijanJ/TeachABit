@@ -9,4 +9,10 @@ public interface IRadioniceService
     Task<ServiceResult<RadionicaDto>> GetRadionica(int id);
     Task<ServiceResult<RadionicaDto>> CreateRadionica(RadionicaDto radionica);
     Task<ServiceResult> DeleteRadionica(int id);
+    public Task<ServiceResult<List<KomentarRadionicaDto>>> GetKomentarListRecursive(int id, int? nadKomentarId = null);
+    public Task<ServiceResult> DeleteKomentar(int id);
+    public Task<ServiceResult<KomentarRadionicaDto>> CreateKomentar(KomentarRadionicaDto komentar, int objavaId);
+    public Task<ServiceResult<KomentarRadionicaDto>> UpdateKomentar(UpdateKomentarRadionicaDto updateKomentar);
+
+    
 }

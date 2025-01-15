@@ -4,13 +4,19 @@ using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.Models.Radionice;
 using TeachABit.Repository.Repositories.Radionice;
+using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Korisnici.Extensions;
+using TeachABit.Service.Services.Authorization;
+
 
 namespace TeachABit.Service.Services.Radionice;
 
-public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper mapper) : IRadioniceService
+public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper mapper, IAuthorizationService authorizationService) : IRadioniceService
 {
     private readonly IRadioniceRepository _radioniceRepository = radioniceRepository;
     private readonly IMapper _mapper = mapper;
+    private readonly IAuthorizationService _authorizationService = authorizationService;
+
 
     public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null)
     {
@@ -44,4 +50,69 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
         await _radioniceRepository.DeleteRadionica(id);
         return ServiceResult.Success();
     }
+    
+    public async Task<ServiceResult<KomentarRadionicaDto>> CreateKomentar(KomentarRadionicaDto komentar, int radionicaId)
+    {
+        Korisnik korisnik = _authorizationService.GetKorisnik();
+
+        komentar.VlasnikId = korisnik.Id;
+        komentar.CreatedDateTime = DateTime.UtcNow;
+        komentar.RadionicaId = radionicaId;
+
+        KomentarRadionicaDto createdKomentar = _mapper.Map<KomentarRadionicaDto>(await _radioniceRepository.CreateKomentar(_mapper.Map<KomentarRadionica>(komentar)));
+        return ServiceResult.Success(createdKomentar);
+    }
+    
+    public async Task<ServiceResult> DeleteKomentar(int id)
+    {
+        Korisnik korisnik = _authorizationService.GetKorisnik();
+
+        KomentarRadionica? komentar = await _radioniceRepository.GetKomentarById(id);
+
+        bool isAdmin = await _authorizationService.IsAdmin();
+
+        if (komentar == null || (!isAdmin && !korisnik.Owns(komentar))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+        if (komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.BadRequest("Komentar je već izbrisan."));
+
+        var hasPodkomentari = await _radioniceRepository.HasPodkomentari(id);
+
+        await _radioniceRepository.DeleteKomentar(id, keepEntry: hasPodkomentari);
+        return ServiceResult.Success();
+    }
+    
+    public async Task<ServiceResult<List<KomentarRadionicaDto>>> GetKomentarListRecursive(int id, int? nadKomentarId = null)
+    {
+        List<KomentarRadionicaDto> komentari = _mapper.Map<List<KomentarRadionicaDto>>(await _radioniceRepository.GetPodKomentarList(id, nadKomentarId));
+        Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
+
+        foreach (var komentar in komentari)
+        {
+            /*if (korisnik != null)
+            {
+                komentar.Liked = (await _radioniceRepository.GetKomentarReakcija(komentar.Id, korisnik.Id))?.Liked;
+            }*/
+            //dodati ovo iznad kad ce se dodavati reakcije na komentar
+            komentar.PodKomentarList = _mapper.Map<List<KomentarRadionicaDto>>((await GetKomentarListRecursive(id, komentar.Id)).Data);
+        }
+
+        return ServiceResult.Success(komentari);
+    }
+    
+    public async Task<ServiceResult<KomentarRadionicaDto>> UpdateKomentar(UpdateKomentarRadionicaDto updateKomentar)
+    {
+        var komentar = await _radioniceRepository.GetKomentarRadionicaByIdWithTracking(updateKomentar.Id);
+        var user = _authorizationService.GetKorisnik();
+
+        if (komentar == null || !user.Owns(komentar) || komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+        komentar.Sadrzaj = updateKomentar.Sadrzaj;
+        komentar.LastUpdatedDateTime = DateTime.UtcNow;
+
+        var updatedKomentar = _mapper.Map<KomentarRadionicaDto>(await _radioniceRepository.UpdateKomentar(komentar));
+
+        return ServiceResult.Success(updatedKomentar);
+
+    }
+    
 }

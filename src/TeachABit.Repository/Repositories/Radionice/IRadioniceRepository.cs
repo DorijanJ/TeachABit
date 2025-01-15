@@ -9,4 +9,14 @@ public interface IRadioniceRepository
     Task<Radionica> CreateRadionica(Radionica radionica);
     //Task<Radionica> UpdateRadionica(Radionica zadatak);
     Task DeleteRadionica(int id);
+    
+    public Task<KomentarRadionica> CreateKomentar(KomentarRadionica komentar);
+    public Task<KomentarRadionica?> GetKomentarById(int id);
+    public Task<bool> HasPodkomentari(int komentarId);
+    public Task DeleteKomentar(int id, bool keepEntry = false);
+    public Task<List<KomentarRadionica>> GetPodKomentarList(int objavaId, int? nadKomentarId = null);
+    public Task<KomentarRadionica?> GetKomentarRadionicaByIdWithTracking(int id);
+    public Task<KomentarRadionica> UpdateKomentar(KomentarRadionica komentar);
+
+
 }
