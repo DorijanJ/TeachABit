@@ -32,7 +32,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
     "teachabit-front": "file:",
-    "uuid": "^11.0.4"
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
