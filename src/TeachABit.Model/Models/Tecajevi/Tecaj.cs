@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Objave;
 
 namespace TeachABit.Model.Models.Tecajevi
 {
@@ -21,5 +22,7 @@ namespace TeachABit.Model.Models.Tecajevi
 
         public virtual List<Lekcija> Lekcije { get; set; } = [];
         public virtual List<TecajPlacanje> TecajPlacanja { get; set; } = [];
+        public virtual List<KomentarTecaj> Komentari { get; set; } = [];
     }
+    
 }
