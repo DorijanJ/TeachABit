@@ -1,7 +1,9 @@
 ﻿using TeachABit.Model.DTOs.Objave;
+using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Model.DTOs.Tecajevi;
 using TeachABit.Model.Models.Objave;
 using TeachABit.Model.Models.Tecajevi;
+using TeachABit.Model.Models.Radionice;
 
 namespace TeachABit.Model.Models.Korisnici.Extensions
 {
@@ -33,6 +35,16 @@ namespace TeachABit.Model.Models.Korisnici.Extensions
         public static bool Owns(this Korisnik korisnik, Komentar komentar)
         {
             return komentar.VlasnikId == korisnik.Id;
+        }
+        
+        public static bool Owns(this Korisnik korisnik, RadionicaDto radionica)
+        {
+            return radionica.VlasnikId == korisnik.Id;
+        }
+        
+        public static bool Owns(this Korisnik korisnik, Radionica radionica)
+        {
+            return radionica.VlasnikId == korisnik.Id;
         }
     }
 }
