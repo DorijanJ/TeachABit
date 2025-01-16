@@ -1,4 +1,11 @@
-import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
+import {
+    Card,
+    CardContent,
+    Typography,
+    Box,
+    IconButton,
+    Button,
+} from "@mui/material";
 import UserLink from "../profil/UserLink";
 import { useNavigate } from "react-router-dom";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -32,36 +39,54 @@ export default function Radionica(props: Props) {
                     height: "100%",
                 }}
             >
-                <Box
-                    display={"flex"}
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                >
+                <div>
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"space-between"}
+                        alignItems={"flex-start"}
+                    >
+                        <Typography
+                            color="primary"
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                overflow: "hidden",
+                                textAlign: "left",
+                                whiteSpace: "wrap",
+                                textOverflow: "ellipsis",
+                                maxWidth: "80%",
+                            }}
+                        >
+                            {props.radionica.naziv}
+                        </Typography>
+
+                        <IconButton
+                            color="primary"
+                            onClick={() => {
+                                navigate(`/radionica/${props.radionica.id}`);
+                            }}
+                            size="small"
+                            sx={{ border: "1px solid #3a7ca5" }}
+                        >
+                            <KeyboardArrowRightIcon />
+                        </IconButton>
+                    </Box>
                     <Typography
-                        color="primary"
-                        variant="h5"
+                        variant="body1"
                         component="div"
                         sx={{
-                            textOverflow: "ellipsis",
                             overflow: "hidden",
-                            whiteSpace: "nowrap",
+                            textAlign: "left",
+                            whiteSpace: "wrap",
                             maxWidth: "100%",
+                            textOverflow: "ellipsis",
+                            marginTop: "20px",
                         }}
                     >
-                        {props.radionica.naziv}
+                        {props.radionica.opis}
                     </Typography>
-
-                    <IconButton
-                        color="primary"
-                        onClick={() => {
-                            navigate(`/radionica/${props.radionica.id}`);
-                        }}
-                        size="small"
-                        sx={{ border: "1px solid #3a7ca5" }}
-                    >
-                        <KeyboardArrowRightIcon />
-                    </IconButton>
-                </Box>
+                </div>
                 <Box
                     justifyContent={"flex-end"}
                     display="flex"
@@ -83,7 +108,14 @@ export default function Radionica(props: Props) {
                         flexDirection={"row"}
                         gap={0.7}
                     >
-                        {/* <ThumbUpIcon color="action" fontSize="small" /> */}
+                        {props.radionica.cijena &&
+                            props.radionica.cijena > 0 && (
+                                <>
+                                    <Button disabled variant="contained">
+                                        {props.radionica.cijena}€
+                                    </Button>
+                                </>
+                            )}
                     </Box>
                 </Box>
             </CardContent>

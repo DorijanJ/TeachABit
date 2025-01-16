@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TeachABit.Model.DTOs.Radionice;
 
@@ -6,12 +7,11 @@ public class RadionicaDto
 {
     public int Id { get; set; }
     [Required]
-    public string Naziv { get; set; } = String.Empty;
-    [Required]
+    public string Naziv { get; set; } = string.Empty;
     public string Opis { get; set; } = string.Empty;
     public bool? Favorit { get; set; } = false;
-    [Required] 
-    public int? Cijena { get; set; } = 0;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public decimal? Cijena { get; set; } = null;
     public string VlasnikId { get; set; } = string.Empty;
     public string? VlasnikUsername { get; set; }
     public string? VlasnikProfilnaSlikaVersion { get; set; }

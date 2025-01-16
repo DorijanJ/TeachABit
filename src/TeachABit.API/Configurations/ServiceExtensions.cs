@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Threading.RateLimiting;
 using TeachABit.Model;
+using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.Mapping;
 using TeachABit.Model.Models.Korisnici;
@@ -127,20 +128,20 @@ namespace TeachABit.API.Configurations
                     {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsJsonAsync(MessageDescriber.Unauthenticated());
+                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated() });
                     },
                     OnForbidden = async context =>
                     {
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
                         context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsJsonAsync(MessageDescriber.Unauthorized());
+                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthorized() });
                     },
                     OnChallenge = async context =>
                     {
                         context.HandleResponse();
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsJsonAsync(MessageDescriber.Unauthenticated());
+                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated() });
                     }
                 };
             });
