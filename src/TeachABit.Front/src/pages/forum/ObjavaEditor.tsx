@@ -65,6 +65,7 @@ export default function ObjavaEditor(props: Props) {
                     handleClose();
                 }}
                 maxWidth={"md"}
+                id="objavaEditor"
             >
                 <DialogTitle sx={{ maxWidth: "100%" }}>
                     <div
@@ -103,6 +104,7 @@ export default function ObjavaEditor(props: Props) {
                         autoFocus
                         label="Naziv"
                         variant="outlined"
+                        name="naziv"
                         value={objava.naziv || ""}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             setObjava((prev: any) => ({
@@ -126,6 +128,7 @@ export default function ObjavaEditor(props: Props) {
                         Odustani
                     </Button>
                     <Button
+                        id="objavaEditorStvoriObjavu"
                         variant="contained"
                         onClick={() => {
                             if (!objava.id) {

@@ -20,6 +20,7 @@ export default function Objava(props: Props) {
                 border: "1px solid lightgray",
                 minWidth: "300px",
             }}
+            id="objava"
         >
             <CardContent
                 sx={{
@@ -34,6 +35,7 @@ export default function Objava(props: Props) {
                     color="primary"
                     variant="h5"
                     component="div"
+                    id="objavaNaziv"
                     sx={{
                         textOverflow: "ellipsis",
                         overflow: "hidden",

@@ -45,6 +45,7 @@ export default function AuthButton() {
                     margin: 5,
                 }}
                 onClick={() => setSelectedTab(0)}
+                id="authForm-prijavaButton"
             >
                 Prijava
             </Button>

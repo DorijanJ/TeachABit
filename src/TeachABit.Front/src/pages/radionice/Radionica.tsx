@@ -20,6 +20,7 @@ export default function Radionica(props: Props) {
 
     return (
         <Card
+            id="radionica"
             sx={{
                 width: "32%",
                 height: "400px",
