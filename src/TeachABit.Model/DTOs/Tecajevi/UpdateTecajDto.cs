@@ -11,4 +11,5 @@ public class UpdateTecajDto
     public string Sadrzaj { get; set; } = string.Empty;
     public bool Favorit { get; set; } = false;
     public int Cijena { get; set; } = 0;
+    public string Opis { get; set; } = string.Empty;
 }

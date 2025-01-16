@@ -19,6 +19,7 @@ namespace TeachABit.Model.Models.Tecajevi
         public required string VlasnikId { get; set; } = string.Empty;
         [ForeignKey(nameof(VlasnikId))]
         public required virtual Korisnik Vlasnik { get; set; }
+        public string Opis { get; set; } = string.Empty;
 
         public virtual List<Lekcija> Lekcije { get; set; } = [];
         public virtual List<TecajPlacanje> TecajPlacanja { get; set; } = [];
