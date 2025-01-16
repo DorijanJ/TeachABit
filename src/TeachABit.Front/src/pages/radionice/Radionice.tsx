@@ -52,52 +52,47 @@ export default function Radionice() {
             >
                 <SearchBox onSearch={abc} />
 
-                {globalContext.userIsLoggedIn && (
-                    <Button
-                        variant="contained"
-                        onClick={() => setIsOpenRadionicaDialog(true)}
-                    >
-                        Započni novu radionicu
-                    </Button>
-                )}
-            </div>
+        {globalContext.userIsLoggedIn && (
+          <Button
+            variant="contained"
+            onClick={() => setIsOpenRadionicaDialog(true)}
+          >
+            Započni novu radionicu
+          </Button>
+        )}
+      </div>
 
-            <div
-                style={{
-                    color: "primary",
-                    fontSize: 20,
-                    margin: 0,
-                    width: "100%",
-                }}
-            >
-                Nadolazeće radionice:
-                <hr style={{ border: "1px solid #cccccc" }} />
-            </div>
+      <div
+        style={{
+          color: "#4f4f4f",
+          fontSize: 20,
+        }}
+      >
+        Nadolazeće radionice:
+      </div>
 
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    gap: "20px",
-                    width: "100%",
-                    paddingBottom: "20px",
-                }}
-            >
-                {radionicaList.map((radionica) => (
-                    <Radionica
-                        key={"radionica" + radionica.id}
-                        radionica={radionica}
-                    />
-                ))}
-            </div>
-            <RadionicaEditor
-                refreshData={() => GetRadionicaList()}
-                onClose={() => {
-                    setIsOpenRadionicaDialog(false);
-                }}
-                isOpen={isOpenRadionicaDialog}
-            />
-        </div>
-    );
+      <hr style={{ border: "1px solid #cccccc", width: "98%" }} />
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: "20px",
+          maxWidth: "100%",
+        }}
+      >
+        {radionicaList.map((radionica) => (
+          <Radionica key={"radionica" + radionica.id} radionica={radionica} />
+        ))}
+      </div>
+      <RadionicaEditor
+        refreshData={() => GetRadionicaList()}
+        onClose={() => {
+          setIsOpenRadionicaDialog(false);
+        }}
+        isOpen={isOpenRadionicaDialog}
+      />
+    </div>
+  );
 }
