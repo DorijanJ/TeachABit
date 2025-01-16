@@ -27,7 +27,7 @@ export default function Profil() {
     };
 
     const setupStripeAccount = async () => {
-        const response = await requests.getWithLoading(
+        const response = await requests.postWithLoading(
             "placanja/napravi-stripe-account"
         );
         if (response && response.data) {
