@@ -19,6 +19,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public Task<List<Lekcija>> GetLekcijaListByTecajId(int id);
         public Task<bool> CheckIfTecajPlacen(string korisnikId, int tecajId);
         public Task<TecajPlacanje> CreateTecajPlacanje(TecajPlacanje tecajPlacanje);
+        public Task<List<Lekcija>> GetLekcijaList(string? search = null);
         public Task<KomentarTecaj> CreateKomentarTecaj(KomentarTecaj komentar);
         public Task DeleteKomentarTecaj(int id, bool keepEntry = false);
         public Task<KomentarTecaj> UpdateKomentarTecaj(KomentarTecaj komentar);

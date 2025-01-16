@@ -15,10 +15,12 @@ namespace TeachABit.Model.Models.Tecajevi
         public string Sadrzaj { get; set; } = string.Empty;
         [AllowNull]
         public decimal? Cijena { get; set; } = null;
+        public bool isPublished{ get; set; }=false;
 
         public required string VlasnikId { get; set; } = string.Empty;
         [ForeignKey(nameof(VlasnikId))]
         public required virtual Korisnik Vlasnik { get; set; }
+        public string Opis { get; set; } = string.Empty;
 
         public virtual List<Lekcija> Lekcije { get; set; } = [];
         public virtual List<TecajPlacanje> TecajPlacanja { get; set; } = [];

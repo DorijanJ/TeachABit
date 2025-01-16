@@ -49,6 +49,9 @@ namespace TeachABit.Service.Services.Tecajevi
                 tecaj.Cijena = Math.Round(tecaj.Cijena.Value, 2);
             }
 
+            var korisnik = _authorizationService.GetKorisnik();
+            tecaj.VlasnikId = korisnik.Id;
+
             TecajDto createdTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.CreateTecaj(_mapper.Map<Tecaj>(tecaj)));
             return ServiceResult.Success(createdTecaj);
         }
@@ -65,7 +68,12 @@ namespace TeachABit.Service.Services.Tecajevi
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
-
+        public async Task<ServiceResult<List<LekcijaDto>>> GetLekcijaList(string? search = null)
+        {
+            var lekcije = await _tecajeviRepository.GetLekcijaList(search);
+            var lekcijeDto = _mapper.Map<List<LekcijaDto>>(lekcije);
+            return ServiceResult.Success(lekcijeDto);
+        }
 
 
 

@@ -18,6 +18,7 @@ export default function Objava(props: Props) {
                 borderRadius: "10px",
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
+                minWidth: "300px",
             }}
         >
             <CardContent
@@ -50,7 +51,7 @@ export default function Objava(props: Props) {
                         navigate(`/objava/${props.objava.id}`);
                     }}
                     size="small"
-                    sx={{ border: "1px solid #023047" }}
+                    sx={{ border: "1px solid #3a7ca5" }}
                 >
                     <KeyboardArrowRightIcon />
                 </IconButton>

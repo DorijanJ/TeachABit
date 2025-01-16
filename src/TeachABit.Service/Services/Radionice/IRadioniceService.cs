@@ -5,8 +5,15 @@ namespace TeachABit.Service.Services.Radionice;
 
 public interface IRadioniceService
 {
-    Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null);
-    Task<ServiceResult<RadionicaDto>> GetRadionica(int id);
-    Task<ServiceResult<RadionicaDto>> CreateRadionica(RadionicaDto radionica);
-    Task<ServiceResult> DeleteRadionica(int id);
+    public Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null);
+    public Task<ServiceResult<RadionicaDto>> GetRadionica(int id);
+    public Task<ServiceResult<RadionicaDto>> CreateRadionica(RadionicaDto radionica);
+    public Task<ServiceResult<RadionicaDto>> UpdateRadionica(UpdateRadionicaDto updateRadionica);
+    public Task<ServiceResult> DeleteRadionica(int id);
+    public Task<ServiceResult<List<KomentarRadionicaDto>>> GetKomentarListRecursive(int id, int? nadKomentarId = null);
+    public Task<ServiceResult> DeleteKomentar(int id);
+    public Task<ServiceResult<KomentarRadionicaDto>> CreateKomentar(KomentarRadionicaDto komentar, int objavaId);
+    public Task<ServiceResult<KomentarRadionicaDto>> UpdateKomentar(UpdateKomentarRadionicaDto updateKomentar);
+
+    
 }

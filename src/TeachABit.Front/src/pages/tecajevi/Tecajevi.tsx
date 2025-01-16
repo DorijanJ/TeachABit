@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import requests from "../../api/agent";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useGlobalContext } from "../../context/Global.context";
 import Tecaj from "./Tecaj";
 import SearchBox from "../../components/searchbox/SearchBox";
@@ -47,7 +47,7 @@ export default function Tecajevi() {
                     flexDirection: "row",
                     gap: "20px",
                     alignItems: "center",
-                    width: "50%",
+                    width: "100%",
                 }}
             >
                 <SearchBox onSearch={GetTecajList} />
@@ -67,6 +67,17 @@ export default function Tecajevi() {
                     onClose={handleClose}
                     refreshData={() => GetTecajList()}
                 />
+            </div>
+            <div
+                style={{
+                    color: "primary",
+                    fontSize: 20,
+                    margin: 0,
+                    width: "100%",
+                }}
+            >
+                Tečajevi:
+                <hr style={{ border: "1px solid #cccccc" }} />
             </div>
             <div
                 style={{
