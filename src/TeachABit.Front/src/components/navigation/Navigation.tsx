@@ -56,6 +56,7 @@ export default function Navigation() {
                                 transform: isExpanded
                                     ? "rotate(0deg)"
                                     : "rotate(180deg)",
+                                //justifyContent: isExpanded? "" : "center", 
                                 transition: "transform 0.3s ease", // dodaje animiranu tranziciju
                             }}
                         />
