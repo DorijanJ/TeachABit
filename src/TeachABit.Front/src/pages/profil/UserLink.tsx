@@ -39,14 +39,7 @@ export default function UserLink(props: Props) {
                     <>{props.user.username ? props.user.username[0] : ""}</>
                 )}
             </Avatar>
-            <Typography
-                lineHeight={1}
-                variant="caption"
-                sx={{
-                    userSelect: "none",
-                    cursor: "default",
-                }}
-            >
+            <Typography lineHeight={1} variant="caption">
                 {props.user.username}
             </Typography>
         </div>

@@ -102,7 +102,7 @@ export default function Komentar(props: Props) {
                             props.komentar.podKomentarList.length > 0
                                 ? "visible"
                                 : "hidden",
-                        backgroundColor: isHidden ? "#922728" : "lightgray",
+                        backgroundColor: isHidden ? "#3a7ca5" : "lightgray",
                         width: "8px",
                         padding: "0 5px",
                         borderRadius: "5px",

@@ -76,8 +76,8 @@ const useAuth = () => {
     };
 
     const logout = async () => {
-        clearAuthData();
         await requests.postWithLoading("account/logout");
+        clearAuthData();
     };
 
     const register = async (
@@ -104,16 +104,17 @@ const useAuth = () => {
                 roles: appUser.roles,
             });
             globalContext.setIsUserLoggedIn(true);
+            window.location.reload();
         }
     };
 
     const clearAuthData = () => {
-        window.location.reload();
         localStorage.removeItem(USERNAME_KEY);
         localStorage.removeItem(ID_KEY);
         localStorage.removeItem(ROLES);
         globalContext.setCurrentUser(undefined);
         globalContext.setIsUserLoggedIn(false);
+        window.location.reload();
     };
 
     const getCurrentUserName = (): string | null => {
