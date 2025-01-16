@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20250116010523_CheckMigration")]
+    partial class CheckMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -344,48 +347,6 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("ObjavaReakcija");
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Radionice.KomentarRadionica", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastUpdatedDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("NadKomentarId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RadionicaId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Sadrzaj")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("VlasnikId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NadKomentarId");
-
-                    b.HasIndex("RadionicaId");
-
-                    b.HasIndex("VlasnikId");
-
-                    b.ToTable("KomentarRadionica");
-                });
-
             modelBuilder.Entity("TeachABit.Model.Models.Radionice.Radionica", b =>
                 {
                     b.Property<int>("Id")
@@ -394,8 +355,8 @@ namespace TeachABit.Model.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("Cijena")
-                        .HasColumnType("numeric");
+                    b.Property<int>("Cijena")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Naziv")
                         .IsRequired()
@@ -414,75 +375,6 @@ namespace TeachABit.Model.Migrations
                     b.HasIndex("VlasnikId");
 
                     b.ToTable("Radionica");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.KomentarTecaj", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastUpdatedDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("NadKomentarId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Sadrzaj")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("TecajId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("VlasnikId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NadKomentarId");
-
-                    b.HasIndex("TecajId");
-
-                    b.HasIndex("VlasnikId");
-
-                    b.ToTable("KomentarTecaj");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.KomentarTecajReakcija", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("KomentarId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("KorisnikId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Liked")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("KomentarId");
-
-                    b.HasIndex("KorisnikId");
-
-                    b.ToTable("KomentarTecajReakcija");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Lekcija", b =>
@@ -727,31 +619,6 @@ namespace TeachABit.Model.Migrations
                     b.Navigation("Objava");
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Radionice.KomentarRadionica", b =>
-                {
-                    b.HasOne("TeachABit.Model.Models.Radionice.KomentarRadionica", "NadKomentar")
-                        .WithMany("PodKomentarList")
-                        .HasForeignKey("NadKomentarId");
-
-                    b.HasOne("TeachABit.Model.Models.Radionice.Radionica", "Radionica")
-                        .WithMany()
-                        .HasForeignKey("RadionicaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Vlasnik")
-                        .WithMany()
-                        .HasForeignKey("VlasnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("NadKomentar");
-
-                    b.Navigation("Radionica");
-
-                    b.Navigation("Vlasnik");
-                });
-
             modelBuilder.Entity("TeachABit.Model.Models.Radionice.Radionica", b =>
                 {
                     b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Vlasnik")
@@ -761,50 +628,6 @@ namespace TeachABit.Model.Migrations
                         .IsRequired();
 
                     b.Navigation("Vlasnik");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.KomentarTecaj", b =>
-                {
-                    b.HasOne("TeachABit.Model.Models.Tecajevi.KomentarTecaj", "NadKomentar")
-                        .WithMany("PodKomentarList")
-                        .HasForeignKey("NadKomentarId");
-
-                    b.HasOne("TeachABit.Model.Models.Tecajevi.Tecaj", "Tecaj")
-                        .WithMany("Komentari")
-                        .HasForeignKey("TecajId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Vlasnik")
-                        .WithMany()
-                        .HasForeignKey("VlasnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("NadKomentar");
-
-                    b.Navigation("Tecaj");
-
-                    b.Navigation("Vlasnik");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.KomentarTecajReakcija", b =>
-                {
-                    b.HasOne("TeachABit.Model.Models.Tecajevi.KomentarTecaj", "Komentar")
-                        .WithMany("KomentarReakcijaList")
-                        .HasForeignKey("KomentarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Korisnik")
-                        .WithMany()
-                        .HasForeignKey("KorisnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Komentar");
-
-                    b.Navigation("Korisnik");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Lekcija", b =>
@@ -890,22 +713,8 @@ namespace TeachABit.Model.Migrations
                     b.Navigation("ObjavaReakcijaList");
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Radionice.KomentarRadionica", b =>
-                {
-                    b.Navigation("PodKomentarList");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.KomentarTecaj", b =>
-                {
-                    b.Navigation("KomentarReakcijaList");
-
-                    b.Navigation("PodKomentarList");
-                });
-
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Tecaj", b =>
                 {
-                    b.Navigation("Komentari");
-
                     b.Navigation("Lekcije");
 
                     b.Navigation("TecajPlacanja");

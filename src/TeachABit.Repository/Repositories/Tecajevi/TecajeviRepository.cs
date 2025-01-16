@@ -40,7 +40,9 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         }
         public async Task<List<Tecaj>> GetTecajList(string? search = null, string? korisnikId = null)
         {
-            var query = _context.Tecajevi.AsQueryable();
+            var query = _context.Tecajevi
+                .Include(x => x.Vlasnik)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -56,8 +58,17 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
             return await query.ToListAsync();
         }
-
-
+        public async Task<List<Lekcija>> GetLekcijaList(string? search = null)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                string lowerSearch = search.ToLower();
+                return await _context.Lekcije
+                    .Where(t => t.Naziv.ToLower().Contains(lowerSearch))
+                    .ToListAsync();
+            }
+            return await _context.Lekcije.ToListAsync();
+        }
         public async Task<Tecaj?> GetTecajByIdWithTracking(int id)
         {
             return await _context.Tecajevi.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -112,6 +123,92 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             var created = await _context.TecajPlacanja.AddAsync(tecajPlacanje);
             await _context.SaveChangesAsync();
             return created.Entity;
+        }
+
+        public async Task<KomentarTecaj> CreateKomentarTecaj(KomentarTecaj komentarTecaj)
+        {
+            var createdKomentarTecaj = await _context.KomentariTecaj.AddAsync(komentarTecaj);
+            await _context.SaveChangesAsync();
+            return createdKomentarTecaj.Entity;
+        }
+
+        public async Task DeleteKomentarTecaj(int id, bool keepEntry = false)
+        {
+            if (keepEntry)
+                await _context.KomentariTecaj.Where(x => x.Id == id).ExecuteUpdateAsync(x => x.SetProperty(p => p.IsDeleted, true));
+            else
+                await _context.KomentariTecaj.Where(x => x.Id == id).ExecuteDeleteAsync();
+        }
+
+        public async Task<KomentarTecaj> UpdateKomentarTecaj(KomentarTecaj komentar)
+        {
+            await _context.SaveChangesAsync();
+            return komentar;
+        }
+
+        public async Task<KomentarTecaj?> GetKomentarTecajById(int id)
+        {
+            return await _context.KomentariTecaj.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<List<KomentarTecaj>> GetKomentarTecajListByTecajId(int id)
+        {
+            return await _context.KomentariTecaj
+                .Include(x => x.Vlasnik)
+                .Include(x => x.Tecaj)
+                .Include(x => x.KomentarReakcijaList)
+                .Where(x => x.Tecaj.Id == id)
+                .OrderByDescending(x => x.CreatedDateTime)
+                .ToListAsync();
+        }
+
+        public async Task<List<KomentarTecaj>> GetPodKomentarTecajList(int objavaId, int? nadKomentarTecajId = null)
+        {
+            var komentari = await _context.KomentariTecaj
+                .Include(c => c.Vlasnik)
+                .Include(c => c.Tecaj)
+                .Include(c => c.KomentarReakcijaList)
+                .Where(c => c.TecajId == objavaId && c.NadKomentarId == nadKomentarTecajId)
+                .OrderByDescending(c => c.CreatedDateTime)
+                .ToListAsync();
+            return komentari;
+        }
+
+        public async Task DeleteKomentarTecajReakcija(int komentarId, string korisnikId)
+        {
+            await _context.KomentarTecajReakcije
+                .Where(x => x.KorisnikId == korisnikId && x.KomentarId == komentarId)
+                .ExecuteDeleteAsync();
+        }
+
+        public async Task DeleteKomentarTecajReakcija(int id)
+        {
+            await _context.KomentarTecajReakcije
+                .Where(x => x.Id == id)
+                .ExecuteDeleteAsync();
+        }
+
+        public async Task<KomentarTecajReakcija> CreateKomentarTecajReakcija(KomentarTecajReakcija komentarReakcija)
+        {
+            var createdKomentarReakcija = await _context.KomentarTecajReakcije.AddAsync(komentarReakcija);
+            await _context.SaveChangesAsync();
+            return createdKomentarReakcija.Entity;
+        }
+
+        public async Task<KomentarTecajReakcija?> GetKomentarTecajReakcija(int komentarId, string korisnikId)
+        {
+            return await _context.KomentarTecajReakcije.FirstOrDefaultAsync(x => x.KomentarId == komentarId && x.KorisnikId == korisnikId);
+
+        }
+
+        public async Task<KomentarTecaj?> GetKomentarTecajByIdWithTracking(int id)
+        {
+            return await _context.KomentariTecaj.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<bool> HasPodkomentari(int komentarId)
+        {
+            return await _context.KomentariTecaj.AnyAsync(x => x.NadKomentarId == komentarId);
         }
     }
 }

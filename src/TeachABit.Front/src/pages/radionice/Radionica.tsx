@@ -1,6 +1,12 @@
-import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
+import {
+    Card,
+    CardContent,
+    Typography,
+    Box,
+    IconButton,
+    Button,
+} from "@mui/material";
 import UserLink from "../profil/UserLink";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useNavigate } from "react-router-dom";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { RadionicaDto } from "../../models/RadionicaDto";
@@ -15,82 +21,104 @@ export default function Radionica(props: Props) {
     return (
         <Card
             sx={{
-                width: "500px",
-                borderRadius: "2px",
+                width: "32%",
+                height: "400px",
+                borderRadius: "10px",
                 boxSizing: "border-box",
-                border: "1px solid transparent",
-                "&:hover": {
-                    border: "1px solid #922728",
-                },
+                border: "1px solid lightgray",
+                minWidth: "300px",
             }}
         >
             <CardContent
                 sx={{
                     textAlign: "center",
                     display: "flex",
-                    flexDirection: "row",
+                    flexDirection: "column",
                     justifyContent: "space-between",
                     gap: 1,
+                    height: "100%",
                 }}
             >
-                <Typography
-                    color="primary"
-                    variant="h5"
-                    component="div"
-                    sx={{
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        maxWidth: "100%",
-                    }}
-                >
-                    {props.radionica.naziv}
-                </Typography>
+                <div>
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"space-between"}
+                        alignItems={"flex-start"}
+                    >
+                        <Typography
+                            color="primary"
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                overflow: "hidden",
+                                textAlign: "left",
+                                whiteSpace: "wrap",
+                                textOverflow: "ellipsis",
+                                maxWidth: "80%",
+                            }}
+                        >
+                            {props.radionica.naziv}
+                        </Typography>
 
-                <IconButton
-                    color="primary"
-                    onClick={() => {
-                        navigate(`/radionica/${props.radionica.id}`);
-                    }}
-                    size="small"
-                    sx={{ border: "1px solid #922728" }}
-                >
-                    <KeyboardArrowRightIcon />
-                </IconButton>
-            </CardContent>
-            <Box
-                m={2}
-                justifyContent={"space-between"}
-                display="flex"
-                flexDirection={"row"}
-                alignItems="center"
-                gap={2}
-            >
-                <UserLink
-                    user={{
-                        id: props.radionica.predavacId,
-                        username: props.radionica.naziv,
-                        profilnaSlikaVersion: props.radionica.predavacProfilnaSlika,
-                    }}
-                /> 
-                <Box
-                    display={"flex"}
-                    alignItems={"flex-end"}
-                    flexDirection={"row"}
-                    gap={0.7}
-                >
-                    <p
-                        style={{
-                            margin: 0,
-                            display: "inline",
-                            lineHeight: "18px",
+                        <IconButton
+                            color="primary"
+                            onClick={() => {
+                                navigate(`/radionica/${props.radionica.id}`);
+                            }}
+                            size="small"
+                            sx={{ border: "1px solid #3a7ca5" }}
+                        >
+                            <KeyboardArrowRightIcon />
+                        </IconButton>
+                    </Box>
+                    <Typography
+                        variant="body1"
+                        component="div"
+                        sx={{
+                            overflow: "hidden",
+                            textAlign: "left",
+                            whiteSpace: "wrap",
+                            maxWidth: "100%",
+                            textOverflow: "ellipsis",
+                            marginTop: "20px",
                         }}
                     >
-                        nesto nesto
-                    </p>
-                    <ThumbUpIcon color="action" fontSize="small" />
+                        {props.radionica.opis}
+                    </Typography>
+                </div>
+                <Box
+                    justifyContent={"flex-end"}
+                    display="flex"
+                    flexDirection={"row"}
+                    alignItems="center"
+                    gap={2}
+                >
+                    <UserLink
+                        user={{
+                            id: props.radionica.vlasnikId,
+                            username: props.radionica.vlasnikUsername,
+                            profilnaSlikaVersion:
+                                props.radionica.vlasnikProfilnaSlikaVersion,
+                        }}
+                    />
+                    <Box
+                        display={"flex"}
+                        alignItems={"flex-end"}
+                        flexDirection={"row"}
+                        gap={0.7}
+                    >
+                        {props.radionica.cijena &&
+                            props.radionica.cijena > 0 && (
+                                <>
+                                    <Button disabled variant="contained">
+                                        {props.radionica.cijena}€
+                                    </Button>
+                                </>
+                            )}
+                    </Box>
                 </Box>
-            </Box>
+            </CardContent>
         </Card>
     );
 }

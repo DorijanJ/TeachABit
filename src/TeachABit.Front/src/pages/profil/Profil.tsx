@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useGlobalContext } from "../../context/Global.context";
-import { Card, CardContent, Typography, Avatar, Button } from "@mui/material";
+import { Card, CardContent, Typography, Avatar } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent";
 import { AppUserDto } from "../../models/AppUserDto";
@@ -26,14 +26,14 @@ export default function Profil() {
         }
     };
 
-    const setupStripeAccount = async () => {
-        const response = await requests.getWithLoading(
-            "placanja/napravi-stripe-account"
-        );
-        if (response && response.data) {
-            window.location.href = response.data.url;
-        }
-    };
+    // const setupStripeAccount = async () => {
+    //     const response = await requests.getWithLoading(
+    //         "placanja/napravi-stripe-account"
+    //     );
+    //     if (response && response.data) {
+    //         window.location.href = response.data.url;
+    //     }
+    // };
 
     useEffect(() => {
         if (username) GetUserByUsername(username);
@@ -90,7 +90,7 @@ export default function Profil() {
                         user.roles.length > 0 &&
                         user.roles.map((role) => <p>{role}</p>)}
                 </CardContent>
-                <Button onClick={setupStripeAccount}>Spoji Plaćanje</Button>
+                {/* <Button onClick={setupStripeAccount}>Spoji Plaćanje</Button> */}
             </Card>
         )
     );

@@ -15,10 +15,13 @@ namespace TeachABit.Model
         public DbSet<Radionica> Radionice { get; set; }
         public DbSet<Komentar> Komentari { get; set; }
         public DbSet<Lekcija> Lekcije { get; set; }
+        public DbSet<KomentarTecaj> KomentariTecaj { get; set; }
         public DbSet<ObjavaReakcija> ObjavaReakcije { get; set; }
         public DbSet<KomentarReakcija> KomentarReakcije { get; set; }
+        public DbSet<KomentarTecajReakcija> KomentarTecajReakcije { get; set; }
         public DbSet<TecajFavorit> TecajFavoriti { get; set; }
         public DbSet<TecajPlacanje> TecajPlacanja { get; set; }
+        public DbSet<KomentarRadionica> KomentarRadionica { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
