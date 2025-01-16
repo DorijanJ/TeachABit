@@ -5,6 +5,7 @@ import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
 import globalStore from "../../stores/GlobalStore";
 import UserLink from "../profil/UserLink";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
