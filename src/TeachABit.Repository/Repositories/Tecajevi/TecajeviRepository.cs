@@ -40,7 +40,9 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         }
         public async Task<List<Tecaj>> GetTecajList(string? search = null, string? korisnikId = null)
         {
-            var query = _context.Tecajevi.AsQueryable();
+            var query = _context.Tecajevi
+                .Include(x => x.Vlasnik)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {

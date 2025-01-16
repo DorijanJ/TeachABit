@@ -4,4 +4,7 @@ export interface TecajDto {
     opis: string;
     cijena?: number;
     kupljen?: boolean;
+    vlasnikId?: string;
+    vlasnikUsername?: string;
+    vlasnikProfilnaSlikaVersion?: string;
 }

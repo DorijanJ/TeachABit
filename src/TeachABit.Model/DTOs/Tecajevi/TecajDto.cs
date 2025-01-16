@@ -14,6 +14,7 @@ namespace TeachABit.Model.DTOs.Tecajevi
         public bool isPublished{ get; set; }=false;
         public string VlasnikId { get; set; } = string.Empty;
         public string? VlasnikUsername { get; set; }
+        public string? VlasnikProfilnaSlikaVersion { get; set; }
         public bool? Kupljen { get; set; } = false;
         public List<LekcijaDto>? Lekcije { get; set; } = [];
     }
