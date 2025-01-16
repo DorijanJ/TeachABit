@@ -19,7 +19,7 @@ import ObjavaPage from "./pages/forum/ObjavaPage";
 import Notification from "./components/notification/Notification";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import TecajPage from "./pages/tecajevi/TecajPage";
+import RadionicaPage from "./pages/radionice/RadionicaPage";
 
 const stripePromise = loadStripe("your-publishable-key");
 
@@ -120,15 +120,17 @@ const App = observer(() => {
                                     />
                                 }
                             />
+
                             <Route
-                                path="tecajevi/:tecajId"
+                                path="radionica/:radionicaId"
                                 element={
                                     <GenericRoute
-                                        page={<TecajPage />}
+                                        page={<RadionicaPage />}
                                         withNavigation
                                     />
                                 }
                             />
+
                             <Route
                                 path="*"
                                 element={<Navigate to={"/tecajevi"} />}
