@@ -105,6 +105,19 @@ export default function Tecaj(props: Props) {
                             </IconButton>
                         )}
                     </Box>
+                    {props.tecaj.naslovnaSlikaVersion && (
+                        <img
+                            style={{
+                                objectFit: "cover",
+                                width: "100%",
+                                height: "100%",
+                            }}
+                            src={`${import.meta.env
+                                .VITE_REACT_AWS_BUCKET
+                                }${props.tecaj?.naslovnaSlikaVersion
+                                }`}
+                        />
+                    )}
                     <Typography
                         variant="body1"
                         component="div"

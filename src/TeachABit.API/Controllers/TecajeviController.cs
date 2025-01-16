@@ -29,14 +29,14 @@ namespace TeachABit.API.Controllers
 
         [ModelStateFilter]
         [HttpPost]
-        public async Task<IActionResult> CreateTecaj(TecajDto tecaj)
+        public async Task<IActionResult> CreateTecaj(CreateOrUpdateTecajDto tecaj)
         {
             return GetControllerResult(await _tecajeviService.CreateTecaj(tecaj));
         }
 
         [ModelStateFilter]
         [HttpPut]
-        public async Task<IActionResult> UpdateTecaj(UpdateTecajDto tecaj)
+        public async Task<IActionResult> UpdateTecaj(CreateOrUpdateTecajDto tecaj)
         {
             return GetControllerResult(await _tecajeviService.UpdateTecaj(tecaj));
         }
