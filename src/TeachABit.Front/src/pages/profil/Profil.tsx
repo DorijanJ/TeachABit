@@ -26,6 +26,15 @@ export default function Profil() {
         }
     };
 
+    // const setupStripeAccount = async () => {
+    //     const response = await requests.getWithLoading(
+    //         "placanja/napravi-stripe-account"
+    //     );
+    //     if (response && response.data) {
+    //         window.location.href = response.data.url;
+    //     }
+    // };
+
     useEffect(() => {
         if (username) GetUserByUsername(username);
     }, [username]);
@@ -81,6 +90,7 @@ export default function Profil() {
                         user.roles.length > 0 &&
                         user.roles.map((role) => <p>{role}</p>)}
                 </CardContent>
+                {/* <Button onClick={setupStripeAccount}>Spoji Plaćanje</Button> */}
             </Card>
         )
     );

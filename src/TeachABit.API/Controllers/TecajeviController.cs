@@ -46,5 +46,30 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _tecajeviService.DeleteTecaj(id));
         }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetLekcijeList(string? search = null)
+        {
+            var result = await _tecajeviService.GetLekcijaList(search);
+            return GetControllerResult(result);
+        }
+        [HttpPut("lekcije")]
+        public async Task<IActionResult> UpdateLekcija(UpdatedLekcijaDto updateLekcija)
+        {
+            return GetControllerResult(await _tecajeviService.UpdateLekcija(updateLekcija));
+        }
+
+        [HttpDelete("lekcije/{lekcijaId}")]
+        public async Task<IActionResult> DeleteLekcija(int lekcijaId)
+        {
+            return GetControllerResult(await _tecajeviService.DeleteLekcija(lekcijaId));
+        }
+
+        [HttpPost("{id}/lekcije")]
+        public async Task<IActionResult> CreateLekcija([FromBody] LekcijaDto lekcija, int id)
+        {
+            return GetControllerResult(await _tecajeviService.CreateLekcija(lekcija, id));
+
+        }
     }
 }

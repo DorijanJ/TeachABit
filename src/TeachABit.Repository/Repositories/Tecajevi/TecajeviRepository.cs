@@ -38,18 +38,37 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             await _context.Tecajevi.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
-        public async Task<List<Tecaj>> GetTecajList(string? search = null)
+        public async Task<List<Tecaj>> GetTecajList(string? search = null, string? korisnikId = null)
+        {
+            var query = _context.Tecajevi
+                .Include(x => x.Vlasnik)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                string lowerSearch = search.ToLower();
+                query = query.Where(t => t.Naziv.ToLower().Contains(lowerSearch));
+            }
+
+            if (!string.IsNullOrEmpty(korisnikId))
+            {
+                query = query.Include(x => x.TecajPlacanja
+                    .Where(t => t.KorisnikId == korisnikId));
+            }
+
+            return await query.ToListAsync();
+        }
+        public async Task<List<Lekcija>> GetLekcijaList(string? search = null)
         {
             if (!string.IsNullOrEmpty(search))
             {
                 string lowerSearch = search.ToLower();
-                return await _context.Tecajevi
+                return await _context.Lekcije
                     .Where(t => t.Naziv.ToLower().Contains(lowerSearch))
                     .ToListAsync();
             }
-            return await _context.Tecajevi.ToListAsync();
+            return await _context.Lekcije.ToListAsync();
         }
-
         public async Task<Tecaj?> GetTecajByIdWithTracking(int id)
         {
             return await _context.Tecajevi.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -93,5 +112,17 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 .ToListAsync();
         }
 
+        public async Task<bool> CheckIfTecajPlacen(string korisnikId, int tecajId)
+        {
+            var placanje = await _context.TecajPlacanja.FirstOrDefaultAsync(x => x.KorisnikId == korisnikId && x.TecajId == tecajId);
+            return placanje != null;
+        }
+
+        public async Task<TecajPlacanje> CreateTecajPlacanje(TecajPlacanje tecajPlacanje)
+        {
+            var created = await _context.TecajPlacanja.AddAsync(tecajPlacanje);
+            await _context.SaveChangesAsync();
+            return created.Entity;
+        }
     }
 }

@@ -25,19 +25,37 @@ namespace TeachABit.Service.Services.Tecajevi
         {
             TecajDto? tecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.GetTecaj(id));
             if (tecaj == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
+
+            var korisnik = _authorizationService.GetKorisnikOptional();
+
+            if (tecaj.Cijena != null)
+            {
+                if (korisnik == null)
+                    return ServiceResult.Failure(MessageDescriber.Unauthorized());
+                else
+                {
+                    var tecajPlacen = await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id);
+                    if (!tecajPlacen) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+                }
+            }
+
             return ServiceResult.Success(tecaj);
         }
 
         public async Task<ServiceResult<TecajDto>> CreateTecaj(TecajDto tecaj)
         {
+            if (tecaj.Cijena.HasValue)
+            {
+                tecaj.Cijena = Math.Round(tecaj.Cijena.Value, 2);
+            }
+
+            var korisnik = _authorizationService.GetKorisnik();
+            tecaj.VlasnikId = korisnik.Id;
+
             TecajDto createdTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.CreateTecaj(_mapper.Map<Tecaj>(tecaj)));
             return ServiceResult.Success(createdTecaj);
         }
-        /*public async Task<ServiceResult<TecajDto>> UpdateTecaj(TecajDto tecaj)
-        {
-            // Moram provjeriti najbolji način implementacije za update.
-            ...
-        }*/
+
         public async Task<ServiceResult> DeleteTecaj(int id)
         {
             await _tecajeviRepository.DeleteTecaj(id);
@@ -45,11 +63,17 @@ namespace TeachABit.Service.Services.Tecajevi
         }
         public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null)
         {
-            var tecajevi = await _tecajeviRepository.GetTecajList(search);
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id);
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
-
+        public async Task<ServiceResult<List<LekcijaDto>>> GetLekcijaList(string? search = null)
+        {
+            var lekcije = await _tecajeviRepository.GetLekcijaList(search);
+            var lekcijeDto = _mapper.Map<List<LekcijaDto>>(lekcije);
+            return ServiceResult.Success(lekcijeDto);
+        }
 
 
 

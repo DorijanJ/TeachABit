@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20250115151453_NullableCijenaMigrationFix")]
+    partial class NullableCijenaMigrationFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -356,13 +359,7 @@ namespace TeachABit.Model.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("VlasnikId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("VlasnikId");
 
                     b.ToTable("Radionica");
                 });
@@ -407,8 +404,8 @@ namespace TeachABit.Model.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("Cijena")
-                        .HasColumnType("numeric");
+                    b.Property<int?>("Cijena")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Naziv")
                         .IsRequired()
@@ -602,17 +599,6 @@ namespace TeachABit.Model.Migrations
                     b.Navigation("Objava");
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Radionice.Radionica", b =>
-                {
-                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Vlasnik")
-                        .WithMany()
-                        .HasForeignKey("VlasnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Vlasnik");
-                });
-
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Lekcija", b =>
                 {
                     b.HasOne("TeachABit.Model.Models.Tecajevi.Tecaj", "Tecaj")
@@ -663,7 +649,7 @@ namespace TeachABit.Model.Migrations
                         .IsRequired();
 
                     b.HasOne("TeachABit.Model.Models.Tecajevi.Tecaj", "Tecaj")
-                        .WithMany("TecajPlacanja")
+                        .WithMany()
                         .HasForeignKey("TecajId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -699,8 +685,6 @@ namespace TeachABit.Model.Migrations
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Tecaj", b =>
                 {
                     b.Navigation("Lekcije");
-
-                    b.Navigation("TecajPlacanja");
                 });
 #pragma warning restore 612, 618
         }

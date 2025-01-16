@@ -4,6 +4,7 @@ using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Model.Models.Objave
 {
+    [Table("ObjavaReakcija")]
     public class ObjavaReakcija
     {
         [Key]

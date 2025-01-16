@@ -11,7 +11,7 @@ import {
 import localStyles from "../../components/auth/form/AuthForm.module.css";
 
 import { TecajDto } from "../../models/TecajDto.ts";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import requests from "../../api/agent.ts";
 
 interface Props {
@@ -43,6 +43,16 @@ export default function TecajPopup(props: Props) {
             handleClose(true);
         }
     };
+
+    const isValidPrice = useMemo(() => {
+        const value = tecaj.cijena;
+        if (value === undefined) return true;
+        if (isNaN(value) || value <= 0) {
+            return false;
+        }
+
+        return true;
+    }, [tecaj.cijena]);
 
     return (
         <Dialog open={props.isOpen} onClose={props.onClose} maxWidth={"md"}>
@@ -116,6 +126,7 @@ export default function TecajPopup(props: Props) {
                         width: "200px",
                     }}
                     variant="outlined"
+                    value={tecaj.cijena?.toString()}
                     type="number"
                     slotProps={{
                         input: {
@@ -126,12 +137,22 @@ export default function TecajPopup(props: Props) {
                             ),
                         },
                     }}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        const value = parseFloat(e.target.value);
+                        const decimalPlaces = value
+                            .toString()
+                            .split(".")[1]?.length;
+                        if (
+                            !(Math.floor(value) === value) &&
+                            decimalPlaces > 2
+                        ) {
+                            return;
+                        }
                         setTecaj((prev: any) => ({
                             ...prev,
                             cijena: e.target.value,
-                        }))
-                    }
+                        }));
+                    }}
                 />
 
                 <DialogActions>
@@ -143,6 +164,7 @@ export default function TecajPopup(props: Props) {
                         Odustani
                     </Button>
                     <Button
+                        disabled={!isValidPrice}
                         className={localStyles.myButton}
                         variant="contained"
                         onClick={() => {

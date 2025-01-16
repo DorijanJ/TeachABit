@@ -11,14 +11,17 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
     public async Task<List<Radionica>> GetRadionicaList(string? search = null)
     {
-        if (string.IsNullOrWhiteSpace(search))
+        IQueryable<Radionica> query = _context.Radionice
+            .Include(x => x.Vlasnik)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
         {
-            return await _context.Radionice.ToListAsync();
+            var lowerSearch = search.ToLower();
+            query = query.Where(x => x.Naziv.ToLower().Contains(lowerSearch));
         }
 
-        return await _context.Radionice
-            .Where(r => r.Naziv.ToLower().Contains(search))
-            .ToListAsync();
+        return await query.ToListAsync();
     }
 
     public async Task<Radionica?> GetRadionica(int id)

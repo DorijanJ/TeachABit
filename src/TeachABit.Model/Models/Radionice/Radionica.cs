@@ -16,4 +16,8 @@ public class Radionica
     [ForeignKey(nameof(VlasnikId))]
     public required virtual Korisnik Vlasnik { get; set; }
     
+
+    public string VlasnikId { get; set; } = string.Empty;
+    [ForeignKey(nameof(VlasnikId))]
+    public required virtual Korisnik Vlasnik { get; set; }
 }
