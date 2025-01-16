@@ -26,7 +26,9 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
     public async Task<Radionica?> GetRadionica(int id)
     {
-        return await _context.Radionice.FirstOrDefaultAsync(x => x.Id == id);
+        return await _context.Radionice
+            .Include(x => x.Vlasnik)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
     public async Task<Radionica> CreateRadionica(Radionica radionica)
     {
@@ -34,13 +36,19 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         await _context.SaveChangesAsync();
         return createdZadatak.Entity;
     }
-    /*public async Task<Radionica> UpdateRadionica(Radionica radionica)
+    public async Task<Radionica> UpdateRadionica(Radionica radionica)
     {
-        // Moram provjeriti najbolji način implementacije za update.
-        ...
-    }*/
+        await _context.SaveChangesAsync();
+        return radionica;
+    }
     public async Task DeleteRadionica(int id)
     {
         await _context.Radionice.Where(x => x.Id == id).ExecuteDeleteAsync();
     }
+    
+    public async Task<Radionica?> GetRadionicaByIdWithTracking(int id)
+    {
+        return await _context.Radionice.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
+    }
+    
 }

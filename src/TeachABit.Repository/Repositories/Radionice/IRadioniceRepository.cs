@@ -7,6 +7,7 @@ public interface IRadioniceRepository
     Task<List<Radionica>> GetRadionicaList(string? search = null);
     Task<Radionica?> GetRadionica(int id);
     Task<Radionica> CreateRadionica(Radionica radionica);
-    //Task<Radionica> UpdateRadionica(Radionica zadatak);
+    Task<Radionica> UpdateRadionica(Radionica radionica);
     Task DeleteRadionica(int id);
+    Task<Radionica?> GetRadionicaByIdWithTracking(int id);
 }
