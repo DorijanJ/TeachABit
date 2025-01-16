@@ -46,4 +46,30 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.DeleteRadionica(id));
     }
+    
+    [AllowAnonymous]
+    [HttpGet("{id}/komentari")]
+    public async Task<IActionResult> GetKomentarListByObjavaId(int id)
+    {
+        return GetControllerResult(await _radioniceService.GetKomentarListRecursive(id));
+    }
+
+    [HttpPost("{id}/komentari")]
+    public async Task<IActionResult> CreateKomentar([FromBody] KomentarRadionicaDto komentar, int id)
+    {
+        return GetControllerResult(await _radioniceService.CreateKomentar(komentar, id));
+    }
+    
+    [HttpPut("komentari")]
+    public async Task<IActionResult> UpdateKomentar(UpdateKomentarRadionicaDto updateKomentar)
+    {
+        return GetControllerResult(await _radioniceService.UpdateKomentar(updateKomentar));
+    }
+
+    [HttpDelete("komentari/{komentarId}")]
+    public async Task<IActionResult> DeleteKomentar(int komentarId)
+    {
+        return GetControllerResult(await _radioniceService.DeleteKomentar(komentarId));
+    }
+    
 }
