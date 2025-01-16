@@ -26,6 +26,7 @@ export function NavigationUser(props: Props) {
     return (
         <>
             <div
+                id="navigationUser-korisnik"
                 style={{
                     display: "flex",
                     flexDirection: "column",
@@ -45,7 +46,6 @@ export function NavigationUser(props: Props) {
                     }}
                     startIcon={<PersonIcon />}
                     onClick={handleClick}
-                    id="navigationUser-korisnik"
                 >
                     {`Korisnik: ${props.user.username}`}
                 </Button>

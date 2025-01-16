@@ -63,6 +63,7 @@ export default function RadionicaEditor(props: Props) {
                     handleClose();
                 }}
                 maxWidth={"md"}
+                id="radionicaEditor"
             >
                 <DialogTitle sx={{ maxWidth: "100%" }}>
                     <div
@@ -102,6 +103,7 @@ export default function RadionicaEditor(props: Props) {
                         required
                         label="Naziv"
                         variant="outlined"
+                        name="naziv"
                         value={radionica.naziv || ""}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             setRadionica((prev: any) => ({
@@ -111,6 +113,7 @@ export default function RadionicaEditor(props: Props) {
                         }
                     />
                     <TextField
+                        id="radionicaOpisInput"
                         label="Opis"
                         name="opis"
                         required={true}
@@ -167,6 +170,7 @@ export default function RadionicaEditor(props: Props) {
                         Odustani
                     </Button>
                     <Button
+                        id="stvoriRadionicuButton"
                         variant="contained"
                         onClick={() => {
                             if (!radionica.id) {
