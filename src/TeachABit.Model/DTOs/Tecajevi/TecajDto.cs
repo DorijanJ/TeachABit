@@ -11,6 +11,7 @@ namespace TeachABit.Model.DTOs.Tecajevi
         public bool? Favorit { get; set; } = false;
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public decimal? Cijena { get; set; } = null;
+        public bool isPublished{ get; set; }=false;
         public string VlasnikId { get; set; } = string.Empty;
         public string? VlasnikUsername { get; set; }
         public bool? Kupljen { get; set; } = false;
