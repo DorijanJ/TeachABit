@@ -4,6 +4,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
 import globalStore from "../../stores/GlobalStore";
+import UserLink from "../profil/UserLink";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
@@ -45,6 +47,7 @@ export default function Tecaj(props: Props) {
                 borderRadius: "10px",
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
+                minWidth: "300px",
             }}
         >
             <CardContent
@@ -76,11 +79,24 @@ export default function Tecaj(props: Props) {
                         width: "100%",
                         justifyContent: "flex-end",
                         gap: "10px",
+                        alignItems: "center",
                     }}
                 >
+                    <UserLink
+                        user={{
+                            id: props.tecaj.vlasnikId,
+                            profilnaSlikaVersion:
+                                props.tecaj.vlasnikProfilnaSlikaVersion,
+                            username: props.tecaj.vlasnikUsername,
+                        }}
+                    />
                     {props.tecaj.cijena && props.tecaj.cijena > 0 && (
                         <>
+                            {props.tecaj.kupljen && (
+                                <CheckCircleIcon color="info" />
+                            )}
                             <Button
+                                disabled={props.tecaj.kupljen}
                                 variant="contained"
                                 onClick={() => handleCheckout(props.tecaj.id)}
                             >

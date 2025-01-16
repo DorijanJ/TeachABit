@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20250116003459_RadionicaVlasnikMigration")]
+    partial class RadionicaVlasnikMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -663,7 +666,7 @@ namespace TeachABit.Model.Migrations
                         .IsRequired();
 
                     b.HasOne("TeachABit.Model.Models.Tecajevi.Tecaj", "Tecaj")
-                        .WithMany("TecajPlacanja")
+                        .WithMany()
                         .HasForeignKey("TecajId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -699,8 +702,6 @@ namespace TeachABit.Model.Migrations
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Tecaj", b =>
                 {
                     b.Navigation("Lekcije");
-
-                    b.Navigation("TecajPlacanja");
                 });
 #pragma warning restore 612, 618
         }

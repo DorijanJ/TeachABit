@@ -1,5 +1,6 @@
 import Dialog from "@mui/material/Dialog";
 import {
+    Box,
     Button,
     DialogActions,
     DialogContent,

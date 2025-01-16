@@ -38,16 +38,25 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             await _context.Tecajevi.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
-        public async Task<List<Tecaj>> GetTecajList(string? search = null)
+        public async Task<List<Tecaj>> GetTecajList(string? search = null, string? korisnikId = null)
         {
+            var query = _context.Tecajevi
+                .Include(x => x.Vlasnik)
+                .AsQueryable();
+
             if (!string.IsNullOrEmpty(search))
             {
                 string lowerSearch = search.ToLower();
-                return await _context.Tecajevi
-                    .Where(t => t.Naziv.ToLower().Contains(lowerSearch))
-                    .ToListAsync();
+                query = query.Where(t => t.Naziv.ToLower().Contains(lowerSearch));
             }
-            return await _context.Tecajevi.ToListAsync();
+
+            if (!string.IsNullOrEmpty(korisnikId))
+            {
+                query = query.Include(x => x.TecajPlacanja
+                    .Where(t => t.KorisnikId == korisnikId));
+            }
+
+            return await query.ToListAsync();
         }
         public async Task<List<Lekcija>> GetLekcijaList(string? search = null)
         {
