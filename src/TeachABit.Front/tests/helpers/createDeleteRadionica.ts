@@ -25,10 +25,10 @@ export default async function createDeleteRadionica(page: Page) {
     const radionicaNazivInput = page.locator('input[name="naziv"]');
     await radionicaNazivInput.fill(naziv);
 
-    const radionicaOpisInput = page.locator('#radionicaOpisInput');
+    const radionicaOpisInput = page.locator('textarea[name="opis"]');
     await radionicaOpisInput.fill("Testing sadrzaj");
 
-    const radionicaCijenaInput = page.locator('input[name="cijena"]');
+    const radionicaCijenaInput = page.locator('input[name="radionica-cijena"]');
     await radionicaCijenaInput.fill("5");
 
     const createRadionicaFormButton = page.locator("#stvoriRadionicuButton");

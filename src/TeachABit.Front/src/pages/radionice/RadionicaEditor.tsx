@@ -7,15 +7,10 @@ import {
     Button,
     InputAdornment,
 } from "@mui/material";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { useState, ChangeEvent } from "react";
 import requests from "../../api/agent";
 import { RadionicaDto } from "../../models/RadionicaDto";
 import { UpdateRadionicaDto } from "../../models/UpdateRadionicaDto";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { Today } from "@mui/icons-material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 
 interface Props {
     refreshData: () => Promise<any>;
@@ -29,10 +24,10 @@ export default function RadionicaEditor(props: Props) {
         naziv: props.radionica?.naziv ?? "",
         /*{sadrzaj: props.radionica?.sadrzaj ?? "",}*/
         id: props.radionica?.id,
-        tema: props.radionica?.tema ?? "",
-        predavacId: props.radionica?.predavacId,
-        predavac: props.radionica?.predavac,
-        predavacProfilnaSlika: props.radionica?.predavacProfilnaSlika,
+        opis: props.radionica?.opis ?? "",
+        vlasnikId: props.radionica?.vlasnikId,
+        vlasnikUsername: props.radionica?.vlasnikUsername,
+        vlasnikProfilnaSlikaVersion: props.radionica?.vlasnikProfilnaSlikaVersion,
         brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
         kapacitet: props.radionica?.kapacitet,
         datumvrijeme: props.radionica?.datumvrijeme,
@@ -42,7 +37,7 @@ export default function RadionicaEditor(props: Props) {
         setRadionica({
             naziv: "",
             /*sadrzaj: "",*/
-            tema: "",
+            opis: "",
         });
         props.onClose();
         if (reload) props.refreshData();
@@ -53,7 +48,7 @@ export default function RadionicaEditor(props: Props) {
             id: radionica.id,
             naziv: radionica.naziv,
             /*sadrzaj: radionica.sadrzaj,*/
-            tema: props.radionica?.tema ?? "",
+            tema: props.radionica?.opis ?? "",
             /*predavacProfilnaSlika: props.radionica?.predavacProfilnaSlika,*/
             brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
             kapacitet: props.radionica?.kapacitet,
@@ -142,12 +137,12 @@ export default function RadionicaEditor(props: Props) {
                         fullWidth
                         autoFocus
                         label="Tema radionice"
-                        name="tema"
+                        name="opis"
                         variant="outlined"
                         multiline
                         rows={2}
                         //required = {true}
-                        value={radionica.tema || ""}
+                        value={radionica.opis || ""}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             setRadionica((prev: any) => ({
                                 ...prev,
@@ -160,6 +155,7 @@ export default function RadionicaEditor(props: Props) {
                         fullWidth
                         autoFocus
                         label="Kapacitet radionice"
+                        name="radionica-cijena"
                         variant="outlined"
                         //required = {true}
                         value={radionica.kapacitet || ""}
