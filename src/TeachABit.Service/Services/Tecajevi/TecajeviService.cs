@@ -49,6 +49,9 @@ namespace TeachABit.Service.Services.Tecajevi
                 tecaj.Cijena = Math.Round(tecaj.Cijena.Value, 2);
             }
 
+            var korisnik = _authorizationService.GetKorisnik();
+            tecaj.VlasnikId = korisnik.Id;
+
             TecajDto createdTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.CreateTecaj(_mapper.Map<Tecaj>(tecaj)));
             return ServiceResult.Success(createdTecaj);
         }

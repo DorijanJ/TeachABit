@@ -4,6 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
 import globalStore from "../../stores/GlobalStore";
+import UserLink from "../profil/UserLink";
 
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
@@ -45,6 +46,7 @@ export default function Tecaj(props: Props) {
                 borderRadius: "10px",
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
+                minWidth: "300px",
             }}
         >
             <CardContent
@@ -78,6 +80,14 @@ export default function Tecaj(props: Props) {
                         gap: "10px",
                     }}
                 >
+                    <UserLink
+                        user={{
+                            id: props.tecaj.vlasnikId,
+                            profilnaSlikaVersion:
+                                props.tecaj.vlasnikProfilnaSlikaVersion,
+                            username: props.tecaj.vlasnikUsername,
+                        }}
+                    />
                     {props.tecaj.cijena && props.tecaj.cijena > 0 && (
                         <>
                             <Button
