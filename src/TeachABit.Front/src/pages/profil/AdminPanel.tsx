@@ -10,15 +10,9 @@ import {
     Select,
     Typography,
 } from "@mui/material";
-import { AppUserDto } from "../../models/AppUserDto";
-import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
 
-interface Props {
-    user: AppUserDto;
-}
-
-export default function AdminPanel(props: Props) {
+export default function AdminPanel() {
     const [roles, setRoles] = useState<string[]>([]);
 
     const GetAllRoles = async () => {
@@ -27,8 +21,6 @@ export default function AdminPanel(props: Props) {
             setRoles(response.data);
         }
     };
-
-    const userRoles = props.user.roles ?? [];
 
     useEffect(() => {
         GetAllRoles();

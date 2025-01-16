@@ -54,6 +54,16 @@ export default function Profil() {
         }
     };
 
+    const UpdateKorisnikUloga = async (uloga: string) => {
+        const response = await requests.postWithLoading(`account/${username}/postavi-ulogu`, {
+            roleName: uloga
+        })
+        if (response && username) {
+            setSelectedUloga(uloga);
+            GetUserByUsername(username);
+        }
+    }
+
     useEffect(() => {
         if (globalContext.isAdmin) GetAllRoles();
     }, [globalContext.isAdmin]);
@@ -89,7 +99,7 @@ export default function Profil() {
                                             height: "100%",
                                         }}
                                         src={`${import.meta.env
-                                                .VITE_REACT_AWS_BUCKET
+                                            .VITE_REACT_AWS_BUCKET
                                             }${user.id}${user.profilnaSlikaVersion
                                                 ? "?version=" +
                                                 user.profilnaSlikaVersion
@@ -144,7 +154,7 @@ export default function Profil() {
                                 <Select
                                     value={selectedUloga}
                                     onChange={(e) =>
-                                        setSelectedUloga(e.target.value)
+                                        UpdateKorisnikUloga(e.target.value)
                                     }
                                 >
                                     {uloge.map((uloga, index) => (

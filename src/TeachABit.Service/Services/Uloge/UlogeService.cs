@@ -24,6 +24,7 @@ namespace TeachABit.Service.Services.Uloge
             if (uloga == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Uloga ne postoji."));
 
             var roles = await _userManager.GetRolesAsync(korisnik);
+            if (roles.Any(x => x == "Admin")) return ServiceResult.Failure(MessageDescriber.Unauthorized());
             await _userManager.RemoveFromRolesAsync(korisnik, roles);
 
             await _userManager.AddToRoleAsync(korisnik, roleName);

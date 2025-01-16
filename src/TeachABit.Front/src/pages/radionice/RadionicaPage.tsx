@@ -22,7 +22,7 @@ export default function RadionicaPage() {
     const [radionica, setRadionica] = useState<RadionicaDto>({
         //sadrzaj: "",
         naziv: "naslov123",
-        tema: "tema123"
+        opis: "tema123"
     });
 
     const [isEditing, setIsEditing] = useState(false);
@@ -161,15 +161,15 @@ export default function RadionicaPage() {
                         >
                             <UserLink
                                 user={{
-                                    id: radionica.predavacId,
-                                    username: radionica.predavac,
+                                    id: radionica.vlasnikId,
+                                    username: radionica.vlasnikUsername,
                                     profilnaSlikaVersion:
-                                        radionica.predavacProfilnaSlika,
+                                        radionica.vlasnikProfilnaSlikaVersion,
                                 }}
                             />
                         </Box>
                     </div>
-                    <TeachABitRenderer content={radionica.tema} />
+                    <TeachABitRenderer content={radionica.opis ?? ""} />
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
@@ -177,7 +177,7 @@ export default function RadionicaPage() {
                         alignItems={"center"}
                         gap="10px"
                     >
-                        {globalContext.currentUser?.id === radionica.predavacId && (
+                        {globalContext.currentUser?.id === radionica.vlasnikId && (
                             <IconButton
                                 onClick={() => setIsEditing(true)}
                                 sx={{
@@ -188,20 +188,20 @@ export default function RadionicaPage() {
                                 <EditIcon color="primary"></EditIcon>
                             </IconButton>
                         )}
-                        {(globalContext.currentUser?.id === radionica.predavacId ||
+                        {(globalContext.currentUser?.id === radionica.vlasnikId ||
                             globalContext.isAdmin) && (
-                            <>
-                                <IconButton
-                                    onClick={() => deleteRadionica()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <DeleteIcon color="primary"></DeleteIcon>
-                                </IconButton>
-                            </>
-                        )}
+                                <>
+                                    <IconButton
+                                        onClick={() => deleteRadionica()}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <DeleteIcon color="primary"></DeleteIcon>
+                                    </IconButton>
+                                </>
+                            )}
                         {/*<LikeInfo
                             likeCount={radionica.likeCount}
                             onClear={clearReaction}
