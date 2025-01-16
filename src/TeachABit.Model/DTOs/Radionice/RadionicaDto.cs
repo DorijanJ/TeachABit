@@ -14,7 +14,5 @@ public class RadionicaDto
     public int? Cijena { get; set; } = 0;
     public string VlasnikId { get; set; } = string.Empty;
     public string? VlasnikUsername { get; set; }
-    public string VlasnikId { get; set; } = string.Empty;
-    public string? VlasnikUsername { get; set; }
     public string? VlasnikProfilnaSlikaVersion { get; set; }
 }
