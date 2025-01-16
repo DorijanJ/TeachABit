@@ -52,7 +52,7 @@ export default function Forum() {
                         variant="contained"
                         onClick={() => setIsOpenObjavaDialog(true)}
                     >
-                        Stvori objavu
+                        {"Stvori objavu"}
                     </Button>
                 )}
             </div>

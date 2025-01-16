@@ -1,8 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import globalStore from "../stores/GlobalStore";
 import { ApiResponseDto } from "../models/common/ApiResponseDto";
-import { MessageResponseDto } from "../models/common/MessageResponseDto";
-import Notification from "../models/common/Notification";
 interface RequestInjector extends InternalAxiosRequestConfig {
     loading?: boolean;
     loadingTimeoutId?: ReturnType<typeof setTimeout>;
