@@ -99,6 +99,7 @@ export default function RadionicaEditor(props: Props) {
                     <TextField
                         fullWidth
                         autoFocus
+                        required
                         label="Naziv"
                         variant="outlined"
                         value={radionica.naziv || ""}
