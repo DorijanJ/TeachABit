@@ -14,5 +14,12 @@ namespace TeachABit.Service.Services.Tecajevi
         public Task<ServiceResult<LekcijaDto>> CreateLekcija(LekcijaDto lekcijaDto, int id);
         public Task<ServiceResult> DeleteLekcija(int id);
         public Task<ServiceResult<LekcijaDto>> UpdateLekcija(UpdatedLekcijaDto updateLekcija);
+        public Task<ServiceResult<KomentarTecajDto>> CreateKomentarTecaj(KomentarTecajDto KomentarTecaj, int objavaId);
+        public Task<ServiceResult<List<KomentarTecajDto>>> GetKomentarTecajListRecursive(int id, int? nadKomentarTecajId = null);
+        public Task<ServiceResult> DeleteKomentarTecaj(int id);
+        public Task<ServiceResult> LikeKomentarTecaj(int id);
+        public Task<ServiceResult> DislikeKomentarTecaj(int id);
+        public Task<ServiceResult> ClearKomentarTecajReaction(int id);
+        public Task<ServiceResult<KomentarTecajDto>> UpdateKomentarTecaj(UpdateKomentarTecajDto updateKomentarTecaj);
     }
 }
