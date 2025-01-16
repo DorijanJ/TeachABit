@@ -78,6 +78,7 @@ export default function Tecaj(props: Props) {
                         width: "100%",
                         justifyContent: "flex-end",
                         gap: "10px",
+                        alignItems: "center",
                     }}
                 >
                     <UserLink
@@ -90,7 +91,11 @@ export default function Tecaj(props: Props) {
                     />
                     {props.tecaj.cijena && props.tecaj.cijena > 0 && (
                         <>
+                            {props.tecaj.kupljen && (
+                                <CheckCircleIcon color="info" />
+                            )}
                             <Button
+                                disabled={props.tecaj.kupljen}
                                 variant="contained"
                                 onClick={() => handleCheckout(props.tecaj.id)}
                             >

@@ -17,6 +17,7 @@ namespace TeachABit.Model.Mapping
             CreateMap<Korisnik, KorisnikDto>().ReverseMap();
             CreateMap<Tecaj, TecajDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
+                .ForMember(x => x.Kupljen, opt => opt.MapFrom(x => x.TecajPlacanja.Count > 0))
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion));
             CreateMap<TecajDto, Tecaj>();
             CreateMap<ObjavaDto, Objava>();

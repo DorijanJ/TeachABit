@@ -38,7 +38,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             await _context.Tecajevi.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
-        public async Task<List<Tecaj>> GetTecajList(string? search = null)
+        public async Task<List<Tecaj>> GetTecajList(string? search = null, string? korisnikId = null)
         {
             var query = _context.Tecajevi
                 .Include(x => x.Vlasnik)
@@ -47,12 +47,18 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             if (!string.IsNullOrEmpty(search))
             {
                 string lowerSearch = search.ToLower();
-                query = query
-                    .Where(t => t.Naziv.ToLower().Contains(lowerSearch));
+                query = query.Where(t => t.Naziv.ToLower().Contains(lowerSearch));
+            }
+
+            if (!string.IsNullOrEmpty(korisnikId))
+            {
+                query = query.Include(x => x.TecajPlacanja
+                    .Where(t => t.KorisnikId == korisnikId));
             }
 
             return await query.ToListAsync();
         }
+
 
         public async Task<Tecaj?> GetTecajByIdWithTracking(int id)
         {

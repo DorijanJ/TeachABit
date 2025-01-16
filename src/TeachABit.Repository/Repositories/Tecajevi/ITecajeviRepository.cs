@@ -9,7 +9,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public Task<Tecaj> CreateTecaj(Tecaj tecaj);
         public Task<Tecaj> UpdateTecaj(Tecaj tecaj);
         public Task DeleteTecaj(int id);
-        public Task<List<Tecaj>> GetTecajList(string? search = null);
+        public Task<List<Tecaj>> GetTecajList(string? search = null, string? korisnikId = null);
         public Task<Tecaj?> GetTecajByIdWithTracking(int id);
         public Task<Lekcija?> GetLekcijaByIdWithTracking(int id);
         public Task<Lekcija> CreateLekcija(Lekcija lekcija);
