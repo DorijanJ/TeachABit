@@ -14,14 +14,13 @@ export default function Objava(props: Props) {
     return (
         <Card
             sx={{
-                width: "500px",
-                borderRadius: "2px",
+                width: "100%",
+                borderRadius: "10px",
                 boxSizing: "border-box",
-                border: "1px solid transparent",
-                "&:hover": {
-                    border: "1px solid #922728",
-                },
+                border: "1px solid lightgray",
+                minWidth: "300px",
             }}
+            id="objava"
         >
             <CardContent
                 sx={{
@@ -36,11 +35,13 @@ export default function Objava(props: Props) {
                     color="primary"
                     variant="h5"
                     component="div"
+                    id="objavaNaziv"
                     sx={{
                         textOverflow: "ellipsis",
                         overflow: "hidden",
                         whiteSpace: "nowrap",
                         maxWidth: "100%",
+                        color: "black",
                     }}
                 >
                     {props.objava.naziv}
@@ -52,7 +53,7 @@ export default function Objava(props: Props) {
                         navigate(`/objava/${props.objava.id}`);
                     }}
                     size="small"
-                    sx={{ border: "1px solid #922728" }}
+                    sx={{ border: "1px solid #3a7ca5" }}
                 >
                     <KeyboardArrowRightIcon />
                 </IconButton>

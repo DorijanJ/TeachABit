@@ -39,10 +39,12 @@ export default function LoginForm(props: Props) {
             <form
                 className={localStyles.formContent}
                 onSubmit={handleFormSubmit}
+                id="loginForm"
             >
                 <TextField
                     fullWidth
                     autoFocus
+                    color="primary"
                     label="Email/Korisničko ime"
                     name="credentials"
                     value={loginAttempt.credentials}
@@ -58,6 +60,7 @@ export default function LoginForm(props: Props) {
                     label="Lozinka"
                     name="password"
                     type="password"
+                    color="primary"
                     value={loginAttempt.password}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setLoginAttempt((prev: LoginAttemptDto) => ({
@@ -71,6 +74,8 @@ export default function LoginForm(props: Props) {
                     className={localStyles.myButton}
                     variant="contained"
                     type="submit"
+                    id="loginForm-prijavaButton"
+                    color="primary"
                 >
                     Prijava
                 </Button>

@@ -31,6 +31,7 @@ export default function ForgotPassword() {
             <Link
                 type="button"
                 component="button"
+                color="primary"
                 onClick={() => {
                     setIsOpen(true);
                 }}

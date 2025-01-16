@@ -40,6 +40,7 @@ export default function EditProfilDialog(props: Props) {
             setMessage(response.message);
         else {
             props.onClose();
+            setFile(null);
             setEditDialogOpen(false);
         }
     };
@@ -78,6 +79,15 @@ export default function EditProfilDialog(props: Props) {
                     <span style={{ marginLeft: "10px" }}>
                         {file ? file.name : "No file chosen"}
                     </span>
+                    {file && (
+                        <img
+                            src={URL.createObjectURL(file)}
+                            style={{
+                                width: "60%",
+                                height: "60%",
+                            }}
+                        />
+                    )}
                     <br />
                     <br />
                     <Button

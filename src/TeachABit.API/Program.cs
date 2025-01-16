@@ -1,5 +1,7 @@
+using Stripe;
 using TeachABit.API.Configurations;
 using TeachABit.API.Seed;
+using TeachABit.Service.Util.Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,11 @@ builder.Services
     .AddIdentityServices(builder.Configuration);
 
 builder.Services.RegisterDependencyInjections();
+
+var stripeSettings = builder.Configuration.GetSection("Stripe").Get<StripeSettings>();
+
+if (stripeSettings != null)
+    StripeConfiguration.ApiKey = stripeSettings.SecretKey;
 
 var app = builder.Build();
 

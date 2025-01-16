@@ -88,15 +88,13 @@ export default function Profil() {
                                             width: "100%",
                                             height: "100%",
                                         }}
-                                        src={`${
-                                            import.meta.env
+                                        src={`${import.meta.env
                                                 .VITE_REACT_AWS_BUCKET
-                                        }${user.id}${
-                                            user.profilnaSlikaVersion
+                                            }${user.id}${user.profilnaSlikaVersion
                                                 ? "?version=" +
-                                                  user.profilnaSlikaVersion
+                                                user.profilnaSlikaVersion
                                                 : ""
-                                        }`}
+                                            }`}
                                     />
                                 </>
                             ) : (
@@ -141,8 +139,8 @@ export default function Profil() {
                             }}
                         >
                             {globalContext.isAdmin &&
-                            selectedUloga !== "Admin" &&
-                            username !== globalContext.currentUser?.username ? (
+                                selectedUloga !== "Admin" &&
+                                username !== globalContext.currentUser?.username ? (
                                 <Select
                                     value={selectedUloga}
                                     onChange={(e) =>

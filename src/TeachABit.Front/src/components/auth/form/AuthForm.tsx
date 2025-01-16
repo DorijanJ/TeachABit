@@ -45,6 +45,7 @@ export default function AuthButton() {
                     margin: 5,
                 }}
                 onClick={() => setSelectedTab(0)}
+                id="authForm-prijavaButton"
             >
                 Prijava
             </Button>
@@ -59,18 +60,21 @@ export default function AuthButton() {
                 >
                     <div className={localStyles.authFormContainer}>
                         {/* <img src={Logo} alt="Teach A Bit Logo" style={{width: "20%", height: "auto", marginBottom: 0}}/> */}
-                        <Tabs variant="fullWidth" value={selectedTab}>
+                        <Tabs
+                            variant="fullWidth"
+                            value={selectedTab}
+                            textColor="primary" // Use predefined textColor value
+                            indicatorColor="primary" // Use predefined indicatorColor value
+                        >
                             {authFormTabs.map((tab, index) => (
                                 <Tab
                                     key={tab}
                                     onClick={() => setSelectedTab(index)}
                                     label={tab}
-                                    sx={{
-                                        textColor: "red",
-                                    }}
                                 />
                             ))}
                         </Tabs>
+
                         <AuthPageDelegator
                             selectedPage={selectedTab}
                             onClose={onClose}

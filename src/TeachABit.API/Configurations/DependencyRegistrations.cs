@@ -9,6 +9,7 @@ using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Services.Korisnici;
 using TeachABit.Service.Services.Objave;
+using TeachABit.Service.Services.Placanja;
 using TeachABit.Service.Services.Radionice;
 using TeachABit.Service.Services.Tecajevi;
 using TeachABit.Service.Services.Uloge;
@@ -36,6 +37,7 @@ namespace TeachABit.API.Configurations
             services.AddScoped<IRadioniceRepository, RadioniceRepository>();
             services.AddScoped<IRadioniceService, RadioniceService>();
             services.AddScoped<IUlogeService, UlogeService>();
+            services.AddScoped<IPlacanjaService, PlacanjaService>();
             services.AddScoped<Func<string, ModelStateFilter>>(provider => (messageType) =>
             {
                 return new ModelStateFilter(messageType);

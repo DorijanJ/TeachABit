@@ -26,9 +26,9 @@ export default function Navigation() {
                 open
                 sx={{
                     flexShrink: 0,
-                    width: isExpanded ? 300 : 65,
+                    width: isExpanded ? 300 : 75,
                     "& .MuiDrawer-paper": {
-                        width: isExpanded ? 300 : 65,
+                        width: isExpanded ? 300 : 75,
                         boxSizing: "border-box",
                     },
                 }}
@@ -40,7 +40,6 @@ export default function Navigation() {
                         flexDirection: "column",
                         height: "100%",
                         width: "100%",
-                        backgroundColor: "#D9D9D9",
                     }}
                 >
                     <IconButton
@@ -53,11 +52,11 @@ export default function Navigation() {
                         onClick={() => setIsExpanded((prev) => !prev)}
                     >
                         <NavigateBeforeIcon
-                            color="primary"
                             sx={{
                                 transform: isExpanded
                                     ? "rotate(0deg)"
                                     : "rotate(180deg)",
+                                //justifyContent: isExpanded? "" : "center", 
                                 transition: "transform 0.3s ease", // dodaje animiranu tranziciju
                             }}
                         />
@@ -83,7 +82,6 @@ export default function Navigation() {
                             gap: "10px",
                             flexDirection: "column",
                             marginTop: "60px",
-                            padding: isExpanded ? "0 20px" : "0",
                         }}
                     >
                         <NavigationItem

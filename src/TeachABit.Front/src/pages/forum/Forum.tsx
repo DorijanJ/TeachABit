@@ -32,7 +32,7 @@ export default function Forum() {
                 display: "flex",
                 flexDirection: "column",
                 gap: "20px",
-                alignItems: "flex-start",
+                alignItems: "center",
                 height: "100%",
                 width: "100%",
             }}
@@ -42,8 +42,8 @@ export default function Forum() {
                     display: "flex",
                     flexDirection: "row",
                     gap: "20px",
-                    width: "100%",
                     alignItems: "center",
+                    width: "100%",
                 }}
             >
                 <SearchBox onSearch={GetObjavaList} />
@@ -52,18 +52,28 @@ export default function Forum() {
                         variant="contained"
                         onClick={() => setIsOpenObjavaDialog(true)}
                     >
-                        Stvori objavu
+                        {"Stvori objavu"}
                     </Button>
                 )}
             </div>
-
+            <div
+                style={{
+                    color: "primary",
+                    fontSize: 20,
+                    margin: 0,
+                    width: "100%",
+                }}
+            >
+                Objave:
+                <hr style={{ border: "1px solid #cccccc" }} />
+            </div>
             <div
                 style={{
                     display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
+                    flexDirection: "column",
                     gap: "20px",
                     maxWidth: "100%",
+                    width: "100%",
                 }}
             >
                 {objavaList.map((objava) => (
