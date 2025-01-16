@@ -1,11 +1,27 @@
 import { useParams } from "react-router-dom";
 import { useGlobalContext } from "../../context/Global.context";
-import { Card, CardContent, Typography, Avatar } from "@mui/material";
+import {
+    Card,
+    CardContent,
+    Typography,
+    Avatar,
+    Box,
+    Select,
+    MenuItem,
+} from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent";
 import { AppUserDto } from "../../models/AppUserDto";
-
+import VerifiedIcon from "@mui/icons-material/Verified";
 import EditProfilDialog from "./EditProfilDialog";
+import Uloga from "../../models/Uloga";
+
+const getHighestLevelUloga = (uloge: Uloga[]) => {
+    const role = uloge.reduce((max, obj) =>
+        obj.levelPristupa > max.levelPristupa ? obj : max
+    );
+    return role?.name ?? "";
+};
 
 export default function Profil() {
     const { username } = useParams();
@@ -23,17 +39,34 @@ export default function Profil() {
         );
         if (response && response.data) {
             setUser(response.data);
+            const uloge: Uloga[] = response.data.roles;
+            setSelectedUloga(getHighestLevelUloga(uloge));
         }
     };
 
-    // const setupStripeAccount = async () => {
-    //     const response = await requests.getWithLoading(
-    //         "placanja/napravi-stripe-account"
-    //     );
-    //     if (response && response.data) {
-    //         window.location.href = response.data.url;
-    //     }
-    // };
+    const [uloge, setUloge] = useState<Uloga[]>([]);
+    const [selectedUloga, setSelectedUloga] = useState<string>();
+
+    const GetAllRoles = async () => {
+        const response = await requests.getWithLoading("uloge");
+        if (response && response.data) {
+            setUloge(response.data);
+        }
+    };
+
+    const UpdateKorisnikUloga = async (uloga: string) => {
+        const response = await requests.postWithLoading(`account/${username}/postavi-ulogu`, {
+            roleName: uloga
+        })
+        if (response && username) {
+            setSelectedUloga(uloga);
+            GetUserByUsername(username);
+        }
+    }
+
+    useEffect(() => {
+        if (globalContext.isAdmin) GetAllRoles();
+    }, [globalContext.isAdmin]);
 
     useEffect(() => {
         if (username) GetUserByUsername(username);
@@ -41,57 +74,105 @@ export default function Profil() {
 
     return (
         user && (
-            <Card sx={{ width: 400 }}>
-                <CardContent
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        gap: "10px",
-                    }}
-                >
-                    <Avatar sx={{ width: 100, height: 100 }}>
-                        {user.id && user.profilnaSlikaVersion ? (
-                            <>
-                                <img
-                                    style={{
-                                        objectFit: "cover",
-                                        width: "100%",
-                                        height: "100%",
+            <Box
+                display="flex"
+                flexDirection={"row"}
+                justifyContent={"flex-start"}
+                gap="10px"
+            >
+                <Card sx={{ width: 400 }}>
+                    <CardContent
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "10px",
+                        }}
+                    >
+                        <Avatar sx={{ width: 100, height: 100 }}>
+                            {user.id && user.profilnaSlikaVersion ? (
+                                <>
+                                    <img
+                                        style={{
+                                            objectFit: "cover",
+                                            width: "100%",
+                                            height: "100%",
+                                        }}
+                                        src={`${import.meta.env
+                                            .VITE_REACT_AWS_BUCKET
+                                            }${user.id}${user.profilnaSlikaVersion
+                                                ? "?version=" +
+                                                user.profilnaSlikaVersion
+                                                : ""
+                                            }`}
+                                    />
+                                </>
+                            ) : (
+                                <>{user.username ? user.username[0] : ""}</>
+                            )}
+                        </Avatar>
+                        {globalContext.userIsLoggedIn === true &&
+                            isCurrentUser && (
+                                <EditProfilDialog
+                                    onClose={() => {
+                                        if (username)
+                                            GetUserByUsername(username);
                                     }}
-                                    src={`${
-                                        import.meta.env.VITE_REACT_AWS_BUCKET
-                                    }${user.id}${
-                                        user.profilnaSlikaVersion
-                                            ? "?version=" +
-                                              user.profilnaSlikaVersion
-                                            : ""
-                                    }`}
                                 />
-                            </>
-                        ) : (
-                            <>{user.username ? user.username[0] : ""}</>
-                        )}
-                    </Avatar>
-                    {globalContext.userIsLoggedIn === true && isCurrentUser && (
-                        <EditProfilDialog
-                            onClose={() => {
-                                if (username) GetUserByUsername(username);
+                            )}
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                gap: "10px",
+                                alignItems: "center",
                             }}
-                        />
-                    )}
-                    <Typography variant="h4" align="center">
-                        Korisnički profil
-                    </Typography>
-                    <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                        <b>Username:</b> {user.username}
-                    </Typography>
-                    {user.roles &&
-                        user.roles.length > 0 &&
-                        user.roles.map((role) => <p>{role}</p>)}
-                </CardContent>
-                {/* <Button onClick={setupStripeAccount}>Spoji Plaćanje</Button> */}
-            </Card>
+                        >
+                            <Typography variant="h5">
+                                <b>{user.username} </b>
+                            </Typography>
+                            {user.verificiran && (
+                                <VerifiedIcon
+                                    sx={{
+                                        height: "25px",
+                                        width: "25px",
+                                        color: "#922728",
+                                    }}
+                                />
+                            )}
+                        </div>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                            }}
+                        >
+                            {globalContext.isAdmin &&
+                                selectedUloga !== "Admin" &&
+                                username !== globalContext.currentUser?.username ? (
+                                <Select
+                                    value={selectedUloga}
+                                    onChange={(e) =>
+                                        UpdateKorisnikUloga(e.target.value)
+                                    }
+                                >
+                                    {uloge.map((uloga, index) => (
+                                        <MenuItem
+                                            key={index}
+                                            value={uloga.name}
+                                        >
+                                            {uloga.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            ) : (
+                                <>{selectedUloga}</>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+            </Box>
         )
     );
 }

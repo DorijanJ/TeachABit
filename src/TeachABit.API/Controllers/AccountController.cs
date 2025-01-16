@@ -6,17 +6,19 @@ using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Korisnici;
+using TeachABit.Service.Services.Uloge;
 using IAuthorizationService = TeachABit.Service.Services.Authorization.IAuthorizationService;
 
 namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService, IKorisniciService korisniciService) : BaseController
+    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService, IKorisniciService korisniciService, IUlogeService rolesService) : BaseController
     {
         private readonly IAuthenticationService _authenticationService = authenticationService;
         private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly IKorisniciService _korisniciService = korisniciService;
+        private readonly IUlogeService _rolesService = rolesService;
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -99,5 +101,11 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _korisniciService.UpdateKorisnik(updateKorisnik));
         }
 
+        [AllowAnonymous]
+        [HttpPost("{username}/postavi-ulogu")]
+        public async Task<IActionResult> AddKorisnikToRole(string username, [FromBody] AddKorisnikToRoleDto addKorisnikToRole)
+        {
+            return GetControllerResult(await _rolesService.AddUserToUloga(username, addKorisnikToRole.RoleName));
+        }
     }
 }

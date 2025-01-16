@@ -19,9 +19,9 @@ interface GlobalContextProps {
 
 const GlobalContext = createContext<GlobalContextProps>({
     currentUser: undefined,
-    setIsUserLoggedIn: () => { },
+    setIsUserLoggedIn: () => {},
     userIsLoggedIn: undefined,
-    setCurrentUser: () => { },
+    setCurrentUser: () => {},
     isAdmin: false,
 });
 
@@ -38,7 +38,9 @@ export function GlobalContextProvider({ children }: ProviderProps) {
     const [userIsLoggedIn, setIsUserLoggedIn] = useState<boolean>();
 
     const isAdmin = useMemo(() => {
-        return currentUser?.roles?.find(x => x === "Admin") !== undefined
+        return (
+            currentUser?.roles?.find((x) => x.name === "Admin") !== undefined
+        );
     }, [currentUser]);
 
     return (
