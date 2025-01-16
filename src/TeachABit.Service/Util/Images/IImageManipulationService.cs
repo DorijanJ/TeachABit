@@ -4,7 +4,7 @@ namespace TeachABit.Service.Util.Images
 {
     public interface IImageManipulationService
     {
-        Task<MemoryStream> ConvertToProfilePhoto(IFormFile image);
-        Task<MemoryStream> ConvertToNaslovnaSlika(IFormFile image);
+        Task<MemoryStream> ConvertToProfilePhoto(string base64Image);
+        Task<MemoryStream> ConvertToNaslovnaSlika(string base64Image);
     }
 }

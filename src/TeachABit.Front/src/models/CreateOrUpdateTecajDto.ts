@@ -3,5 +3,5 @@ export interface CreateOrUpdateTecajDto {
     naziv: string;
     opis: string;
     cijena?: number;
-    naslovnaSlika: File | null;
+    naslovnaSlikaBase64: string;
 }

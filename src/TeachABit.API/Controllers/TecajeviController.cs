@@ -29,7 +29,7 @@ namespace TeachABit.API.Controllers
 
         [ModelStateFilter]
         [HttpPost]
-        public async Task<IActionResult> CreateTecaj(CreateOrUpdateTecajDto tecaj)
+        public async Task<IActionResult> CreateTecaj([FromBody] CreateOrUpdateTecajDto tecaj)
         {
             return GetControllerResult(await _tecajeviService.CreateTecaj(tecaj));
         }

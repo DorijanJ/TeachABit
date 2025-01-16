@@ -1,20 +1,27 @@
 import { Button } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import useImage from "../hooks/useImage";
 
 interface Props {
-    file: File | null;
-    setFile: (file: File | null) => void;
+    setFile: (file: string) => void;
 }
 
-export default function ImageUploadComponent({ file, setFile }: Props) {
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+export default function ImageUploadComponent(props: Props) {
+
+    const [file, setFile] = useState<File | null>();
+
+    const image = useImage();
+
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
+            const f = event.target.files[0];
             setFile(event.target.files[0]);
+            props.setFile(await image.toBase64(f));
         }
     }
 
     return <>
-        <form>
+        <form style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <input
                 accept="image/*"
                 style={{ display: "none" }}

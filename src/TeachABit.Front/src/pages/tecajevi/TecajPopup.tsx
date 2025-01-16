@@ -13,6 +13,7 @@ import requests from "../../api/agent.ts";
 import { CreateOrUpdateTecajDto } from "../../models/CreateOrUpdateTecajDto.ts";
 import ImageUploadComponent from "../../components/ImageUploadComponent.tsx";
 import { TecajDto } from "../../models/TecajDto.ts";
+import useImage from "../../hooks/useImage.ts";
 
 interface Props {
     refreshData: () => Promise<any>;
@@ -26,14 +27,14 @@ export default function TecajPopup(props: Props) {
         naziv: props.tecaj?.naziv ?? "",
         id: props.tecaj?.id,
         opis: props.tecaj?.opis ?? "",
-        naslovnaSlika: null
+        naslovnaSlikaBase64: ""
     });
 
     const handleClose = (reload: boolean = false) => {
         setTecaj({
             naziv: "",
             opis: "",
-            naslovnaSlika: null,
+            naslovnaSlikaBase64: "",
         });
         props.onClose();
         if (reload) props.refreshData();
@@ -55,10 +56,6 @@ export default function TecajPopup(props: Props) {
 
         return true;
     }, [tecaj.cijena]);
-
-    const price = useMemo(() => {
-        return tecaj.cijena;
-    }, [tecaj.cijena])
 
     return (
         <Dialog open={props.isOpen} onClose={props.onClose} maxWidth={"md"}>
@@ -111,12 +108,12 @@ export default function TecajPopup(props: Props) {
                         }))
                     }
                 />
-                <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {"Naslovna slika:"}
-                    <ImageUploadComponent file={tecaj.naslovnaSlika} setFile={(file: File | null) => {
+                    <ImageUploadComponent setFile={(file: string) => {
                         setTecaj((prev: CreateOrUpdateTecajDto) => ({
                             ...prev,
-                            naslovnaSlika: file
+                            naslovnaSlikaBase64: file
                         }))
                     }} />
                 </div>
@@ -143,7 +140,7 @@ export default function TecajPopup(props: Props) {
                         width: "200px",
                     }}
                     variant="outlined"
-                    value={price}
+                    value={tecaj.cijena}
                     type="number"
                     slotProps={{
                         input: {

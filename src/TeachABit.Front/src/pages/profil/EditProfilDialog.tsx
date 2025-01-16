@@ -10,32 +10,24 @@ interface Props {
 
 export default function EditProfilDialog(props: Props) {
 
-    const [file, setFile] = useState<File | null>(null);
+    const [file, setFile] = useState<string>("");
 
     const handleSubmit = async () => {
-        if (!file) {
-            alert("Please select a file to upload.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("profilnaSlika", file);
 
         const response = await requests.postWithLoading(
             "account/update-korisnik",
-            formData
+            { profilnaSlikaBase64: file }
         );
         if (response && response.message?.severity !== "error") {
             props.onClose();
-            setFile(null);
+            setFile("");
         }
     };
 
     return (
         <>
             <ImageUploadComponent
-                setFile={(file: File | null) => setFile(file)}
-                file={file} />
+                setFile={(file: string) => setFile(file)} />
             <Button onClick={handleSubmit}>
                 {"Spremi"}
             </Button>

@@ -54,7 +54,7 @@ export default function Tecaj(props: Props) {
             onClick={props.onClick}
             sx={{
                 width: "32%",
-                height: "400px",
+                height: "450px",
                 borderRadius: "10px",
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
@@ -71,7 +71,7 @@ export default function Tecaj(props: Props) {
                     gap: 1,
                 }}
             >
-                <div>
+                <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
@@ -110,7 +110,6 @@ export default function Tecaj(props: Props) {
                             style={{
                                 objectFit: "cover",
                                 width: "100%",
-                                height: "100%",
                             }}
                             src={`${import.meta.env
                                 .VITE_REACT_AWS_BUCKET
