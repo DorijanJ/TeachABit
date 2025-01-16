@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TeachABit.API.Middleware;
 using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Service.Services.Radionice;
 
@@ -11,6 +12,7 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
 {
     private readonly IRadioniceService _radioniceService = radioniceService;
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetRadionicaList(string? search = null)
     {
@@ -25,17 +27,19 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
         return GetControllerResult(await _radioniceService.GetRadionica(id));
     }
 
+    [ModelStateFilter]
     [HttpPost]
     public async Task<IActionResult> CreateRadionica(RadionicaDto radionica)
     {
         return GetControllerResult(await _radioniceService.CreateRadionica(radionica));
     }
 
-    /*[HttpPut]
-    public async Task<IActionResult> UpdateZadatak(ZadatakDto zadatak)
+    [ModelStateFilter]
+    [HttpPut]
+    public async Task<IActionResult> UpdateRadionica(UpdateRadionicaDto radionica)
     {
-        return GetControllerResult(await _zadatciService.UpdateZadatak(zadatak));
-    }*/
+        return GetControllerResult(await _radioniceService.UpdateRadionica(radionica));
+    }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteRadionica(int id)
