@@ -139,5 +139,123 @@ namespace TeachABit.Service.Services.Tecajevi
 
             return ServiceResult.Success(updatedLekcija);
         }
+
+        public async Task<ServiceResult<KomentarTecajDto>> CreateKomentarTecaj(KomentarTecajDto komentarTecaj, int tecajId)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+
+            komentarTecaj.VlasnikId = korisnik.Id;
+            komentarTecaj.CreatedDateTime = DateTime.UtcNow;
+            komentarTecaj.ObjavaId = tecajId;
+
+            KomentarTecajDto createdKomentar = _mapper.Map<KomentarTecajDto>(await _tecajeviRepository.CreateKomentarTecaj(_mapper.Map<KomentarTecaj>(komentarTecaj)));
+            return ServiceResult.Success(createdKomentar);
+        }
+
+        public async Task<ServiceResult<List<KomentarTecajDto>>> GetKomentarTecajListRecursive(int id, int? nadKomentarId = null)
+        {
+            List<KomentarTecajDto> komentari = _mapper.Map<List<KomentarTecajDto>>(await _tecajeviRepository.GetPodKomentarTecajList(id, nadKomentarId));
+            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
+
+            foreach (var komentar in komentari)
+            {
+                if (korisnik != null)
+                {
+                    komentar.Liked = (await _tecajeviRepository.GetKomentarTecajReakcija(komentar.Id, korisnik.Id))?.Liked;
+                }
+                komentar.PodKomentarList = _mapper.Map<List<KomentarTecajDto>>((await GetKomentarTecajListRecursive(id, komentar.Id)).Data);
+            }
+
+            return ServiceResult.Success(komentari);
+        }
+
+        public async Task<ServiceResult> DeleteKomentarTecaj(int id)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+
+            KomentarTecaj? komentar = await _tecajeviRepository.GetKomentarTecajById(id);
+
+            bool isAdmin = await _authorizationService.IsAdmin();
+
+            if (komentar == null || (!isAdmin && !korisnik.Owns(komentar.Tecaj))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            if (komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.BadRequest("Komentar je već izbrisan."));
+
+            var hasPodkomentari = await _tecajeviRepository.HasPodkomentari(id);
+
+            await _tecajeviRepository.DeleteKomentarTecaj(id, keepEntry: hasPodkomentari);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> LikeKomentarTecaj(int id)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+
+            var exisitingKomentarReakcija = await _tecajeviRepository.GetKomentarTecajReakcija(id, korisnik.Id);
+
+            if (exisitingKomentarReakcija != null)
+            {
+                if (exisitingKomentarReakcija.Liked == true)
+                    return ServiceResult.Success();
+
+                await _tecajeviRepository.DeleteKomentarTecajReakcija(exisitingKomentarReakcija.Id);
+            }
+            KomentarTecajReakcija komentarReakcija = new()
+            {
+                KorisnikId = korisnik.Id,
+                KomentarId = id,
+                Liked = true,
+            };
+
+            await _tecajeviRepository.CreateKomentarTecajReakcija(komentarReakcija);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> DislikeKomentarTecaj(int id)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+
+            var exisitingKomentarReakcija = await _tecajeviRepository.GetKomentarTecajReakcija(id, korisnik.Id);
+
+            if (exisitingKomentarReakcija != null)
+            {
+                if (exisitingKomentarReakcija.Liked == false)
+                    return ServiceResult.Success();
+
+                await _tecajeviRepository.DeleteKomentarTecajReakcija(exisitingKomentarReakcija.Id);
+            }
+
+            KomentarTecajReakcija komentarReakcija = new()
+            {
+                KorisnikId = korisnik.Id,
+                KomentarId = id,
+                Liked = false,
+            };
+
+            await _tecajeviRepository.CreateKomentarTecajReakcija(komentarReakcija);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> ClearKomentarTecajReaction(int id)
+        {
+            Korisnik korisnik = _authorizationService.GetKorisnik();
+            await _tecajeviRepository.DeleteKomentarTecajReakcija(id, korisnik.Id);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult<KomentarTecajDto>> UpdateKomentarTecaj(UpdateKomentarTecajDto updateKomentar)
+        {
+            var komentar = await _tecajeviRepository.GetKomentarTecajByIdWithTracking(updateKomentar.Id);
+            var user = _authorizationService.GetKorisnik();
+
+            if (komentar == null || !user.Owns(komentar.Tecaj) || komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            komentar.Sadrzaj = updateKomentar.Sadrzaj;
+            komentar.LastUpdatedDateTime = DateTime.UtcNow;
+
+            var updatedKomentar = _mapper.Map<KomentarTecajDto>(await _tecajeviRepository.UpdateKomentarTecaj(komentar));
+
+            return ServiceResult.Success(updatedKomentar);
+        }
     }
 }

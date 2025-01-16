@@ -46,7 +46,7 @@ export default function TecajPopup(props: Props) {
 
     const isValidPrice = useMemo(() => {
         const value = tecaj.cijena;
-        if (value === undefined) return true;
+        if (!value) return true;
         if (isNaN(value) || value <= 0) {
             return false;
         }
@@ -150,7 +150,10 @@ export default function TecajPopup(props: Props) {
                         }
                         setTecaj((prev: any) => ({
                             ...prev,
-                            cijena: e.target.value,
+                            cijena:
+                                e.target.value !== ""
+                                    ? e.target.value ?? undefined
+                                    : undefined,
                         }));
                     }}
                 />

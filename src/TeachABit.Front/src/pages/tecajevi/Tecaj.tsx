@@ -1,4 +1,11 @@
-import { Button, Card, CardContent, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    IconButton,
+    Typography,
+} from "@mui/material";
 import { TecajDto } from "../../models/TecajDto";
 import { loadStripe } from "@stripe/stripe-js";
 import requests from "../../api/agent";
@@ -6,6 +13,8 @@ import { useGlobalContext } from "../../context/Global.context";
 import globalStore from "../../stores/GlobalStore";
 import UserLink from "../profil/UserLink";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useNavigate } from "react-router-dom";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
@@ -38,6 +47,8 @@ export default function Tecaj(props: Props) {
         stripe?.redirectToCheckout({ sessionId });
     };
 
+    const navigate = useNavigate();
+
     return (
         <Card
             onClick={props.onClick}
@@ -60,19 +71,55 @@ export default function Tecaj(props: Props) {
                     gap: 1,
                 }}
             >
-                <Typography
-                    color="primary"
-                    variant="h5"
-                    component="div"
-                    sx={{
-                        overflow: "hidden",
-                        maxWidth: "100%",
-                        textWrap: "stable",
-                    }}
-                >
-                    {props.tecaj.naziv}
-                </Typography>
-                <div>{props.tecaj.opis}</div>
+                <div>
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"space-between"}
+                        alignItems={"flex-start"}
+                    >
+                        <Typography
+                            color="primary"
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                overflow: "hidden",
+                                textAlign: "left",
+                                whiteSpace: "wrap",
+                                textOverflow: "ellipsis",
+                                maxWidth: "80%",
+                            }}
+                        >
+                            {props.tecaj.naziv}
+                        </Typography>
+                        {(!props.tecaj.cijena || props.tecaj.kupljen) && (
+                            <IconButton
+                                color="primary"
+                                onClick={() => {
+                                    navigate(`/tecajevi/${props.tecaj.id}`);
+                                }}
+                                size="small"
+                                sx={{ border: "1px solid #3a7ca5" }}
+                            >
+                                <KeyboardArrowRightIcon />
+                            </IconButton>
+                        )}
+                    </Box>
+                    <Typography
+                        variant="body1"
+                        component="div"
+                        sx={{
+                            overflow: "hidden",
+                            textAlign: "left",
+                            whiteSpace: "wrap",
+                            maxWidth: "100%",
+                            textOverflow: "ellipsis",
+                            marginTop: "20px",
+                        }}
+                    >
+                        {props.tecaj.opis}
+                    </Typography>
+                </div>
                 <div
                     style={{
                         display: "flex",

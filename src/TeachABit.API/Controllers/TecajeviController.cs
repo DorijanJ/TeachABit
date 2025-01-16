@@ -71,5 +71,42 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _tecajeviService.CreateLekcija(lekcija, id));
 
         }
+        [AllowAnonymous]
+        [HttpGet("{id}/komentari")]
+        public async Task<IActionResult> GetKomentarTecajListByTecajId(int id)
+        {
+            return GetControllerResult(await _tecajeviService.GetKomentarTecajListRecursive(id));
+        }
+        [HttpPost("{id}/komentari")]
+        public async Task<IActionResult> CreateKomentarTecaj([FromBody] KomentarTecajDto komentar, int id)
+        {
+            return GetControllerResult(await _tecajeviService.CreateKomentarTecaj(komentar, id));
+        }
+        [HttpPost("komentari/{komentarId}/like")]
+        public async Task<IActionResult> Like(int komentarId)
+        {
+            return GetControllerResult(await _tecajeviService.LikeKomentarTecaj(komentarId));
+        }
+        [HttpPost("komentari/{komentarId}/dislike")]
+        public async Task<IActionResult> DislikeKomentarTecaj(int komentarId)
+        {
+            return GetControllerResult(await _tecajeviService.DislikeKomentarTecaj(komentarId));
+        }
+        [HttpDelete("komentari/{komentarId}/reakcija")]
+        public async Task<IActionResult> ClearKomentarTecajReaction(int komentarId)
+        {
+            return GetControllerResult(await _tecajeviService.ClearKomentarTecajReaction(komentarId));
+        }
+        [HttpPut("komentari")]
+        public async Task<IActionResult> UpdateKomentarTecaj(UpdateKomentarTecajDto updateKomentarTecaj)
+        {
+            return GetControllerResult(await _tecajeviService.UpdateKomentarTecaj(updateKomentarTecaj));
+        }
+
+        [HttpDelete("komentari/{komentarId}")]
+        public async Task<IActionResult> DeleteKomentarTecaj(int komentarId)
+        {
+            return GetControllerResult(await _tecajeviService.DeleteKomentarTecaj(komentarId));
+        }
     }
 }

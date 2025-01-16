@@ -81,6 +81,7 @@ export default function Radionice() {
                     flexWrap: "wrap",
                     gap: "20px",
                     width: "100%",
+                    paddingBottom: "20px",
                 }}
             >
                 {radionicaList.map((radionica) => (
