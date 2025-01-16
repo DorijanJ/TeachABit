@@ -58,8 +58,17 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
             return await query.ToListAsync();
         }
-
-
+        public async Task<List<Lekcija>> GetLekcijaList(string? search = null)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                string lowerSearch = search.ToLower();
+                return await _context.Lekcije
+                    .Where(t => t.Naziv.ToLower().Contains(lowerSearch))
+                    .ToListAsync();
+            }
+            return await _context.Lekcije.ToListAsync();
+        }
         public async Task<Tecaj?> GetTecajByIdWithTracking(int id)
         {
             return await _context.Tecajevi.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
