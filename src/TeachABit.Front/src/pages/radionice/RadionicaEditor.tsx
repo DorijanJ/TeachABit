@@ -6,6 +6,7 @@ import {
   DialogActions,
   Button,
   InputAdornment,
+  Box,
 } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import requests from "../../api/agent";
@@ -15,6 +16,9 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import { Today } from "@mui/icons-material";
+import dayjs, { Dayjs } from "dayjs";
+import { isToday } from "date-fns";
 
 interface Props {
   refreshData: () => Promise<any>;
@@ -34,16 +38,16 @@ export default function RadionicaEditor(props: Props) {
     vlasnikProfilnaSlikaVersion: props.radionica?.vlasnikProfilnaSlikaVersion,
     brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
     kapacitet: props.radionica?.kapacitet,
-    datumvrijeme: props.radionica?.datumvrijeme ?? null,
-    cijena: props.radionica?.cijena ?? 10
+    datumvrijeme: props.radionica?.datumvrijeme ?? new Date(),
+    cijena: props.radionica?.cijena ?? 9.99,
   });
 
   const handleClose = (reload: boolean = false) => {
     setRadionica({
       naziv: "",
       opis: "",
-      cijena: 0,
-      datumvrijeme: null
+      cijena: 9.99,
+      datumvrijeme: new Date(),
     });
     props.onClose();
     if (reload) props.refreshData();
@@ -53,10 +57,10 @@ export default function RadionicaEditor(props: Props) {
     const updateRadionicaDto: UpdateRadionicaDto = {
       id: radionica.id,
       naziv: radionica.naziv,
-      /*sadrzaj: radionica.sadrzaj,*/
       opis: props.radionica?.opis ?? "",
       /*predavacProfilnaSlika: props.radionica?.predavacProfilnaSlika,*/
-      brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
+      //brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
+      cijena: props.radionica?.cijena,
       kapacitet: props.radionica?.kapacitet,
       datumvrijeme: props.radionica?.datumvrijeme ?? new Date(),
     };
@@ -139,7 +143,11 @@ export default function RadionicaEditor(props: Props) {
             }
           />
 
-          <div>Slika neka</div>
+          <Box
+          sx={{
+            border: "blue 1px dotted"
+          }}
+          >Slika neka</Box>
 
           <TextField
             fullWidth
@@ -188,14 +196,15 @@ export default function RadionicaEditor(props: Props) {
             />
 
             <TextField
+              autoFocus
               label="Cijena"
               name="cijena"
               sx={{
                 width: "30%",
               }}
               variant="outlined"
-              value={radionica.cijena?.toString()}
-              type="number"
+              value={radionica.cijena?.toString() || ""}
+              //type="number"
               slotProps={{
                 input: {
                   startAdornment: (
@@ -204,14 +213,14 @@ export default function RadionicaEditor(props: Props) {
                 },
               }}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = parseFloat(e.target.value);
-                const decimalPlaces = value.toString().split(".")[1]?.length;
+                const value = e.target.value.replace(/[^0-9,.]/g, "");
+                /*const decimalPlaces = value.toString().split(".")[1]?.length;
                 if (!(Math.floor(value) === value) && decimalPlaces > 2) {
                   return;
-                }
+                }*/
                 setRadionica((prev: any) => ({
                   ...prev,
-                  cijena: e.target.value,
+                  cijena: value,
                 }));
               }}
             />
@@ -223,6 +232,7 @@ export default function RadionicaEditor(props: Props) {
                   width: "30%",
                 }}
                 ampm={false}
+                disablePast={true}
                 viewRenderers={{
                   hours: renderTimeViewClock,
                   minutes: renderTimeViewClock,

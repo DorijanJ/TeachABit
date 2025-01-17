@@ -57,6 +57,8 @@ export default function Navigation() {
                                     ? "rotate(0deg)"
                                     : "rotate(180deg)",
                                 //justifyContent: isExpanded? "" : "center", 
+                                //padding: isExpanded ? "20px" : "100px",
+                                color: "#3a7ca5",
                                 transition: "transform 0.3s ease", // dodaje animiranu tranziciju
                             }}
                         />
