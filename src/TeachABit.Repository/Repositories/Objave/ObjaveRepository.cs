@@ -104,7 +104,7 @@ namespace TeachABit.Repository.Repositories.Objave
                 objaveQuery = objaveQuery.Where(x => x.Vlasnik.UserName == username);
             }
 
-            return await objaveQuery.ToListAsync();
+            return await objaveQuery.OrderByDescending(x => x.CreatedDateTime).ToListAsync();
         }
 
         public async Task<Objava> UpdateObjava(Objava objava)

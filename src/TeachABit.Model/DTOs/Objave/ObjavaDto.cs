@@ -6,8 +6,10 @@ namespace TeachABit.Model.DTOs.Objave
     public class ObjavaDto
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Naslov ne smije biti prazan.")]
         [StringLength(100, ErrorMessage = "Naslov je previše dugačak.")]
-        public string Naziv { get; set; } = string.Empty;
+        [MinLength(1, ErrorMessage = "Naslov ne smije biti prazan.")]
+        public required string Naziv { get; set; }
         [StringLength(10000, ErrorMessage = "Sadržaj je previše dugačak.")]
         public string Sadrzaj { get; set; } = string.Empty;
         public string VlasnikId { get; set; } = string.Empty;
