@@ -59,7 +59,7 @@ export default function Tecajevi() {
                             handleOpen();
                         }}
                     >
-                        Stvori tecaj
+                        Stvori tečaj
                     </Button>
                 )}
                 <TecajPopup
@@ -87,7 +87,7 @@ export default function Tecajevi() {
                     gap: "20px",
                     maxWidth: "100%",
                     width: "100%",
-                    paddingBottom: "20px"
+                    paddingBottom: "20px",
                 }}
             >
                 {tecajList.map((tecaj) => (

@@ -13,6 +13,7 @@ import requests from "../../api/agent.ts";
 import { CreateOrUpdateTecajDto } from "../../models/CreateOrUpdateTecajDto.ts";
 import ImageUploadComponent from "../../components/ImageUploadComponent.tsx";
 import { TecajDto } from "../../models/TecajDto.ts";
+import TeachABitEditor from "../../components/editor/TeachABitTextEditor.tsx";
 
 interface Props {
     refreshData: () => Promise<any>;
@@ -107,39 +108,16 @@ export default function TecajPopup(props: Props) {
                         }))
                     }
                 />
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "10px",
-                    }}
-                >
-                    {"Naslovna slika:"}
-                    <ImageUploadComponent
-                        setFile={(file: string) => {
-                            setTecaj((prev: CreateOrUpdateTecajDto) => ({
-                                ...prev,
-                                naslovnaSlikaBase64: file,
-                            }));
-                        }}
-                    />
-                </div>
-                <TextField
-                    label="Opis"
-                    name="opis"
-                    required={true}
-                    fullWidth
-                    multiline
-                    rows={4}
-                    value={tecaj.opis}
-                    variant="outlined"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                <label>Opis:</label>
+                <TeachABitEditor
+                    onUpdate={(v) =>
                         setTecaj((prev: any) => ({
                             ...prev,
-                            opis: e.target.value,
+                            opis: v,
                         }))
                     }
                 />
+
                 <TextField
                     label="Cijena"
                     name="cijena"
@@ -178,6 +156,23 @@ export default function TecajPopup(props: Props) {
                         }));
                     }}
                 />
+
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                    }}
+                >
+                    <ImageUploadComponent
+                        setFile={(file: string) => {
+                            setTecaj((prev: CreateOrUpdateTecajDto) => ({
+                                ...prev,
+                                naslovnaSlikaBase64: file,
+                            }));
+                        }}
+                    />
+                </div>
 
                 <DialogActions>
                     <Button

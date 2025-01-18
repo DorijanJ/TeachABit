@@ -46,7 +46,6 @@ export default function Tecaj(props: Props) {
             onClick={props.onClick}
             sx={{
                 width: "32%",
-                height: "550px",
                 borderRadius: "10px",
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
@@ -58,9 +57,8 @@ export default function Tecaj(props: Props) {
                     textAlign: "center",
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "space-between",
                     height: "100%",
-                    gap: 1,
+                    gap: "24px",
                 }}
             >
                 <div
@@ -87,7 +85,8 @@ export default function Tecaj(props: Props) {
                                 overflow: "hidden",
                                 WebkitLineClamp: 2,
                                 maxWidth: "100%",
-                                marginBottom: "20px",
+                                height: "4rem",
+                                marginBottom: "0px",
                                 textDecoration:
                                     props.tecaj.kupljen || !props.tecaj.cijena
                                         ? "underline"
@@ -106,32 +105,28 @@ export default function Tecaj(props: Props) {
                             {props.tecaj.naziv}
                         </Typography>
                     </Box>
-                    {props.tecaj.naslovnaSlikaVersion && (
+                    {props.tecaj.naslovnaSlikaVersion ? (
                         <img
                             style={{
+                                borderRadius: "10px",
                                 objectFit: "cover",
-                                width: "100%",
+                                height: "230px",
                             }}
                             src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
                                 props.tecaj?.naslovnaSlikaVersion
                             }`}
                         />
+                    ) : (
+                        <div
+                            style={{
+                                borderRadius: "10px",
+                                objectFit: "cover",
+                                width: "100%",
+                                height: "230px",
+                                backgroundColor: "lightblue",
+                            }}
+                        />
                     )}
-                    <Typography
-                        variant="body1"
-                        component="div"
-                        sx={{
-                            textAlign: "left",
-                            display: "-webkit-box",
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            WebkitLineClamp: 3,
-                            maxWidth: "100%",
-                            marginTop: "20px",
-                        }}
-                    >
-                        {props.tecaj.opis}
-                    </Typography>
                 </div>
                 <div
                     style={{
