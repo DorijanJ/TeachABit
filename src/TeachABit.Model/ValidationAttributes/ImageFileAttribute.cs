@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 public class ImageFileAttribute : ValidationAttribute
@@ -13,7 +12,7 @@ public class ImageFileAttribute : ValidationAttribute
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        if (value == null)
+        if (value == null || (value is string str && string.IsNullOrEmpty(str)))
             return ValidationResult.Success;
 
         var base64Image = value as string;
