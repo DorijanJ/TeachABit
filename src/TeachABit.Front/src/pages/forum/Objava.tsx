@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";

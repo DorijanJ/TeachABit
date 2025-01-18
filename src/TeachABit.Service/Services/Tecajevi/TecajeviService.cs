@@ -59,7 +59,7 @@ namespace TeachABit.Service.Services.Tecajevi
 
             Tecaj tecajModel = _mapper.Map<Tecaj>(tecaj);
 
-            if (tecaj.NaslovnaSlikaBase64 != null)
+            if (!string.IsNullOrEmpty(tecaj.NaslovnaSlikaBase64))
             {
                 Guid naslovnaVersion = Guid.NewGuid();
                 var resizedSlika = await _imageManipulationService.ConvertToNaslovnaSlika(tecaj.NaslovnaSlikaBase64);

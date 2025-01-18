@@ -15,7 +15,7 @@ import {
 import UserLink from "../profil/UserLink";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function ObjavaPage() {
+export default function TecajPage() {
     const [tecaj, setTecaj] = useState<TecajDto>({
         naziv: "",
         opis: "",

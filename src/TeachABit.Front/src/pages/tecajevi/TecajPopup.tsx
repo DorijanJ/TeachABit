@@ -13,7 +13,6 @@ import requests from "../../api/agent.ts";
 import { CreateOrUpdateTecajDto } from "../../models/CreateOrUpdateTecajDto.ts";
 import ImageUploadComponent from "../../components/ImageUploadComponent.tsx";
 import { TecajDto } from "../../models/TecajDto.ts";
-import useImage from "../../hooks/useImage.ts";
 
 interface Props {
     refreshData: () => Promise<any>;
@@ -27,7 +26,7 @@ export default function TecajPopup(props: Props) {
         naziv: props.tecaj?.naziv ?? "",
         id: props.tecaj?.id,
         opis: props.tecaj?.opis ?? "",
-        naslovnaSlikaBase64: ""
+        naslovnaSlikaBase64: "",
     });
 
     const handleClose = (reload: boolean = false) => {
@@ -108,14 +107,22 @@ export default function TecajPopup(props: Props) {
                         }))
                     }
                 />
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                    }}
+                >
                     {"Naslovna slika:"}
-                    <ImageUploadComponent setFile={(file: string) => {
-                        setTecaj((prev: CreateOrUpdateTecajDto) => ({
-                            ...prev,
-                            naslovnaSlikaBase64: file
-                        }))
-                    }} />
+                    <ImageUploadComponent
+                        setFile={(file: string) => {
+                            setTecaj((prev: CreateOrUpdateTecajDto) => ({
+                                ...prev,
+                                naslovnaSlikaBase64: file,
+                            }));
+                        }}
+                    />
                 </div>
                 <TextField
                     label="Opis"

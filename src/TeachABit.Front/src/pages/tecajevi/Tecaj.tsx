@@ -1,11 +1,4 @@
-import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    IconButton,
-    Typography,
-} from "@mui/material";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { TecajDto } from "../../models/TecajDto";
 import { loadStripe } from "@stripe/stripe-js";
 import requests from "../../api/agent";
@@ -14,7 +7,6 @@ import globalStore from "../../stores/GlobalStore";
 import UserLink from "../profil/UserLink";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router-dom";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
@@ -96,13 +88,18 @@ export default function Tecaj(props: Props) {
                                 WebkitLineClamp: 2,
                                 maxWidth: "100%",
                                 marginBottom: "20px",
-                                textDecoration: props.tecaj.kupljen
-                                    ? "underline"
-                                    : "none",
+                                textDecoration:
+                                    props.tecaj.kupljen || !props.tecaj.cijena
+                                        ? "underline"
+                                        : "none",
                                 textDecorationColor: "gray",
+                                cursor:
+                                    props.tecaj.kupljen || !props.tecaj.cijena
+                                        ? "pointer"
+                                        : "default",
                             }}
                             onClick={() => {
-                                if (props.tecaj.kupljen)
+                                if (props.tecaj.kupljen || !props.tecaj.cijena)
                                     navigate(`/tecajevi/${props.tecaj.id}`);
                             }}
                         >
