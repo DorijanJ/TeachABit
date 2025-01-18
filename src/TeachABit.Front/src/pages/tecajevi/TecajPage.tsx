@@ -14,8 +14,9 @@ import {
 } from "@mui/material";
 import UserLink from "../profil/UserLink";
 import DeleteIcon from "@mui/icons-material/Delete";
+import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 
-export default function ObjavaPage() {
+export default function TecajPage() {
     const [tecaj, setTecaj] = useState<TecajDto>({
         naziv: "",
         opis: "",
@@ -98,6 +99,7 @@ export default function ObjavaPage() {
                                 overflow: "hidden",
                                 whiteSpace: "nowrap",
                                 maxWidth: "100%",
+                                color: "black",
                             }}
                         >
                             {tecaj.naziv}
@@ -119,19 +121,7 @@ export default function ObjavaPage() {
                             />
                         </Box>
                     </div>
-                    <Typography
-                        color="primary"
-                        variant="h5"
-                        component="div"
-                        sx={{
-                            textOverflow: "ellipsis",
-                            overflow: "hidden",
-                            whiteSpace: "nowrap",
-                            maxWidth: "100%",
-                        }}
-                    >
-                        {tecaj.opis}
-                    </Typography>
+                    <TeachABitRenderer content={tecaj.opis} />
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
