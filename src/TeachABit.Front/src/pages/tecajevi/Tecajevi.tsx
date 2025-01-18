@@ -87,6 +87,7 @@ export default function Tecajevi() {
                     gap: "20px",
                     maxWidth: "100%",
                     width: "100%",
+                    paddingBottom: "20px"
                 }}
             >
                 {tecajList.map((tecaj) => (

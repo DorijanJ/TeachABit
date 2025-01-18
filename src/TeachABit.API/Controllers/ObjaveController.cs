@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TeachABit.API.Middleware;
 using TeachABit.Model.DTOs.Objave;
 using TeachABit.Service.Services.Objave;
 
@@ -25,6 +26,7 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _objaveService.GetObjavaById(id));
         }
 
+        [ModelStateFilter]
         [HttpPost]
         public async Task<IActionResult> CreateObjava(ObjavaDto objava)
         {

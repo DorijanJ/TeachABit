@@ -7,14 +7,18 @@ using TeachABit.Model.Models.Korisnici.Extensions;
 using TeachABit.Model.Models.Tecajevi;
 using TeachABit.Repository.Repositories.Tecajevi;
 using TeachABit.Service.Services.Authorization;
+using TeachABit.Service.Util.Images;
+using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Tecajevi
 {
-    public class TecajeviService(ITecajeviRepository tecajeviRepository, IMapper mapper, IAuthorizationService authorizationService) : ITecajeviService
+    public class TecajeviService(ITecajeviRepository tecajeviRepository, IMapper mapper, IImageManipulationService imageManipulation, IAuthorizationService authorizationService, IS3BucketService s3BucketService) : ITecajeviService
     {
         private readonly ITecajeviRepository _tecajeviRepository = tecajeviRepository;
         private readonly IMapper _mapper = mapper;
+        private readonly IS3BucketService _bucketService = s3BucketService;
         private readonly IAuthorizationService _authorizationService = authorizationService;
+        private readonly IImageManipulationService _imageManipulationService = imageManipulation;
 
         /*public async Task<ServiceResult<List<TecajDto>>> GetTecajList()
         {
@@ -42,7 +46,7 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success(tecaj);
         }
 
-        public async Task<ServiceResult<TecajDto>> CreateTecaj(TecajDto tecaj)
+        public async Task<ServiceResult<TecajDto>> CreateTecaj(CreateOrUpdateTecajDto tecaj)
         {
             if (tecaj.Cijena.HasValue)
             {
@@ -50,9 +54,22 @@ namespace TeachABit.Service.Services.Tecajevi
             }
 
             var korisnik = _authorizationService.GetKorisnik();
+
             tecaj.VlasnikId = korisnik.Id;
 
-            TecajDto createdTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.CreateTecaj(_mapper.Map<Tecaj>(tecaj)));
+            Tecaj tecajModel = _mapper.Map<Tecaj>(tecaj);
+
+            if (tecaj.NaslovnaSlikaBase64 != null)
+            {
+                Guid naslovnaVersion = Guid.NewGuid();
+                var resizedSlika = await _imageManipulationService.ConvertToNaslovnaSlika(tecaj.NaslovnaSlikaBase64);
+                await _bucketService.UploadImageAsync(naslovnaVersion.ToString(), resizedSlika);
+                tecajModel.NaslovnaSlikaVersion = naslovnaVersion.ToString();
+            }
+
+            TecajDto createdTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.CreateTecaj(tecajModel));
+
+
             return ServiceResult.Success(createdTecaj);
         }
 
@@ -77,15 +94,16 @@ namespace TeachABit.Service.Services.Tecajevi
 
 
 
-        public async Task<ServiceResult<TecajDto>> UpdateTecaj(UpdateTecajDto updateTecaj)
+        public async Task<ServiceResult<TecajDto>> UpdateTecaj(CreateOrUpdateTecajDto updateTecaj)
         {
-            var tecaj = await _tecajeviRepository.GetTecajByIdWithTracking(updateTecaj.Id);
+            if (!updateTecaj.Id.HasValue) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
+            var tecaj = await _tecajeviRepository.GetTecajByIdWithTracking(updateTecaj.Id.Value);
             var user = _authorizationService.GetKorisnik();
 
             if (tecaj == null || !user.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             tecaj.Naziv = updateTecaj.Naziv;
-            tecaj.Sadrzaj = updateTecaj.Sadrzaj;
+            tecaj.Opis = updateTecaj.Opis;
             tecaj.Cijena = updateTecaj.Cijena;
 
             var updatedTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.UpdateTecaj(tecaj));

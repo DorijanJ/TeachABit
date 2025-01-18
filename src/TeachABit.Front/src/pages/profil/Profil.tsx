@@ -8,6 +8,7 @@ import {
     Box,
     Select,
     MenuItem,
+    IconButton,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent";
@@ -15,6 +16,7 @@ import { AppUserDto } from "../../models/AppUserDto";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import EditProfilDialog from "./EditProfilDialog";
 import Uloga from "../../models/Uloga";
+import EditIcon from "@mui/icons-material/Edit";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -46,6 +48,7 @@ export default function Profil() {
 
     const [uloge, setUloge] = useState<Uloga[]>([]);
     const [selectedUloga, setSelectedUloga] = useState<string>();
+    const [isOpenImageDialog, setIsOpenImageDialog] = useState(false);
 
     const GetAllRoles = async () => {
         const response = await requests.getWithLoading("uloge");
@@ -55,14 +58,17 @@ export default function Profil() {
     };
 
     const UpdateKorisnikUloga = async (uloga: string) => {
-        const response = await requests.postWithLoading(`account/${username}/postavi-ulogu`, {
-            roleName: uloga
-        })
+        const response = await requests.postWithLoading(
+            `account/${username}/postavi-ulogu`,
+            {
+                roleName: uloga,
+            }
+        );
         if (response && username) {
             setSelectedUloga(uloga);
             GetUserByUsername(username);
         }
-    }
+    };
 
     useEffect(() => {
         if (globalContext.isAdmin) GetAllRoles();
@@ -98,13 +104,15 @@ export default function Profil() {
                                             width: "100%",
                                             height: "100%",
                                         }}
-                                        src={`${import.meta.env
-                                            .VITE_REACT_AWS_BUCKET
-                                            }${user.id}${user.profilnaSlikaVersion
+                                        src={`${
+                                            import.meta.env
+                                                .VITE_REACT_AWS_BUCKET
+                                        }${user.id}${
+                                            user.profilnaSlikaVersion
                                                 ? "?version=" +
-                                                user.profilnaSlikaVersion
+                                                  user.profilnaSlikaVersion
                                                 : ""
-                                            }`}
+                                        }`}
                                     />
                                 </>
                             ) : (
@@ -113,13 +121,20 @@ export default function Profil() {
                         </Avatar>
                         {globalContext.userIsLoggedIn === true &&
                             isCurrentUser && (
-                                <EditProfilDialog
-                                    onClose={() => {
-                                        if (username)
-                                            GetUserByUsername(username);
-                                    }}
-                                />
+                                <IconButton
+                                    onClick={() => setIsOpenImageDialog(true)}
+                                >
+                                    <EditIcon />
+                                </IconButton>
                             )}
+                        {isOpenImageDialog && (
+                            <EditProfilDialog
+                                onClose={() => {
+                                    setIsOpenImageDialog(false);
+                                    window.location.reload();
+                                }}
+                            />
+                        )}
                         <div
                             style={{
                                 display: "flex",
@@ -149,8 +164,8 @@ export default function Profil() {
                             }}
                         >
                             {globalContext.isAdmin &&
-                                selectedUloga !== "Admin" &&
-                                username !== globalContext.currentUser?.username ? (
+                            selectedUloga !== "Admin" &&
+                            username !== globalContext.currentUser?.username ? (
                                 <Select
                                     value={selectedUloga}
                                     onChange={(e) =>

@@ -54,7 +54,7 @@ export default function Tecaj(props: Props) {
             onClick={props.onClick}
             sx={{
                 width: "32%",
-                height: "400px",
+                height: "550px",
                 borderRadius: "10px",
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
@@ -71,7 +71,13 @@ export default function Tecaj(props: Props) {
                     gap: 1,
                 }}
             >
-                <div>
+                <div
+                    style={{
+                        display: "flex",
+                        gap: "10px",
+                        flexDirection: "column",
+                    }}
+                >
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
@@ -83,37 +89,47 @@ export default function Tecaj(props: Props) {
                             variant="h5"
                             component="div"
                             sx={{
-                                overflow: "hidden",
                                 textAlign: "left",
-                                whiteSpace: "wrap",
-                                textOverflow: "ellipsis",
-                                maxWidth: "80%",
+                                display: "-webkit-box",
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                                WebkitLineClamp: 2,
+                                maxWidth: "100%",
+                                marginBottom: "20px",
+                                textDecoration: props.tecaj.kupljen
+                                    ? "underline"
+                                    : "none",
+                                textDecorationColor: "gray",
+                            }}
+                            onClick={() => {
+                                if (props.tecaj.kupljen)
+                                    navigate(`/tecajevi/${props.tecaj.id}`);
                             }}
                         >
                             {props.tecaj.naziv}
                         </Typography>
-                        {(!props.tecaj.cijena || props.tecaj.kupljen) && (
-                            <IconButton
-                                color="primary"
-                                onClick={() => {
-                                    navigate(`/tecajevi/${props.tecaj.id}`);
-                                }}
-                                size="small"
-                                sx={{ border: "1px solid #3a7ca5" }}
-                            >
-                                <KeyboardArrowRightIcon />
-                            </IconButton>
-                        )}
                     </Box>
+                    {props.tecaj.naslovnaSlikaVersion && (
+                        <img
+                            style={{
+                                objectFit: "cover",
+                                width: "100%",
+                            }}
+                            src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                props.tecaj?.naslovnaSlikaVersion
+                            }`}
+                        />
+                    )}
                     <Typography
                         variant="body1"
                         component="div"
                         sx={{
-                            overflow: "hidden",
                             textAlign: "left",
-                            whiteSpace: "wrap",
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            WebkitLineClamp: 3,
                             maxWidth: "100%",
-                            textOverflow: "ellipsis",
                             marginTop: "20px",
                         }}
                     >
