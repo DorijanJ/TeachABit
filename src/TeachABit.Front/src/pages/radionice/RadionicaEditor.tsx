@@ -6,11 +6,19 @@ import {
     DialogActions,
     Button,
     InputAdornment,
+    Box,
 } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import requests from "../../api/agent";
 import { RadionicaDto } from "../../models/RadionicaDto";
 import { UpdateRadionicaDto } from "../../models/UpdateRadionicaDto";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import { Today } from "@mui/icons-material";
+import dayjs, { Dayjs } from "dayjs";
+import { isToday } from "date-fns";
 
 interface Props {
     refreshData: () => Promise<any>;
@@ -27,17 +35,20 @@ export default function RadionicaEditor(props: Props) {
         opis: props.radionica?.opis ?? "",
         vlasnikId: props.radionica?.vlasnikId,
         vlasnikUsername: props.radionica?.vlasnikUsername,
-        vlasnikProfilnaSlikaVersion: props.radionica?.vlasnikProfilnaSlikaVersion,
+        vlasnikProfilnaSlikaVersion:
+            props.radionica?.vlasnikProfilnaSlikaVersion,
         brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
         kapacitet: props.radionica?.kapacitet,
-        datumvrijeme: props.radionica?.datumvrijeme,
+        datumvrijeme: props.radionica?.datumvrijeme ?? new Date(),
+        cijena: props.radionica?.cijena ?? null,
     });
 
     const handleClose = (reload: boolean = false) => {
         setRadionica({
             naziv: "",
-            /*sadrzaj: "",*/
             opis: "",
+            cijena: 9.99,
+            datumvrijeme: new Date(),
         });
         props.onClose();
         if (reload) props.refreshData();
@@ -47,10 +58,10 @@ export default function RadionicaEditor(props: Props) {
         const updateRadionicaDto: UpdateRadionicaDto = {
             id: radionica.id,
             naziv: radionica.naziv,
-            /*sadrzaj: radionica.sadrzaj,*/
-            tema: props.radionica?.opis ?? "",
+            opis: props.radionica?.opis ?? "",
             /*predavacProfilnaSlika: props.radionica?.predavacProfilnaSlika,*/
-            brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
+            //brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
+            cijena: props.radionica?.cijena,
             kapacitet: props.radionica?.kapacitet,
             datumvrijeme: props.radionica?.datumvrijeme ?? new Date(),
         };
@@ -109,11 +120,9 @@ export default function RadionicaEditor(props: Props) {
                         flexDirection: "column",
                         gap: "20px",
                         paddingTop: "10px !important",
-                        maxHeight: "70vh",
-                        minWidth: "50vw",
                     }}
 
-                /*
+                    /*
                   bilo bi dobro tu imat nekakvu sliku al je nema trenutno
                 */
                 >
@@ -133,10 +142,18 @@ export default function RadionicaEditor(props: Props) {
                         }
                     />
 
+                    {/* <Box
+                        sx={{
+                            border: "blue 1px dotted",
+                        }}
+                    >
+                        Slika neka
+                    </Box> */}
+
                     <TextField
                         fullWidth
                         autoFocus
-                        label="Tema radionice"
+                        label="Opis radionice"
                         name="opis"
                         variant="outlined"
                         multiline
@@ -146,56 +163,92 @@ export default function RadionicaEditor(props: Props) {
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             setRadionica((prev: any) => ({
                                 ...prev,
-                                tema: e.target.value,
+                                opis: e.target.value,
                             }))
                         }
                     />
 
-                    <TextField
-                        fullWidth
-                        autoFocus
-                        label="Kapacitet radionice"
-                        name="radionica-cijena"
-                        variant="outlined"
-                        //required = {true}
-                        value={radionica.kapacitet || ""}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            const numericValue = e.target.value.replace(/[^0-9]/g, "");
-                            setRadionica((prev: any) => ({
-                                ...prev,
-                                kapacitet: numericValue,
-                            }));
+                    <div
+                        title="kapacitet-cijena-vrijeme-wrapper"
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center", // Centriranje po okomitoj osi
+                            flexWrap: "wrap", // Ako nema dovoljno prostora, elementi prelaze u novi red
+                            gap: "20px", // Razmak između elemenata
                         }}
-                    />
+                    >
+                        <TextField
+                            autoFocus
+                            label="Kapacitet"
+                            variant="outlined"
+                            sx={{
+                                width: "30%",
+                            }}
+                            value={radionica.kapacitet || ""}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                const numericValue = e.target.value.replace(
+                                    /[^0-9]/g,
+                                    ""
+                                );
+                                setRadionica((prev: any) => ({
+                                    ...prev,
+                                    kapacitet: numericValue,
+                                }));
+                            }}
+                        />
 
-                    <TextField
-                        label="Cijena"
-                        name="cijena"
-                        sx={{
-                            width: "90%",
-                        }}
-                        variant="outlined"
-                        value={radionica.cijena?.toString()}
-                        type="number"
-                        slotProps={{
-                            input: {
-                                startAdornment: (
-                                    <InputAdornment position="start">€</InputAdornment>
-                                ),
-                            },
-                        }}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            const value = parseFloat(e.target.value);
-                            const decimalPlaces = value.toString().split(".")[1]?.length;
-                            if (!(Math.floor(value) === value) && decimalPlaces > 2) {
-                                return;
-                            }
-                            setRadionica((prev: any) => ({
-                                ...prev,
-                                cijena: e.target.value,
-                            }));
-                        }}
-                    />
+                        <TextField
+                            autoFocus
+                            label="Cijena"
+                            name="cijena"
+                            sx={{
+                                width: "30%",
+                            }}
+                            variant="outlined"
+                            value={radionica.cijena?.toString() || null}
+                            //type="number"
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            €
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                const value = e.target.value.replace(
+                                    /[^0-9,.]/g,
+                                    ""
+                                );
+                                /*const decimalPlaces = value.toString().split(".")[1]?.length;
+                if (!(Math.floor(value) === value) && decimalPlaces > 2) {
+                  return;
+                }*/
+                                setRadionica((prev: any) => ({
+                                    ...prev,
+                                    cijena: value,
+                                }));
+                            }}
+                        />
+
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DateTimePicker
+                                label="Datum i vrijeme"
+                                sx={{
+                                    width: "30%",
+                                }}
+                                ampm={false}
+                                disablePast={true}
+                                viewRenderers={{
+                                    hours: renderTimeViewClock,
+                                    minutes: renderTimeViewClock,
+                                    seconds: renderTimeViewClock,
+                                }}
+                            />
+                        </LocalizationProvider>
+                    </div>
                 </DialogContent>
 
                 <DialogActions>

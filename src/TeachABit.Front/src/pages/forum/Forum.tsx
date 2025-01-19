@@ -43,7 +43,7 @@ export default function Forum() {
                     flexDirection: "row",
                     gap: "20px",
                     alignItems: "center",
-                    width: "100%",
+                    width: "50%",
                 }}
             >
                 <SearchBox onSearch={GetObjavaList} />
@@ -56,17 +56,7 @@ export default function Forum() {
                     </Button>
                 )}
             </div>
-            <div
-                style={{
-                    color: "primary",
-                    fontSize: 20,
-                    margin: 0,
-                    width: "100%",
-                }}
-            >
-                Objave:
-                <hr style={{ border: "1px solid #cccccc" }} />
-            </div>
+
             <div
                 style={{
                     display: "flex",
