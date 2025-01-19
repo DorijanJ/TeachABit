@@ -6,5 +6,6 @@ export interface TecajDto {
     kupljen?: boolean;
     vlasnikId?: string;
     vlasnikUsername?: string;
+    naslovnaSlikaVersion?: string;
     vlasnikProfilnaSlikaVersion?: string;
 }

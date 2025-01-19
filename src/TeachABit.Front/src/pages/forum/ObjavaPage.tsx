@@ -115,6 +115,9 @@ export default function ObjavaPage() {
                         underline="hover"
                         color="inherit"
                         onClick={() => navigate("/forum")}
+                        sx={{
+                            cursor: "pointer",
+                        }}
                     >
                         Objave
                     </Link>
@@ -145,10 +148,10 @@ export default function ObjavaPage() {
                             variant="h5"
                             component="div"
                             sx={{
-                                textOverflow: "ellipsis",
                                 overflow: "hidden",
-                                whiteSpace: "nowrap",
-                                maxWidth: "100%",
+                                whiteSpace: "break-spaces",
+                                maxWidth: "95%",
+                                color: "black",
                             }}
                         >
                             {objava.naziv}

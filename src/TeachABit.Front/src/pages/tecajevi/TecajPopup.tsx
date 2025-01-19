@@ -8,10 +8,12 @@ import {
     TextField,
 } from "@mui/material";
 import localStyles from "../../components/auth/form/AuthForm.module.css";
-
-import { TecajDto } from "../../models/TecajDto.ts";
 import { ChangeEvent, useMemo, useState } from "react";
 import requests from "../../api/agent.ts";
+import { CreateOrUpdateTecajDto } from "../../models/CreateOrUpdateTecajDto.ts";
+import ImageUploadComponent from "../../components/ImageUploadComponent.tsx";
+import { TecajDto } from "../../models/TecajDto.ts";
+import TeachABitEditor from "../../components/editor/TeachABitTextEditor.tsx";
 
 interface Props {
     refreshData: () => Promise<any>;
@@ -21,22 +23,24 @@ interface Props {
 }
 
 export default function TecajPopup(props: Props) {
-    const [tecaj, setTecaj] = useState<TecajDto>({
+    const [tecaj, setTecaj] = useState<CreateOrUpdateTecajDto>({
         naziv: props.tecaj?.naziv ?? "",
         id: props.tecaj?.id,
         opis: props.tecaj?.opis ?? "",
+        naslovnaSlikaBase64: "",
     });
 
     const handleClose = (reload: boolean = false) => {
         setTecaj({
             naziv: "",
             opis: "",
+            naslovnaSlikaBase64: "",
         });
         props.onClose();
         if (reload) props.refreshData();
     };
 
-    const handleStvoriTecaj = async (tecaj: TecajDto) => {
+    const handleStvoriTecaj = async (tecaj: CreateOrUpdateTecajDto) => {
         const response = await requests.postWithLoading("tecajevi", tecaj);
         if (response && response.data) {
             handleClose(true);
@@ -96,6 +100,7 @@ export default function TecajPopup(props: Props) {
                     variant="outlined"
                     required={true}
                     fullWidth
+                    value={tecaj.naziv}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setTecaj((prev: any) => ({
                             ...prev,
@@ -103,21 +108,16 @@ export default function TecajPopup(props: Props) {
                         }))
                     }
                 />
-                <TextField
-                    label="Opis"
-                    name="opis"
-                    required={true}
-                    fullWidth
-                    multiline
-                    rows={4}
-                    variant="outlined"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                <label>Opis:</label>
+                <TeachABitEditor
+                    onUpdate={(v) =>
                         setTecaj((prev: any) => ({
                             ...prev,
-                            opis: e.target.value,
+                            opis: v,
                         }))
                     }
                 />
+
                 <TextField
                     label="Cijena"
                     name="cijena"
@@ -125,7 +125,7 @@ export default function TecajPopup(props: Props) {
                         width: "200px",
                     }}
                     variant="outlined"
-                    value={tecaj.cijena?.toString()}
+                    value={tecaj.cijena}
                     type="number"
                     slotProps={{
                         input: {
@@ -156,6 +156,23 @@ export default function TecajPopup(props: Props) {
                         }));
                     }}
                 />
+
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                    }}
+                >
+                    <ImageUploadComponent
+                        setFile={(file: string) => {
+                            setTecaj((prev: CreateOrUpdateTecajDto) => ({
+                                ...prev,
+                                naslovnaSlikaBase64: file,
+                            }));
+                        }}
+                    />
+                </div>
 
                 <DialogActions>
                     <Button

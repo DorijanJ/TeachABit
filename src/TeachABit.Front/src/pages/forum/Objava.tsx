@@ -1,9 +1,8 @@
-import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useNavigate } from "react-router-dom";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 interface Props {
     objava: ObjavaDto;
 }
@@ -42,21 +41,14 @@ export default function Objava(props: Props) {
                         whiteSpace: "nowrap",
                         maxWidth: "100%",
                         color: "black",
+                        textDecoration: "underline",
+                        textDecorationColor: "gray",
+                        cursor: "pointer",
                     }}
+                    onClick={() => navigate(`/objava/${props.objava.id}`)}
                 >
                     {props.objava.naziv}
                 </Typography>
-
-                <IconButton
-                    color="primary"
-                    onClick={() => {
-                        navigate(`/objava/${props.objava.id}`);
-                    }}
-                    size="small"
-                    sx={{ border: "1px solid #3a7ca5" }}
-                >
-                    <KeyboardArrowRightIcon />
-                </IconButton>
             </CardContent>
             <Box
                 m={2}

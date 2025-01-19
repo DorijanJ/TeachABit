@@ -129,6 +129,12 @@ namespace TeachABit.API.Configurations
                     {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";
+                        context.Response.Cookies.Delete("AuthToken", new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = false,
+                            SameSite = SameSiteMode.Strict,
+                        });
                         await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated() });
                     },
                     OnForbidden = async context =>
@@ -142,6 +148,12 @@ namespace TeachABit.API.Configurations
                         context.HandleResponse();
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";
+                        context.Response.Cookies.Delete("AuthToken", new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = false,
+                            SameSite = SameSiteMode.Strict,
+                        });
                         await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated() });
                     }
                 };

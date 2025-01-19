@@ -25,10 +25,10 @@ namespace TeachABit.Service.Services.Korisnici
                 var korisnikId = _authorizationService.GetKorisnik().Id;
                 var korisnik = await _userManager.FindByIdAsync(korisnikId);
 
-                if (korisnik != null && updateKorisnik.ProfilnaSlika != null)
+                if (korisnik != null && updateKorisnik.ProfilnaSlikaBase64 != null)
                 {
                     string profilnaSlikaVersion = Guid.NewGuid().ToString();
-                    var resizedSlika = await _imageManipulationService.ConvertToProfilePhoto(updateKorisnik.ProfilnaSlika);
+                    var resizedSlika = await _imageManipulationService.ConvertToProfilePhoto(updateKorisnik.ProfilnaSlikaBase64);
                     await _s3BucketService.UploadImageAsync(korisnikId, resizedSlika);
                     korisnik.ProfilnaSlikaVersion = profilnaSlikaVersion;
                     await _userManager.UpdateAsync(korisnik);
