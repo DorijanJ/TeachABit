@@ -16,6 +16,11 @@ export default function ImageUploadComponent(props: Props) {
     ) => {
         if (event.target.files && event.target.files.length > 0) {
             const f = event.target.files[0];
+            if (!f.type.startsWith("image/")) {
+                alert("Please upload a valid image file.");
+                return;
+            }
+
             setFile(event.target.files[0]);
             props.setFile(await image.toBase64(f));
         }
