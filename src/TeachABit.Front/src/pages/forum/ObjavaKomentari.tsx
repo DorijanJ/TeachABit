@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { KomentarDto } from "../../models/KomentarDto";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
@@ -8,6 +8,7 @@ import CreateKomentar from "./KomentarEditor";
 
 interface Props {
     objavaId: number;
+    vlasnikId: string;
 }
 
 export default function ObjavaKomentari(props: Props) {
@@ -44,16 +45,16 @@ export default function ObjavaKomentari(props: Props) {
     }, [props.objavaId]);
 
     // Recursive rendering function
-    const renderKomentari = (komentari: KomentarDto[], level: number) => {
+    const renderKomentari = useCallback((komentari: KomentarDto[], level: number) => {
         return komentari.map((komentar: KomentarDto) => (
             <div
-                key={komentar.id}
                 style={{
                     display: "flex",
                     flexDirection: "column",
                 }}
             >
                 <Komentar
+                    key={komentar.id}
                     setSelectedNadKomentarId={setSelectedNadKomentarId}
                     selectedNadKomentarId={selectedNadKomentarId}
                     komentar={komentar}
@@ -63,6 +64,7 @@ export default function ObjavaKomentari(props: Props) {
                     level={level}
                     collapsedComments={collapsedComments}
                     toggleCollapse={toggleCollapse}
+                    objavaVlasnikId={props.vlasnikId}
                 />
                 {/* Recursive call for nested comments */}
                 {komentar.podKomentarList &&
@@ -81,7 +83,7 @@ export default function ObjavaKomentari(props: Props) {
                     )}
             </div>
         ));
-    };
+    }, [komentari, collapsedComments]);
 
     return (
         <div

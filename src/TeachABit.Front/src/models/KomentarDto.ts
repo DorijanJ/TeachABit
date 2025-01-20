@@ -12,4 +12,5 @@ export interface KomentarDto {
     podKomentarList?: KomentarDto[];
     likeCount?: number | undefined;
     liked?: boolean;
+    oznacenTocan?: boolean;
 }

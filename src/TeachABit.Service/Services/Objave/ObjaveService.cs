@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using TeachABit.Model.DTOs.Objave;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
@@ -28,6 +29,25 @@ namespace TeachABit.Service.Services.Objave
             Korisnik korisnik = _authorizationService.GetKorisnik();
             await _objaveRepository.DeleteObjavaReakcija(id, korisnik.Id);
             return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult<KomentarDto>> ClearTocanKomentar(int komentarId)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+
+            var komentar = await _objaveRepository.GetKomentarByIdWithTracking(komentarId);
+
+            if (komentar == null) { return ServiceResult.Failure(MessageDescriber.Unauthorized()); }
+
+            var objava = await _objaveRepository.GetObjavaById(komentar.ObjavaId);
+
+            if (objava == null || !korisnik.Owns(objava)) { return ServiceResult.Failure(MessageDescriber.Unauthorized()); }
+
+            if (komentar.OznacenTocan != true) return ServiceResult.Failure(MessageDescriber.BadRequest("Komentar nije označen kao točan."));
+
+            komentar.OznacenTocan = false;
+            await _objaveRepository.UpdateKomentar(komentar);
+            return ServiceResult.Success(_mapper.Map<KomentarDto>(komentar));
         }
 
         public async Task<ServiceResult<KomentarDto>> CreateKomentar(KomentarDto komentar, int objavaId)
@@ -232,6 +252,31 @@ namespace TeachABit.Service.Services.Objave
 
             await _objaveRepository.CreateObjavaReakcija(objavaReakcija);
             return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult<KomentarDto>> OznaciKaoTocan(int komentarId)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+
+            var komentar = await _objaveRepository.GetKomentarByIdWithTracking(komentarId);
+
+            if(komentar == null) { return ServiceResult.Failure(MessageDescriber.Unauthorized()); }
+
+            var objava = await _objaveRepository.GetObjavaById(komentar.ObjavaId);
+
+            if(objava == null || !korisnik.Owns(objava)) { return ServiceResult.Failure(MessageDescriber.Unauthorized()); }
+
+            var vecTocan = await _objaveRepository.GetTocanKomentar(objava.Id);
+
+            if(vecTocan != null)
+            {
+                vecTocan.OznacenTocan = null;
+                await _objaveRepository.UpdateKomentar(vecTocan);
+            }
+
+            komentar.OznacenTocan = true;
+            await _objaveRepository.UpdateKomentar(komentar);
+            return ServiceResult.Success(_mapper.Map<KomentarDto>(komentar));
         }
 
         public async Task<ServiceResult<KomentarDto>> UpdateKomentar(UpdateKomentarDto updateKomentar)

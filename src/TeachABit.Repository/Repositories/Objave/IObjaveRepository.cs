@@ -27,5 +27,6 @@ namespace TeachABit.Repository.Repositories.Objave
         public Task<Objava?> GetObjavaByIdWithTracking(int id);
         public Task<Komentar?> GetKomentarByIdWithTracking(int id);
         public Task<bool> HasPodkomentari(int komentarId);
+        public Task<Komentar?> GetTocanKomentar(int objavaId);
     }
 }
