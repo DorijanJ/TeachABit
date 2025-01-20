@@ -16,9 +16,9 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-import { Today } from "@mui/icons-material";
+/*import { Today } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
-import { isToday } from "date-fns";
+import { isToday } from "date-fns";*/
 
 interface Props {
   refreshData: () => Promise<any>;
@@ -58,9 +58,7 @@ export default function RadionicaEditor(props: Props) {
       id: radionica.id,
       naziv: radionica.naziv,
       opis: props.radionica?.opis ?? "",
-      /*predavacProfilnaSlika: props.radionica?.predavacProfilnaSlika,*/
-      //brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
-      cijena: props.radionica?.cijena,
+      cijena: props.radionica?.cijena ?? 9.99,
       kapacitet: props.radionica?.kapacitet,
       datumvrijeme: props.radionica?.datumvrijeme ?? new Date(),
     };
@@ -213,7 +211,7 @@ export default function RadionicaEditor(props: Props) {
                 },
               }}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value.replace(/[^0-9,.]/g, "");
+                const value = e.target.value.replace(/[^0-9.]/g, "");
                 /*const decimalPlaces = value.toString().split(".")[1]?.length;
                 if (!(Math.floor(value) === value) && decimalPlaces > 2) {
                   return;

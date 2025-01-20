@@ -8,11 +8,6 @@ import { RadionicaDto } from "../../models/RadionicaDto";
 import Radionica from "./Radionica";
 import RadionicaEditor from "./RadionicaEditor";
 
-// temp function
-function abc(query?: string) {
-  console.log("Search:", query);
-}
-
 export default function Radionice() {
   const [radionicaList, setRadionicaList] = useState<RadionicaDto[]>([]);
   const [isOpenRadionicaDialog, setIsOpenRadionicaDialog] = useState(false);
@@ -36,7 +31,7 @@ export default function Radionice() {
         display: "flex",
         flexDirection: "column",
         gap: "20px",
-        alignItems: "flex-start", //center??
+        alignItems: "flex-start", 
         height: "100%",
         width: "100%",
       }}
@@ -50,8 +45,7 @@ export default function Radionice() {
           alignItems: "center",
         }}
       >
-        <SearchBox onSearch={abc} />
-
+        <SearchBox onSearch={GetRadionicaList} />
         {globalContext.userIsLoggedIn && (
           <Button
             variant="contained"

@@ -18,14 +18,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import RadionicaEditor from "./RadionicaEditor";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { RadionicaDto } from "../../models/RadionicaDto";
+import RadionicaKomentari from "./RadionicaKomentari";
+import PotvrdiPopup from "./PotvrdiPopup";
 
 export default function RadionicaPage() {
   const [radionica, setRadionica] = useState<RadionicaDto>({
     //sadrzaj: "",
-    naziv: "naslov123",
-    opis: "tema123",
+    naziv: "",
+    opis: "",
     cijena: 0,
-    datumvrijeme: null,
+    datumvrijeme: new Date(),
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -82,6 +84,8 @@ export default function RadionicaPage() {
         }));
     };*/
 
+  const [isPotvrdaOpen, setIsPotvrdaOpen] = useState(false);
+
   const deleteRadionica = async () => {
     const response = await requests.deleteWithLoading(
       `radionice/${radionicaId}`
@@ -98,6 +102,15 @@ export default function RadionicaPage() {
 
   return (
     <>
+      {isPotvrdaOpen && (
+        <PotvrdiPopup
+          onConfirm={() => deleteRadionica()}
+          onClose={() => setIsPotvrdaOpen(false)}
+          tekstPitanje="Jeste li sigurni da želite izbrisati radionicu?"
+          tekstOdgovor="Izbriši"
+        />
+      )}
+
       {isEditing && (
         <RadionicaEditor
           isOpen={isEditing}
@@ -114,31 +127,29 @@ export default function RadionicaPage() {
           scrollbarGutter: "stable",
         }}
       >
-
         <Box
-      sx={{
-        display: "flex",
-        alignItems: "center", // Centriranje vertikalno
-        margin: "10px", // Odmak od gornjeg lijevog ruba
-      }}
-    >
-      <IconButton
-        onClick={() => navigate("/radionice")}
-        sx={{
-          color: "#3a7ca5",
-          "&:hover": {
-            color: "#1e4f72", // Promjena boje pri hoveru
-          },
-        }}
-      >
-        <NavigateBeforeIcon
           sx={{
-            fontSize: 30, // Veličina ikone
+            display: "flex",
+            alignItems: "center",
+            margin: "10px",
           }}
-        />
-      </IconButton>
-     
-    </Box>
+        >
+          <IconButton
+            onClick={() => navigate("/radionice")}
+            sx={{
+              color: "#3a7ca5",
+              "&:hover": {
+                color: "#1e4f72",
+              },
+            }}
+          >
+            <NavigateBeforeIcon
+              sx={{
+                fontSize: 30,
+              }}
+            />
+          </IconButton>
+        </Box>
 
         {/* treba li ovo biti tu
                     <Typography sx={{ color: "text.primary" }}>
@@ -168,10 +179,9 @@ export default function RadionicaPage() {
               variant="h5"
               component="div"
               sx={{
-                textOverflow: "ellipsis",
                 overflow: "hidden",
-                whiteSpace: "nowrap",
-                maxWidth: "100%",
+                whiteSpace: "break-spaces",
+                maxWidth: "90%",
               }}
             >
               {radionica.naziv}
@@ -191,9 +201,6 @@ export default function RadionicaPage() {
                 }}
               />
             </Box>
-
-                
-
           </div>
           <TeachABitRenderer content={radionica.opis ?? ""} />
           <Box
@@ -218,7 +225,7 @@ export default function RadionicaPage() {
               globalContext.isAdmin) && (
               <>
                 <IconButton
-                  onClick={() => deleteRadionica()}
+                  onClick={() => setIsPotvrdaOpen(true)}
                   sx={{
                     width: "40px",
                     height: "40px",
@@ -236,7 +243,7 @@ export default function RadionicaPage() {
                             liked={radionica.liked}
                         />*/}
           </Box>
-          {/*radionica.id && <RadionicaKomentari radionicaId={radionica.id} />*/}
+          {radionica.id && <RadionicaKomentari radionicaId={radionica.id} />}
         </CardContent>
       </Card>
     </>

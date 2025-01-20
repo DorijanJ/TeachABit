@@ -8,5 +8,5 @@ export interface RadionicaDto {
   vlasnikProfilnaSlikaVersion?: string; /*provjeri treba li i ovo*/ 
   brojprijavljenih?: number;      /*provjeri i ovo isto */
   kapacitet?: number;
-  datumvrijeme: Date | null;
+  datumvrijeme: Date;
 }

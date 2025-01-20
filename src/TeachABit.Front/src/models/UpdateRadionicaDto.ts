@@ -1,8 +1,8 @@
 export interface UpdateRadionicaDto {
   id?: number;
   naziv: string;
-  opis: string;
-  cijena?: number;
+  opis?: string;
+  cijena: number;
   kapacitet?: number;
-  datumvrijeme?: Date;
+  datumvrijeme: Date;
 }
