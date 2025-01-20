@@ -16,6 +16,12 @@ public interface IRadioniceRepository
     public Task<bool> HasPodkomentari(int komentarId);
     public Task DeleteKomentar(int id, bool keepEntry = false);
     public Task<List<KomentarRadionica>> GetPodKomentarList(int objavaId, int? nadKomentarId = null);
+    public Task<KomentarRadionicaReakcija> CreateKomentarReakcija(KomentarRadionicaReakcija komentarRadionicaReakcija);
+    public Task DeleteKomentarReakcija(int komentarId, string korisnikId);
+    public Task DeleteKomentarReakcija(int id);
+
+    public Task<KomentarRadionicaReakcija?> GetKomentarRadionicaReakcija(int komentarId, string korisnikId);
+
     public Task<KomentarRadionica?> GetKomentarRadionicaByIdWithTracking(int id);
     public Task<KomentarRadionica> UpdateKomentar(KomentarRadionica komentar);
 
