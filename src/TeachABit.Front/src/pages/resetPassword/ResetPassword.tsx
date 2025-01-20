@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import requests from "../../api/agent";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MessageResponseDto } from "../../models/common/MessageResponseDto";
 import { Alert, Button, InputAdornment, Stack, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
