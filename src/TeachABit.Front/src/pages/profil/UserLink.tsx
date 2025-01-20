@@ -4,6 +4,8 @@ import { AppUserDto } from "../../models/AppUserDto";
 
 interface Props {
     user: AppUserDto;
+    width?: number | string;
+    fontSize?: number | string;
 }
 
 export default function UserLink(props: Props) {
@@ -21,9 +23,11 @@ export default function UserLink(props: Props) {
                 alignItems: "center",
                 gap: "5px",
                 cursor: "pointer",
+                justifyContent: "center",
+                width: props.width ?? "auto"
             }}
         >
-            <Avatar sx={{ width: 20, height: 20 }}>
+            <Avatar sx={{ width: 25, height: 25 }}>
                 {props.user.profilnaSlikaVersion ? (
                     <img
                         style={{
@@ -31,15 +35,14 @@ export default function UserLink(props: Props) {
                             height: "100%",
                             width: "100%",
                         }}
-                        src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                            props.user.id
-                        }${"?version=" + props.user.profilnaSlikaVersion}`}
+                        src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${props.user.id
+                            }${"?version=" + props.user.profilnaSlikaVersion}`}
                     ></img>
                 ) : (
                     <>{props.user.username ? props.user.username[0] : ""}</>
                 )}
             </Avatar>
-            <Typography lineHeight={1} variant="caption">
+            <Typography lineHeight={1} variant="caption" fontSize={props.fontSize ?? "auto"}>
                 {props.user.username}
             </Typography>
         </div>

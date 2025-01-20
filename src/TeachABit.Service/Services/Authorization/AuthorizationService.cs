@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.Models.Korisnici;
@@ -43,10 +44,11 @@ namespace TeachABit.Service.Services.Authorization
             return _mapper.Map<KorisnikDto>(GetKorisnik());
         }
 
-        public async Task<KorisnikDto> GetKorisnikFull()
+        public async Task<Korisnik> GetKorisnikFull()
         {
             var korisnik = GetKorisnik();
-            return _mapper.Map<KorisnikDto>(await _userManager.FindByIdAsync(korisnik.Id));
+            var fullKorisnik = await _userManager.Users.Include(x => x.VerifikacijaStatus).FirstOrDefaultAsync(k => k.Id == korisnik.Id);
+            return fullKorisnik ?? throw new UnauthorizedAccessException();
         }
 
         public async Task<bool> IsAdmin()

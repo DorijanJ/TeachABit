@@ -107,5 +107,23 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _rolesService.AddUserToUloga(username, addKorisnikToRole.RoleName));
         }
+
+        [HttpPost("{username}/verifikacija-zahtjev")]
+        public async Task<IActionResult> CreateVerifikacijaZahtjev(string username)
+        {
+            return GetControllerResult(await _korisniciService.CreateVerifikacijaZahtjev(username));
+        }
+
+        [HttpPost("{username}/verifikacija")]
+        public async Task<IActionResult> UpdateVerifikacijaZahtjev(string username)
+        {
+            return Ok();
+        }
+
+        [HttpGet("verifikacija-zahtjev")]
+        public async Task<IActionResult> GetKorisniciSaZahtjevomVerifikacije()
+        {
+            return GetControllerResult(await _korisniciService.GetKorisniciSaZahtjevomVerifikacije());
+        }
     }
 }

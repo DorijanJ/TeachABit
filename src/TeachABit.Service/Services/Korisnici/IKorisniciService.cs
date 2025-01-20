@@ -6,5 +6,7 @@ namespace TeachABit.Service.Services.Korisnici
     public interface IKorisniciService
     {
         Task<ServiceResult<KorisnikDto>> UpdateKorisnik(UpdateKorisnikDto updateKorisnik);
+        Task<ServiceResult<KorisnikDto>> CreateVerifikacijaZahtjev(string username);
+        Task<ServiceResult<List<KorisnikDto>>> GetKorisniciSaZahtjevomVerifikacije();
     }
 }

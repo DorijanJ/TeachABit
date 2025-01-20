@@ -21,6 +21,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import RadionicaPage from "./pages/radionice/RadionicaPage";
 import TecajPage from "./pages/tecajevi/TecajPage";
+import PrivateRoute from "./components/auth/routing/PrivateRoute";
+import KorisniciAdministracijaPage from "./pages/administracija/KorisniciAdministracijaPage";
 
 const stripePromise = loadStripe("your-publishable-key");
 
@@ -136,6 +138,15 @@ const App = observer(() => {
                                 element={
                                     <GenericRoute
                                         page={<TecajPage />}
+                                        withNavigation
+                                    />
+                                }
+                            />
+                            <Route
+                                path="korisnici-administracija"
+                                element={
+                                    <PrivateRoute
+                                        page={<KorisniciAdministracijaPage />}
                                         withNavigation
                                     />
                                 }

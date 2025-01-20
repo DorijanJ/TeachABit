@@ -9,6 +9,7 @@ import {
     Select,
     MenuItem,
     IconButton,
+    Button,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent";
@@ -17,6 +18,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import EditProfilDialog from "./EditProfilDialog";
 import Uloga from "../../models/Uloga";
 import EditIcon from "@mui/icons-material/Edit";
+import { VerifikacijaEnum } from "../../enums/VerifikacijaEnum";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -70,6 +72,12 @@ export default function Profil() {
         }
     };
 
+    const SendVerificaitonRequest = async () => {
+        const response = await requests.postWithLoading(`account/${username}/verifikacija-zahtjev`);
+        if (response && response.data && username)
+            GetUserByUsername(username);
+    }
+
     useEffect(() => {
         if (globalContext.isAdmin) GetAllRoles();
     }, [globalContext.isAdmin]);
@@ -104,15 +112,13 @@ export default function Profil() {
                                             width: "100%",
                                             height: "100%",
                                         }}
-                                        src={`${
-                                            import.meta.env
-                                                .VITE_REACT_AWS_BUCKET
-                                        }${user.id}${
-                                            user.profilnaSlikaVersion
+                                        src={`${import.meta.env
+                                            .VITE_REACT_AWS_BUCKET
+                                            }${user.id}${user.profilnaSlikaVersion
                                                 ? "?version=" +
-                                                  user.profilnaSlikaVersion
+                                                user.profilnaSlikaVersion
                                                 : ""
-                                        }`}
+                                            }`}
                                     />
                                 </>
                             ) : (
@@ -146,7 +152,7 @@ export default function Profil() {
                             <Typography variant="h5">
                                 <b>{user.username} </b>
                             </Typography>
-                            {user.verificiran && (
+                            {user.verifikacijaStatusId === VerifikacijaEnum.Verificiran && (
                                 <VerifiedIcon
                                     sx={{
                                         height: "25px",
@@ -161,11 +167,12 @@ export default function Profil() {
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
+                                gap: "10px"
                             }}
                         >
                             {globalContext.isAdmin &&
-                            selectedUloga !== "Admin" &&
-                            username !== globalContext.currentUser?.username ? (
+                                selectedUloga !== "Admin" &&
+                                username !== globalContext.currentUser?.username ? (
                                 <Select
                                     value={selectedUloga}
                                     onChange={(e) =>
@@ -184,6 +191,10 @@ export default function Profil() {
                             ) : (
                                 <>{selectedUloga}</>
                             )}
+                            {user.verifikacijaStatusNaziv && (
+                                <p>{user.verifikacijaStatusNaziv}</p>
+                            )}
+                            {username === globalContext.currentUser?.username && !user.verifikacijaStatusId && (<Button variant="contained" onClick={() => SendVerificaitonRequest()}>{"Pošalji zahtjev za verifikacijom."}</Button>)}
                         </div>
                     </CardContent>
                 </Card>

@@ -8,6 +8,7 @@ import localStyles from "./Navigation.module.css";
 import Logo from "../../images/logo.png";
 import NavigationItem from "./NavigationItem";
 import { NavigationUser } from "./NavigationUser";
+import PeopleIcon from '@mui/icons-material/People';
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -122,6 +123,20 @@ export default function Navigation() {
                             }
                             isExpanded={isExpanded}
                         />
+                        {globalContext.isAdmin && (
+                            <NavigationItem
+                                route={"/korisnici-administracija"}
+                                name={"Korisnici"}
+                                isActive={isActive("/korisnici-administracija")}
+                                icon={
+                                    <PeopleIcon
+                                        color="primary"
+                                        className={localStyles.navImage}
+                                    />
+                                }
+                                isExpanded={isExpanded}
+                            />
+                        )}
                     </List>
 
                     <Box sx={{ flexGrow: 1 }} />
