@@ -12,6 +12,8 @@ public class RadionicaDto
     public bool? Favorit { get; set; } = false;
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public decimal? Cijena { get; set; } = null;
+    public DateTime VrijemeRadionice { get; set; }
+    public int MaksimalniKapacitet { get; set; }
     public string VlasnikId { get; set; } = string.Empty;
     public string? VlasnikUsername { get; set; }
     public string? VlasnikProfilnaSlikaVersion { get; set; }
