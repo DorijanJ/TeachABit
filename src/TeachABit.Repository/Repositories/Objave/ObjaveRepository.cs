@@ -47,21 +47,29 @@ namespace TeachABit.Repository.Repositories.Objave
                 .Include(x => x.Objava)
                 .Include(x => x.KomentarReakcijaList)
                 .Where(x => x.Objava.Id == id)
-                .OrderByDescending(x => x.CreatedDateTime)
+                .OrderByDescending(x => x.OznacenTocan)
+                .ThenByDescending(x => x.CreatedDateTime)
                 .ToListAsync();
         }
 
         public async Task<List<Komentar>> GetPodKomentarList(int objavaId, int? nadKomentarId = null)
         {
-            var komentari = await _context.Komentari
+            var komentari = _context.Komentari
                 .Include(c => c.Vlasnik)
                 .Include(c => c.Objava)
                 .Include(c => c.KomentarReakcijaList)
                 .Where(c => c.ObjavaId == objavaId && c.NadKomentarId == nadKomentarId)
-                .OrderByDescending(c => c.CreatedDateTime)
-                .ToListAsync();
+                .AsQueryable();
 
-            return komentari;
+            if(nadKomentarId == null)
+            {
+                komentari = komentari.OrderBy(c => c.OznacenTocan).ThenByDescending(c => c.CreatedDateTime);
+            } else
+            {
+                komentari = komentari.OrderByDescending(c => c.CreatedDateTime);
+            }
+
+            return await komentari.ToListAsync();
         }
 
         public async Task<bool> HasPodkomentari(int komentarId)
@@ -177,6 +185,11 @@ namespace TeachABit.Repository.Repositories.Objave
         public async Task<Komentar?> GetKomentarByIdWithTracking(int id)
         {
             return await _context.Komentari.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Komentar?> GetTocanKomentar(int objavaId)
+        {
+            return await _context.Komentari.AsTracking().FirstOrDefaultAsync(x => x.ObjavaId == objavaId && x.OznacenTocan == true);
         }
     }
 }

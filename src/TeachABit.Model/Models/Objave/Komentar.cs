@@ -15,6 +15,7 @@ namespace TeachABit.Model.Models.Objave
         [ForeignKey(nameof(VlasnikId))]
         public required virtual Korisnik Vlasnik { get; set; }
 
+        public bool? OznacenTocan { get; set; } = null;
         public required int ObjavaId { get; set; }
         [ForeignKey(nameof(ObjavaId))]
         public required virtual Objava Objava { get; set; }
