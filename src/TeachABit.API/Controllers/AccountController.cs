@@ -66,9 +66,9 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCurrentUser()
+        public async Task<IActionResult> GetUsers(string? search)
         {
-            return Ok(_authorizationService.GetKorisnikDto());
+            return GetControllerResult(await _korisniciService.GetAllUsers(search));
         }
 
         [AllowAnonymous]
@@ -115,9 +115,9 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpPost("{username}/verifikacija")]
-        public async Task<IActionResult> UpdateVerifikacijaZahtjev(string username)
+        public async Task<IActionResult> PrihvatiVerifikacijaZahtjev(string username)
         {
-            return Ok();
+            return GetControllerResult(await _korisniciService.PrihvatiVerifikacijaZahtjev(username));
         }
 
         [HttpGet("verifikacija-zahtjev")]

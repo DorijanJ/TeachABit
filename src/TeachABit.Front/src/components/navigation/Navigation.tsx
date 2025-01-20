@@ -8,16 +8,21 @@ import localStyles from "./Navigation.module.css";
 import Logo from "../../images/logo.png";
 import NavigationItem from "./NavigationItem";
 import { NavigationUser } from "./NavigationUser";
-import PeopleIcon from '@mui/icons-material/People';
+import PeopleIcon from "@mui/icons-material/People";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 
-export default function Navigation() {
+interface Props {
+    isExpanded?: boolean | undefined;
+}
+
+export default function Navigation(props: Props) {
     const globalContext = useGlobalContext();
     const location = useLocation();
     const isActive = (route: string) => location.pathname === route;
-    const [isExpanded, setIsExpanded] = useState(true);
+
+    const [isExpanded, setIsExpanded] = useState(props.isExpanded ?? false);
 
     return (
         <>
@@ -57,7 +62,7 @@ export default function Navigation() {
                                 transform: isExpanded
                                     ? "rotate(0deg)"
                                     : "rotate(180deg)",
-                                //justifyContent: isExpanded? "" : "center", 
+                                //justifyContent: isExpanded? "" : "center",
                                 //padding: isExpanded ? "20px" : "100px",
                                 color: "#3a7ca5",
                                 transition: "transform 0.3s ease", // dodaje animiranu tranziciju
