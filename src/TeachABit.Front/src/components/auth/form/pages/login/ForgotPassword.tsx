@@ -11,7 +11,6 @@ import {
 import { ChangeEvent, useState } from "react";
 import requests from "../../../../../api/agent";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
-import { useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
     const [message, setMessage] = useState<MessageResponseDto>();
