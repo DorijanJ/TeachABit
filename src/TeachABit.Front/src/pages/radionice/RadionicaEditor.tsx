@@ -6,7 +6,6 @@ import {
     DialogActions,
     Button,
     InputAdornment,
-    Box,
 } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import requests from "../../api/agent";
@@ -40,14 +39,14 @@ export default function RadionicaEditor(props: Props) {
         brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
         kapacitet: props.radionica?.kapacitet,
         datumvrijeme: props.radionica?.datumvrijeme ?? new Date(),
-        cijena: props.radionica?.cijena ?? null,
+        cijena: props.radionica?.cijena,
     });
 
     const handleClose = (reload: boolean = false) => {
         setRadionica({
             naziv: "",
             opis: "",
-            cijena: 9.99,
+            cijena: undefined,
             datumvrijeme: new Date(),
         });
         props.onClose();
@@ -55,15 +54,16 @@ export default function RadionicaEditor(props: Props) {
     };
 
     const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
+        if (!radionica.cijena) return;
         const updateRadionicaDto: UpdateRadionicaDto = {
             id: radionica.id,
             naziv: radionica.naziv,
-            opis: props.radionica?.opis ?? "",
+            opis: radionica?.opis ?? "",
             /*predavacProfilnaSlika: props.radionica?.predavacProfilnaSlika,*/
             //brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
-            cijena: props.radionica?.cijena,
-            kapacitet: props.radionica?.kapacitet,
-            datumvrijeme: props.radionica?.datumvrijeme ?? new Date(),
+            cijena: radionica.cijena,
+            kapacitet: radionica?.kapacitet,
+            datumvrijeme: radionica?.datumvrijeme ?? new Date(),
         };
         const response = await requests.putWithLoading(
             "radionice",
@@ -256,6 +256,7 @@ export default function RadionicaEditor(props: Props) {
                         Odustani
                     </Button>
                     <Button
+                        disabled = {!radionica.cijena}
                         id="stvoriRadionicuButton"
                         variant="contained"
                         onClick={() => {
