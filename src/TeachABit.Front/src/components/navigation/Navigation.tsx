@@ -1,6 +1,4 @@
 import { Box, Drawer, IconButton, List } from "@mui/material";
-import BookIcon from "@mui/icons-material/Home";
-import GroupIcon from "@mui/icons-material/Group";
 import ForumIcon from "@mui/icons-material/Forum";
 import AuthForm from "../auth/form/AuthForm";
 import { useGlobalContext } from "../../context/Global.context";
@@ -11,6 +9,7 @@ import { NavigationUser } from "./NavigationUser";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import { LaptopChromebook, MenuBook } from "@mui/icons-material";
 
 export default function Navigation() {
     const globalContext = useGlobalContext();
@@ -91,7 +90,7 @@ export default function Navigation() {
                             name={"Tečajevi"}
                             isActive={isActive("/tecajevi")}
                             icon={
-                                <BookIcon
+                                <MenuBook
                                     color="primary"
                                     className={localStyles.navImage}
                                 />
@@ -103,7 +102,7 @@ export default function Navigation() {
                             name={"Radionice"}
                             isActive={isActive("/radionice")}
                             icon={
-                                <GroupIcon
+                                <LaptopChromebook
                                     color="primary"
                                     className={localStyles.navImage}
                                 />

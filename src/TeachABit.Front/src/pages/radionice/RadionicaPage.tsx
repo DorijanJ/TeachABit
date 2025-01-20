@@ -19,7 +19,7 @@ import RadionicaEditor from "./RadionicaEditor";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { RadionicaDto } from "../../models/RadionicaDto";
 import RadionicaKomentari from "./RadionicaKomentari";
-import PotvrdiPopup from "./PotvrdiPopup";
+import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 
 export default function RadionicaPage() {
   const [radionica, setRadionica] = useState<RadionicaDto>({
