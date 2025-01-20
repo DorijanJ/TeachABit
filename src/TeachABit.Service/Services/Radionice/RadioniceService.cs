@@ -54,10 +54,17 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
 
         return ServiceResult.Success(updatedRadionica);
     }
-
-
+    
     public async Task<ServiceResult> DeleteRadionica(int id)
     {
+        Korisnik korisnik = _authorizationService.GetKorisnik();
+
+        RadionicaDto? objava = _mapper.Map<RadionicaDto?>(await _radioniceRepository.GetRadionicaById(id));
+
+        bool isAdmin = await _authorizationService.IsAdmin();
+
+        if (!isAdmin && (objava == null || !korisnik.Owns(objava))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
         await _radioniceRepository.DeleteRadionica(id);
         return ServiceResult.Success();
     }

@@ -30,6 +30,16 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             .Include(x => x.Vlasnik)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
+    
+    public async Task<Radionica?> GetRadionicaById(int id)
+    {
+        return await _context.Radionice
+            .Include(x => x.Vlasnik)
+            .Include(x => x.Komentari)
+            .ThenInclude(x => x.Vlasnik)
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+    
     public async Task<Radionica> CreateRadionica(Radionica radionica)
     {
         EntityEntry<Radionica> createdZadatak = await _context.Radionice.AddAsync(radionica);
