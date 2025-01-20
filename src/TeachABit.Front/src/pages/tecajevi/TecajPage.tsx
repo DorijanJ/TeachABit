@@ -121,6 +121,29 @@ export default function TecajPage() {
                             />
                         </Box>
                     </div>
+                    {tecaj.naslovnaSlikaVersion && (
+                        <div
+                            style={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                paddingTop: "20px",
+                            }}
+                        >
+                            <img
+                                style={{
+                                    borderRadius: "10px",
+                                    objectFit: "cover",
+                                    width: "70%",
+                                }}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                    tecaj.naslovnaSlikaVersion
+                                }`}
+                            />
+                        </div>
+                    )}
+                    <label>Opis tečaja:</label>
                     <TeachABitRenderer content={tecaj.opis} />
                     <Box
                         display={"flex"}
