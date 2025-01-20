@@ -11,6 +11,7 @@ import {
 import { ChangeEvent, useState } from "react";
 import requests from "../../../../../api/agent";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
+import { useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
     const [message, setMessage] = useState<MessageResponseDto>();
@@ -50,6 +51,7 @@ export default function ForgotPassword() {
                     <DialogContent
                         sx={{
                             width: 450,
+                            maxWidth: "100%",
                             display: "flex",
                             flexDirection: "column",
                             gap: "20px",

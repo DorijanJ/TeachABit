@@ -5,5 +5,6 @@ export interface AppUserDto {
     id?: string;
     profilnaSlikaVersion?: string;
     roles?: Uloga[];
-    verificiran?: boolean;
+    verifikacijaStatusId?: number;
+    verifikacijaStatusNaziv?: string;
 }

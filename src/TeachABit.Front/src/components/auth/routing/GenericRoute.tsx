@@ -2,13 +2,13 @@ import Navigation from "../../navigation/Navigation";
 
 interface GenericRouteProps {
     page: JSX.Element;
-    withNavigation?: boolean;
+    withNavigation?: boolean | undefined;
 }
 
 export default function GenericRoute(props: GenericRouteProps) {
     return (
         <>
-            {props.withNavigation && <Navigation />}
+            <Navigation isExpanded={props.withNavigation} />
             <div className="pageView">{props.page}</div>
         </>
     );
