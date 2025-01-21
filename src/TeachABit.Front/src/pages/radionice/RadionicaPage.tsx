@@ -1,10 +1,4 @@
-import {
-  Card,
-  Typography,
-  CardContent,
-  Box,
-  IconButton,
-} from "@mui/material";
+import { Card, Typography, CardContent, Box, IconButton } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import requests from "../../api/agent";
@@ -20,37 +14,39 @@ import RadionicaKomentari from "./RadionicaKomentari";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 
 export default function RadionicaPage() {
-  const [radionica, setRadionica] = useState<RadionicaDto>({
-    //sadrzaj: "",
-    naziv: "",
-    opis: "",
-    cijena: 0,
-    datumvrijeme: new Date(),
-  });
+    const [radionica, setRadionica] = useState<RadionicaDto>({
+        //sadrzaj: "",
+        naziv: "",
+        opis: "",
+        cijena: 0,
+        vrijemeRadionice: undefined,
+    });
 
-  const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
-  const { radionicaId } = useParams();
+    const { radionicaId } = useParams();
 
-  useEffect(() => {
-    if (radionicaId) {
-      getRadionicaById(parseInt(radionicaId));
-    }
-  }, [radionicaId]);
+    useEffect(() => {
+        if (radionicaId) {
+            getRadionicaById(parseInt(radionicaId));
+        }
+    }, [radionicaId]);
 
-  const getRadionicaById = async (radionicaId: number) => {
-    const response = await requests.getWithLoading(`radionice/${radionicaId}`);
-    if (response?.data) {
-      setRadionica(response.data);
-    } else {
-      navigate("/radionice");
-    }
-  };
+    const getRadionicaById = async (radionicaId: number) => {
+        const response = await requests.getWithLoading(
+            `radionice/${radionicaId}`
+        );
+        if (response?.data) {
+            setRadionica(response.data);
+        } else {
+            navigate("/radionice");
+        }
+    };
 
-  const navigate = useNavigate();
-  const globalContext = useGlobalContext();
+    const navigate = useNavigate();
+    const globalContext = useGlobalContext();
 
-  /*const likeRadionica = async () => {
+    /*const likeRadionica = async () => {
         try {
             await requests.postWithLoading(`radionice/${radionicaId}/like`);
             setRadionica((prev: RadionicaDto) => ({
@@ -64,7 +60,7 @@ export default function RadionicaPage() {
         }
     };*/
 
-  /*const dislikeRadionica = async () => {
+    /*const dislikeRadionica = async () => {
         await requests.postWithLoading(`radionice/${radionicaId}/dislike`);
         setRadionica((prev: RadionicaDto) => ({
             ...prev,
@@ -82,168 +78,173 @@ export default function RadionicaPage() {
         }));
     };*/
 
-  const [isPotvrdaOpen, setIsPotvrdaOpen] = useState(false);
+    const [isPotvrdaOpen, setIsPotvrdaOpen] = useState(false);
 
-  const deleteRadionica = async () => {
-    const response = await requests.deleteWithLoading(
-      `radionice/${radionicaId}`
-    );
-    if (response && response.message?.severity === "success")
-      navigate("/radionice");
-  };
+    const deleteRadionica = async () => {
+        const response = await requests.deleteWithLoading(
+            `radionice/${radionicaId}`
+        );
+        if (response && response.message?.severity === "success")
+            navigate("/radionice");
+    };
 
-  const refreshData = async () => {
-    if (!radionicaId) return;
-    const parsedRadionicaId = parseInt(radionicaId);
-    await getRadionicaById(parsedRadionicaId);
-  };
+    const refreshData = async () => {
+        if (!radionicaId) return;
+        const parsedRadionicaId = parseInt(radionicaId);
+        await getRadionicaById(parsedRadionicaId);
+    };
 
-  return (
-    <>
-      {isPotvrdaOpen && (
-        <PotvrdiPopup
-          onConfirm={() => deleteRadionica()}
-          onClose={() => setIsPotvrdaOpen(false)}
-          tekstPitanje="Jeste li sigurni da želite izbrisati radionicu?"
-          tekstOdgovor="Izbriši"
-        />
-      )}
+    return (
+        <>
+            {isPotvrdaOpen && (
+                <PotvrdiPopup
+                    onConfirm={() => deleteRadionica()}
+                    onClose={() => setIsPotvrdaOpen(false)}
+                    tekstPitanje="Jeste li sigurni da želite izbrisati radionicu?"
+                    tekstOdgovor="Izbriši"
+                />
+            )}
 
-      {isEditing && (
-        <RadionicaEditor
-          isOpen={isEditing}
-          onClose={() => setIsEditing(false)}
-          refreshData={refreshData}
-          radionica={radionica}
-        />
-      )}
-      <Card
-        sx={{
-          width: "100%",
-          height: "100%",
-          overflowY: "auto",
-          scrollbarGutter: "stable",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            margin: "10px",
-          }}
-        >
-          <IconButton
-            onClick={() => navigate("/radionice")}
-            sx={{
-              color: "#3a7ca5",
-              "&:hover": {
-                color: "#1e4f72",
-              },
-            }}
-          >
-            <NavigateBeforeIcon
-              sx={{
-                fontSize: 30,
-              }}
-            />
-          </IconButton>
-        </Box>
+            {isEditing && (
+                <RadionicaEditor
+                    isOpen={isEditing}
+                    onClose={() => setIsEditing(false)}
+                    refreshData={refreshData}
+                    radionica={radionica}
+                />
+            )}
+            <Card
+                sx={{
+                    width: "100%",
+                    height: "100%",
+                    overflowY: "auto",
+                    scrollbarGutter: "stable",
+                }}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        margin: "10px",
+                    }}
+                >
+                    <IconButton
+                        onClick={() => navigate("/radionice")}
+                        sx={{
+                            color: "#3a7ca5",
+                            "&:hover": {
+                                color: "#1e4f72",
+                            },
+                        }}
+                    >
+                        <NavigateBeforeIcon
+                            sx={{
+                                fontSize: 30,
+                            }}
+                        />
+                    </IconButton>
+                </Box>
 
-        {/* treba li ovo biti tu
+                {/* treba li ovo biti tu
                     <Typography sx={{ color: "text.primary" }}>
                         {radionica.id}
                     </Typography>
                     */}
 
-        <CardContent
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-            paddingTop: "10px !important",
-            width: "100%",
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              color="primary"
-              variant="h5"
-              component="div"
-              sx={{
-                overflow: "hidden",
-                whiteSpace: "break-spaces",
-                maxWidth: "90%",
-              }}
-            >
-              {radionica.naziv}
-            </Typography>
-            <Box
-              flexDirection={"row"}
-              alignItems={"center"}
-              display={"flex"}
-              justifyContent={"space-between"}
-              gap="5px"
-            >
-              <UserLink
-                user={{
-                  id: radionica.vlasnikId,
-                  username: radionica.vlasnikUsername,
-                  profilnaSlikaVersion: radionica.vlasnikProfilnaSlikaVersion,
-                }}
-              />
-            </Box>
-          </div>
-          <TeachABitRenderer content={radionica.opis ?? ""} />
-          <Box
-            display={"flex"}
-            flexDirection={"row"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
-            gap="10px"
-          >
-            {globalContext.currentUser?.id === radionica.vlasnikId && (
-              <IconButton
-                onClick={() => setIsEditing(true)}
-                sx={{
-                  width: "40px",
-                  height: "40px",
-                }}
-              >
-                <EditIcon color="primary"></EditIcon>
-              </IconButton>
-            )}
-            {(globalContext.currentUser?.id === radionica.vlasnikId ||
-              globalContext.isAdmin) && (
-              <>
-                <IconButton
-                  onClick={() => setIsPotvrdaOpen(true)}
-                  sx={{
-                    width: "40px",
-                    height: "40px",
-                  }}
+                <CardContent
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "20px",
+                        paddingTop: "10px !important",
+                        width: "100%",
+                    }}
                 >
-                  <DeleteIcon color="primary"></DeleteIcon>
-                </IconButton>
-              </>
-            )}
-            {/*<LikeInfo
+                    <div
+                        style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Typography
+                            color="primary"
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                overflow: "hidden",
+                                whiteSpace: "break-spaces",
+                                maxWidth: "90%",
+                            }}
+                        >
+                            {radionica.naziv}
+                        </Typography>
+                        <Box
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                            display={"flex"}
+                            justifyContent={"space-between"}
+                            gap="5px"
+                        >
+                            <UserLink
+                                user={{
+                                    id: radionica.vlasnikId,
+                                    username: radionica.vlasnikUsername,
+                                    profilnaSlikaVersion:
+                                        radionica.vlasnikProfilnaSlikaVersion,
+                                }}
+                            />
+                        </Box>
+                    </div>
+                    <TeachABitRenderer content={radionica.opis ?? ""} />
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"flex-end"}
+                        alignItems={"center"}
+                        gap="10px"
+                    >
+                        {globalContext.currentUser?.id ===
+                            radionica.vlasnikId && (
+                            <IconButton
+                                onClick={() => setIsEditing(true)}
+                                sx={{
+                                    width: "40px",
+                                    height: "40px",
+                                }}
+                            >
+                                <EditIcon color="primary"></EditIcon>
+                            </IconButton>
+                        )}
+                        {(globalContext.currentUser?.id ===
+                            radionica.vlasnikId ||
+                            globalContext.isAdmin) && (
+                            <>
+                                <IconButton
+                                    onClick={() => setIsPotvrdaOpen(true)}
+                                    sx={{
+                                        width: "40px",
+                                        height: "40px",
+                                    }}
+                                >
+                                    <DeleteIcon color="primary"></DeleteIcon>
+                                </IconButton>
+                            </>
+                        )}
+                        {/*<LikeInfo
                             likeCount={radionica.likeCount}
                             onClear={clearReaction}
                             onDislike={dislikeRadionica}
                             onLike={likeRadionica}
                             liked={radionica.liked}
                         />*/}
-          </Box>
-          {radionica.id && <RadionicaKomentari radionicaId={radionica.id} />}
-        </CardContent>
-      </Card>
-    </>
-  );
+                    </Box>
+                    {radionica.id && (
+                        <RadionicaKomentari radionicaId={radionica.id} />
+                    )}
+                </CardContent>
+            </Card>
+        </>
+    );
 }

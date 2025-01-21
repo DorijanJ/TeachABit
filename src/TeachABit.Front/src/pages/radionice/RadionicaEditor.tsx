@@ -15,6 +15,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import dayjs from "dayjs";
 /*import { Today } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
 import { isToday } from "date-fns";*/
@@ -37,8 +38,8 @@ export default function RadionicaEditor(props: Props) {
         vlasnikProfilnaSlikaVersion:
             props.radionica?.vlasnikProfilnaSlikaVersion,
         brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
-        kapacitet: props.radionica?.kapacitet,
-        datumvrijeme: props.radionica?.datumvrijeme ?? new Date(),
+        maksimalniKapacitet: props.radionica?.maksimalniKapacitet,
+        vrijemeRadionice: props.radionica?.vrijemeRadionice,
         cijena: props.radionica?.cijena,
     });
 
@@ -47,14 +48,14 @@ export default function RadionicaEditor(props: Props) {
             naziv: "",
             opis: "",
             cijena: undefined,
-            datumvrijeme: new Date(),
+            vrijemeRadionice: undefined,
         });
         props.onClose();
         if (reload) props.refreshData();
     };
 
     const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
-        if (!radionica.cijena) return;
+        if (!radionica.cijena || !radionica.vrijemeRadionice) return;
         const updateRadionicaDto: UpdateRadionicaDto = {
             id: radionica.id,
             naziv: radionica.naziv,
@@ -62,8 +63,8 @@ export default function RadionicaEditor(props: Props) {
             /*predavacProfilnaSlika: props.radionica?.predavacProfilnaSlika,*/
             //brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
             cijena: radionica.cijena,
-            kapacitet: radionica?.kapacitet,
-            datumvrijeme: radionica?.datumvrijeme ?? new Date(),
+            kapacitet: radionica?.maksimalniKapacitet,
+            datumvrijeme: radionica?.vrijemeRadionice,
         };
         const response = await requests.putWithLoading(
             "radionice",
@@ -185,7 +186,7 @@ export default function RadionicaEditor(props: Props) {
                             sx={{
                                 width: "30%",
                             }}
-                            value={radionica.kapacitet || ""}
+                            value={radionica.maksimalniKapacitet || ""}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 const numericValue = e.target.value.replace(
                                     /[^0-9]/g,
@@ -193,7 +194,7 @@ export default function RadionicaEditor(props: Props) {
                                 );
                                 setRadionica((prev: any) => ({
                                     ...prev,
-                                    kapacitet: numericValue,
+                                    maksimalniKapacitet: numericValue,
                                 }));
                             }}
                         />
@@ -240,12 +241,23 @@ export default function RadionicaEditor(props: Props) {
                                     width: "30%",
                                 }}
                                 ampm={false}
+                                value={
+                                    radionica.vrijemeRadionice
+                                        ? dayjs(radionica.vrijemeRadionice)
+                                        : null
+                                }
                                 disablePast={true}
                                 viewRenderers={{
                                     hours: renderTimeViewClock,
                                     minutes: renderTimeViewClock,
                                     seconds: renderTimeViewClock,
                                 }}
+                                onChange={(e) =>
+                                    setRadionica((prev: any) => ({
+                                        ...prev,
+                                        vrijemeRadionice: e,
+                                    }))
+                                }
                             />
                         </LocalizationProvider>
                     </div>
@@ -256,7 +268,7 @@ export default function RadionicaEditor(props: Props) {
                         Odustani
                     </Button>
                     <Button
-                        disabled = {!radionica.cijena}
+                        disabled={!radionica.cijena}
                         id="stvoriRadionicuButton"
                         variant="contained"
                         onClick={() => {

@@ -162,9 +162,9 @@ namespace TeachABit.Service.Services.Tecajevi
         {
             Korisnik korisnik = _authorizationService.GetKorisnik();
 
+            komentarTecaj.TecajId = tecajId;
             komentarTecaj.VlasnikId = korisnik.Id;
             komentarTecaj.CreatedDateTime = DateTime.UtcNow;
-            komentarTecaj.ObjavaId = tecajId;
 
             KomentarTecajDto createdKomentar = _mapper.Map<KomentarTecajDto>(await _tecajeviRepository.CreateKomentarTecaj(_mapper.Map<KomentarTecaj>(komentarTecaj)));
             return ServiceResult.Success(createdKomentar);
@@ -181,7 +181,7 @@ namespace TeachABit.Service.Services.Tecajevi
                 {
                     komentar.Liked = (await _tecajeviRepository.GetKomentarTecajReakcija(komentar.Id, korisnik.Id))?.Liked;
                 }
-                komentar.PodKomentarList = _mapper.Map<List<KomentarTecajDto>>((await GetKomentarTecajListRecursive(id, komentar.Id)).Data);
+                komentar.PodKomentarList = (await GetKomentarTecajListRecursive(id, komentar.Id)).Data;
             }
 
             return ServiceResult.Success(komentari);
@@ -195,7 +195,7 @@ namespace TeachABit.Service.Services.Tecajevi
 
             bool isAdmin = await _authorizationService.IsAdmin();
 
-            if (komentar == null || (!isAdmin && !korisnik.Owns(komentar.Tecaj))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (komentar == null || (!isAdmin && !korisnik.Owns(komentar))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             if (komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.BadRequest("Komentar je već izbrisan."));
 
@@ -266,7 +266,7 @@ namespace TeachABit.Service.Services.Tecajevi
             var komentar = await _tecajeviRepository.GetKomentarTecajByIdWithTracking(updateKomentar.Id);
             var user = _authorizationService.GetKorisnik();
 
-            if (komentar == null || !user.Owns(komentar.Tecaj) || komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (komentar == null || !user.Owns(komentar) || komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             komentar.Sadrzaj = updateKomentar.Sadrzaj;
             komentar.LastUpdatedDateTime = DateTime.UtcNow;

@@ -9,6 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import Lekcije from "./Lekcije";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import TecajKomentari from "./TecajKomentari";
 
 export default function TecajPage() {
     const [tecaj, setTecaj] = useState<TecajDto>({
@@ -177,9 +178,7 @@ export default function TecajPage() {
                         )}
                     </Box>
 
-                    {/* Komentari */}
-                    {/* ovo odkomentirati kad se poprave komentari tecajeva */}
-                    {/*tecaj.id && <TecajKomentari tecajId={tecaj.id} />*/}
+                    {tecaj.id && <TecajKomentari tecajId={tecaj.id} />}
                 </CardContent>
             </Card>
         </>

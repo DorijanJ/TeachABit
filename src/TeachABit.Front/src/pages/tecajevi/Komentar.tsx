@@ -12,7 +12,7 @@ import KomentarEditor from "./KomentarEditor";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { hr } from "date-fns/locale";
-import {TecajKomentarDto} from "../../models/TecajKomentarDto.ts";
+import { TecajKomentarDto } from "../../models/TecajKomentarDto.ts";
 
 interface Props {
     komentar: TecajKomentarDto;
@@ -160,10 +160,10 @@ export default function Komentar(props: Props) {
                                         user={{
                                             id: props.komentar.vlasnikId,
                                             username:
-                                            props.komentar.vlasnikUsername,
+                                                props.komentar.vlasnikUsername,
                                             profilnaSlikaVersion:
-                                            props.komentar
-                                                .vlasnikProfilnaSlikaVersion,
+                                                props.komentar
+                                                    .vlasnikProfilnaSlikaVersion,
                                         }}
                                     />
                                     <p
@@ -177,23 +177,23 @@ export default function Komentar(props: Props) {
                                     >
                                         {!props.komentar.lastUpdatedDateTime
                                             ? `Komentirano ${formatDistanceToNow(
-                                                new Date(
-                                                    props.komentar.createdDateTime
-                                                ),
-                                                {
-                                                    addSuffix: true,
-                                                    locale: hr,
-                                                }
-                                            )}`
+                                                  new Date(
+                                                      props.komentar.createdDateTime
+                                                  ),
+                                                  {
+                                                      addSuffix: true,
+                                                      locale: hr,
+                                                  }
+                                              )}`
                                             : `Izmijenjeno ${formatDistanceToNow(
-                                                new Date(
-                                                    props.komentar.lastUpdatedDateTime
-                                                ),
-                                                {
-                                                    addSuffix: true,
-                                                    locale: hr,
-                                                }
-                                            )}`}
+                                                  new Date(
+                                                      props.komentar.lastUpdatedDateTime
+                                                  ),
+                                                  {
+                                                      addSuffix: true,
+                                                      locale: hr,
+                                                  }
+                                              )}`}
                                         <br></br>
                                     </p>
                                 </div>
@@ -206,11 +206,10 @@ export default function Komentar(props: Props) {
                                     gap: "10px",
                                 }}
                             >
-                                {(globalContext.currentUser?.id ===
-                                        props.komentar.vlasnikId ||
-                                        globalContext.isAdmin) &&
-                                    !props.komentar.isDeleted && (
-                                        <>
+                                {!props.komentar.isDeleted && (
+                                    <>
+                                        {globalContext.currentUser?.id ===
+                                            props.komentar.vlasnikId && (
                                             <IconButton
                                                 sx={{
                                                     width: "30px",
@@ -225,6 +224,10 @@ export default function Komentar(props: Props) {
                                                     fontSize="small"
                                                 />
                                             </IconButton>
+                                        )}
+                                        {(globalContext.currentUser?.id ===
+                                            props.komentar.vlasnikId ||
+                                            globalContext.isAdmin) && (
                                             <IconButton
                                                 sx={{
                                                     width: "30px",
@@ -239,8 +242,9 @@ export default function Komentar(props: Props) {
                                                     fontSize="small"
                                                 />
                                             </IconButton>
-                                        </>
-                                    )}
+                                        )}
+                                    </>
+                                )}
                                 <LikeInfo
                                     likeCount={likeCount}
                                     onClear={clearReaction}
