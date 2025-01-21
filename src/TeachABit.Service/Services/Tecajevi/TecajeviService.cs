@@ -135,9 +135,13 @@ namespace TeachABit.Service.Services.Tecajevi
 
             Lekcija? lekcija = await _tecajeviRepository.GetLekcijaById(id);
 
+            if (lekcija == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            var tecaj = await _tecajeviRepository.GetTecaj(lekcija.TecajId);
+
             bool isAdmin = await _authorizationService.IsAdmin();
 
-            if (lekcija == null || (!isAdmin && !korisnik.Owns(lekcija.Tecaj))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (tecaj == null || (!isAdmin && !korisnik.Owns(tecaj))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             await _tecajeviRepository.DeleteLekcija(id, false);
             return ServiceResult.Success();
@@ -146,10 +150,15 @@ namespace TeachABit.Service.Services.Tecajevi
         public async Task<ServiceResult<LekcijaDto>> UpdateLekcija(UpdatedLekcijaDto updateLekcija)
         {
             var lekcija = await _tecajeviRepository.GetLekcijaByIdWithTracking(updateLekcija.Id);
-            var user = _authorizationService.GetKorisnik();
 
-            if (lekcija == null || !user.Owns(lekcija.Tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (lekcija == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
+            var korisnik = _authorizationService.GetKorisnik();
+            var tecaj = await _tecajeviRepository.GetTecaj(lekcija.TecajId);
+
+            if (tecaj == null || !korisnik.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            lekcija.Naziv = updateLekcija.Naziv;
             lekcija.Sadrzaj = updateLekcija.Sadrzaj;
             lekcija.LastUpdatedDateTime = DateTime.UtcNow;
 

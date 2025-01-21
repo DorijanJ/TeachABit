@@ -9,5 +9,6 @@ public class UpdatedLekcijaDto
     public string Naziv { get; set; } = string.Empty;
     [StringLength(30000, ErrorMessage = "Sadržaj je previše dugačak.")]
     public string Sadrzaj { get; set; } = string.Empty;
-    
+    public int TecajId { get; set; }
+
 }
