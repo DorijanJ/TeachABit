@@ -22,6 +22,7 @@ namespace TeachABit.Model
         public DbSet<TecajFavorit> TecajFavoriti { get; set; }
         public DbSet<TecajPlacanje> TecajPlacanja { get; set; }
         public DbSet<KomentarRadionica> KomentarRadionica { get; set; }
+        public DbSet<VerifikacijaStatus> VerifikacijaStatus {  get; set; }
         public DbSet<RadionicaFavorit> RadionicaFavorit { get; set; }
         public DbSet<KomentarRadionicaReakcija> KomentarRadionicaReakcija { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)

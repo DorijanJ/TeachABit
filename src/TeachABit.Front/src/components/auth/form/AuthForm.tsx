@@ -54,7 +54,6 @@ export default function AuthButton() {
                     open
                     onClose={onClose}
                     sx={{
-                        maxHeight: "500vh",
                         padding: 0,
                     }}
                 >

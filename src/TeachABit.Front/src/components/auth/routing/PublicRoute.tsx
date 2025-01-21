@@ -4,7 +4,7 @@ import GenericRoute from "./GenericRoute";
 
 interface PrivateRouteProps {
     page: JSX.Element;
-    withNavigation?: boolean;
+    withNavigation?: boolean | undefined;
 }
 
 export default function PublicRoute(props: PrivateRouteProps) {
