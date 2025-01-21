@@ -3,6 +3,7 @@ import { TecajDto } from "../../models/TecajDto";
 import { useNavigate, useParams } from "react-router-dom";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
+import TecajKomentari from "./TecajKomentari";
 import {
     Box,
     Breadcrumbs,
@@ -15,6 +16,7 @@ import {
 import UserLink from "../profil/UserLink";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
+
 
 export default function TecajPage() {
     const [tecaj, setTecaj] = useState<TecajDto>({
@@ -167,6 +169,7 @@ export default function TecajPage() {
                             </>
                         )}
                     </Box>
+                    {tecaj.id && <TecajKomentari tecajId={tecaj.id} />}
                 </CardContent>
             </Card>
         </>
