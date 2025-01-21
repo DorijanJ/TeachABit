@@ -14,6 +14,9 @@ public interface IRadioniceService
     public Task<ServiceResult> DeleteKomentar(int id);
     public Task<ServiceResult<KomentarRadionicaDto>> CreateKomentar(KomentarRadionicaDto komentar, int objavaId);
     public Task<ServiceResult<KomentarRadionicaDto>> UpdateKomentar(UpdateKomentarRadionicaDto updateKomentar);
+    public Task<ServiceResult> LikeRadionicaKomentar(int id);
+    public Task<ServiceResult> DislikeRadionicaKomentar(int id);
+    public Task<ServiceResult> ClearKomentarReaction(int id);
 
-    
+
 }

@@ -25,6 +25,8 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion));
             CreateMap<TecajDto, Tecaj>();
             CreateMap<CreateOrUpdateTecajDto, Tecaj>();
+            CreateMap<Lekcija, LekcijaDto>();
+            CreateMap<LekcijaDto, Lekcija>();
             CreateMap<ObjavaDto, Objava>();
             CreateMap<Objava, ObjavaDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
@@ -47,7 +49,7 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
                 .ForMember(x => x.Sadrzaj, opt => opt.MapFrom(x => x.IsDeleted ? "[Removed]" : x.Sadrzaj))
-                //.ForMember(x => x.LikeCount, opt => opt.MapFrom(x => x.KomentarReakcijaList.Select(x => x.Liked ? 1 : -1).Sum()))
+                .ForMember(x => x.LikeCount, opt => opt.MapFrom(x => x.KomentarRadionicaReakcijaList.Select(x => x.Liked ? 1 : -1).Sum()))
                 .ForMember(x => x.NadKomentarId, opt => opt.MapFrom(x => x.NadKomentarId));
         }
     }
