@@ -49,6 +49,8 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
         radionica.Naziv = updateRadionica.Naziv;
         radionica.Opis = updateRadionica.Opis;
         radionica.Cijena = updateRadionica.Cijena;
+        radionica.MaksimalniKapacitet = updateRadionica.MaksimalniKapacitet;
+        radionica.VrijemeRadionice = updateRadionica.VrijemeRadionice;
 
         var updatedRadionica = _mapper.Map<RadionicaDto>(await _radioniceRepository.UpdateRadionica(radionica));
 
