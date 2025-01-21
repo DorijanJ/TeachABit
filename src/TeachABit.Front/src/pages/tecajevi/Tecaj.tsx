@@ -97,7 +97,7 @@ export default function Tecaj(props: Props) {
                                 color:
                                     props.tecaj.kupljen === true ||
                                     !props.tecaj.cijena
-                                        ? "black"
+                                        ? "primary"
                                         : "lightgray",
                                 marginBottom: "0px",
                             }}
@@ -137,6 +137,7 @@ export default function Tecaj(props: Props) {
                         alignItems: "center",
                     }}
                 >
+                    <div onClick={(e) => e.stopPropagation()}>
                     <UserLink
                         user={{
                             id: props.tecaj.vlasnikId,
@@ -145,6 +146,7 @@ export default function Tecaj(props: Props) {
                             username: props.tecaj.vlasnikUsername,
                         }}
                     />
+                    </div>
                     {props.tecaj.cijena && props.tecaj.cijena > 0 && (
                         <>
                             {props.tecaj.kupljen && (

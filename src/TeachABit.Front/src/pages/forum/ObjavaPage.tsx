@@ -1,9 +1,7 @@
 import {
     Card,
-    Breadcrumbs,
     Typography,
     CardContent,
-    Link,
     Box,
     IconButton,
 } from "@mui/material";
@@ -11,6 +9,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import requests from "../../api/agent";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
 import ObjavaKomentari from "./ObjavaKomentari";
@@ -110,22 +109,29 @@ export default function ObjavaPage() {
                     scrollbarGutter: "stable",
                 }}
             >
-                <Breadcrumbs aria-label="breadcrumb" sx={{ padding: "15px" }}>
-                    <Link
-                        underline="hover"
-                        color="inherit"
-                        onClick={() => navigate("/forum")}
-                        sx={{
-                            cursor: "pointer",
-                        }}
-                    >
-                        Objave
-                    </Link>
-
-                    <Typography sx={{ color: "text.primary" }}>
-                        {objava.id}
-                    </Typography>
-                </Breadcrumbs>
+                <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            margin: "10px",
+          }}
+        >
+          <IconButton
+            onClick={() => navigate("/forum")}
+            sx={{
+              color: "#3a7ca5",
+              "&:hover": {
+                color: "#1e4f72",
+              },
+            }}
+          >
+            <NavigateBeforeIcon
+              sx={{
+                fontSize: 30,
+              }}
+            />
+          </IconButton>
+        </Box>
                 <CardContent
                     sx={{
                         display: "flex",

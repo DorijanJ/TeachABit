@@ -29,4 +29,5 @@ public class KomentarRadionica
     public virtual KomentarRadionica? NadKomentar { get; set; }
 
     public virtual List<KomentarRadionica> PodKomentarList { get; set; } = [];
+    public virtual List<KomentarRadionicaReakcija> KomentarRadionicaReakcijaList { get; set; } = [];
 }

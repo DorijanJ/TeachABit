@@ -12,8 +12,13 @@ public class Radionica
     public string Naziv { get; set; } = string.Empty;
     public string Opis { get; set; } = string.Empty;
     public decimal? Cijena { get; set; } = null;
+    public DateTime VrijemeRadionice { get; set; }
+    public int MaksimalniKapacitet { get; set; }
 
     public required string VlasnikId { get; set; } = string.Empty;
     [ForeignKey(nameof(VlasnikId))]
     public required virtual Korisnik Vlasnik { get; set; }
+    
+    public virtual List<KomentarRadionica> Komentari { get; set; } = [];
+    
 }
