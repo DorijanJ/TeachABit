@@ -39,6 +39,7 @@ export default function Tecajevi() {
                 alignItems: "center",
                 height: "100%",
                 width: "100%",
+                minWidth: "300px",
             }}
         >
             <div
@@ -48,6 +49,7 @@ export default function Tecajevi() {
                     gap: "20px",
                     alignItems: "center",
                     width: "100%",
+                    flexWrap: "wrap",
                 }}
             >
                 <SearchBox onSearch={GetTecajList} />
@@ -81,9 +83,8 @@ export default function Tecajevi() {
             </div>
             <div
                 style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
                     gap: "20px",
                     maxWidth: "100%",
                     width: "100%",
@@ -91,13 +92,7 @@ export default function Tecajevi() {
                 }}
             >
                 {tecajList.map((tecaj) => (
-                    <Tecaj
-                        key={"tecaj" + tecaj.id}
-                        tecaj={tecaj}
-                        onClick={() => {
-                            console.log("clicked tecaj ", tecaj.naziv);
-                        }}
-                    />
+                    <Tecaj key={"tecaj" + tecaj.id} tecaj={tecaj} />
                 ))}
             </div>
         </div>

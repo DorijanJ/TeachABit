@@ -12,7 +12,6 @@ const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
 interface Props {
     tecaj: TecajDto;
-    onClick: () => void;
 }
 
 export default function Tecaj(props: Props) {
@@ -43,13 +42,22 @@ export default function Tecaj(props: Props) {
 
     return (
         <Card
-            onClick={props.onClick}
+            onClick={() => {
+                if (props.tecaj.kupljen || !props.tecaj.cijena)
+                    navigate(`/tecajevi/${props.tecaj.id}`);
+            }}
             sx={{
-                width: "32%",
                 borderRadius: "10px",
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
-                minWidth: "300px",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+                    transform: "scale(1.03)",
+                    border: "1px solid #3a7ca5",
+                },
+                height: "370px",
             }}
         >
             <CardContent
@@ -83,23 +91,15 @@ export default function Tecaj(props: Props) {
                                 display: "-webkit-box",
                                 WebkitBoxOrient: "vertical",
                                 overflow: "hidden",
-                                WebkitLineClamp: 2,
+                                WebkitLineClamp: 3,
                                 maxWidth: "100%",
-                                height: "4rem",
+                                height: "6rem",
+                                color:
+                                    props.tecaj.kupljen === true ||
+                                    !props.tecaj.cijena
+                                        ? "black"
+                                        : "lightgray",
                                 marginBottom: "0px",
-                                textDecoration:
-                                    props.tecaj.kupljen || !props.tecaj.cijena
-                                        ? "underline"
-                                        : "none",
-                                textDecorationColor: "gray",
-                                cursor:
-                                    props.tecaj.kupljen || !props.tecaj.cijena
-                                        ? "pointer"
-                                        : "default",
-                            }}
-                            onClick={() => {
-                                if (props.tecaj.kupljen || !props.tecaj.cijena)
-                                    navigate(`/tecajevi/${props.tecaj.id}`);
                             }}
                         >
                             {props.tecaj.naziv}
@@ -110,7 +110,7 @@ export default function Tecaj(props: Props) {
                             style={{
                                 borderRadius: "10px",
                                 objectFit: "cover",
-                                height: "230px",
+                                height: "170px",
                             }}
                             src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
                                 props.tecaj?.naslovnaSlikaVersion
@@ -122,7 +122,7 @@ export default function Tecaj(props: Props) {
                                 borderRadius: "10px",
                                 objectFit: "cover",
                                 width: "100%",
-                                height: "230px",
+                                height: "170px",
                                 backgroundColor: "lightblue",
                             }}
                         />

@@ -20,6 +20,8 @@ namespace TeachABit.Service.Services.Objave
         public Task<ServiceResult> ClearKomentarReaction(int id);
         public Task<ServiceResult<ObjavaDto>> UpdateObjava(UpdateObjavaDto updateObjava);
         public Task<ServiceResult<KomentarDto>> UpdateKomentar(UpdateKomentarDto updateKomentar);
+        public Task<ServiceResult<KomentarDto>> OznaciKaoTocan(int komentarId);
+        public Task<ServiceResult<KomentarDto>> ClearTocanKomentar(int komentarId);
     }
 }
 

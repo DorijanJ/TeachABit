@@ -31,7 +31,9 @@ export default function SearchBox(props: SearchBoxProps) {
         <Box
             sx={{
                 height: props.height ?? "70px",
-                width: props.width ?? "30vw",
+                width: props.width ?? "500px",
+                maxWidth: "100%",
+                minWidth: "300px",
             }}
         >
             <TextField

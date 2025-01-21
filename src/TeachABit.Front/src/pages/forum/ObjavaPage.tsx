@@ -200,19 +200,19 @@ export default function ObjavaPage() {
                         )}
                         {(globalContext.currentUser?.id === objava.vlasnikId ||
                             globalContext.isAdmin) && (
-                            <>
-                                <IconButton
-                                    onClick={() => deleteObjava()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                    id="objavaPage-deleteButton"
-                                >
-                                    <DeleteIcon color="primary"></DeleteIcon>
-                                </IconButton>
-                            </>
-                        )}
+                                <>
+                                    <IconButton
+                                        onClick={() => deleteObjava()}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                        id="objavaPage-deleteButton"
+                                    >
+                                        <DeleteIcon color="primary"></DeleteIcon>
+                                    </IconButton>
+                                </>
+                            )}
                         <LikeInfo
                             likeCount={objava.likeCount}
                             onClear={clearReaction}
@@ -221,7 +221,7 @@ export default function ObjavaPage() {
                             liked={objava.liked}
                         />
                     </Box>
-                    {objava.id && <ObjavaKomentari objavaId={objava.id} />}
+                    {objava.id && objava.vlasnikId && <ObjavaKomentari objavaId={objava.id} vlasnikId={objava.vlasnikId} />}
                 </CardContent>
             </Card>
         </>
