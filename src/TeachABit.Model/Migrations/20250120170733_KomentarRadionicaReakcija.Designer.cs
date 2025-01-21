@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20250120170733_KomentarRadionicaReakcija")]
+    partial class KomentarRadionicaReakcija
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,8 +186,8 @@ namespace TeachABit.Model.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<int?>("VerifikacijaStatusId")
-                        .HasColumnType("integer");
+                    b.Property<bool>("Verificiran")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -195,26 +198,7 @@ namespace TeachABit.Model.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("VerifikacijaStatusId");
-
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Korisnici.VerifikacijaStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Naziv")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VerifikacijaStatus");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Objave.Komentar", b =>
@@ -734,15 +718,6 @@ namespace TeachABit.Model.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Korisnici.Korisnik", b =>
-                {
-                    b.HasOne("TeachABit.Model.Models.Korisnici.VerifikacijaStatus", "VerifikacijaStatus")
-                        .WithMany()
-                        .HasForeignKey("VerifikacijaStatusId");
-
-                    b.Navigation("VerifikacijaStatus");
-                });
-
             modelBuilder.Entity("TeachABit.Model.Models.Objave.Komentar", b =>
                 {
                     b.HasOne("TeachABit.Model.Models.Objave.Komentar", "NadKomentar")
@@ -824,7 +799,7 @@ namespace TeachABit.Model.Migrations
                         .HasForeignKey("NadKomentarId");
 
                     b.HasOne("TeachABit.Model.Models.Radionice.Radionica", "Radionica")
-                        .WithMany("Komentari")
+                        .WithMany()
                         .HasForeignKey("RadionicaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -845,7 +820,7 @@ namespace TeachABit.Model.Migrations
             modelBuilder.Entity("TeachABit.Model.Models.Radionice.KomentarRadionicaReakcija", b =>
                 {
                     b.HasOne("TeachABit.Model.Models.Radionice.KomentarRadionica", "Komentar")
-                        .WithMany("KomentarRadionicaReakcijaList")
+                        .WithMany()
                         .HasForeignKey("KomentarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1020,14 +995,7 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("TeachABit.Model.Models.Radionice.KomentarRadionica", b =>
                 {
-                    b.Navigation("KomentarRadionicaReakcijaList");
-
                     b.Navigation("PodKomentarList");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Radionice.Radionica", b =>
-                {
-                    b.Navigation("Komentari");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.KomentarTecaj", b =>

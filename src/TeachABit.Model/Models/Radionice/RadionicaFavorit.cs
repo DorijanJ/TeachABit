@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Model.Models.Radionice;
-
+[Table("RadionicaFavorit")]
 public class RadionicaFavorit
 {
     [Key]
