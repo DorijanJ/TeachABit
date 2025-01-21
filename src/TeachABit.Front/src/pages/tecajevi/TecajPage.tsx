@@ -15,6 +15,7 @@ import {
 import UserLink from "../profil/UserLink";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
+import Lekcije from "./Lekcije";
 
 export default function TecajPage() {
     const [tecaj, setTecaj] = useState<TecajDto>({
@@ -145,6 +146,11 @@ export default function TecajPage() {
                     )}
                     <label>Opis tečaja:</label>
                     <TeachABitRenderer content={tecaj.opis} />
+                    
+                    {/* Popis lekcija */}
+                    {tecaj.lekcije && <Lekcije lekcije = {tecaj.lekcije}/>}
+
+                    {/* Delete button */}
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
@@ -167,6 +173,10 @@ export default function TecajPage() {
                             </>
                         )}
                     </Box>
+
+                    {/* Komentari */}
+                    {/* ovo odkomentirati kad se poprave komentari tecajeva */}
+                    {/*tecaj.id && <TecajKomentari tecajId={tecaj.id} />*/}
                 </CardContent>
             </Card>
         </>
