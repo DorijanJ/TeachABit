@@ -9,6 +9,7 @@ import {
     Select,
     MenuItem,
     IconButton,
+    Button,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent";
@@ -17,6 +18,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import EditProfilDialog from "./EditProfilDialog";
 import Uloga from "../../models/Uloga";
 import EditIcon from "@mui/icons-material/Edit";
+import { VerifikacijaEnum } from "../../enums/VerifikacijaEnum";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -68,6 +70,13 @@ export default function Profil() {
             setSelectedUloga(uloga);
             GetUserByUsername(username);
         }
+    };
+
+    const SendVerificaitonRequest = async () => {
+        const response = await requests.postWithLoading(
+            `account/${username}/verifikacija-zahtjev`
+        );
+        if (response && response.data && username) GetUserByUsername(username);
     };
 
     useEffect(() => {
@@ -146,7 +155,8 @@ export default function Profil() {
                             <Typography variant="h5">
                                 <b>{user.username} </b>
                             </Typography>
-                            {user.verificiran && (
+                            {user.verifikacijaStatusId ===
+                                VerifikacijaEnum.Verificiran && (
                                 <VerifiedIcon
                                     sx={{
                                         height: "25px",
@@ -161,6 +171,7 @@ export default function Profil() {
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
+                                gap: "10px",
                             }}
                         >
                             {globalContext.isAdmin &&
@@ -183,6 +194,30 @@ export default function Profil() {
                                 </Select>
                             ) : (
                                 <>{selectedUloga}</>
+                            )}
+                            {username ===
+                                globalContext.currentUser?.username && (
+                                <>
+                                    {user.verifikacijaStatusNaziv && (
+                                        <p style={{ margin: 0 }}>
+                                            {user.verifikacijaStatusNaziv}
+                                        </p>
+                                    )}
+                                    {username ===
+                                        globalContext.currentUser?.username &&
+                                        !user.verifikacijaStatusId && (
+                                            <Button
+                                                variant="contained"
+                                                onClick={() =>
+                                                    SendVerificaitonRequest()
+                                                }
+                                            >
+                                                {
+                                                    "Pošalji zahtjev za verifikacijom."
+                                                }
+                                            </Button>
+                                        )}
+                                </>
                             )}
                         </div>
                     </CardContent>

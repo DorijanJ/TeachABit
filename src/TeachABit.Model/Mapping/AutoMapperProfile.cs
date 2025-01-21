@@ -16,7 +16,9 @@ namespace TeachABit.Model.Mapping
     {
         public AutoMapperProfile()
         {
-            CreateMap<Korisnik, KorisnikDto>().ReverseMap();
+            CreateMap<Korisnik, KorisnikDto>()
+                .ForMember(x => x.VerifikacijaStatusNaziv, opt => opt.MapFrom(x =>x.VerifikacijaStatus != null ? x.VerifikacijaStatus.Naziv : null));
+            CreateMap<KorisnikDto, Korisnik>();
             CreateMap<Tecaj, TecajDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
                 .ForMember(x => x.Kupljen, opt => opt.MapFrom(x => x.TecajPlacanja.Count > 0))
@@ -45,7 +47,7 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
                 .ForMember(x => x.Sadrzaj, opt => opt.MapFrom(x => x.IsDeleted ? "[Removed]" : x.Sadrzaj))
-                //.ForMember(x => x.LikeCount, opt => opt.MapFrom(x => x.KomentarReakcijaList.Select(x => x.Liked ? 1 : -1).Sum()))
+                .ForMember(x => x.LikeCount, opt => opt.MapFrom(x => x.KomentarRadionicaReakcijaList.Select(x => x.Liked ? 1 : -1).Sum()))
                 .ForMember(x => x.NadKomentarId, opt => opt.MapFrom(x => x.NadKomentarId));
         }
     }

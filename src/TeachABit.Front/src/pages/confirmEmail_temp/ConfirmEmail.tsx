@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import requests from "../../api/agent";
 import { useEffect, useRef, useState } from "react";
 import { MessageResponseDto } from "../../models/common/MessageResponseDto";
@@ -26,15 +26,31 @@ export default function ConfirmEmail() {
         }
     };
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         handleConfirmation();
     }, [token, email]);
 
     return (
         <>
-            {message && (
-                <Alert severity={message.severity}>{message.message}</Alert>
-            )}
+            <div
+                style={{
+                    display: "flex",
+                    gap: "20px",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                <img
+                    onClick={() => navigate("/tecajevi")}
+                    style={{ height: "200px", width: "200px" }}
+                    src="/src/images/logo.png"
+                />
+                {message && (
+                    <Alert severity={message.severity}>{message.message}</Alert>
+                )}
+            </div>
         </>
     );
 }

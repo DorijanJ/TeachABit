@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
+using TeachABit.Model;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Uloge;
 
@@ -39,6 +41,45 @@ namespace TeachABit.API.Seed
                 }
             }
 
+        }
+
+        public static async Task SeedVerifikacijaStatus(IServiceProvider serviceProvider)
+        {
+            var _context = serviceProvider.GetRequiredService<TeachABitContext>();
+
+            if (_context == null) return;
+
+            List<VerifikacijaStatus> statusi = [];
+
+            VerifikacijaStatus zahtjevPoslan = new()
+            {
+                Id = 1,
+                Naziv = "Zahtjev Poslan"
+            };
+
+            VerifikacijaStatus zahtjevOdbijen = new()
+            {
+                Id = 2,
+                Naziv = "Zahtjev Odbijen"
+            };
+
+            VerifikacijaStatus verificiran = new()
+            {
+                Id = 3,
+                Naziv = "Verificiran"
+            };
+
+            statusi = [zahtjevOdbijen, zahtjevPoslan, verificiran];
+
+            foreach(var status in statusi)
+            {
+                if(!await _context.VerifikacijaStatus.AnyAsync(x => x.Id == status.Id && x.Naziv == status.Naziv))
+                {
+                    await _context.AddAsync(status);
+                }
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         public static async Task SeedUser(IServiceProvider serviceProvider)

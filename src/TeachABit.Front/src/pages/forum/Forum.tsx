@@ -43,7 +43,8 @@ export default function Forum() {
                     flexDirection: "row",
                     gap: "20px",
                     alignItems: "center",
-                    width: "50%",
+                    width: "100%",
+                    flexWrap: "wrap",
                 }}
             >
                 <SearchBox onSearch={GetObjavaList} />

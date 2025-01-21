@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.DTOs.Uloge;
+using TeachABit.Model.Enums;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Uloge;
 
@@ -26,6 +27,11 @@ namespace TeachABit.Service.Services.Uloge
             var roles = await _userManager.GetRolesAsync(korisnik);
             if (roles.Any(x => x == "Admin")) return ServiceResult.Failure(MessageDescriber.Unauthorized());
             await _userManager.RemoveFromRolesAsync(korisnik, roles);
+
+            if(roleName == "Moderator")
+            {
+                korisnik.VerifikacijaStatusId = (int)VerifikacijaEnum.Verificiran;
+            }
 
             await _userManager.AddToRoleAsync(korisnik, roleName);
             return ServiceResult.Success();

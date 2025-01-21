@@ -52,14 +52,21 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
         radionica.MaksimalniKapacitet = updateRadionica.MaksimalniKapacitet;
         radionica.VrijemeRadionice = updateRadionica.VrijemeRadionice;
 
-        var updatedTecaj = _mapper.Map<RadionicaDto>(await _radioniceRepository.UpdateRadionica(radionica));
+        var updatedRadionica = _mapper.Map<RadionicaDto>(await _radioniceRepository.UpdateRadionica(radionica));
 
-        return ServiceResult.Success(updatedTecaj);
+        return ServiceResult.Success(updatedRadionica);
     }
-
-
+    
     public async Task<ServiceResult> DeleteRadionica(int id)
     {
+        Korisnik korisnik = _authorizationService.GetKorisnik();
+
+        RadionicaDto? objava = _mapper.Map<RadionicaDto?>(await _radioniceRepository.GetRadionicaById(id));
+
+        bool isAdmin = await _authorizationService.IsAdmin();
+
+        if (!isAdmin && (objava == null || !korisnik.Owns(objava))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
         await _radioniceRepository.DeleteRadionica(id);
         return ServiceResult.Success();
     }
@@ -101,11 +108,10 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
 
         foreach (var komentar in komentari)
         {
-            /*if (korisnik != null)
+            if (korisnik != null)
             {
-                komentar.Liked = (await _radioniceRepository.GetKomentarReakcija(komentar.Id, korisnik.Id))?.Liked;
-            }*/
-            //dodati ovo iznad kad ce se dodavati reakcije na komentar
+                komentar.Liked = (await _radioniceRepository.GetKomentarRadionicaReakcija(komentar.Id, korisnik.Id))?.Liked;
+            }
             komentar.PodKomentarList = _mapper.Map<List<KomentarRadionicaDto>>((await GetKomentarListRecursive(id, komentar.Id)).Data);
         }
 
@@ -126,6 +132,63 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
 
         return ServiceResult.Success(updatedKomentar);
 
+    }
+    
+    public async Task<ServiceResult> LikeRadionicaKomentar(int id)
+    {
+        Korisnik korisnik = _authorizationService.GetKorisnik();
+
+        var exisitingKomentarReakcija = await _radioniceRepository.GetKomentarRadionicaReakcija(id, korisnik.Id);
+
+        if (exisitingKomentarReakcija != null)
+        {
+            if (exisitingKomentarReakcija.Liked == true)
+                return ServiceResult.Success();
+
+            await _radioniceRepository.DeleteKomentarReakcija(exisitingKomentarReakcija.Id);
+        }
+
+        KomentarRadionicaReakcija komentarReakcija = new()
+        {
+            KorisnikId = korisnik.Id,
+            KomentarId = id,
+            Liked = true,
+        };
+
+        await _radioniceRepository.CreateKomentarReakcija(komentarReakcija);
+        return ServiceResult.Success();
+    }
+    
+    public async Task<ServiceResult> DislikeRadionicaKomentar(int id)
+    {
+        Korisnik korisnik = _authorizationService.GetKorisnik();
+
+        var exisitingKomentarReakcija = await _radioniceRepository.GetKomentarRadionicaReakcija(id, korisnik.Id);
+
+        if (exisitingKomentarReakcija != null)
+        {
+            if (exisitingKomentarReakcija.Liked == false)
+                return ServiceResult.Success();
+
+            await _radioniceRepository.DeleteKomentarReakcija(exisitingKomentarReakcija.Id);
+        }
+
+        KomentarRadionicaReakcija komentarRadionicaReakcija = new()
+        {
+            KorisnikId = korisnik.Id,
+            KomentarId = id,
+            Liked = false,
+        };
+
+        await _radioniceRepository.CreateKomentarReakcija(komentarRadionicaReakcija);
+        return ServiceResult.Success();
+    }
+    
+    public async Task<ServiceResult> ClearKomentarReaction(int id)
+    {
+        Korisnik korisnik = _authorizationService.GetKorisnik();
+        await _radioniceRepository.DeleteKomentarReakcija(id, korisnik.Id);
+        return ServiceResult.Success();
     }
 
 }

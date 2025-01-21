@@ -287,7 +287,7 @@ namespace TeachABit.Service.Services.Authentication
 
         public async Task<ServiceResult<KorisnikDto>> GetKorisnikByUsername(string username)
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var user = await _userManager.Users.Include(x => x.VerifikacijaStatus).FirstOrDefaultAsync(x => x.UserName == username);
             if (user == null) return ServiceResult.Failure(MessageDescriber.UserNotFound());
 
             var korisnikDto = _mapper.Map<KorisnikDto>(user);

@@ -50,6 +50,7 @@ export default function ForgotPassword() {
                     <DialogContent
                         sx={{
                             width: 450,
+                            maxWidth: "100%",
                             display: "flex",
                             flexDirection: "column",
                             gap: "20px",
