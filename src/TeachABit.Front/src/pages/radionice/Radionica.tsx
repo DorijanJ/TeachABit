@@ -35,8 +35,11 @@ export default function Radionica(props: Props) {
     }, [props.radionica.naziv, props.radionica.opis]);
 
     useEffect(() => {
+        if (props.radionica.vrijemeRadionice === undefined) return;
         const updateRemainingTime = () => {
-            const vrijemeradionice = new Date(props.radionica.vrijemeRadionice);
+            const vrijemeradionice = new Date(
+                props.radionica.vrijemeRadionice!
+            );
             const sadasnjevrijeme = new Date();
             const razlika =
                 vrijemeradionice.getTime() - sadasnjevrijeme.getTime();
