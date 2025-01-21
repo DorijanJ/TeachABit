@@ -16,6 +16,7 @@ namespace TeachABit.Model.Models.Tecajevi
         [AllowNull]
         public decimal? Cijena { get; set; } = null;
         public bool isPublished{ get; set; }=false;
+        public int Ocjena { get; set; } = 0;
 
         public required string VlasnikId { get; set; } = string.Empty;
         [ForeignKey(nameof(VlasnikId))]
