@@ -1,20 +1,19 @@
+import {
+    Box,
+    Card,
+    CardContent,
+    IconButton,
+    Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import { useNavigate, useParams } from "react-router-dom";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
-import {
-    Box,
-    Breadcrumbs,
-    Card,
-    CardContent,
-    IconButton,
-    Link,
-    Typography,
-} from "@mui/material";
 import UserLink from "../profil/UserLink";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 
 export default function TecajPage() {
     const [tecaj, setTecaj] = useState<TecajDto>({
@@ -60,19 +59,29 @@ export default function TecajPage() {
                     scrollbarGutter: "stable",
                 }}
             >
-                <Breadcrumbs aria-label="breadcrumb" sx={{ padding: "15px" }}>
-                    <Link
-                        underline="hover"
-                        color="inherit"
-                        onClick={() => navigate("/tecajevi")}
-                    >
-                        Tečajevi
-                    </Link>
-
-                    <Typography sx={{ color: "text.primary" }}>
-                        {tecaj.id}
-                    </Typography>
-                </Breadcrumbs>
+                <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            margin: "10px",
+          }}
+        >
+          <IconButton
+            onClick={() => navigate("/tecajevi")}
+            sx={{
+              color: "#3a7ca5",
+              "&:hover": {
+                color: "#1e4f72",
+              },
+            }}
+          >
+            <NavigateBeforeIcon
+              sx={{
+                fontSize: 30,
+              }}
+            />
+          </IconButton>
+        </Box>
                 <CardContent
                     sx={{
                         display: "flex",

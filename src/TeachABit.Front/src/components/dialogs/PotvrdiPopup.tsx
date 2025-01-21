@@ -1,31 +1,37 @@
-import { Box, Button, Dialog, DialogActions } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
 
 interface Props {
-    onConfirm: () => Promise<any>;
-    onClose: () => void;
-    tekstPitanje: string;
-    tekstOdgovor: string;
+  onConfirm: () => Promise<any>;
+  onClose: () => void;
+  tekstPitanje: string;
+  tekstOdgovor: string;
 }
 
 export default function PotvrdiPopup(props: Props) {
-  
   return (
     <>
-    <Dialog open onClose={props.onClose}>
-      <Box>{props.tekstPitanje}</Box>
-      <DialogActions>
-        <Button variant="outlined" onClick={() => props.onClose()}>
-          Odustani
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            props.onConfirm();
-          }}
-        >
-          {props.tekstOdgovor}
-        </Button>
-      </DialogActions>
+      <Dialog fullWidth open onClose={props.onClose}>
+        <DialogTitle
+        sx = {{
+          height: 150,
+          fontWeight: "200"
+        }}
+        
+        >{props.tekstPitanje}</DialogTitle>
+        
+        <DialogActions>
+          <Button variant="outlined" onClick={() => props.onClose()}>
+            Odustani
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              props.onConfirm();
+            }}
+          >
+            {props.tekstOdgovor}
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );
