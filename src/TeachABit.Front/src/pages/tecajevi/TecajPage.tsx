@@ -4,16 +4,6 @@ import { TecajDto } from "../../models/TecajDto";
 import { useNavigate, useParams } from "react-router-dom";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
-import TecajKomentari from "./TecajKomentari";
-import {
-    Box,
-    Breadcrumbs,
-    Card,
-    CardContent,
-    IconButton,
-    Link,
-    Typography,
-} from "@mui/material";
 import UserLink from "../profil/UserLink";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
