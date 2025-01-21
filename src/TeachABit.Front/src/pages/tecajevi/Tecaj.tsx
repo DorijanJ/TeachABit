@@ -97,7 +97,7 @@ export default function Tecaj(props: Props) {
                                 color:
                                     props.tecaj.kupljen === true ||
                                     !props.tecaj.cijena
-                                        ? "black"
+                                        ? "primary"
                                         : "lightgray",
                                 marginBottom: "0px",
                             }}

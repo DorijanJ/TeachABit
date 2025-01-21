@@ -96,7 +96,7 @@ export default function Navigation(props: Props) {
                             name={"Tečajevi"}
                             isActive={isActive("/tecajevi")}
                             icon={
-                                <BookIcon
+                                <MenuBook
                                     color="primary"
                                     className={localStyles.navImage}
                                 />
@@ -108,7 +108,7 @@ export default function Navigation(props: Props) {
                             name={"Radionice"}
                             isActive={isActive("/radionice")}
                             icon={
-                                <GroupIcon
+                                <LaptopChromebook
                                     color="primary"
                                     className={localStyles.navImage}
                                 />
