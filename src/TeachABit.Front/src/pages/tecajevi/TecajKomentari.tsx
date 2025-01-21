@@ -5,7 +5,7 @@ import { useGlobalContext } from "../../context/Global.context";
 import { Button, Typography } from "@mui/material";
 import Komentar from "./Komentar";
 import CreateKomentar from "./KomentarEditor";
-import {TecajKomentarDto} from "../../models/TecajKomentarDto.ts";
+import { TecajKomentarDto } from "../../models/TecajKomentarDto.ts";
 
 interface Props {
     tecajId: number;
@@ -26,9 +26,9 @@ export default function TecajKomentari(props: Props) {
         }));
     };
 
-    const getKomentarListByTecajId = async (radionicaId: number) => {
+    const getKomentarListByTecajId = async (tecajId: number) => {
         const response = await requests.getWithLoading(
-            `tecajevi/${radionicaId}/tecajevi`
+            `tecajevi/${tecajId}/komentari`
         );
         if (response && response.data) {
             setKomentari(response.data);
@@ -45,8 +45,8 @@ export default function TecajKomentari(props: Props) {
     }, [props.tecajId]);
 
     // Recursive rendering function
-    const renderKomentari = (komentari: RadionicaKomentarDto[], level: number) => {
-        return komentari.map((komentar: RadionicaKomentarDto) => (
+    const renderKomentari = (komentari: TecajKomentarDto[], level: number) => {
+        return komentari.map((komentar: TecajKomentarDto) => (
             <div
                 key={komentar.id}
                 style={{
@@ -58,9 +58,7 @@ export default function TecajKomentari(props: Props) {
                     setSelectedNadKomentarId={setSelectedNadKomentarId}
                     selectedNadKomentarId={selectedNadKomentarId}
                     komentar={komentar}
-                    refreshData={() =>
-                        getKomentarListByTecajId(props.tecajId)
-                    }
+                    refreshData={() => getKomentarListByTecajId(props.tecajId)}
                     level={level}
                     collapsedComments={collapsedComments}
                     toggleCollapse={toggleCollapse}

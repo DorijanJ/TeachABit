@@ -171,6 +171,8 @@ export default function TecajPopup(props: Props) {
                                 naslovnaSlikaBase64: file,
                             }));
                         }}
+                        ratio="2/1"
+                        width={"70%"}
                     />
                 </div>
 

@@ -162,13 +162,13 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 .ToListAsync();
         }
 
-        public async Task<List<KomentarTecaj>> GetPodKomentarTecajList(int objavaId, int? nadKomentarTecajId = null)
+        public async Task<List<KomentarTecaj>> GetPodKomentarTecajList(int tecajId, int? nadKomentarTecajId = null)
         {
             var komentari = await _context.KomentariTecaj
                 .Include(c => c.Vlasnik)
                 .Include(c => c.Tecaj)
                 .Include(c => c.KomentarReakcijaList)
-                .Where(c => c.TecajId == objavaId && c.NadKomentarId == nadKomentarTecajId)
+                .Where(c => c.TecajId == tecajId && c.NadKomentarId == nadKomentarTecajId)
                 .OrderByDescending(c => c.CreatedDateTime)
                 .ToListAsync();
             return komentari;
