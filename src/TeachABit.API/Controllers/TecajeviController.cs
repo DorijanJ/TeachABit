@@ -27,6 +27,13 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(result);
         }
         [AllowAnonymous]
+        [HttpGet("filter-by-grade")]
+        public async Task<IActionResult> GetTecajListByFiltratingOcjena(int ocjena)
+        {
+            var result = await _tecajeviService.GetTecajListByFiltratingOcjena(ocjena);
+            return GetControllerResult(result);
+        }
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTecaj(int id)
         {
