@@ -89,5 +89,14 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.ClearKomentarReaction(komentarId));
     }
-    
+    [HttpGet("radionice/{username}")]
+    public async Task<IActionResult> GetAllRadioniceForCurrentUser(string username)
+    {
+        return GetControllerResult();
+    }
+    [HttpGet("radionicefavrit/{username}")]
+    public async Task<IActionResult> GetAllRadioniceFavoritForCurrentUser(string username)
+    {
+        return GetControllerResult();
+    }
 }

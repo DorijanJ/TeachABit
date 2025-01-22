@@ -32,5 +32,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public Task<KomentarTecajReakcija?> GetKomentarTecajReakcija(int komentarId, string korisnikId);
         public Task<KomentarTecaj?> GetKomentarTecajByIdWithTracking(int id);
         public Task<bool> HasPodkomentari(int komentarId);
+        public  Task<List<TecajFavorit>> GetAllTecajeviFavoritForCurrentUser(string username);
+        public  Task<List<Tecaj>> GetAllTecajeviForCurrentUser(string username);
     }
 }

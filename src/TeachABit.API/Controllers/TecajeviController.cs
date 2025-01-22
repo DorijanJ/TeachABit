@@ -108,5 +108,16 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _tecajeviService.DeleteKomentarTecaj(komentarId));
         }
+
+        [HttpGet("tecajevi/{username}")]
+        public async Task<IActionResult> GetAllTecajeviForCurrentUser(string username)
+        {
+            return GetControllerResult(await _tecajeviService.GetAllTecajeviForCurrentUser(username));
+        }
+        [HttpGet("tecajevifavorit/{username}")]
+        public async Task<IActionResult> GetAllTecajeviFavoritForCurrentUser(string username)
+        {
+            return GetControllerResult(await _tecajeviService.GetAllTecajeviFavoritForCurrentUser(username));
+        }
     }
 }

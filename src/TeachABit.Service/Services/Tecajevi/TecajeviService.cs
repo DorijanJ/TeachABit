@@ -275,5 +275,20 @@ namespace TeachABit.Service.Services.Tecajevi
 
             return ServiceResult.Success(updatedKomentar);
         }
+
+        public async Task<ServiceResult<List<TecajDto>>> GetAllTecajeviForCurrentUser(string username)
+        {
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            var tecajevi = await _tecajeviRepository.GetAllTecajeviForCurrentUser(username);
+            var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
+            return ServiceResult.Success(tecajeviDto);
+        }
+        public async Task<ServiceResult<List<TecajDto>>> GetAllTecajeviFavoritForCurrentUser(string username)
+        {
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            var tecajevi = await _tecajeviRepository.GetAllTecajeviFavoritForCurrentUser(username);
+            var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
+            return ServiceResult.Success(tecajeviDto);
+        }
     }
 }
