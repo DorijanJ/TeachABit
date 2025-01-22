@@ -21,8 +21,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import {VerifikacijaEnum} from "../../enums/VerifikacijaEnum";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import CustomSliderTecaj from "../profil/CustomSliderTecaj"
+import CustomSliderRadionica from "../profil/CustomSliderRadionica"
 
-import CustomSlider from "./CustomSlider";
+
+import {TecajDto} from "../../models/TecajDto";
+import useRequestBuilder from "../../hooks/useRequestBuilder";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -30,6 +34,8 @@ const getHighestLevelUloga = (uloge: Uloga[]) => {
     );
     return role?.name ?? "";
 };
+
+
 
 export default function Profil() {
     const {username} = useParams();
@@ -91,6 +97,20 @@ export default function Profil() {
     useEffect(() => {
         if (username) GetUserByUsername(username);
     }, [username]);
+
+    const [tecajList, setTecajList] = useState<TecajDto[]>([]);
+
+    const { buildRequest } = useRequestBuilder();
+
+    const GetTecajList = async (search: string | undefined = undefined) => {
+        const response = await requests.getWithLoading(
+            buildRequest("tecajevi", { search })
+        );
+        if (response && response.data) setTecajList(response.data);
+    };
+    useEffect(() => {
+        GetTecajList();
+    }, []);
 
 
 
@@ -236,8 +256,12 @@ export default function Profil() {
                         </CardContent>
                     </Card>
                 </Box>
-                <h1>Card Slider</h1>
-                <CustomSlider/>
+
+                <h1>Moji tecajevi</h1>
+                <CustomSliderTecaj></CustomSliderTecaj>
+                <h1>Moje radionice</h1>
+                <CustomSliderRadionica></CustomSliderRadionica>
+
             </Box>
 
 
