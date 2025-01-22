@@ -287,5 +287,39 @@ namespace TeachABit.Service.Services.Tecajevi
 
             return ServiceResult.Success(updatedKomentar);
         }
+        public async Task<ServiceResult<int>> createOcjene(int ocjena, int id)
+        {
+            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
+            KorisnikTecajOcjena ocjenaa = new KorisnikTecajOcjena()
+            {
+                ocjena = ocjena,
+                KorisnikId = korisnik.Id, 
+                TecajId = id
+            };
+            await _tecajeviRepository.CreateOcjena(ocjenaa);
+            return ServiceResult.Success(ocjena);
+        }
+
+        public async Task<ServiceResult<int>> updateOcjene(int ocjena, int id)
+        {
+            if (ocjena > 5 || ocjena < 0)
+                ServiceResult.Failure(MessageDescriber.BadRequest("Ocjena mora biti izmedu 1 i 5"));
+            if (id == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Potreban Id"));
+            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
+            KorisnikTecajOcjena ocjenaa = new KorisnikTecajOcjena()
+            {
+                ocjena = ocjena,
+                KorisnikId = korisnik.Id, 
+                TecajId = id
+            };
+            await _tecajeviRepository.UpdateOcjena(ocjenaa);
+            return ServiceResult.Success(ocjena);
+        }
+
+        public async Task<ServiceResult<int>> deleteOcjene(int id)
+        {
+            await _tecajeviRepository.DeleteOcjena(id);
+            return ServiceResult.Success(); 
+        }
     }
 }

@@ -24,5 +24,8 @@ namespace TeachABit.Service.Services.Tecajevi
         public Task<ServiceResult<KomentarTecajDto>> UpdateKomentarTecaj(UpdateKomentarTecajDto updateKomentarTecaj);
         public Task<ServiceResult<List<TecajDto>>> GetTecajListByFiltratingOcjena(int ocjena);
         public Task<ServiceResult<List<TecajDto>>> GetTecajListByFiltratingCijena(int maxCijena, int minCijena);
+        public  Task<ServiceResult<int>> updateOcjene(int ocjena, int id);
+        public  Task<ServiceResult<int>> deleteOcjene(int id);
+        public  Task<ServiceResult<int>> createOcjene(int ocjena, int id);
     }
 }

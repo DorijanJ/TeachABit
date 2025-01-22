@@ -37,5 +37,8 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             string? korisnikId = null);
 
         public Task<List<Tecaj>> GetTecajListByFiltratingOcjena(int ocjena);
+        public Task<KorisnikTecajOcjena> CreateOcjena(KorisnikTecajOcjena ocjena);
+        public Task<KorisnikTecajOcjena> UpdateOcjena(KorisnikTecajOcjena ocjena);
+        public Task DeleteOcjena(int id);
     }
 }
