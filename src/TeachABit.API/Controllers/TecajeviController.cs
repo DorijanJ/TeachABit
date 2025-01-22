@@ -19,23 +19,10 @@ namespace TeachABit.API.Controllers
             var result = await _tecajeviService.GetTecajList(search);
             return GetControllerResult(result);
         }
-        [AllowAnonymous]
-        [HttpGet("filter-by-price")]
-        public async Task<IActionResult> GetTecajListByFiltratingCijena(int maxCijena, int minCijena)
-        {
-            var result = await _tecajeviService.GetTecajListByFiltratingCijena(maxCijena, minCijena);
-            return GetControllerResult(result);
-        }
-        [AllowAnonymous]
-        [HttpGet("filter-by-grade")]
-        public async Task<IActionResult> GetTecajListByFiltratingOcjena(int ocjena)
-        {
-            var result = await _tecajeviService.GetTecajListByFiltratingOcjena(ocjena);
-            return GetControllerResult(result);
-        }
+
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTecaj(int id)
+        public async Task<IActionResult> GetTecaj(int id, [FromQuery] int? ocjena = null, decimal? cijena = null, string? username = null)
         {
             return GetControllerResult(await _tecajeviService.GetTecaj(id));
         }
