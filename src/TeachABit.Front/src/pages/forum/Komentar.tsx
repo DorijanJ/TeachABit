@@ -12,8 +12,9 @@ import KomentarEditor from "./KomentarEditor";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { hr } from "date-fns/locale";
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { LevelPristupa } from "../../enums/LevelPristupa";
 
 interface Props {
     komentar: KomentarDto;
@@ -72,16 +73,20 @@ export default function Komentar(props: Props) {
     };
 
     const oznaciTocan = async () => {
-        await requests.postWithLoading(`objave/komentari/${props.komentar.id}/tocan`);
+        await requests.postWithLoading(
+            `objave/komentari/${props.komentar.id}/tocan`
+        );
         document.location.reload();
         props.refreshData();
-    }
+    };
 
     const clearTocan = async () => {
-        await requests.deleteWithLoading(`objave/komentari/${props.komentar.id}/tocan`);
+        await requests.deleteWithLoading(
+            `objave/komentari/${props.komentar.id}/tocan`
+        );
         document.location.reload();
         props.refreshData();
-    }
+    };
 
     const deleteKomentar = async () => {
         if (!props.komentar.id) return;
@@ -91,7 +96,9 @@ export default function Komentar(props: Props) {
         if (response?.message?.severity === "success") props.refreshData();
     };
 
-    const isTocan = useMemo(() => { return props.komentar.oznacenTocan }, [props.komentar])
+    const isTocan = useMemo(() => {
+        return props.komentar.oznacenTocan;
+    }, [props.komentar]);
 
     return (
         <>
@@ -110,14 +117,14 @@ export default function Komentar(props: Props) {
                     width: "100%",
                     justifyContent: "flex-start",
                     marginTop: "4px",
-                    gap: "5px"
+                    gap: "5px",
                 }}
             >
                 <div
                     style={{
                         visibility:
                             props.komentar.podKomentarList !== undefined &&
-                                props.komentar.podKomentarList.length > 0
+                            props.komentar.podKomentarList.length > 0
                                 ? "visible"
                                 : "hidden",
                         backgroundColor: isHidden ? "#3a7ca5" : "lightgray",
@@ -197,23 +204,23 @@ export default function Komentar(props: Props) {
                                     >
                                         {!props.komentar.lastUpdatedDateTime
                                             ? `Komentirano ${formatDistanceToNow(
-                                                new Date(
-                                                    props.komentar.createdDateTime
-                                                ),
-                                                {
-                                                    addSuffix: true,
-                                                    locale: hr,
-                                                }
-                                            )}`
+                                                  new Date(
+                                                      props.komentar.createdDateTime
+                                                  ),
+                                                  {
+                                                      addSuffix: true,
+                                                      locale: hr,
+                                                  }
+                                              )}`
                                             : `Izmijenjeno ${formatDistanceToNow(
-                                                new Date(
-                                                    props.komentar.lastUpdatedDateTime
-                                                ),
-                                                {
-                                                    addSuffix: true,
-                                                    locale: hr,
-                                                }
-                                            )}`}
+                                                  new Date(
+                                                      props.komentar.lastUpdatedDateTime
+                                                  ),
+                                                  {
+                                                      addSuffix: true,
+                                                      locale: hr,
+                                                  }
+                                              )}`}
                                         <br></br>
                                     </p>
                                 </div>
@@ -228,16 +235,16 @@ export default function Komentar(props: Props) {
                             >
                                 {!props.komentar.nadKomentarId &&
                                     !props.komentar.isDeleted &&
-                                    props.objavaVlasnikId === globalContext.currentUser?.id &&
+                                    props.objavaVlasnikId ===
+                                        globalContext.currentUser?.id &&
                                     (!props.komentar.oznacenTocan ? (
-
                                         <IconButton
                                             sx={{
                                                 width: "30px",
                                                 height: "30px",
                                             }}
                                             onClick={() => {
-                                                oznaciTocan()
+                                                oznaciTocan();
                                             }}
                                         >
                                             <CheckIcon
@@ -245,25 +252,26 @@ export default function Komentar(props: Props) {
                                                 fontSize="small"
                                             />
                                         </IconButton>
-                                    ) : <IconButton
-                                        sx={{
-                                            width: "30px",
-                                            height: "30px",
-                                        }}
-                                        onClick={() => {
-                                            clearTocan()
-                                        }}
-                                    >
-                                        <CloseIcon
-                                            color="primary"
-                                            fontSize="small"
-                                        />
-                                    </IconButton>)}
-                                {(globalContext.currentUser?.id ===
-                                    props.komentar.vlasnikId ||
-                                    globalContext.isAdmin) &&
-                                    !props.komentar.isDeleted && (
-                                        <>
+                                    ) : (
+                                        <IconButton
+                                            sx={{
+                                                width: "30px",
+                                                height: "30px",
+                                            }}
+                                            onClick={() => {
+                                                clearTocan();
+                                            }}
+                                        >
+                                            <CloseIcon
+                                                color="primary"
+                                                fontSize="small"
+                                            />
+                                        </IconButton>
+                                    ))}
+                                {!props.komentar.isDeleted && (
+                                    <>
+                                        {globalContext.currentUser?.id ===
+                                            props.komentar.vlasnikId && (
                                             <IconButton
                                                 sx={{
                                                     width: "30px",
@@ -278,22 +286,31 @@ export default function Komentar(props: Props) {
                                                     fontSize="small"
                                                 />
                                             </IconButton>
-                                            <IconButton
-                                                sx={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                }}
-                                                onClick={() => {
-                                                    deleteKomentar();
-                                                }}
-                                            >
-                                                <DeleteIcon
-                                                    color="primary"
-                                                    fontSize="small"
-                                                />
-                                            </IconButton>
-                                        </>
-                                    )}
+                                        )}
+                                        {(globalContext.currentUser?.id ===
+                                            props.komentar.vlasnikId ||
+                                            globalContext.hasPermissions(
+                                                LevelPristupa.Moderator
+                                            )) && (
+                                            <>
+                                                <IconButton
+                                                    sx={{
+                                                        width: "30px",
+                                                        height: "30px",
+                                                    }}
+                                                    onClick={() => {
+                                                        deleteKomentar();
+                                                    }}
+                                                >
+                                                    <DeleteIcon
+                                                        color="primary"
+                                                        fontSize="small"
+                                                    />
+                                                </IconButton>
+                                            </>
+                                        )}
+                                    </>
+                                )}
                                 <LikeInfo
                                     likeCount={likeCount}
                                     onClear={clearReaction}

@@ -17,7 +17,6 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
         public async Task<Tecaj?> GetTecaj(int id)
         {
-            //return await _context.Tecajevi.FirstOrDefaultAsync(x => x.Id == id);
             return await _context.Tecajevi
                 .Include(x => x.Vlasnik)
                 .Include(x => x.Lekcije)
@@ -164,7 +163,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             return created.Entity;
         }
 
-        public async Task<KomentarTecaj> CreateKomentarTecaj(KomentarTecaj komentarTecaj)
+        public async Task<TecajKomentar> CreateKomentarTecaj(TecajKomentar komentarTecaj)
         {
             var createdKomentarTecaj = await _context.KomentariTecaj.AddAsync(komentarTecaj);
             await _context.SaveChangesAsync();
@@ -179,18 +178,18 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 await _context.KomentariTecaj.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
-        public async Task<KomentarTecaj> UpdateKomentarTecaj(KomentarTecaj komentar)
+        public async Task<TecajKomentar> UpdateKomentarTecaj(TecajKomentar komentar)
         {
             await _context.SaveChangesAsync();
             return komentar;
         }
 
-        public async Task<KomentarTecaj?> GetKomentarTecajById(int id)
+        public async Task<TecajKomentar?> GetKomentarTecajById(int id)
         {
             return await _context.KomentariTecaj.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<KomentarTecaj>> GetKomentarTecajListByTecajId(int id)
+        public async Task<List<TecajKomentar>> GetKomentarTecajListByTecajId(int id)
         {
             return await _context.KomentariTecaj
                 .Include(x => x.Vlasnik)
@@ -201,7 +200,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 .ToListAsync();
         }
 
-        public async Task<List<KomentarTecaj>> GetPodKomentarTecajList(int tecajId, int? nadKomentarTecajId = null)
+        public async Task<List<TecajKomentar>> GetPodKomentarTecajList(int tecajId, int? nadKomentarTecajId = null)
         {
             var komentari = await _context.KomentariTecaj
                 .Include(c => c.Vlasnik)
@@ -240,7 +239,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
         }
 
-        public async Task<KomentarTecaj?> GetKomentarTecajByIdWithTracking(int id)
+        public async Task<TecajKomentar?> GetKomentarTecajByIdWithTracking(int id)
         {
             return await _context.KomentariTecaj.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
         }

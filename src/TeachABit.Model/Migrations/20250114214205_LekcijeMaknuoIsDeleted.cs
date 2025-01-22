@@ -17,9 +17,10 @@ namespace TeachABit.Model.Migrations
             IF NOT EXISTS (
                 SELECT 1
                 FROM information_schema.columns
-                WHERE table_name = 'Lekcija' AND column_name = 'LastUpdatedDateTime'
+                WHERE table_schema = 'backend'
+                AND table_name = 'Lekcija' AND column_name = 'LastUpdatedDateTime'
             ) THEN
-                ALTER TABLE Lekcija ADD COLUMN LastUpdatedDateTime timestamp with time zone;
+                ALTER TABLE backend.""Lekcija"" ADD COLUMN ""LastUpdatedDateTime"" timestamp with time zone;
             END IF;
         END;
         $$");

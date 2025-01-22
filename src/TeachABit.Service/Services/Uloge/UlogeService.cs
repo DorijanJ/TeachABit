@@ -7,17 +7,21 @@ using TeachABit.Model.DTOs.Uloge;
 using TeachABit.Model.Enums;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Uloge;
+using TeachABit.Service.Services.Authorization;
 
 namespace TeachABit.Service.Services.Uloge
 {
-    public class UlogeService(UserManager<Korisnik> userManager, RoleManager<Uloga> roleManager, IMapper mapper) : IUlogeService
+    public class UlogeService(UserManager<Korisnik> userManager, RoleManager<Uloga> roleManager, IMapper mapper, IAuthorizationService authorizationService) : IUlogeService
     {
         private readonly UserManager<Korisnik> _userManager = userManager;
         private readonly RoleManager<Uloga> _roleManager = roleManager;
         private readonly IMapper _mapper = mapper;
+        private readonly IAuthorizationService _authorizationService = authorizationService;
 
         public async Task<ServiceResult> AddUserToUloga(string userName, string roleName)
         {
+            if (!await _authorizationService.HasPermission(LevelPristupaEnum.Admin)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
             var korisnik = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == userName);
             if (korisnik == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisnik ne postoji."));
 
@@ -28,7 +32,7 @@ namespace TeachABit.Service.Services.Uloge
             if (roles.Any(x => x == "Admin")) return ServiceResult.Failure(MessageDescriber.Unauthorized());
             await _userManager.RemoveFromRolesAsync(korisnik, roles);
 
-            if(roleName == "Moderator")
+            if (roleName == "Moderator")
             {
                 korisnik.VerifikacijaStatusId = (int)VerifikacijaEnum.Verificiran;
             }

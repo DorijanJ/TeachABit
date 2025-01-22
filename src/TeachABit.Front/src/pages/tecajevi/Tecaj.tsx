@@ -43,7 +43,11 @@ export default function Tecaj(props: Props) {
     return (
         <Card
             onClick={() => {
-                if (props.tecaj.kupljen || !props.tecaj.cijena)
+                if (
+                    props.tecaj.kupljen ||
+                    !props.tecaj.cijena ||
+                    globalContext.currentUser?.id === props.tecaj.vlasnikId
+                )
                     navigate(`/tecajevi/${props.tecaj.id}`);
             }}
             sx={{
@@ -96,7 +100,9 @@ export default function Tecaj(props: Props) {
                                 height: "6rem",
                                 color:
                                     props.tecaj.kupljen === true ||
-                                    !props.tecaj.cijena
+                                    !props.tecaj.cijena ||
+                                    globalContext.currentUser?.id ===
+                                        props.tecaj.vlasnikId
                                         ? "primary"
                                         : "lightgray",
                                 marginBottom: "0px",
@@ -138,14 +144,14 @@ export default function Tecaj(props: Props) {
                     }}
                 >
                     <div onClick={(e) => e.stopPropagation()}>
-                    <UserLink
-                        user={{
-                            id: props.tecaj.vlasnikId,
-                            profilnaSlikaVersion:
-                                props.tecaj.vlasnikProfilnaSlikaVersion,
-                            username: props.tecaj.vlasnikUsername,
-                        }}
-                    />
+                        <UserLink
+                            user={{
+                                id: props.tecaj.vlasnikId,
+                                profilnaSlikaVersion:
+                                    props.tecaj.vlasnikProfilnaSlikaVersion,
+                                username: props.tecaj.vlasnikUsername,
+                            }}
+                        />
                     </div>
                     {props.tecaj.cijena && props.tecaj.cijena > 0 && (
                         <>
