@@ -1,6 +1,4 @@
 import { Box, Drawer, IconButton, List } from "@mui/material";
-import BookIcon from "@mui/icons-material/Home";
-import GroupIcon from "@mui/icons-material/Group";
 import ForumIcon from "@mui/icons-material/Forum";
 import AuthForm from "../auth/form/AuthForm";
 import { useGlobalContext } from "../../context/Global.context";
@@ -12,6 +10,8 @@ import PeopleIcon from "@mui/icons-material/People";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import { LaptopChromebook, MenuBook } from "@mui/icons-material";
+import { LevelPristupa } from "../../enums/LevelPristupa";
 
 interface Props {
     isExpanded?: boolean | undefined;
@@ -97,7 +97,7 @@ export default function Navigation(props: Props) {
                             name={"Tečajevi"}
                             isActive={isActive("/tecajevi")}
                             icon={
-                                <BookIcon
+                                <MenuBook
                                     color="primary"
                                     className={localStyles.navImage}
                                 />
@@ -109,7 +109,7 @@ export default function Navigation(props: Props) {
                             name={"Radionice"}
                             isActive={isActive("/radionice")}
                             icon={
-                                <GroupIcon
+                                <LaptopChromebook
                                     color="primary"
                                     className={localStyles.navImage}
                                 />
@@ -128,7 +128,7 @@ export default function Navigation(props: Props) {
                             }
                             isExpanded={isExpanded}
                         />
-                        {globalContext.isAdmin && (
+                        {globalContext.hasPermissions(LevelPristupa.Admin) && (
                             <NavigationItem
                                 route={"/korisnici-administracija"}
                                 name={"Korisnici"}

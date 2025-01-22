@@ -11,13 +11,11 @@ import TecajPopup from "./TecajPopup";
 export default function Tecajevi() {
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
     const globalContext = useGlobalContext();
-
     const { buildRequest } = useRequestBuilder();
 
-    const [dialogOpen, setDialogOpen] = useState(false);
-
-    const handleOpen = () => setDialogOpen(true);
-    const handleClose = () => setDialogOpen(false);
+    const [popupOpen, setDialogOpen] = useState(false);
+    const handlePopupOpen = () => setDialogOpen(true);
+    const handlePopupClose = () => setDialogOpen(false);
 
     const GetTecajList = async (search: string | undefined = undefined) => {
         const response = await requests.getWithLoading(
@@ -58,21 +56,21 @@ export default function Tecajevi() {
                     <Button
                         variant="contained"
                         onClick={() => {
-                            handleOpen();
+                            handlePopupOpen();
                         }}
                     >
                         Stvori tečaj
                     </Button>
                 )}
                 <TecajPopup
-                    isOpen={dialogOpen}
-                    onClose={handleClose}
+                    isOpen={popupOpen}
+                    onClose={handlePopupClose}
                     refreshData={() => GetTecajList()}
                 />
             </div>
             <div
                 style={{
-                    color: "primary",
+                    color: "#4f4f4f",
                     fontSize: 20,
                     margin: 0,
                     width: "100%",

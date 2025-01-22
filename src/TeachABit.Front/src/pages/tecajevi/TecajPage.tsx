@@ -1,46 +1,51 @@
+import { Box, Card, CardContent, IconButton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import { useNavigate, useParams } from "react-router-dom";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
-import {
-    Box,
-    Breadcrumbs,
-    Card,
-    CardContent,
-    IconButton,
-    Link,
-    Typography,
-} from "@mui/material";
 import UserLink from "../profil/UserLink";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
+import Lekcije from "./Lekcije";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import TecajKomentari from "./TecajKomentari";
+import { LevelPristupa } from "../../enums/LevelPristupa";
+import TecajPopup from "./TecajPopup";
 
 export default function TecajPage() {
+    const { tecajId } = useParams();
     const [tecaj, setTecaj] = useState<TecajDto>({
+        id: tecajId ? parseInt(tecajId) : undefined,
         naziv: "",
         opis: "",
+        cijena: undefined,
     });
-
-    const { tecajId } = useParams();
-
-    useEffect(() => {
-        if (tecajId) {
-            getTecajById(parseInt(tecajId));
-        }
-    }, [tecajId]);
-
-    const getTecajById = async (tecajId: number) => {
-        const response = await requests.getWithLoading(`tecajevi/${tecajId}`);
-        if (response?.data) {
-            setTecaj(response.data);
-        } else {
-            navigate("/tecajevi");
-        }
-    };
-
     const navigate = useNavigate();
     const globalContext = useGlobalContext();
+
+    /* otvaranje i zatvaranje prozora za uredivanje tecaja */
+    const [popupOpen, setTecajDialogOpen] = useState(false);
+    const handleTecajPopupOpen = () => setTecajDialogOpen(true);
+    const handleTecajPopupClose = () => setTecajDialogOpen(false);
+
+    useEffect(() => {
+        fetchTecaj();
+    }, [tecajId]);
+
+    const fetchTecaj = async () => {
+        if (tecajId) {
+            const response = await requests.getWithLoading(
+                `tecajevi/${parseInt(tecajId)}`
+            );
+            if (response?.data) {
+                setTecaj(response.data);
+            } else {
+                navigate("/tecajevi");
+            }
+        }
+    };
 
     const deleteTecaj = async () => {
         const response = await requests.deleteWithLoading(
@@ -60,19 +65,36 @@ export default function TecajPage() {
                     scrollbarGutter: "stable",
                 }}
             >
-                <Breadcrumbs aria-label="breadcrumb" sx={{ padding: "15px" }}>
-                    <Link
-                        underline="hover"
-                        color="inherit"
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        margin: "10px",
+                    }}
+                >
+                    <IconButton
                         onClick={() => navigate("/tecajevi")}
+                        sx={{
+                            color: "#3a7ca5",
+                            "&:hover": {
+                                color: "#1e4f72",
+                            },
+                        }}
                     >
-                        Tečajevi
-                    </Link>
-
-                    <Typography sx={{ color: "text.primary" }}>
-                        {tecaj.id}
-                    </Typography>
-                </Breadcrumbs>
+                        <NavigateBeforeIcon
+                            sx={{
+                                fontSize: 30,
+                            }}
+                        />
+                    </IconButton>
+                </Box>
+                <TecajPopup
+                    isOpen={popupOpen}
+                    onClose={handleTecajPopupClose}
+                    refreshData={fetchTecaj}
+                    tecaj={tecaj}
+                    editing={true}
+                />
                 <CardContent
                     sx={{
                         display: "flex",
@@ -145,6 +167,11 @@ export default function TecajPage() {
                     )}
                     <label>Opis tečaja:</label>
                     <TeachABitRenderer content={tecaj.opis} />
+
+                    {/* Popis lekcija */}
+                    {tecaj.lekcije && <Lekcije lekcije={tecaj.lekcije} />}
+
+                    {/* Edit i Delete button */}
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
@@ -153,8 +180,19 @@ export default function TecajPage() {
                         gap="10px"
                     >
                         {(globalContext.currentUser?.id === tecaj.vlasnikId ||
-                            globalContext.isAdmin) && (
+                            globalContext.hasPermissions(
+                                LevelPristupa.Moderator
+                            )) && (
                             <>
+                                <IconButton
+                                    onClick={() => handleTecajPopupOpen()}
+                                    sx={{
+                                        width: "40px",
+                                        height: "40px",
+                                    }}
+                                >
+                                    <EditIcon color="primary"></EditIcon>
+                                </IconButton>
                                 <IconButton
                                     onClick={() => deleteTecaj()}
                                     sx={{
@@ -167,6 +205,8 @@ export default function TecajPage() {
                             </>
                         )}
                     </Box>
+
+                    {tecaj.id && <TecajKomentari tecajId={tecaj.id} />}
                 </CardContent>
             </Card>
         </>

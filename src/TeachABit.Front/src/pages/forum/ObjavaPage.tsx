@@ -1,16 +1,9 @@
-import {
-    Card,
-    Breadcrumbs,
-    Typography,
-    CardContent,
-    Link,
-    Box,
-    IconButton,
-} from "@mui/material";
+import { Card, Typography, CardContent, Box, IconButton } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import requests from "../../api/agent";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
 import ObjavaKomentari from "./ObjavaKomentari";
@@ -19,6 +12,7 @@ import LikeInfo from "./LikeInfo";
 import { useGlobalContext } from "../../context/Global.context";
 import EditIcon from "@mui/icons-material/Edit";
 import ObjavaEditor from "./ObjavaEditor";
+import { LevelPristupa } from "../../enums/LevelPristupa";
 
 export default function ObjavaPage() {
     const [objava, setObjava] = useState<ObjavaDto>({
@@ -110,22 +104,29 @@ export default function ObjavaPage() {
                     scrollbarGutter: "stable",
                 }}
             >
-                <Breadcrumbs aria-label="breadcrumb" sx={{ padding: "15px" }}>
-                    <Link
-                        underline="hover"
-                        color="inherit"
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        margin: "10px",
+                    }}
+                >
+                    <IconButton
                         onClick={() => navigate("/forum")}
                         sx={{
-                            cursor: "pointer",
+                            color: "#3a7ca5",
+                            "&:hover": {
+                                color: "#1e4f72",
+                            },
                         }}
                     >
-                        Objave
-                    </Link>
-
-                    <Typography sx={{ color: "text.primary" }}>
-                        {objava.id}
-                    </Typography>
-                </Breadcrumbs>
+                        <NavigateBeforeIcon
+                            sx={{
+                                fontSize: 30,
+                            }}
+                        />
+                    </IconButton>
+                </Box>
                 <CardContent
                     sx={{
                         display: "flex",
@@ -193,20 +194,22 @@ export default function ObjavaPage() {
                             </IconButton>
                         )}
                         {(globalContext.currentUser?.id === objava.vlasnikId ||
-                            globalContext.isAdmin) && (
-                                <>
-                                    <IconButton
-                                        onClick={() => deleteObjava()}
-                                        sx={{
-                                            width: "40px",
-                                            height: "40px",
-                                        }}
-                                        id="objavaPage-deleteButton"
-                                    >
-                                        <DeleteIcon color="primary"></DeleteIcon>
-                                    </IconButton>
-                                </>
-                            )}
+                            globalContext.hasPermissions(
+                                LevelPristupa.Moderator
+                            )) && (
+                            <>
+                                <IconButton
+                                    onClick={() => deleteObjava()}
+                                    sx={{
+                                        width: "40px",
+                                        height: "40px",
+                                    }}
+                                    id="objavaPage-deleteButton"
+                                >
+                                    <DeleteIcon color="primary"></DeleteIcon>
+                                </IconButton>
+                            </>
+                        )}
                         <LikeInfo
                             likeCount={objava.likeCount}
                             onClear={clearReaction}
@@ -215,7 +218,12 @@ export default function ObjavaPage() {
                             liked={objava.liked}
                         />
                     </Box>
-                    {objava.id && objava.vlasnikId && <ObjavaKomentari objavaId={objava.id} vlasnikId={objava.vlasnikId} />}
+                    {objava.id && objava.vlasnikId && (
+                        <ObjavaKomentari
+                            objavaId={objava.id}
+                            vlasnikId={objava.vlasnikId}
+                        />
+                    )}
                 </CardContent>
             </Card>
         </>

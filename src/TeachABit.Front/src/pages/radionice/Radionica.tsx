@@ -30,13 +30,16 @@ export default function Radionica(props: Props) {
             const totalContentHeight = naslovHeight + opisHeight;
             const contentRatio = totalContentHeight / cardHeight;
 
-            setApplyFade(contentRatio > 0.7); // Fade efekt samo ako sadržaj prelazi 70% visine kartice
+            setApplyFade(contentRatio > 0.6); // Fade efekt samo ako sadržaj prelazi 70% visine kartice
         }
     }, [props.radionica.naziv, props.radionica.opis]);
 
     useEffect(() => {
+        if (props.radionica.vrijemeRadionice === undefined) return;
         const updateRemainingTime = () => {
-            const vrijemeradionice = new Date(props.radionica.datumvrijeme);
+            const vrijemeradionice = new Date(
+                props.radionica.vrijemeRadionice!
+            );
             const sadasnjevrijeme = new Date();
             const razlika =
                 vrijemeradionice.getTime() - sadasnjevrijeme.getTime();
@@ -65,7 +68,7 @@ export default function Radionica(props: Props) {
 
         // Očisti interval kada se komponenta uništi
         return () => clearInterval(interval);
-    }, [props.radionica.datumvrijeme]);
+    }, [props.radionica.vrijemeRadionice]);
 
     return (
         <Card
@@ -82,7 +85,8 @@ export default function Radionica(props: Props) {
                     transform: "scale(1.03)",
                     border: "1px solid #3a7ca5",
                 },
-                height: "360px",
+                height: "370px",
+                minWidth: "370px",
             }}
             onClick={() => {
                 navigate(`/radionica/${props.radionica.id}`);

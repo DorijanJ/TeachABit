@@ -18,8 +18,16 @@ export default function Objava(props: Props) {
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
                 minWidth: "300px",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+                    transform: "scale(1.01)",
+                    border: "1px solid #3a7ca5",
+                },
             }}
             id="objava"
+            onClick={() => navigate(`/objava/${props.objava.id}`)}
         >
             <CardContent
                 sx={{
@@ -40,12 +48,11 @@ export default function Objava(props: Props) {
                         overflow: "hidden",
                         whiteSpace: "nowrap",
                         maxWidth: "100%",
-                        color: "black",
-                        textDecoration: "underline",
+                        //color: "black",
+                        //textDecoration: "underline",
                         textDecorationColor: "gray",
                         cursor: "pointer",
                     }}
-                    onClick={() => navigate(`/objava/${props.objava.id}`)}
                 >
                     {props.objava.naziv}
                 </Typography>
@@ -58,14 +65,16 @@ export default function Objava(props: Props) {
                 alignItems="center"
                 gap={2}
             >
-                <UserLink
-                    user={{
-                        id: props.objava.vlasnikId,
-                        username: props.objava.vlasnikUsername,
-                        profilnaSlikaVersion:
-                            props.objava.vlasnikProfilnaSlikaVersion,
-                    }}
-                />
+                <div onClick={(e) => e.stopPropagation()}>
+                    <UserLink
+                        user={{
+                            id: props.objava.vlasnikId,
+                            username: props.objava.vlasnikUsername,
+                            profilnaSlikaVersion:
+                                props.objava.vlasnikProfilnaSlikaVersion,
+                        }}
+                    />
+                </div>
                 <Box
                     display={"flex"}
                     alignItems={"flex-end"}

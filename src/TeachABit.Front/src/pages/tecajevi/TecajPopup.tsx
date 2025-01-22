@@ -8,18 +8,20 @@ import {
     TextField,
 } from "@mui/material";
 import localStyles from "../../components/auth/form/AuthForm.module.css";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent.ts";
 import { CreateOrUpdateTecajDto } from "../../models/CreateOrUpdateTecajDto.ts";
 import ImageUploadComponent from "../../components/ImageUploadComponent.tsx";
 import { TecajDto } from "../../models/TecajDto.ts";
 import TeachABitEditor from "../../components/editor/TeachABitTextEditor.tsx";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
     refreshData: () => Promise<any>;
     onClose: () => void;
     isOpen: boolean;
     tecaj?: TecajDto;
+    editing?: boolean;
 }
 
 export default function TecajPopup(props: Props) {
@@ -27,13 +29,29 @@ export default function TecajPopup(props: Props) {
         naziv: props.tecaj?.naziv ?? "",
         id: props.tecaj?.id,
         opis: props.tecaj?.opis ?? "",
+        cijena: props.tecaj?.cijena,
         naslovnaSlikaBase64: "",
     });
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (props.tecaj) {
+            setTecaj({
+                naziv: props.tecaj.naziv ?? "",
+                id: props.tecaj.id,
+                opis: props.tecaj.opis ?? "",
+                cijena: props.tecaj?.cijena,
+                naslovnaSlikaBase64: "",
+            });
+        }
+    }, [props.tecaj]);
 
     const handleClose = (reload: boolean = false) => {
         setTecaj({
             naziv: "",
             opis: "",
+            cijena: undefined,
             naslovnaSlikaBase64: "",
         });
         props.onClose();
@@ -42,6 +60,14 @@ export default function TecajPopup(props: Props) {
 
     const handleStvoriTecaj = async (tecaj: CreateOrUpdateTecajDto) => {
         const response = await requests.postWithLoading("tecajevi", tecaj);
+        if (response && response.data) {
+            navigate(`/tecajevi/${response.data.id}`);
+            props.onClose();
+        }
+    };
+
+    const handleAzurirajTecaj = async (tecaj: CreateOrUpdateTecajDto) => {
+        const response = await requests.putWithLoading("tecajevi", tecaj);
         if (response && response.data) {
             handleClose(true);
         }
@@ -57,8 +83,18 @@ export default function TecajPopup(props: Props) {
         return true;
     }, [tecaj.cijena]);
 
+    const isEmptyNaziv = useMemo(() => {
+        const naziv = tecaj.naziv;
+        if (naziv.length == 0) return true;
+        return false;
+    }, [tecaj.naziv]);
+
     return (
-        <Dialog open={props.isOpen} onClose={props.onClose} maxWidth={"md"}>
+        <Dialog
+            open={props.isOpen}
+            onClose={() => handleClose(true)}
+            maxWidth={"md"}
+        >
             <DialogTitle
                 sx={{
                     maxWidth: "100%",
@@ -80,7 +116,7 @@ export default function TecajPopup(props: Props) {
                             maxWidth: "80%",
                         }}
                     >
-                        {`Stvori tečaj`}
+                        {props.editing ? `Uredi tečaj` : `Stvori tečaj`}
                     </div>
                 </div>
             </DialogTitle>
@@ -100,7 +136,7 @@ export default function TecajPopup(props: Props) {
                     variant="outlined"
                     required={true}
                     fullWidth
-                    value={tecaj.naziv}
+                    defaultValue={tecaj.naziv}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setTecaj((prev: any) => ({
                             ...prev,
@@ -125,7 +161,8 @@ export default function TecajPopup(props: Props) {
                         width: "200px",
                     }}
                     variant="outlined"
-                    value={tecaj.cijena}
+                    //value={tecaj.cijena}
+                    defaultValue={tecaj.cijena}
                     type="number"
                     slotProps={{
                         input: {
@@ -171,6 +208,8 @@ export default function TecajPopup(props: Props) {
                                 naslovnaSlikaBase64: file,
                             }));
                         }}
+                        ratio="2/1"
+                        width={"70%"}
                     />
                 </div>
 
@@ -178,21 +217,23 @@ export default function TecajPopup(props: Props) {
                     <Button
                         className={localStyles.myButton}
                         variant="outlined"
-                        onClick={props.onClose}
+                        onClick={() => handleClose(true)}
                     >
                         Odustani
                     </Button>
                     <Button
-                        disabled={!isValidPrice}
+                        disabled={!isValidPrice || isEmptyNaziv}
                         className={localStyles.myButton}
                         variant="contained"
                         onClick={() => {
                             if (!tecaj.id) {
                                 handleStvoriTecaj(tecaj);
+                            } else if (props.editing) {
+                                handleAzurirajTecaj(tecaj);
                             }
                         }}
                     >
-                        Stvori
+                        {props.editing ? `Spremi promjene` : `Stvori tečaj`}
                     </Button>
                 </DialogActions>
             </DialogContent>
