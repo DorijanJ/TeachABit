@@ -2,10 +2,13 @@
 
 namespace TeachABit.Model.DTOs.Objave
 {
-    public class UpdateKomentarDto
+    public class UpdateObjavaKomentarDto
     {
         public int Id { get; set; }
+
+        [Required(ErrorMessage = "Sadržaj ne smije biti prazan.")]
         [StringLength(1000, ErrorMessage = "Sadržaj je previše dugačak.")]
+        [MinLength(1, ErrorMessage = "Sadržaj ne smije biti prazan.")]
         public string Sadrzaj { get; set; } = string.Empty;
     }
 }

@@ -13,6 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { hr } from "date-fns/locale";
 import { TecajKomentarDto } from "../../models/TecajKomentarDto.ts";
+import { LevelPristupa } from "../../enums/LevelPristupa.ts";
 
 interface Props {
     komentar: TecajKomentarDto;
@@ -227,21 +228,25 @@ export default function Komentar(props: Props) {
                                         )}
                                         {(globalContext.currentUser?.id ===
                                             props.komentar.vlasnikId ||
-                                            globalContext.isAdmin) && (
-                                            <IconButton
-                                                sx={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                }}
-                                                onClick={() => {
-                                                    deleteKomentar();
-                                                }}
-                                            >
-                                                <DeleteIcon
-                                                    color="primary"
-                                                    fontSize="small"
-                                                />
-                                            </IconButton>
+                                            globalContext.hasPermissions(
+                                                LevelPristupa.Moderator
+                                            )) && (
+                                            <>
+                                                <IconButton
+                                                    sx={{
+                                                        width: "30px",
+                                                        height: "30px",
+                                                    }}
+                                                    onClick={() => {
+                                                        deleteKomentar();
+                                                    }}
+                                                >
+                                                    <DeleteIcon
+                                                        color="primary"
+                                                        fontSize="small"
+                                                    />
+                                                </IconButton>
+                                            </>
                                         )}
                                     </>
                                 )}

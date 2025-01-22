@@ -11,20 +11,15 @@ public interface IRadioniceRepository
     Task<Radionica> UpdateRadionica(Radionica radionica);
     Task DeleteRadionica(int id);
     Task<Radionica?> GetRadionicaByIdWithTracking(int id);
-    
-    public Task<KomentarRadionica> CreateKomentar(KomentarRadionica komentar);
-    public Task<KomentarRadionica?> GetKomentarById(int id);
+    public Task<RadionicaKomentar> CreateKomentar(RadionicaKomentar komentar);
+    public Task<RadionicaKomentar?> GetKomentarById(int id);
     public Task<bool> HasPodkomentari(int komentarId);
     public Task DeleteKomentar(int id, bool keepEntry = false);
-    public Task<List<KomentarRadionica>> GetPodKomentarList(int objavaId, int? nadKomentarId = null);
+    public Task<List<RadionicaKomentar>> GetPodKomentarList(int objavaId, int? nadKomentarId = null);
     public Task<KomentarRadionicaReakcija> CreateKomentarReakcija(KomentarRadionicaReakcija komentarRadionicaReakcija);
     public Task DeleteKomentarReakcija(int komentarId, string korisnikId);
     public Task DeleteKomentarReakcija(int id);
-
     public Task<KomentarRadionicaReakcija?> GetKomentarRadionicaReakcija(int komentarId, string korisnikId);
-
-    public Task<KomentarRadionica?> GetKomentarRadionicaByIdWithTracking(int id);
-    public Task<KomentarRadionica> UpdateKomentar(KomentarRadionica komentar);
-
-
+    public Task<RadionicaKomentar?> GetKomentarRadionicaByIdWithTracking(int id);
+    public Task<RadionicaKomentar> UpdateKomentar(RadionicaKomentar komentar);
 }

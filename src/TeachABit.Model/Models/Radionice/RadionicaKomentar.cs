@@ -5,7 +5,7 @@ using TeachABit.Model.Models.Korisnici;
 namespace TeachABit.Model.Models.Radionice;
 
 [Table("KomentarRadionica")]
-public class KomentarRadionica
+public class RadionicaKomentar
 {
     [Key]
     public int Id { get; set; }
@@ -26,8 +26,8 @@ public class KomentarRadionica
 
     public int? NadKomentarId { get; set; } = null;
     [ForeignKey(nameof(NadKomentarId))]
-    public virtual KomentarRadionica? NadKomentar { get; set; }
+    public virtual RadionicaKomentar? NadKomentar { get; set; }
 
-    public virtual List<KomentarRadionica> PodKomentarList { get; set; } = [];
+    public virtual List<RadionicaKomentar> PodKomentarList { get; set; } = [];
     public virtual List<KomentarRadionicaReakcija> KomentarRadionicaReakcijaList { get; set; } = [];
 }

@@ -12,6 +12,7 @@ import KomentarEditor from "./KomentarEditor";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { hr } from "date-fns/locale";
+import { LevelPristupa } from "../../enums/LevelPristupa";
 
 interface Props {
     komentar: RadionicaKomentarDto;
@@ -205,11 +206,10 @@ export default function Komentar(props: Props) {
                                     gap: "10px",
                                 }}
                             >
-                                {(globalContext.currentUser?.id ===
-                                    props.komentar.vlasnikId ||
-                                    globalContext.isAdmin) &&
-                                    !props.komentar.isDeleted && (
-                                        <>
+                                {!props.komentar.isDeleted && (
+                                    <>
+                                        {globalContext.currentUser?.id ===
+                                            props.komentar.vlasnikId && (
                                             <IconButton
                                                 sx={{
                                                     width: "30px",
@@ -224,22 +224,31 @@ export default function Komentar(props: Props) {
                                                     fontSize="small"
                                                 />
                                             </IconButton>
-                                            <IconButton
-                                                sx={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                }}
-                                                onClick={() => {
-                                                    deleteKomentar();
-                                                }}
-                                            >
-                                                <DeleteIcon
-                                                    color="primary"
-                                                    fontSize="small"
-                                                />
-                                            </IconButton>
-                                        </>
-                                    )}
+                                        )}
+                                        {(globalContext.currentUser?.id ===
+                                            props.komentar.vlasnikId ||
+                                            globalContext.hasPermissions(
+                                                LevelPristupa.Moderator
+                                            )) && (
+                                            <>
+                                                <IconButton
+                                                    sx={{
+                                                        width: "30px",
+                                                        height: "30px",
+                                                    }}
+                                                    onClick={() => {
+                                                        deleteKomentar();
+                                                    }}
+                                                >
+                                                    <DeleteIcon
+                                                        color="primary"
+                                                        fontSize="small"
+                                                    />
+                                                </IconButton>
+                                            </>
+                                        )}
+                                    </>
+                                )}
                                 <LikeInfo
                                     likeCount={likeCount}
                                     onClear={clearReaction}
