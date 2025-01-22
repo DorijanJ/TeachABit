@@ -20,7 +20,7 @@ namespace TeachABit.Model.DTOs.Tecajevi
 
         public bool IsDeleted { get; set; }
         public string? VlasnikProfilnaSlikaVersion { get; set; }
-        public int ObjavaId { get; set; }
+        public int TecajId { get; set; }
         public int? NadKomentarId { get; set; } = null;
         public List<KomentarTecajDto> PodKomentarList { get; set; } = [];
         public int LikeCount { get; set; } = 0;

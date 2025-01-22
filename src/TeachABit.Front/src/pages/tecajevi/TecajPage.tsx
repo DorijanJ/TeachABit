@@ -1,20 +1,15 @@
+import { Box, Card, CardContent, IconButton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import { useNavigate, useParams } from "react-router-dom";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
-import {
-    Box,
-    Breadcrumbs,
-    Card,
-    CardContent,
-    IconButton,
-    Link,
-    Typography,
-} from "@mui/material";
 import UserLink from "../profil/UserLink";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
+import Lekcije from "./Lekcije";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import TecajKomentari from "./TecajKomentari";
 
 export default function TecajPage() {
     const [tecaj, setTecaj] = useState<TecajDto>({
@@ -60,19 +55,29 @@ export default function TecajPage() {
                     scrollbarGutter: "stable",
                 }}
             >
-                <Breadcrumbs aria-label="breadcrumb" sx={{ padding: "15px" }}>
-                    <Link
-                        underline="hover"
-                        color="inherit"
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        margin: "10px",
+                    }}
+                >
+                    <IconButton
                         onClick={() => navigate("/tecajevi")}
+                        sx={{
+                            color: "#3a7ca5",
+                            "&:hover": {
+                                color: "#1e4f72",
+                            },
+                        }}
                     >
-                        Tečajevi
-                    </Link>
-
-                    <Typography sx={{ color: "text.primary" }}>
-                        {tecaj.id}
-                    </Typography>
-                </Breadcrumbs>
+                        <NavigateBeforeIcon
+                            sx={{
+                                fontSize: 30,
+                            }}
+                        />
+                    </IconButton>
+                </Box>
                 <CardContent
                     sx={{
                         display: "flex",
@@ -145,6 +150,11 @@ export default function TecajPage() {
                     )}
                     <label>Opis tečaja:</label>
                     <TeachABitRenderer content={tecaj.opis} />
+
+                    {/* Popis lekcija */}
+                    {tecaj.lekcije && <Lekcije lekcije={tecaj.lekcije} />}
+
+                    {/* Delete button */}
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
@@ -167,6 +177,8 @@ export default function TecajPage() {
                             </>
                         )}
                     </Box>
+
+                    {tecaj.id && <TecajKomentari tecajId={tecaj.id} />}
                 </CardContent>
             </Card>
         </>

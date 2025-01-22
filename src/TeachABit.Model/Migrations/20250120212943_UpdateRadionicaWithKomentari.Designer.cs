@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20250120212943_UpdateRadionicaWithKomentari")]
+    partial class UpdateRadionicaWithKomentari
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,8 +186,8 @@ namespace TeachABit.Model.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<int?>("VerifikacijaStatusId")
-                        .HasColumnType("integer");
+                    b.Property<bool>("Verificiran")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -195,26 +198,7 @@ namespace TeachABit.Model.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("VerifikacijaStatusId");
-
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Korisnici.VerifikacijaStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Naziv")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VerifikacijaStatus");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Objave.Komentar", b =>
@@ -426,9 +410,6 @@ namespace TeachABit.Model.Migrations
                     b.Property<decimal?>("Cijena")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("MaksimalniKapacitet")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Naziv")
                         .IsRequired()
                         .HasColumnType("text");
@@ -440,9 +421,6 @@ namespace TeachABit.Model.Migrations
                     b.Property<string>("VlasnikId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("VrijemeRadionice")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -587,9 +565,6 @@ namespace TeachABit.Model.Migrations
                     b.Property<decimal?>("Cijena")
                         .HasColumnType("numeric");
 
-                    b.Property<bool>("IsPublished")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("NaslovnaSlikaVersion")
                         .HasColumnType("text");
 
@@ -604,6 +579,9 @@ namespace TeachABit.Model.Migrations
                     b.Property<string>("VlasnikId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("isPublished")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -738,15 +716,6 @@ namespace TeachABit.Model.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Korisnici.Korisnik", b =>
-                {
-                    b.HasOne("TeachABit.Model.Models.Korisnici.VerifikacijaStatus", "VerifikacijaStatus")
-                        .WithMany()
-                        .HasForeignKey("VerifikacijaStatusId");
-
-                    b.Navigation("VerifikacijaStatus");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Objave.Komentar", b =>

@@ -72,7 +72,7 @@ export default function Tecajevi() {
             </div>
             <div
                 style={{
-                    color: "primary",
+                    color: "#4f4f4f",
                     fontSize: 20,
                     margin: 0,
                     width: "100%",

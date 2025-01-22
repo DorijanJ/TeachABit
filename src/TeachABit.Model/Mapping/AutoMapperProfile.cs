@@ -17,7 +17,7 @@ namespace TeachABit.Model.Mapping
         public AutoMapperProfile()
         {
             CreateMap<Korisnik, KorisnikDto>()
-                .ForMember(x => x.VerifikacijaStatusNaziv, opt => opt.MapFrom(x =>x.VerifikacijaStatus != null ? x.VerifikacijaStatus.Naziv : null));
+                .ForMember(x => x.VerifikacijaStatusNaziv, opt => opt.MapFrom(x => x.VerifikacijaStatus != null ? x.VerifikacijaStatus.Naziv : null));
             CreateMap<KorisnikDto, Korisnik>();
             CreateMap<Tecaj, TecajDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
@@ -25,6 +25,8 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion));
             CreateMap<TecajDto, Tecaj>();
             CreateMap<CreateOrUpdateTecajDto, Tecaj>();
+            CreateMap<Lekcija, LekcijaDto>();
+            CreateMap<LekcijaDto, Lekcija>();
             CreateMap<ObjavaDto, Objava>();
             CreateMap<Objava, ObjavaDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
@@ -34,7 +36,7 @@ namespace TeachABit.Model.Mapping
             CreateMap<Komentar, KomentarDto>()
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
-                .ForMember(x => x.Sadrzaj, opt => opt.MapFrom(x => x.IsDeleted ? "[Removed]" : x.Sadrzaj))
+                .ForMember(x => x.Sadrzaj, opt => opt.MapFrom(x => x.IsDeleted ? "[Izbrisan]" : x.Sadrzaj))
                 .ForMember(x => x.LikeCount, opt => opt.MapFrom(x => x.KomentarReakcijaList.Select(x => x.Liked ? 1 : -1).Sum()))
                 .ForMember(x => x.NadKomentarId, opt => opt.MapFrom(x => x.NadKomentarId));
             CreateMap<Radionica, RadionicaDto>()
@@ -46,9 +48,14 @@ namespace TeachABit.Model.Mapping
             CreateMap<KomentarRadionica, KomentarRadionicaDto>()
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
-                .ForMember(x => x.Sadrzaj, opt => opt.MapFrom(x => x.IsDeleted ? "[Removed]" : x.Sadrzaj))
-                //.ForMember(x => x.LikeCount, opt => opt.MapFrom(x => x.KomentarReakcijaList.Select(x => x.Liked ? 1 : -1).Sum()))
+                .ForMember(x => x.Sadrzaj, opt => opt.MapFrom(x => x.IsDeleted ? "[Izbrisan]" : x.Sadrzaj))
+                .ForMember(x => x.LikeCount, opt => opt.MapFrom(x => x.KomentarRadionicaReakcijaList.Select(x => x.Liked ? 1 : -1).Sum()))
                 .ForMember(x => x.NadKomentarId, opt => opt.MapFrom(x => x.NadKomentarId));
+            CreateMap<KomentarTecaj, KomentarTecajDto>()
+                .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
+                .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
+                .ForMember(x => x.Sadrzaj, opt => opt.MapFrom(x => x.IsDeleted ? "[Izbrisan]" : x.Sadrzaj));
+            CreateMap<KomentarTecajDto, KomentarTecaj>();
         }
     }
 }

@@ -4,6 +4,9 @@ import useImage from "../hooks/useImage";
 
 interface Props {
     setFile: (file: string) => void;
+    width?: string | number;
+    height?: string | number;
+    ratio?: string;
 }
 
 export default function ImageUploadComponent(props: Props) {
@@ -66,8 +69,10 @@ export default function ImageUploadComponent(props: Props) {
                     <img
                         src={URL.createObjectURL(file)}
                         style={{
-                            width: "80%",
+                            width: props.width ?? "50%",
+                            height: props.height ?? "auto",
                             objectFit: "cover",
+                            aspectRatio: props.ratio ?? "auto",
                         }}
                     />
                 )}
