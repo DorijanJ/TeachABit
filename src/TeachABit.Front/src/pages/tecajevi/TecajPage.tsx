@@ -11,6 +11,7 @@ import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import Lekcije from "./Lekcije";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import TecajKomentari from "./TecajKomentari";
+import { LevelPristupa } from "../../enums/LevelPristupa";
 import TecajPopup from "./TecajPopup";
 
 export default function TecajPage() {
@@ -28,14 +29,16 @@ export default function TecajPage() {
     const [popupOpen, setTecajDialogOpen] = useState(false);
     const handleTecajPopupOpen = () => setTecajDialogOpen(true);
     const handleTecajPopupClose = () => setTecajDialogOpen(false);
-    
+
     useEffect(() => {
         fetchTecaj();
     }, [tecajId]);
 
     const fetchTecaj = async () => {
         if (tecajId) {
-            const response = await requests.getWithLoading(`tecajevi/${parseInt(tecajId)}`);
+            const response = await requests.getWithLoading(
+                `tecajevi/${parseInt(tecajId)}`
+            );
             if (response?.data) {
                 setTecaj(response.data);
             } else {
@@ -177,7 +180,9 @@ export default function TecajPage() {
                         gap="10px"
                     >
                         {(globalContext.currentUser?.id === tecaj.vlasnikId ||
-                            globalContext.isAdmin) && (
+                            globalContext.hasPermissions(
+                                LevelPristupa.Moderator
+                            )) && (
                             <>
                                 <IconButton
                                     onClick={() => handleTecajPopupOpen()}

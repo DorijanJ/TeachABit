@@ -17,4 +17,5 @@ public class RadionicaDto
     public string VlasnikId { get; set; } = string.Empty;
     public string? VlasnikUsername { get; set; }
     public string? VlasnikProfilnaSlikaVersion { get; set; }
+    public string? NaslovnaSlikaVersion { get; set; } = null;
 }

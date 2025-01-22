@@ -5,13 +5,18 @@ namespace TeachABit.Model.DTOs.Authentication
     public class RegisterAttemptDto : IValidatableObject
     {
         [Required(ErrorMessage = "Email ne smije biti prazan.")]
+        [MinLength(1, ErrorMessage = "Email ne smije biti prazan.")]
+        [StringLength(50, ErrorMessage = "Email predugačak.")]
         [EmailAddress(ErrorMessage = "Neispravan Email.")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Username ne smije biti prazan.")]
+        [MinLength(1, ErrorMessage = "USername ne smije biti prazan.")]
+        [StringLength(50, ErrorMessage = "Username predugačak.")]
         public string Username { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Lozinka ne smije biti prazna.")]
+        [MinLength(1, ErrorMessage = "Lozinka ne smije biti prazna.")]
         public string Password { get; set; } = string.Empty;
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

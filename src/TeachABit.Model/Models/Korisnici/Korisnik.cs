@@ -13,6 +13,6 @@ namespace TeachABit.Model.Models.Korisnici
         public virtual List<ObjavaReakcija> ObjavaReakcijaList { get; set; } = [];
         public virtual List<Objava> Objave { get; set; } = [];
         public string? ProfilnaSlikaVersion { get; set; } = string.Empty;
-        public virtual List<KomentarReakcija> KomentarReakcijaList { get; set; } = [];
+        public virtual List<ObjavaKomentarReakcija> KomentarReakcijaList { get; set; } = [];
     }
 }

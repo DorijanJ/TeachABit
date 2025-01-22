@@ -7,20 +7,19 @@ using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Korisnici;
 using TeachABit.Service.Services.Uloge;
-using IAuthorizationService = TeachABit.Service.Services.Authorization.IAuthorizationService;
 
 namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAuthenticationService authenticationService, IAuthorizationService authorizationService, IKorisniciService korisniciService, IUlogeService rolesService) : BaseController
+    public class AccountController(IAuthenticationService authenticationService, IKorisniciService korisniciService, IUlogeService rolesService) : BaseController
     {
         private readonly IAuthenticationService _authenticationService = authenticationService;
-        private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly IKorisniciService _korisniciService = korisniciService;
         private readonly IUlogeService _rolesService = rolesService;
 
         [AllowAnonymous]
+        [ModelStateFilter(MessageTypes.Hidden)]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginAttemptDto loginAttempt)
         {
@@ -43,6 +42,7 @@ namespace TeachABit.API.Controllers
         }
 
         [AllowAnonymous]
+        [ModelStateFilter]
         [HttpPost("google-signin")]
         public async Task<IActionResult> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
         {
@@ -101,8 +101,8 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _korisniciService.UpdateKorisnik(updateKorisnik));
         }
 
-        [AllowAnonymous]
         [HttpPost("{username}/postavi-ulogu")]
+        [ModelStateFilter]
         public async Task<IActionResult> AddKorisnikToRole(string username, [FromBody] AddKorisnikToRoleDto addKorisnikToRole)
         {
             return GetControllerResult(await _rolesService.AddUserToUloga(username, addKorisnikToRole.RoleName));

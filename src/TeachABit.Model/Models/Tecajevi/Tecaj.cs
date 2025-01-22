@@ -23,7 +23,9 @@ namespace TeachABit.Model.Models.Tecajevi
 
         public virtual List<Lekcija> Lekcije { get; set; } = [];
         public virtual List<TecajPlacanje> TecajPlacanja { get; set; } = [];
-        public virtual List<KomentarTecaj> Komentari { get; set; } = [];
+        public virtual List<TecajKomentar> Komentari { get; set; } = [];
+        public virtual List<KorisnikTecajOcjena> KorisnikTecajOcjene { get; set; } = [];
+        public virtual List<TecajFavorit> KorisnikTecajFavoriti { get; set; } = [];
     }
 
 }

@@ -1,9 +1,10 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.DTOs.Tecajevi;
+using TeachABit.Model.Enums;
 using TeachABit.Model.Models.Korisnici;
-using TeachABit.Model.Models.Korisnici.Extensions;
 using TeachABit.Model.Models.Tecajevi;
 using TeachABit.Repository.Repositories.Tecajevi;
 using TeachABit.Service.Services.Authorization;
@@ -12,36 +13,25 @@ using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Tecajevi
 {
-    public class TecajeviService(ITecajeviRepository tecajeviRepository, IMapper mapper, IImageManipulationService imageManipulation, IAuthorizationService authorizationService, IS3BucketService s3BucketService) : ITecajeviService
+    public class TecajeviService(ITecajeviRepository tecajeviRepository, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulation, IAuthorizationService authorizationService, IS3BucketService s3BucketService, IOwnershipService ownershipService) : ITecajeviService
     {
         private readonly ITecajeviRepository _tecajeviRepository = tecajeviRepository;
         private readonly IMapper _mapper = mapper;
         private readonly IS3BucketService _bucketService = s3BucketService;
         private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly IImageManipulationService _imageManipulationService = imageManipulation;
+        private readonly IOwnershipService _ownershipService = ownershipService;
+        private readonly UserManager<Korisnik> _userManager = userManager;
 
-        /*public async Task<ServiceResult<List<TecajDto>>> GetTecajList()
-        {
-            List<TecajDto> tecajevi = _mapper.Map<List<TecajDto>>(await _tecajeviRepository.GetTecajList());
-            return ServiceResult<List<TecajDto>>.Success(tecajevi);
-        }*/
         public async Task<ServiceResult<TecajDto>> GetTecaj(int id)
         {
             TecajDto? tecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.GetTecaj(id));
             if (tecaj == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
 
-            var korisnik = _authorizationService.GetKorisnikOptional();
+            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
 
-            if (tecaj.Cijena != null)
-            {
-                if (korisnik == null)
-                    return ServiceResult.Failure(MessageDescriber.Unauthorized());
-                else
-                {
-                    var tecajPlacen = await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id);
-                    if (!tecajPlacen) return ServiceResult.Failure(MessageDescriber.Unauthorized());
-                }
-            }
+            if (tecaj.Cijena != null && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
+                return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             return ServiceResult.Success(tecaj);
         }
@@ -54,7 +44,6 @@ namespace TeachABit.Service.Services.Tecajevi
             }
 
             var korisnik = _authorizationService.GetKorisnik();
-
             tecaj.VlasnikId = korisnik.Id;
 
             Tecaj tecajModel = _mapper.Map<Tecaj>(tecaj);
@@ -68,23 +57,34 @@ namespace TeachABit.Service.Services.Tecajevi
             }
 
             TecajDto createdTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.CreateTecaj(tecajModel));
-
-
             return ServiceResult.Success(createdTecaj);
         }
 
         public async Task<ServiceResult> DeleteTecaj(int id)
         {
+            Tecaj? tecaj = await _tecajeviRepository.GetTecaj(id);
+
+            bool isModerator = await _authorizationService.HasPermission(LevelPristupaEnum.Moderator);
+
+            if (tecaj == null || !(_ownershipService.Owns(tecaj) || isModerator)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
             await _tecajeviRepository.DeleteTecaj(id);
             return ServiceResult.Success();
         }
-        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null)
+
+        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
         {
             var korisnik = _authorizationService.GetKorisnikOptional();
-            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id);
+            string? vlasnikId = null;
+            if (!string.IsNullOrEmpty(vlasnikUsername))
+            {
+                vlasnikId = (await _userManager.FindByNameAsync(vlasnikUsername))?.Id;
+            }
+            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id, vlasnikId, minCijena, maxCijena);
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
+
         public async Task<ServiceResult<List<LekcijaDto>>> GetLekcijaList(string? search = null)
         {
             var lekcije = await _tecajeviRepository.GetLekcijaList(search);
@@ -92,15 +92,20 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success(lekcijeDto);
         }
 
-
-
         public async Task<ServiceResult<TecajDto>> UpdateTecaj(CreateOrUpdateTecajDto updateTecaj)
         {
             if (!updateTecaj.Id.HasValue) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
             var tecaj = await _tecajeviRepository.GetTecajByIdWithTracking(updateTecaj.Id.Value);
-            var user = _authorizationService.GetKorisnik();
 
-            if (tecaj == null || !user.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (tecaj == null || !_ownershipService.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            if (!string.IsNullOrEmpty(updateTecaj.NaslovnaSlikaBase64))
+            {
+                Guid naslovnaVersion = Guid.NewGuid();
+                var resizedSlika = await _imageManipulationService.ConvertToNaslovnaSlika(updateTecaj.NaslovnaSlikaBase64);
+                await _bucketService.UploadImageAsync(naslovnaVersion.ToString(), resizedSlika);
+                tecaj.NaslovnaSlikaVersion = naslovnaVersion.ToString();
+            }
 
             tecaj.Naziv = updateTecaj.Naziv;
             tecaj.Opis = updateTecaj.Opis;
@@ -113,11 +118,9 @@ namespace TeachABit.Service.Services.Tecajevi
 
         public async Task<ServiceResult<LekcijaDto>> CreateLekcija(LekcijaDto lekcijaDto, int id)
         {
-            Korisnik korisnik = _authorizationService.GetKorisnik();
+            var tecaj = await _tecajeviRepository.GetTecaj(id);
 
-            var tecaj = await _tecajeviRepository.GetTecajByIdWithTracking(id);
-
-            if (tecaj == null || !korisnik.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (tecaj == null || !_ownershipService.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             lekcijaDto.CreatedDateTime = DateTime.UtcNow;
             lekcijaDto.TecajId = id;
@@ -126,30 +129,31 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success(createdLekcija);
         }
 
-
-
-
         public async Task<ServiceResult> DeleteLekcija(int id)
         {
-            Korisnik korisnik = _authorizationService.GetKorisnik();
-
             Lekcija? lekcija = await _tecajeviRepository.GetLekcijaById(id);
 
-            bool isAdmin = await _authorizationService.IsAdmin();
+            if (lekcija == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
-            if (lekcija == null || (!isAdmin && !korisnik.Owns(lekcija.Tecaj))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            var tecaj = await _tecajeviRepository.GetTecaj(lekcija.TecajId);
+
+            if (lekcija == null || !_ownershipService.Owns(lekcija.Tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             await _tecajeviRepository.DeleteLekcija(id, false);
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<LekcijaDto>> UpdateLekcija(UpdatedLekcijaDto updateLekcija)
+        public async Task<ServiceResult<LekcijaDto>> UpdateLekcija(UpdateLekcijaDto updateLekcija)
         {
             var lekcija = await _tecajeviRepository.GetLekcijaByIdWithTracking(updateLekcija.Id);
-            var user = _authorizationService.GetKorisnik();
 
-            if (lekcija == null || !user.Owns(lekcija.Tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (lekcija == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
+            var tecaj = await _tecajeviRepository.GetTecaj(lekcija.TecajId);
+
+            if (tecaj == null || !_ownershipService.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            lekcija.Naziv = updateLekcija.Naziv;
             lekcija.Sadrzaj = updateLekcija.Sadrzaj;
             lekcija.LastUpdatedDateTime = DateTime.UtcNow;
 
@@ -158,7 +162,7 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success(updatedLekcija);
         }
 
-        public async Task<ServiceResult<KomentarTecajDto>> CreateKomentarTecaj(KomentarTecajDto komentarTecaj, int tecajId)
+        public async Task<ServiceResult<TecajKomentarDto>> CreateKomentarTecaj(TecajKomentarDto komentarTecaj, int tecajId)
         {
             Korisnik korisnik = _authorizationService.GetKorisnik();
 
@@ -166,13 +170,13 @@ namespace TeachABit.Service.Services.Tecajevi
             komentarTecaj.VlasnikId = korisnik.Id;
             komentarTecaj.CreatedDateTime = DateTime.UtcNow;
 
-            KomentarTecajDto createdKomentar = _mapper.Map<KomentarTecajDto>(await _tecajeviRepository.CreateKomentarTecaj(_mapper.Map<KomentarTecaj>(komentarTecaj)));
+            TecajKomentarDto createdKomentar = _mapper.Map<TecajKomentarDto>(await _tecajeviRepository.CreateKomentarTecaj(_mapper.Map<TecajKomentar>(komentarTecaj)));
             return ServiceResult.Success(createdKomentar);
         }
 
-        public async Task<ServiceResult<List<KomentarTecajDto>>> GetKomentarTecajListRecursive(int id, int? nadKomentarId = null)
+        public async Task<ServiceResult<List<TecajKomentarDto>>> GetKomentarTecajListRecursive(int id, int? nadKomentarId = null)
         {
-            List<KomentarTecajDto> komentari = _mapper.Map<List<KomentarTecajDto>>(await _tecajeviRepository.GetPodKomentarTecajList(id, nadKomentarId));
+            List<TecajKomentarDto> komentari = _mapper.Map<List<TecajKomentarDto>>(await _tecajeviRepository.GetPodKomentarTecajList(id, nadKomentarId));
             Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
 
             foreach (var komentar in komentari)
@@ -189,13 +193,11 @@ namespace TeachABit.Service.Services.Tecajevi
 
         public async Task<ServiceResult> DeleteKomentarTecaj(int id)
         {
-            Korisnik korisnik = _authorizationService.GetKorisnik();
+            TecajKomentar? komentar = await _tecajeviRepository.GetKomentarTecajById(id);
 
-            KomentarTecaj? komentar = await _tecajeviRepository.GetKomentarTecajById(id);
+            bool isModerator = await _authorizationService.HasPermission(LevelPristupaEnum.Moderator);
 
-            bool isAdmin = await _authorizationService.IsAdmin();
-
-            if (komentar == null || (!isAdmin && !korisnik.Owns(komentar))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (komentar == null || !(_ownershipService.Owns(komentar) || isModerator)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             if (komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.BadRequest("Komentar je već izbrisan."));
 
@@ -261,19 +263,55 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<KomentarTecajDto>> UpdateKomentarTecaj(UpdateKomentarTecajDto updateKomentar)
+        public async Task<ServiceResult<TecajKomentarDto>> UpdateKomentarTecaj(UpdateKomentarTecajDto updateKomentar)
         {
             var komentar = await _tecajeviRepository.GetKomentarTecajByIdWithTracking(updateKomentar.Id);
-            var user = _authorizationService.GetKorisnik();
 
-            if (komentar == null || !user.Owns(komentar) || komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (komentar == null || !_ownershipService.Owns(komentar) || komentar.IsDeleted) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             komentar.Sadrzaj = updateKomentar.Sadrzaj;
             komentar.LastUpdatedDateTime = DateTime.UtcNow;
 
-            var updatedKomentar = _mapper.Map<KomentarTecajDto>(await _tecajeviRepository.UpdateKomentarTecaj(komentar));
+            var updatedKomentar = _mapper.Map<TecajKomentarDto>(await _tecajeviRepository.UpdateKomentarTecaj(komentar));
 
             return ServiceResult.Success(updatedKomentar);
+        }
+        public async Task<ServiceResult> CreateTecajOcjena(int tecajId, int ocjena)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+
+            if (ocjena < 1 || ocjena > 5) return ServiceResult.Failure(MessageDescriber.BadRequest("Ocjena mora biti između 1 i 5."));
+
+            var postojecaOcjena = await _tecajeviRepository.GetTecajOcjenaWithTracking(tecajId, korisnik.Id);
+
+            if (postojecaOcjena != null)
+            {
+                postojecaOcjena.Ocjena = ocjena;
+                await _tecajeviRepository.UpdateTecajOcjena(postojecaOcjena);
+                return ServiceResult.Success();
+            }
+
+            KorisnikTecajOcjena ocjenaModel = new()
+            {
+                Ocjena = ocjena,
+                KorisnikId = korisnik.Id,
+                TecajId = tecajId
+            };
+
+            await _tecajeviRepository.CreateKorisnikTecajOcjena(ocjenaModel);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> DeleteTecajOcjena(int tecajId)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+
+            var tecajOcjena = await _tecajeviRepository.GetTecajOcjenaWithTracking(tecajId, korisnik.Id);
+
+            if (tecajOcjena == null || !_ownershipService.Owns(tecajOcjena)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            await _tecajeviRepository.DeleteKorisnikTecajOcjena(tecajId, korisnik.Id);
+            return ServiceResult.Success();
         }
     }
 }
