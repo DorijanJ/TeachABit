@@ -544,6 +544,33 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("KomentarTecajReakcija");
                 });
 
+            modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.KorisnikTecajOcjena", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("KorisnikId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TecajId")
+                        .HasColumnType("integer");
+
+                    b.Property<double?>("ocjena")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KorisnikId");
+
+                    b.HasIndex("TecajId");
+
+                    b.ToTable("KorisnikTecajOcjene");
+                });
+
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Lekcija", b =>
                 {
                     b.Property<int>("Id")
@@ -941,6 +968,25 @@ namespace TeachABit.Model.Migrations
                     b.Navigation("Korisnik");
                 });
 
+            modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.KorisnikTecajOcjena", b =>
+                {
+                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Korisnik")
+                        .WithMany()
+                        .HasForeignKey("KorisnikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TeachABit.Model.Models.Tecajevi.Tecaj", "Tecaj")
+                        .WithMany("KorisniciOcjena")
+                        .HasForeignKey("TecajId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Korisnik");
+
+                    b.Navigation("Tecaj");
+                });
+
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Lekcija", b =>
                 {
                     b.HasOne("TeachABit.Model.Models.Tecajevi.Tecaj", "Tecaj")
@@ -1046,6 +1092,8 @@ namespace TeachABit.Model.Migrations
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.Tecaj", b =>
                 {
                     b.Navigation("Komentari");
+
+                    b.Navigation("KorisniciOcjena");
 
                     b.Navigation("Lekcije");
 
