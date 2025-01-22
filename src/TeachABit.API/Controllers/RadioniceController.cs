@@ -74,7 +74,7 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
         return GetControllerResult(await _radioniceService.DeleteKomentar(komentarId));
     }
 
-     [HttpPost("komentari/{komentarId}/like")]
+    [HttpPost("komentari/{komentarId}/like")]
     public async Task<IActionResult> LikeRadionicaKomentar(int komentarId)
     {
         return GetControllerResult(await _radioniceService.LikeRadionicaKomentar(komentarId));
@@ -103,5 +103,5 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.DeleteOcjena(radionicaId));
     }
-    
+
 }

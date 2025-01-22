@@ -45,8 +45,7 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
                 .ForMember(x => x.Favorit, opt => opt.MapFrom(x => x.RadionicaFavoriti.Count > 0))
-                .ForMember(x => x.Ocjena, opt => opt.MapFrom((src, dest, destMember, context) =>
-                    src.Ocjene.FirstOrDefault(o => o.KorisnikId == (string)context.Items["KorisnikId"])?.Ocjena));
+                .ForMember(x => x.Ocjena, opt => opt.MapFrom((x) => x.Ocjene.Count > 0 ? x.Ocjene.Select(x => x.Ocjena).Sum() / x.Ocjene.Count : 0));
             CreateMap<RadionicaDto, Radionica>();
             CreateMap<Uloga, UlogaDto>();
             CreateMap<RadionicaKomentarDto, RadionicaKomentar>();
