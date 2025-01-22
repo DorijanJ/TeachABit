@@ -190,5 +190,18 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
         await _radioniceRepository.DeleteKomentarReakcija(id, korisnik.Id);
         return ServiceResult.Success();
     }
-
+    public async Task<ServiceResult<List<RadionicaDto>>> GetAllRadioniceForCurrentUser(string username)
+    {
+        var korisnik = _authorizationService.GetKorisnikOptional();
+        var radionice = await _radioniceRepository.GetAllRadioniceForCurrentUser(username);
+        var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
+        return ServiceResult.Success(radioniceDto);
+    }
+    public async Task<ServiceResult<List<RadionicaDto>>> GetAllRadionicefavoritForCurrentUser(string username)
+    {
+        var korisnik = _authorizationService.GetKorisnikOptional();
+        var radionice = await _radioniceRepository.GetAllRadioniceFavoritForCurrentUser(username);
+        var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
+        return ServiceResult.Success(radioniceDto);
+    }
 }

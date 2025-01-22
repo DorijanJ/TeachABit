@@ -92,11 +92,11 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     [HttpGet("radionice/{username}")]
     public async Task<IActionResult> GetAllRadioniceForCurrentUser(string username)
     {
-        return GetControllerResult();
+        return GetControllerResult(await _radioniceService.GetAllRadioniceForCurrentUser(username));
     }
     [HttpGet("radionicefavrit/{username}")]
     public async Task<IActionResult> GetAllRadioniceFavoritForCurrentUser(string username)
     {
-        return GetControllerResult();
+        return GetControllerResult(await _radioniceService.GetAllRadionicefavoritForCurrentUser(username));
     }
 }

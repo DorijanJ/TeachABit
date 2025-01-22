@@ -148,5 +148,28 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
     {
         return await _context.KomentarRadionica.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
-    
+    public async Task<List<Radionica>> GetAllRadioniceForCurrentUser(string username)
+    {
+        var query = _context.Radionice
+            .Include(x => x.Vlasnik)
+            .AsQueryable();
+        if (!string.IsNullOrEmpty(username))
+        {
+            query = query.Where(a => a.Vlasnik.UserName == username);
+        }
+
+        return await query.ToListAsync();
+    }
+    public async Task<List<RadionicaFavorit>> GetAllRadioniceFavoritForCurrentUser(string username)
+    {
+        var query = _context.RadionicaFavorit
+            .Include(x => x.Korisnik)
+            .AsQueryable();
+        if (!string.IsNullOrEmpty(username))
+        {
+            query = query.Where(a => a.Korisnik.UserName == username);
+        }
+
+        return await query.ToListAsync();
+    }
 }

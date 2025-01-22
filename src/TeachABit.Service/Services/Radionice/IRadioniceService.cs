@@ -17,6 +17,8 @@ public interface IRadioniceService
     public Task<ServiceResult> LikeRadionicaKomentar(int id);
     public Task<ServiceResult> DislikeRadionicaKomentar(int id);
     public Task<ServiceResult> ClearKomentarReaction(int id);
+    public  Task<ServiceResult<List<RadionicaDto>>> GetAllRadionicefavoritForCurrentUser(string username);
+    public  Task<ServiceResult<List<RadionicaDto>>> GetAllRadioniceForCurrentUser(string username);
 
 
 }

@@ -25,6 +25,8 @@ public interface IRadioniceRepository
 
     public Task<KomentarRadionica?> GetKomentarRadionicaByIdWithTracking(int id);
     public Task<KomentarRadionica> UpdateKomentar(KomentarRadionica komentar);
+    public  Task<List<RadionicaFavorit>> GetAllRadioniceFavoritForCurrentUser(string username);
+    public  Task<List<Radionica>> GetAllRadioniceForCurrentUser(string username);
 
 
 }
