@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TeachABit.Model.DTOs.Tecajevi;
 
-public class LekcijaDto
+public class UpdateLekcijaDto
 {
     public int Id { get; set; }
 
@@ -16,6 +16,4 @@ public class LekcijaDto
     [MinLength(1, ErrorMessage = "Sadržaj ne smije biti prazan.")]
     public string Sadrzaj { get; set; } = string.Empty;
 
-    public DateTime CreatedDateTime { get; set; }
-    public int? TecajId { get; set; }
 }

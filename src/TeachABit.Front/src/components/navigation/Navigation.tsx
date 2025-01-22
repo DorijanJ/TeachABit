@@ -11,6 +11,7 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { LaptopChromebook, MenuBook } from "@mui/icons-material";
+import { LevelPristupa } from "../../enums/LevelPristupa";
 
 interface Props {
     isExpanded?: boolean | undefined;
@@ -127,7 +128,7 @@ export default function Navigation(props: Props) {
                             }
                             isExpanded={isExpanded}
                         />
-                        {globalContext.isAdmin && (
+                        {globalContext.hasPermissions(LevelPristupa.Admin) && (
                             <NavigationItem
                                 route={"/korisnici-administracija"}
                                 name={"Korisnici"}
@@ -143,15 +144,19 @@ export default function Navigation(props: Props) {
                         )}
                     </List>
 
-          <Box sx={{ flexGrow: 1 }} />
+                    <Box sx={{ flexGrow: 1 }} />
 
-          {globalContext.userIsLoggedIn === true &&
-            globalContext.currentUser &&
-            isExpanded && <NavigationUser user={globalContext.currentUser} />}
+                    {globalContext.userIsLoggedIn === true &&
+                        globalContext.currentUser &&
+                        isExpanded && (
+                            <NavigationUser user={globalContext.currentUser} />
+                        )}
 
-          {globalContext.userIsLoggedIn === false && isExpanded && <AuthForm />}
-        </Box>
-      </Drawer>
-    </>
-  );
+                    {globalContext.userIsLoggedIn === false && isExpanded && (
+                        <AuthForm />
+                    )}
+                </Box>
+            </Drawer>
+        </>
+    );
 }

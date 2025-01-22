@@ -20,17 +20,17 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public Task<bool> CheckIfTecajPlacen(string korisnikId, int tecajId);
         public Task<TecajPlacanje> CreateTecajPlacanje(TecajPlacanje tecajPlacanje);
         public Task<List<Lekcija>> GetLekcijaList(string? search = null);
-        public Task<KomentarTecaj> CreateKomentarTecaj(KomentarTecaj komentar);
+        public Task<TecajKomentar> CreateKomentarTecaj(TecajKomentar komentar);
         public Task DeleteKomentarTecaj(int id, bool keepEntry = false);
-        public Task<KomentarTecaj> UpdateKomentarTecaj(KomentarTecaj komentar);
-        public Task<KomentarTecaj?> GetKomentarTecajById(int id);
-        public Task<List<KomentarTecaj>> GetKomentarTecajListByTecajId(int id);
-        public Task<List<KomentarTecaj>> GetPodKomentarTecajList(int objavaId, int? nadKomentarTecajId = null);
+        public Task<TecajKomentar> UpdateKomentarTecaj(TecajKomentar komentar);
+        public Task<TecajKomentar?> GetKomentarTecajById(int id);
+        public Task<List<TecajKomentar>> GetKomentarTecajListByTecajId(int id);
+        public Task<List<TecajKomentar>> GetPodKomentarTecajList(int objavaId, int? nadKomentarTecajId = null);
         public Task DeleteKomentarTecajReakcija(int komentarId, string korisnikId);
         public Task DeleteKomentarTecajReakcija(int id);
         public Task<KomentarTecajReakcija> CreateKomentarTecajReakcija(KomentarTecajReakcija komentarReakcija);
         public Task<KomentarTecajReakcija?> GetKomentarTecajReakcija(int komentarId, string korisnikId);
-        public Task<KomentarTecaj?> GetKomentarTecajByIdWithTracking(int id);
+        public Task<TecajKomentar?> GetKomentarTecajByIdWithTracking(int id);
         public Task<bool> HasPodkomentari(int komentarId);
     }
 }
