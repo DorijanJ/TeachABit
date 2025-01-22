@@ -58,6 +58,47 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
             return await query.ToListAsync();
         }
+        public async Task<List<Tecaj>> GetTecajListByFiltratingCijena(int maxCijena, int minCijena, string? korisnikId = null)
+        {
+            var query = _context.Tecajevi
+                .Include(x => x.Vlasnik)
+                .AsQueryable();
+
+            if (maxCijena>minCijena)
+            {
+                
+                query = query.Where(t => t.Cijena>=minCijena && t.Cijena<=maxCijena);
+            }
+
+            if (minCijena == 0)
+            {
+                query = query.Where(t => t.Cijena <= maxCijena);
+            } 
+
+            if (!string.IsNullOrEmpty(korisnikId))
+            {
+                query = query.Include(x => x.TecajPlacanja
+                    .Where(t => t.KorisnikId == korisnikId));
+            }
+
+            return await query.ToListAsync();
+        }
+        public async Task<List<Tecaj>> GetTecajListByFiltratingOcjena(int ocjena, string? korisnikId = null)
+        {
+            var query = _context.Tecajevi
+                .Include(x => x.Vlasnik)
+                .AsQueryable();
+            
+                query = query.Where(t => t.Ocjena==ocjena);
+                
+            if (!string.IsNullOrEmpty(korisnikId))
+            {
+                query = query.Include(x => x.TecajPlacanja
+                    .Where(t => t.KorisnikId == korisnikId));
+            }
+
+            return await query.ToListAsync();
+        }
         public async Task<List<Lekcija>> GetLekcijaList(string? search = null)
         {
             if (!string.IsNullOrEmpty(search))

@@ -30,7 +30,7 @@ namespace TeachABit.Service.Services.Tecajevi
             TecajDto? tecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.GetTecaj(id));
             if (tecaj == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
 
-            var korisnik = _authorizationService.GetKorisnikOptional();
+            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
 
             if (tecaj.Cijena != null)
             {
