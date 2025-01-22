@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import { useGlobalContext } from "../../context/Global.context";
+import {useParams} from "react-router-dom";
+import {useGlobalContext} from "../../context/Global.context";
 import {
     Card,
     CardContent,
@@ -11,14 +11,18 @@ import {
     IconButton,
     Button,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import {useEffect, useMemo, useState} from "react";
 import requests from "../../api/agent";
-import { AppUserDto } from "../../models/AppUserDto";
+import {AppUserDto} from "../../models/AppUserDto";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import EditProfilDialog from "./EditProfilDialog";
 import Uloga from "../../models/Uloga";
 import EditIcon from "@mui/icons-material/Edit";
-import { VerifikacijaEnum } from "../../enums/VerifikacijaEnum";
+import {VerifikacijaEnum} from "../../enums/VerifikacijaEnum";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+import CustomSlider from "./CustomSlider";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -28,10 +32,11 @@ const getHighestLevelUloga = (uloge: Uloga[]) => {
 };
 
 export default function Profil() {
-    const { username } = useParams();
+    const {username} = useParams();
     const globalContext = useGlobalContext();
 
     const [user, setUser] = useState<AppUserDto>();
+
 
     const isCurrentUser = useMemo(() => {
         return globalContext.currentUser?.username === username;
@@ -87,142 +92,155 @@ export default function Profil() {
         if (username) GetUserByUsername(username);
     }, [username]);
 
+
+
     return (
         user && (
             <Box
                 display="flex"
-                flexDirection={"row"}
+                flexDirection={"column"}
                 justifyContent={"flex-start"}
-                gap="10px"
+                gap="1rem"
             >
-                <Card sx={{ width: 400 }}>
-                    <CardContent
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            gap: "10px",
-                        }}
-                    >
-                        <Avatar sx={{ width: 100, height: 100 }}>
-                            {user.id && user.profilnaSlikaVersion ? (
-                                <>
-                                    <img
-                                        style={{
-                                            objectFit: "cover",
-                                            width: "100%",
-                                            height: "100%",
-                                        }}
-                                        src={`${
-                                            import.meta.env
-                                                .VITE_REACT_AWS_BUCKET
-                                        }${user.id}${
-                                            user.profilnaSlikaVersion
-                                                ? "?version=" +
-                                                  user.profilnaSlikaVersion
-                                                : ""
-                                        }`}
-                                    />
-                                </>
-                            ) : (
-                                <>{user.username ? user.username[0] : ""}</>
-                            )}
-                        </Avatar>
-                        {globalContext.userIsLoggedIn === true &&
-                            isCurrentUser && (
-                                <IconButton
-                                    onClick={() => setIsOpenImageDialog(true)}
-                                >
-                                    <EditIcon />
-                                </IconButton>
-                            )}
-                        {isOpenImageDialog && (
-                            <EditProfilDialog
-                                onClose={() => {
-                                    setIsOpenImageDialog(false);
-                                    window.location.reload();
-                                }}
-                            />
-                        )}
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                gap: "10px",
-                                alignItems: "center",
-                            }}
-                        >
-                            <Typography variant="h5">
-                                <b>{user.username} </b>
-                            </Typography>
-                            {user.verifikacijaStatusId ===
-                                VerifikacijaEnum.Verificiran && (
-                                <VerifiedIcon
-                                    sx={{
-                                        height: "25px",
-                                        width: "25px",
-                                        color: "#922728",
-                                    }}
-                                />
-                            )}
-                        </div>
-                        <div
-                            style={{
+                <Box
+                    display="flex"
+                    flexDirection={"row"}
+                    justifyContent={"flex-start"}
+                    gap="10px"
+                >
+                    <Card sx={{width: 400}}>
+                        <CardContent
+                            sx={{
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
                                 gap: "10px",
                             }}
                         >
-                            {globalContext.isAdmin &&
-                            selectedUloga !== "Admin" &&
-                            username !== globalContext.currentUser?.username ? (
-                                <Select
-                                    value={selectedUloga}
-                                    onChange={(e) =>
-                                        UpdateKorisnikUloga(e.target.value)
-                                    }
-                                >
-                                    {uloge.map((uloga, index) => (
-                                        <MenuItem
-                                            key={index}
-                                            value={uloga.name}
-                                        >
-                                            {uloga.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            ) : (
-                                <>{selectedUloga}</>
+                            <Avatar sx={{width: 100, height: 100}}>
+                                {user.id && user.profilnaSlikaVersion ? (
+                                    <>
+                                        <img
+                                            style={{
+                                                objectFit: "cover",
+                                                width: "100%",
+                                                height: "100%",
+                                            }}
+                                            src={`${
+                                                import.meta.env
+                                                    .VITE_REACT_AWS_BUCKET
+                                            }${user.id}${
+                                                user.profilnaSlikaVersion
+                                                    ? "?version=" +
+                                                    user.profilnaSlikaVersion
+                                                    : ""
+                                            }`}
+                                        />
+                                    </>
+                                ) : (
+                                    <>{user.username ? user.username[0] : ""}</>
+                                )}
+                            </Avatar>
+                            {globalContext.userIsLoggedIn === true &&
+                                isCurrentUser && (
+                                    <IconButton
+                                        onClick={() => setIsOpenImageDialog(true)}
+                                    >
+                                        <EditIcon/>
+                                    </IconButton>
+                                )}
+                            {isOpenImageDialog && (
+                                <EditProfilDialog
+                                    onClose={() => {
+                                        setIsOpenImageDialog(false);
+                                        window.location.reload();
+                                    }}
+                                />
                             )}
-                            {username ===
-                                globalContext.currentUser?.username && (
-                                <>
-                                    {user.verifikacijaStatusNaziv && (
-                                        <p style={{ margin: 0 }}>
-                                            {user.verifikacijaStatusNaziv}
-                                        </p>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    gap: "10px",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Typography variant="h5">
+                                    <b>{user.username} </b>
+                                </Typography>
+                                {user.verifikacijaStatusId ===
+                                    VerifikacijaEnum.Verificiran && (
+                                        <VerifiedIcon
+                                            sx={{
+                                                height: "25px",
+                                                width: "25px",
+                                                color: "#922728",
+                                            }}
+                                        />
                                     )}
-                                    {username ===
-                                        globalContext.currentUser?.username &&
-                                        !user.verifikacijaStatusId && (
-                                            <Button
-                                                variant="contained"
-                                                onClick={() =>
-                                                    SendVerificaitonRequest()
-                                                }
+                            </div>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    gap: "10px",
+                                }}
+                            >
+                                {globalContext.isAdmin &&
+                                selectedUloga !== "Admin" &&
+                                username !== globalContext.currentUser?.username ? (
+                                    <Select
+                                        value={selectedUloga}
+                                        onChange={(e) =>
+                                            UpdateKorisnikUloga(e.target.value)
+                                        }
+                                    >
+                                        {uloge.map((uloga, index) => (
+                                            <MenuItem
+                                                key={index}
+                                                value={uloga.name}
                                             >
-                                                {
-                                                    "Pošalji zahtjev za verifikacijom."
-                                                }
-                                            </Button>
-                                        )}
-                                </>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
+                                                {uloga.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                ) : (
+                                    <>{selectedUloga}</>
+                                )}
+                                {username ===
+                                    globalContext.currentUser?.username && (
+                                        <>
+                                            {user.verifikacijaStatusNaziv && (
+                                                <p style={{margin: 0}}>
+                                                    {user.verifikacijaStatusNaziv}
+                                                </p>
+                                            )}
+                                            {username ===
+                                                globalContext.currentUser?.username &&
+                                                !user.verifikacijaStatusId && (
+                                                    <Button
+                                                        variant="contained"
+                                                        onClick={() =>
+                                                            SendVerificaitonRequest()
+                                                        }
+                                                    >
+                                                        {
+                                                            "Pošalji zahtjev za verifikacijom."
+                                                        }
+                                                    </Button>
+                                                )}
+                                        </>
+                                    )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </Box>
+                <h1>Card Slider</h1>
+                <CustomSlider/>
             </Box>
+
+
         )
     );
 }
