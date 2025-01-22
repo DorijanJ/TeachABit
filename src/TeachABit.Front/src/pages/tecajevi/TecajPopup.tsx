@@ -14,6 +14,7 @@ import { CreateOrUpdateTecajDto } from "../../models/CreateOrUpdateTecajDto.ts";
 import ImageUploadComponent from "../../components/ImageUploadComponent.tsx";
 import { TecajDto } from "../../models/TecajDto.ts";
 import TeachABitEditor from "../../components/editor/TeachABitTextEditor.tsx";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
     refreshData: () => Promise<any>;
@@ -32,6 +33,8 @@ export default function TecajPopup(props: Props) {
         naslovnaSlikaBase64: "",
     });
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (props.tecaj) {
             setTecaj({
@@ -43,7 +46,7 @@ export default function TecajPopup(props: Props) {
             });
         }
     }, [props.tecaj]);
-    
+
     const handleClose = (reload: boolean = false) => {
         setTecaj({
             naziv: "",
@@ -58,7 +61,8 @@ export default function TecajPopup(props: Props) {
     const handleStvoriTecaj = async (tecaj: CreateOrUpdateTecajDto) => {
         const response = await requests.postWithLoading("tecajevi", tecaj);
         if (response && response.data) {
-            handleClose(true);
+            navigate(`/tecajevi/${response.data.id}`);
+            props.onClose();
         }
     };
 
@@ -67,7 +71,7 @@ export default function TecajPopup(props: Props) {
         if (response && response.data) {
             handleClose(true);
         }
-    }
+    };
 
     const isValidPrice = useMemo(() => {
         const value = tecaj.cijena;
@@ -81,13 +85,16 @@ export default function TecajPopup(props: Props) {
 
     const isEmptyNaziv = useMemo(() => {
         const naziv = tecaj.naziv;
-        if (naziv.length == 0)
-            return true;
+        if (naziv.length == 0) return true;
         return false;
     }, [tecaj.naziv]);
 
     return (
-        <Dialog open={props.isOpen} onClose={() => (handleClose(true))} maxWidth={"md"}>
+        <Dialog
+            open={props.isOpen}
+            onClose={() => handleClose(true)}
+            maxWidth={"md"}
+        >
             <DialogTitle
                 sx={{
                     maxWidth: "100%",
