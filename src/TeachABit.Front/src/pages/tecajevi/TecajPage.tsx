@@ -10,6 +10,7 @@ import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import Lekcije from "./Lekcije";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import TecajKomentari from "./TecajKomentari";
+import { LevelPristupa } from "../../enums/LevelPristupa";
 
 export default function TecajPage() {
     const [tecaj, setTecaj] = useState<TecajDto>({
@@ -163,7 +164,9 @@ export default function TecajPage() {
                         gap="10px"
                     >
                         {(globalContext.currentUser?.id === tecaj.vlasnikId ||
-                            globalContext.isAdmin) && (
+                            globalContext.hasPermissions(
+                                LevelPristupa.Moderator
+                            )) && (
                             <>
                                 <IconButton
                                     onClick={() => deleteTecaj()}

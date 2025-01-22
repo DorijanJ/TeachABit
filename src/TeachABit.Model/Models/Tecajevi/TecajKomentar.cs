@@ -5,7 +5,7 @@ using TeachABit.Model.Models.Korisnici;
 namespace TeachABit.Model.Models.Tecajevi
 {
     [Table("KomentarTecaj")]
-    public class KomentarTecaj
+    public class TecajKomentar
     {
         [Key] 
         public int Id { get; set; }
@@ -23,9 +23,9 @@ namespace TeachABit.Model.Models.Tecajevi
         public bool IsDeleted { get; set; } = false;
 
         public int? NadKomentarId { get; set; } = null;
-        [ForeignKey(nameof(NadKomentarId))] public virtual KomentarTecaj? NadKomentar { get; set; }
+        [ForeignKey(nameof(NadKomentarId))] public virtual TecajKomentar? NadKomentar { get; set; }
 
-        public virtual List<KomentarTecaj> PodKomentarList { get; set; } = [];
+        public virtual List<TecajKomentar> PodKomentarList { get; set; } = [];
         public virtual List<KomentarTecajReakcija> KomentarReakcijaList { get; set; } = [];
     }
 }
