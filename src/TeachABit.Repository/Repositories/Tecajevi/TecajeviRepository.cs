@@ -248,5 +248,20 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             return await _context.KomentariTecaj.AnyAsync(x => x.NadKomentarId == komentarId);
         }
+        public async Task<KorisnikTecajOcjena> CreateOcjena(KorisnikTecajOcjena ocjena)
+        {
+            EntityEntry<KorisnikTecajOcjena> createdOcjena = await _context.KorisnikTecajOcjene.AddAsync(ocjena);
+            await _context.SaveChangesAsync();
+            return createdOcjena.Entity;
+        }
+        public async Task<KorisnikTecajOcjena> UpdateOcjena(KorisnikTecajOcjena ocjena)
+        {
+            await _context.SaveChangesAsync();
+            return ocjena;
+        }
+        public async Task DeleteOcjena(int id)
+        {
+            await _context.KorisnikTecajOcjene.Where(x => x.Id == id).ExecuteDeleteAsync();
+        }
     }
 }
