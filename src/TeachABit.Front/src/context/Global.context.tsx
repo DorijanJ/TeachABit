@@ -5,16 +5,17 @@ import {
     SetStateAction,
     useContext,
     ReactNode,
-    useMemo,
+    useCallback,
 } from "react";
 import { AppUserDto } from "../models/AppUserDto";
+import { LevelPristupa } from "../enums/LevelPristupa";
 
 interface GlobalContextProps {
     userIsLoggedIn: boolean | undefined;
     setIsUserLoggedIn: Dispatch<SetStateAction<boolean | undefined>>;
     currentUser: AppUserDto | undefined;
     setCurrentUser: Dispatch<SetStateAction<AppUserDto | undefined>>;
-    isAdmin: boolean;
+    hasPermissions: (level: LevelPristupa) => boolean;
 }
 
 const GlobalContext = createContext<GlobalContextProps>({
@@ -22,7 +23,7 @@ const GlobalContext = createContext<GlobalContextProps>({
     setIsUserLoggedIn: () => {},
     userIsLoggedIn: undefined,
     setCurrentUser: () => {},
-    isAdmin: false,
+    hasPermissions: () => false,
 });
 
 interface ProviderProps {
@@ -37,11 +38,15 @@ export function GlobalContextProvider({ children }: ProviderProps) {
     const [currentUser, setCurrentUser] = useState<AppUserDto>();
     const [userIsLoggedIn, setIsUserLoggedIn] = useState<boolean>();
 
-    const isAdmin = useMemo(() => {
-        return (
-            currentUser?.roles?.find((x) => x.name === "Admin") !== undefined
-        );
-    }, [currentUser]);
+    const hasPermissions = useCallback(
+        (level: LevelPristupa) => {
+            return (
+                currentUser?.roles?.find((x) => x.levelPristupa >= level) !==
+                undefined
+            );
+        },
+        [currentUser]
+    );
 
     return (
         <GlobalContext.Provider
@@ -50,7 +55,7 @@ export function GlobalContextProvider({ children }: ProviderProps) {
                 setIsUserLoggedIn,
                 currentUser,
                 setCurrentUser,
-                isAdmin,
+                hasPermissions,
             }}
         >
             {children}

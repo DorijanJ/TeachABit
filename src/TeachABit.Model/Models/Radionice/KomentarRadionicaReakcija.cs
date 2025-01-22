@@ -14,6 +14,6 @@ public class KomentarRadionicaReakcija
     public virtual Korisnik Korisnik { get; set; } = null!;
     public int KomentarId { get; set; }
     [ForeignKey(nameof(KomentarId))]
-    public virtual KomentarRadionica Komentar { get; set; } = null!;
+    public virtual RadionicaKomentar Komentar { get; set; } = null!;
     public bool Liked { get; set; }
 }
