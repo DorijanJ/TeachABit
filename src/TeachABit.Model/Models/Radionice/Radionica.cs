@@ -21,5 +21,5 @@ public class Radionica
     public required virtual Korisnik Vlasnik { get; set; }
 
     public virtual List<RadionicaKomentar> Komentari { get; set; } = [];
-
+    public virtual List<RadionicaFavorit> RadionicaFavoriti { get; set; } = [];
 }

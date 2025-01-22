@@ -62,6 +62,7 @@ export default function Tecaj(props: Props) {
                     border: "1px solid #3a7ca5",
                 },
                 height: "370px",
+                minWidth: "370px",
             }}
         >
             <CardContent
@@ -116,6 +117,7 @@ export default function Tecaj(props: Props) {
                             style={{
                                 borderRadius: "10px",
                                 objectFit: "cover",
+                                width: "340px",
                                 height: "170px",
                             }}
                             src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
@@ -127,7 +129,7 @@ export default function Tecaj(props: Props) {
                             style={{
                                 borderRadius: "10px",
                                 objectFit: "cover",
-                                width: "100%",
+                                width: "340px",
                                 height: "170px",
                                 backgroundColor: "lightblue",
                             }}

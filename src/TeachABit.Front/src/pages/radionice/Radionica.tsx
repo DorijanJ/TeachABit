@@ -85,7 +85,8 @@ export default function Radionica(props: Props) {
                     transform: "scale(1.03)",
                     border: "1px solid #3a7ca5",
                 },
-                height: "360px",
+                height: "370px",
+                minWidth: "370px",
             }}
             onClick={() => {
                 navigate(`/radionica/${props.radionica.id}`);

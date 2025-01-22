@@ -22,7 +22,7 @@ export default function Objava(props: Props) {
                 transition: "transform 0.2s, box-shadow 0.2s",
                 "&:hover": {
                     boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
-                    transform: "scale(1.03)",
+                    transform: "scale(1.01)",
                     border: "1px solid #3a7ca5",
                 },
             }}
@@ -53,7 +53,6 @@ export default function Objava(props: Props) {
                         textDecorationColor: "gray",
                         cursor: "pointer",
                     }}
-                    
                 >
                     {props.objava.naziv}
                 </Typography>
@@ -67,14 +66,14 @@ export default function Objava(props: Props) {
                 gap={2}
             >
                 <div onClick={(e) => e.stopPropagation()}>
-                <UserLink
-                    user={{
-                        id: props.objava.vlasnikId,
-                        username: props.objava.vlasnikUsername,
-                        profilnaSlikaVersion:
-                            props.objava.vlasnikProfilnaSlikaVersion,
-                    }}
-                />
+                    <UserLink
+                        user={{
+                            id: props.objava.vlasnikId,
+                            username: props.objava.vlasnikUsername,
+                            profilnaSlikaVersion:
+                                props.objava.vlasnikProfilnaSlikaVersion,
+                        }}
+                    />
                 </div>
                 <Box
                     display={"flex"}

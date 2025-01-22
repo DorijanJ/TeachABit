@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.DTOs.Tecajevi;
@@ -12,7 +13,7 @@ using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Tecajevi
 {
-    public class TecajeviService(ITecajeviRepository tecajeviRepository, IMapper mapper, IImageManipulationService imageManipulation, IAuthorizationService authorizationService, IS3BucketService s3BucketService, IOwnershipService ownershipService) : ITecajeviService
+    public class TecajeviService(ITecajeviRepository tecajeviRepository, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulation, IAuthorizationService authorizationService, IS3BucketService s3BucketService, IOwnershipService ownershipService) : ITecajeviService
     {
         private readonly ITecajeviRepository _tecajeviRepository = tecajeviRepository;
         private readonly IMapper _mapper = mapper;
@@ -20,6 +21,7 @@ namespace TeachABit.Service.Services.Tecajevi
         private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly IImageManipulationService _imageManipulationService = imageManipulation;
         private readonly IOwnershipService _ownershipService = ownershipService;
+        private readonly UserManager<Korisnik> _userManager = userManager;
 
         public async Task<ServiceResult<TecajDto>> GetTecaj(int id)
         {
@@ -70,10 +72,15 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null)
+        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
         {
             var korisnik = _authorizationService.GetKorisnikOptional();
-            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id);
+            string? vlasnikId = null;
+            if (!string.IsNullOrEmpty(vlasnikUsername))
+            {
+                vlasnikId = (await _userManager.FindByNameAsync(vlasnikUsername))?.Id;
+            }
+            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id, vlasnikId, minCijena, maxCijena);
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
