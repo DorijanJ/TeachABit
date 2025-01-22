@@ -110,4 +110,31 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         return await _context.KomentarRadionica.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
     
+    public async Task<RadionicaOcjena?> GetOcjena(int radionicaId, string korisnikId)
+    {
+        return await _context.RadionicaOcjene
+            .FirstOrDefaultAsync(o => o.RadionicaId == radionicaId && o.KorisnikId == korisnikId);
+    }
+
+    public async Task<RadionicaOcjena> CreateOcjena(RadionicaOcjena ocjena)
+    {
+        var entry = await _context.RadionicaOcjene.AddAsync(ocjena);
+        await _context.SaveChangesAsync();
+        return entry.Entity;
+    }
+    
+    public async Task<RadionicaOcjena> UpdateOcjena(RadionicaOcjena ocjena)
+    {
+        await _context.SaveChangesAsync();
+        return ocjena;
+    }
+    
+    public async Task DeleteOcjena(int radionicaId, string korisnikId)
+    {
+        await _context.RadionicaOcjene
+            .Where(x => x.RadionicaId == radionicaId && x.KorisnikId == korisnikId)
+            .ExecuteDeleteAsync();
+    }
+    
+
 }

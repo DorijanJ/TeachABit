@@ -18,6 +18,11 @@ public interface IRadioniceRepository
     public Task<List<KomentarRadionica>> GetPodKomentarList(int objavaId, int? nadKomentarId = null);
     public Task<KomentarRadionica?> GetKomentarRadionicaByIdWithTracking(int id);
     public Task<KomentarRadionica> UpdateKomentar(KomentarRadionica komentar);
+    
+    Task<RadionicaOcjena?> GetOcjena(int radionicaId, string korisnikId);
+    Task<RadionicaOcjena> CreateOcjena(RadionicaOcjena ocjena);
+    Task<RadionicaOcjena> UpdateOcjena(RadionicaOcjena ocjena);
+    Task DeleteOcjena(int radionicaId, string korisnikId);
 
 
 }

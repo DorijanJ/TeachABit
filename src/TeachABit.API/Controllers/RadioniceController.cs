@@ -71,5 +71,45 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.DeleteKomentar(komentarId));
     }
+    [AllowAnonymous]
+    [HttpGet("{id}/ocjena")]
+    public async Task<IActionResult> GetOcjena(int id)
+    {
+        var korisnikId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (korisnikId == null)
+            return Unauthorized();
+
+        return GetControllerResult(await _radioniceService.GetOcjena(id, korisnikId));
+    }
+
+    [HttpPost("{id}/ocjena")]
+    public async Task<IActionResult> CreateOcjena([FromBody] double ocjena, int id)
+    {
+        var korisnikId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (korisnikId == null)
+            return Unauthorized();
+
+        return GetControllerResult(await _radioniceService.CreateOcjena(id, korisnikId, ocjena));
+    }
+
+    [HttpPut("{id}/ocjena")]
+    public async Task<IActionResult> UpdateOcjena([FromBody] double ocjena, int id)
+    {
+        var korisnikId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (korisnikId == null)
+            return Unauthorized();
+
+        return GetControllerResult(await _radioniceService.UpdateOcjena(id, korisnikId, ocjena));
+    }
+
+    [HttpDelete("{id}/ocjena")]
+    public async Task<IActionResult> DeleteOcjena(int id)
+    {
+        var korisnikId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (korisnikId == null)
+            return Unauthorized();
+
+        return GetControllerResult(await _radioniceService.DeleteOcjena(id, korisnikId));
+    }
     
 }
