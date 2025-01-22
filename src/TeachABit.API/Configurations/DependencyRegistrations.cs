@@ -38,6 +38,7 @@ namespace TeachABit.API.Configurations
             services.AddScoped<IRadioniceService, RadioniceService>();
             services.AddScoped<IUlogeService, UlogeService>();
             services.AddScoped<IPlacanjaService, PlacanjaService>();
+            services.AddScoped<IOwnershipService, OwnershipService>();
             services.AddScoped<Func<string, ModelStateFilter>>(provider => (messageType) =>
             {
                 return new ModelStateFilter(messageType);
