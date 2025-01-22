@@ -35,6 +35,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
         public  Task<List<Tecaj>> GetTecajListByFiltratingCijena(int maxCijena, int minCijena,
             string? korisnikId = null);
-        public Task<List<Tecaj>> GetTecajListByFiltratingOcjena(int ocjena, string? korisnikId = null)
+
+        public Task<List<Tecaj>> GetTecajListByFiltratingOcjena(int ocjena);
     }
 }

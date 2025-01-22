@@ -56,6 +56,19 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
                 .ForMember(x => x.Sadrzaj, opt => opt.MapFrom(x => x.IsDeleted ? "[Izbrisan]" : x.Sadrzaj));
             CreateMap<KomentarTecajDto, KomentarTecaj>();
+            CreateMap<KorisnikTecajOcjena, TecajDto>()
+                .ForMember(dest => dest.Ocjena, opt => opt.MapFrom((src, dest, member, context) =>
+                {
+                    var ocjene = context.Items["Ocjene"] as List<KorisnikTecajOcjena>;
+                    if (ocjene != null)
+                    {
+                        var prosjecnaOcjena = ocjene.Where(o => o.TecajId == src.TecajId)
+                            .Average(o => o.ocjena);
+                        if (prosjecnaOcjena.HasValue) return (int)Math.Round(prosjecnaOcjena.Value);
+                        return 0;
+                    }
+                    return 0; 
+                }));
         }
     }
 }

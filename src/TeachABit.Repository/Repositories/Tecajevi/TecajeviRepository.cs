@@ -87,19 +87,13 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
             return await query.ToListAsync();
         }
-        public async Task<List<Tecaj>> GetTecajListByFiltratingOcjena(int ocjena, string? korisnikId = null)
+        public async Task<List<Tecaj>> GetTecajListByFiltratingOcjena(int ocjena)
         {
             var query = _context.Tecajevi
-                .Include(x => x.Vlasnik)
+                .Include(x => x.KorisniciOcjena)
                 .AsQueryable();
-            
-                query = query.Where(t => t.Ocjena==ocjena);
-                
-            if (!string.IsNullOrEmpty(korisnikId))
-            {
-                query = query.Include(x => x.TecajPlacanja
-                    .Where(t => t.KorisnikId == korisnikId));
-            }
+
+            query = query.Where(t => t.KorisniciOcjena.Any() && t.KorisniciOcjena.Average(o => o.ocjena ?? 0) > ocjena);
 
             return await query.ToListAsync();
         }

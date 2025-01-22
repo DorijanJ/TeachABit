@@ -87,8 +87,8 @@ namespace TeachABit.Service.Services.Tecajevi
         }
         public async Task<ServiceResult<List<TecajDto>>> GetTecajListByFiltratingOcjena(int ocjena)
         {
-            var korisnik = _authorizationService.GetKorisnikOptional();
-            var tecajevi = await _tecajeviRepository.GetTecajListByFiltratingOcjena(ocjena, korisnik?.Id);
+            //var korisnik = _authorizationService.GetKorisnikOptional();
+            var tecajevi = await _tecajeviRepository.GetTecajListByFiltratingOcjena(ocjena);
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
