@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20250122232618_PrazanMigration")]
+    partial class PrazanMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -416,30 +419,6 @@ namespace TeachABit.Model.Migrations
                     b.HasIndex("VlasnikId");
 
                     b.ToTable("Radionica");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Radionice.RadionicaFavorit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("KorisnikId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("RadionicaId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("KorisnikId");
-
-                    b.HasIndex("RadionicaId");
-
-                    b.ToTable("RadionicaFavorit");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Radionice.RadionicaOcjena", b =>
@@ -853,25 +832,6 @@ namespace TeachABit.Model.Migrations
                     b.Navigation("Vlasnik");
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Radionice.RadionicaFavorit", b =>
-                {
-                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Korisnik")
-                        .WithMany()
-                        .HasForeignKey("KorisnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TeachABit.Model.Models.Radionice.Radionica", "Radionica")
-                        .WithMany("RadionicaFavoriti")
-                        .HasForeignKey("RadionicaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Korisnik");
-
-                    b.Navigation("Radionica");
-                });
-
             modelBuilder.Entity("TeachABit.Model.Models.Radionice.RadionicaOcjena", b =>
                 {
                     b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Korisnik")
@@ -1026,8 +986,6 @@ namespace TeachABit.Model.Migrations
             modelBuilder.Entity("TeachABit.Model.Models.Radionice.Radionica", b =>
                 {
                     b.Navigation("Ocjene");
-
-                    b.Navigation("RadionicaFavoriti");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Tecajevi.KomentarTecaj", b =>

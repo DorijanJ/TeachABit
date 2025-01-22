@@ -16,6 +16,7 @@ public class Radionica
     public required string VlasnikId { get; set; } = string.Empty;
     [ForeignKey(nameof(VlasnikId))]
     public required virtual Korisnik Vlasnik { get; set; }
-    
+
     public virtual List<RadionicaOcjena> Ocjene { get; set; } = new List<RadionicaOcjena>();
+    public virtual List<RadionicaFavorit> RadionicaFavoriti { get; set; } = [];
 }

@@ -19,7 +19,7 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
         var result = await _radioniceService.GetRadionicaList(search);
         return GetControllerResult(result);
     }
-    
+
     [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetRadionica(int id)
@@ -46,7 +46,7 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.DeleteRadionica(id));
     }
-    
+
     [AllowAnonymous]
     [HttpGet("{id}/komentari")]
     public async Task<IActionResult> GetKomentarListByObjavaId(int id)
@@ -59,7 +59,7 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.CreateKomentar(komentar, id));
     }
-    
+
     [HttpPut("komentari")]
     public async Task<IActionResult> UpdateKomentar(UpdateKomentarRadionicaDto updateKomentar)
     {
@@ -71,45 +71,17 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.DeleteKomentar(komentarId));
     }
-    [AllowAnonymous]
-    [HttpGet("{id}/ocjena")]
-    public async Task<IActionResult> GetOcjena(int id)
+
+    [HttpPost("{radionicaId}/ocjena")]
+    public async Task<IActionResult> CreateOcjena([FromBody] double ocjena, int radionicaId)
     {
-        var korisnikId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (korisnikId == null)
-            return Unauthorized();
-
-        return GetControllerResult(await _radioniceService.GetOcjena(id, korisnikId));
-    }
-
-    [HttpPost("{id}/ocjena")]
-    public async Task<IActionResult> CreateOcjena([FromBody] double ocjena, int id)
-    {
-        var korisnikId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (korisnikId == null)
-            return Unauthorized();
-
-        return GetControllerResult(await _radioniceService.CreateOcjena(id, korisnikId, ocjena));
-    }
-
-    [HttpPut("{id}/ocjena")]
-    public async Task<IActionResult> UpdateOcjena([FromBody] double ocjena, int id)
-    {
-        var korisnikId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (korisnikId == null)
-            return Unauthorized();
-
-        return GetControllerResult(await _radioniceService.UpdateOcjena(id, korisnikId, ocjena));
+        return GetControllerResult(await _radioniceService.CreateOcjena(radionicaId, ocjena));
     }
 
     [HttpDelete("{id}/ocjena")]
-    public async Task<IActionResult> DeleteOcjena(int id)
+    public async Task<IActionResult> DeleteOcjena(int radionicaId)
     {
-        var korisnikId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (korisnikId == null)
-            return Unauthorized();
-
-        return GetControllerResult(await _radioniceService.DeleteOcjena(id, korisnikId));
+        return GetControllerResult(await _radioniceService.DeleteOcjena(radionicaId));
     }
-    
+
 }

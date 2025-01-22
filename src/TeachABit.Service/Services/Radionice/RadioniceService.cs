@@ -18,7 +18,9 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
 
     public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null)
     {
-        var radionice = await _radioniceRepository.GetRadionicaList(search);
+        var korisnik = _authorizationService.GetKorisnik();
+
+        var radionice = await _radioniceRepository.GetRadionicaList(search, korisnik.Id);
         var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
         return ServiceResult.Success(radioniceDto);
     }
@@ -125,53 +127,37 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IMapper 
         return ServiceResult.Success(updatedKomentar);
 
     }
-    
-    public async Task<ServiceResult<RadionicaOcjena?>> GetOcjena(int radionicaId, string korisnikId)
-    {
-        var ocjena = await _radioniceRepository.GetOcjena(radionicaId, korisnikId);
-        RadionicaOcjena? ocjenaRad = _mapper.Map<RadionicaOcjena>(ocjena);
 
-        if (ocjenaRad == null) 
-            return ServiceResult.Failure(MessageDescriber.ItemNotFound());
-
-        return ServiceResult.Success(ocjenaRad);
-    }
-    
-    public async Task<ServiceResult<RadionicaOcjena>> CreateOcjena(int radionicaId, string korisnikId, double ocjena)
+    public async Task<ServiceResult> CreateOcjena(int radionicaId, double ocjena)
     {
+        if (ocjena < 1 || ocjena > 5) return ServiceResult.Failure(MessageDescriber.BadRequest("Ocjena mora biti između 1 i 5."));
+
+        var korisnik = _authorizationService.GetKorisnik();
+
+        var postojecaOcjena = await _radioniceRepository.GetRadionicaOcjenaWithTracking(radionicaId, korisnik.Id);
+
+        if (postojecaOcjena != null)
+        {
+            postojecaOcjena.Ocjena = ocjena;
+            await _radioniceRepository.UpdateRadionicaOcjena(postojecaOcjena);
+            return ServiceResult.Success();
+        }
+
         var novaOcjena = new RadionicaOcjena
         {
             RadionicaId = radionicaId,
-            KorisnikId = korisnikId,
+            KorisnikId = korisnik.Id,
             Ocjena = ocjena
         };
 
-        var createdOcjena = await _radioniceRepository.CreateOcjena(novaOcjena);
-        var ocjenaDto = _mapper.Map<RadionicaOcjena>(createdOcjena);
-        return ServiceResult.Success(ocjenaDto);
-    }
-    
-    public async Task<ServiceResult<RadionicaOcjena>> UpdateOcjena(int radionicaId, string korisnikId, double ocjena)
-    {
-        var postojećaOcjena = await _radioniceRepository.GetOcjena(radionicaId, korisnikId);
-        var user = _authorizationService.GetKorisnik();
-
-        if (postojećaOcjena == null || user.Id != korisnikId) 
-            return ServiceResult.Failure(MessageDescriber.Unauthorized());
-
-        postojećaOcjena.Ocjena = ocjena;
-
-        var updatedOcjena = _mapper.Map<RadionicaOcjena>(await _radioniceRepository.UpdateOcjena(postojećaOcjena));
-
-        return ServiceResult.Success(updatedOcjena);
-    }
-    
-    public async Task<ServiceResult> DeleteOcjena(int radionicaId, string korisnikId)
-    {
-        await _radioniceRepository.DeleteOcjena(radionicaId, korisnikId);
+        await _radioniceRepository.CreateOcjena(novaOcjena);
         return ServiceResult.Success();
     }
-    
-    
-    
+
+    public async Task<ServiceResult> DeleteOcjena(int radionicaId)
+    {
+        var korisnik = _authorizationService.GetKorisnik();
+        await _radioniceRepository.DeleteOcjena(radionicaId, korisnik.Id);
+        return ServiceResult.Success();
+    }
 }

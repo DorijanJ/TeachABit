@@ -17,7 +17,7 @@ namespace TeachABit.Model.Mapping
         public AutoMapperProfile()
         {
             CreateMap<Korisnik, KorisnikDto>()
-                .ForMember(x => x.VerifikacijaStatusNaziv, opt => opt.MapFrom(x =>x.VerifikacijaStatus != null ? x.VerifikacijaStatus.Naziv : null));
+                .ForMember(x => x.VerifikacijaStatusNaziv, opt => opt.MapFrom(x => x.VerifikacijaStatus != null ? x.VerifikacijaStatus.Naziv : null));
             CreateMap<KorisnikDto, Korisnik>();
             CreateMap<Tecaj, TecajDto>()
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
@@ -40,6 +40,7 @@ namespace TeachABit.Model.Mapping
             CreateMap<Radionica, RadionicaDto>()
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
+                .ForMember(x => x.Favorit, opt => opt.MapFrom(x => x.RadionicaFavoriti.Count > 0))
                 .ForMember(x => x.Ocjena, opt => opt.MapFrom((src, dest, destMember, context) =>
                     src.Ocjene.FirstOrDefault(o => o.KorisnikId == (string)context.Items["KorisnikId"])?.Ocjena));
             CreateMap<RadionicaDto, Radionica>();
