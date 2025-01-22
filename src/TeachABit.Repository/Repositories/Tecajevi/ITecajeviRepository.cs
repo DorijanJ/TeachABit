@@ -4,12 +4,11 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 {
     public interface ITecajeviRepository
     {
-        //Task<List<Tecaj>> GetTecajList();
         public Task<Tecaj?> GetTecaj(int id);
         public Task<Tecaj> CreateTecaj(Tecaj tecaj);
         public Task<Tecaj> UpdateTecaj(Tecaj tecaj);
         public Task DeleteTecaj(int id);
-        public Task<List<Tecaj>> GetTecajList(string? search = null, string? korisnikId = null);
+        public Task<List<Tecaj>> GetTecajList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, decimal? minCijena = null, decimal? maxCijena = null);
         public Task<Tecaj?> GetTecajByIdWithTracking(int id);
         public Task<Lekcija?> GetLekcijaByIdWithTracking(int id);
         public Task<Lekcija> CreateLekcija(Lekcija lekcija);
@@ -32,13 +31,9 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public Task<KomentarTecajReakcija?> GetKomentarTecajReakcija(int komentarId, string korisnikId);
         public Task<TecajKomentar?> GetKomentarTecajByIdWithTracking(int id);
         public Task<bool> HasPodkomentari(int komentarId);
-
-        public  Task<List<Tecaj>> GetTecajListByFiltratingCijena(int maxCijena, int minCijena,
-            string? korisnikId = null);
-
-        public Task<List<Tecaj>> GetTecajListByFiltratingOcjena(int ocjena);
-        public Task<KorisnikTecajOcjena> CreateOcjena(KorisnikTecajOcjena ocjena);
-        public Task<KorisnikTecajOcjena> UpdateOcjena(KorisnikTecajOcjena ocjena);
-        public Task DeleteOcjena(int id);
+        public Task<KorisnikTecajOcjena> CreateKorisnikTecajOcjena(KorisnikTecajOcjena ocjena);
+        public Task DeleteKorisnikTecajOcjena(int tecajId, string korisnikId);
+        public Task<KorisnikTecajOcjena?> GetTecajOcjenaWithTracking(int tecajId, string korisnikId);
+        public Task<KorisnikTecajOcjena> UpdateTecajOcjena(KorisnikTecajOcjena ocjena);
     }
 }

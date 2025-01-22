@@ -120,22 +120,17 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _tecajeviService.DeleteKomentarTecaj(komentarId));
         }
-        [HttpPost("ocjene")]
-        public async Task<IActionResult> CreateOcjene(int ocjena, int KomentarTecajId)
+
+        [HttpPost("{tecajId}/ocjena")]
+        public async Task<IActionResult> CreateTecajOcjena(int tecajId, [FromQuery] int ocjena)
         {
-            return GetControllerResult(await _tecajeviService.createOcjene(ocjena, KomentarTecajId));
+            return GetControllerResult(await _tecajeviService.CreateTecajOcjena(tecajId, ocjena));
         }
 
-        [HttpPut("ocjene")]
-        public async Task<IActionResult> UpdateOcjene(int ocjena, int id)
+        [HttpDelete("{tecajId}/ocjena")]
+        public async Task<IActionResult> DeleteTecajOcjena(int tecajId)
         {
-            return GetControllerResult(await _tecajeviService.updateOcjene(ocjena, id));
-        }
-
-        [HttpDelete("ocjene/{ocjeneId}")]
-        public async Task<IActionResult> DeleteOcjene(int id)
-        {
-            return GetControllerResult(await _tecajeviService.deleteOcjene(id));
+            return GetControllerResult(await _tecajeviService.DeleteTecajOcjena(tecajId));
 
         }
     }

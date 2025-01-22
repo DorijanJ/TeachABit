@@ -269,39 +269,42 @@ namespace TeachABit.Service.Services.Tecajevi
 
             return ServiceResult.Success(updatedKomentar);
         }
-        public async Task<ServiceResult<int>> createOcjene(int ocjena, int id)
+        public async Task<ServiceResult> CreateTecajOcjena(int tecajId, int ocjena)
         {
-            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
-            KorisnikTecajOcjena ocjenaa = new KorisnikTecajOcjena()
+            var korisnik = _authorizationService.GetKorisnik();
+
+            if (ocjena < 1 || ocjena > 5) return ServiceResult.Failure(MessageDescriber.BadRequest("Ocjena mora biti između 1 i 5."));
+
+            var postojecaOcjena = await _tecajeviRepository.GetTecajOcjenaWithTracking(tecajId, korisnik.Id);
+
+            if (postojecaOcjena != null)
             {
-                ocjena = ocjena,
-                KorisnikId = korisnik.Id, 
-                TecajId = id
+                postojecaOcjena.Ocjena = ocjena;
+                await _tecajeviRepository.UpdateTecajOcjena(postojecaOcjena);
+                return ServiceResult.Success();
+            }
+
+            KorisnikTecajOcjena ocjenaModel = new()
+            {
+                Ocjena = ocjena,
+                KorisnikId = korisnik.Id,
+                TecajId = tecajId
             };
-            await _tecajeviRepository.CreateOcjena(ocjenaa);
-            return ServiceResult.Success(ocjena);
+
+            await _tecajeviRepository.CreateKorisnikTecajOcjena(ocjenaModel);
+            return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<int>> updateOcjene(int ocjena, int id)
+        public async Task<ServiceResult> DeleteTecajOcjena(int tecajId)
         {
-            if (ocjena > 5 || ocjena < 0)
-                ServiceResult.Failure(MessageDescriber.BadRequest("Ocjena mora biti izmedu 1 i 5"));
-            if (id == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Potreban Id"));
-            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
-            KorisnikTecajOcjena ocjenaa = new KorisnikTecajOcjena()
-            {
-                ocjena = ocjena,
-                KorisnikId = korisnik.Id, 
-                TecajId = id
-            };
-            await _tecajeviRepository.UpdateOcjena(ocjenaa);
-            return ServiceResult.Success(ocjena);
-        }
+            var korisnik = _authorizationService.GetKorisnik();
 
-        public async Task<ServiceResult<int>> deleteOcjene(int id)
-        {
-            await _tecajeviRepository.DeleteOcjena(id);
-            return ServiceResult.Success(); 
+            var tecajOcjena = await _tecajeviRepository.GetTecajOcjenaWithTracking(tecajId, korisnik.Id);
+
+            if (tecajOcjena == null || !_ownershipService.Owns(tecajOcjena)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            await _tecajeviRepository.DeleteKorisnikTecajOcjena(tecajId, korisnik.Id);
+            return ServiceResult.Success();
         }
     }
 }

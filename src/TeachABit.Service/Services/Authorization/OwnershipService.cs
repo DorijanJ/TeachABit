@@ -70,5 +70,10 @@ namespace TeachABit.Service.Services.Authorization
         {
             return radionica.VlasnikId == _authorizationService.GetKorisnik().Id;
         }
+
+        public bool Owns(KorisnikTecajOcjena korisnikTecajOcjena)
+        {
+            return korisnikTecajOcjena.KorisnikId == _authorizationService.GetKorisnik().Id;
+        }
     }
 }
