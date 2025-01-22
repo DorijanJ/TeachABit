@@ -7,13 +7,13 @@ public interface IRadioniceService
 {
     public Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null);
     public Task<ServiceResult<RadionicaDto>> GetRadionica(int id);
-    public Task<ServiceResult<RadionicaDto>> CreateRadionica(RadionicaDto radionica);
-    public Task<ServiceResult<RadionicaDto>> UpdateRadionica(UpdateRadionicaDto updateRadionica);
+    public Task<ServiceResult<RadionicaDto>> CreateRadionica(CreateOrUpdateRadionicaDto radionica);
+    public Task<ServiceResult<RadionicaDto>> UpdateRadionica(CreateOrUpdateRadionicaDto updateRadionica);
     public Task<ServiceResult> DeleteRadionica(int id);
-    public Task<ServiceResult<List<KomentarRadionicaDto>>> GetKomentarListRecursive(int id, int? nadKomentarId = null);
+    public Task<ServiceResult<List<RadionicaKomentarDto>>> GetKomentarListRecursive(int id, int? nadKomentarId = null);
     public Task<ServiceResult> DeleteKomentar(int id);
-    public Task<ServiceResult<KomentarRadionicaDto>> CreateKomentar(KomentarRadionicaDto komentar, int objavaId);
-    public Task<ServiceResult<KomentarRadionicaDto>> UpdateKomentar(UpdateKomentarRadionicaDto updateKomentar);
+    public Task<ServiceResult<RadionicaKomentarDto>> CreateKomentar(RadionicaKomentarDto komentar, int objavaId);
+    public Task<ServiceResult<RadionicaKomentarDto>> UpdateKomentar(UpdateKomentarRadionicaDto updateKomentar);
     public Task<ServiceResult> LikeRadionicaKomentar(int id);
     public Task<ServiceResult> DislikeRadionicaKomentar(int id);
     public Task<ServiceResult> ClearKomentarReaction(int id);

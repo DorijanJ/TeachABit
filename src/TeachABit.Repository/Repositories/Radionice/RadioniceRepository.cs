@@ -63,7 +63,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
     }
     
     
-    public async Task<KomentarRadionica> CreateKomentar(KomentarRadionica komentar)
+    public async Task<RadionicaKomentar> CreateKomentar(RadionicaKomentar komentar)
     {
         var createdKomentar = await _context.KomentarRadionica.AddAsync(komentar);
         await _context.SaveChangesAsync();
@@ -78,12 +78,12 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             await _context.KomentarRadionica.Where(x => x.Id == id).ExecuteDeleteAsync();
     }
     
-    public async Task<KomentarRadionica?> GetKomentarById(int id)
+    public async Task<RadionicaKomentar?> GetKomentarById(int id)
     {
         return await _context.KomentarRadionica.FirstOrDefaultAsync(x => x.Id == id);
     }
     
-    public async Task<List<KomentarRadionica>> GetKomentarListByObjavaId(int id)
+    public async Task<List<RadionicaKomentar>> GetKomentarListByObjavaId(int id)
     {
         return await _context.KomentarRadionica
             .Include(x => x.Vlasnik)
@@ -94,7 +94,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             .ToListAsync();
     }
     
-    public async Task<List<KomentarRadionica>> GetPodKomentarList(int radionicaId, int? nadKomentarId = null)
+    public async Task<List<RadionicaKomentar>> GetPodKomentarList(int radionicaId, int? nadKomentarId = null)
     {
         var komentari = await _context.KomentarRadionica
             .Include(c => c.Vlasnik)
@@ -138,13 +138,13 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         return await _context.KomentarRadionica.AnyAsync(x => x.NadKomentarId == komentarId);
     }
     
-    public async Task<KomentarRadionica> UpdateKomentar(KomentarRadionica komentar)
+    public async Task<RadionicaKomentar> UpdateKomentar(RadionicaKomentar komentar)
     {
         await _context.SaveChangesAsync();
         return komentar;
     }
     
-    public async Task<KomentarRadionica?> GetKomentarRadionicaByIdWithTracking(int id)
+    public async Task<RadionicaKomentar?> GetKomentarRadionicaByIdWithTracking(int id)
     {
         return await _context.KomentarRadionica.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
     }

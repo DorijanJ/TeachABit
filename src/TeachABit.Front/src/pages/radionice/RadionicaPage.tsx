@@ -12,6 +12,7 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { RadionicaDto } from "../../models/RadionicaDto";
 import RadionicaKomentari from "./RadionicaKomentari";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
+import { LevelPristupa } from "../../enums/LevelPristupa";
 
 export default function RadionicaPage() {
     const [radionica, setRadionica] = useState<RadionicaDto>({
@@ -219,7 +220,9 @@ export default function RadionicaPage() {
                         )}
                         {(globalContext.currentUser?.id ===
                             radionica.vlasnikId ||
-                            globalContext.isAdmin) && (
+                            globalContext.hasPermissions(
+                                LevelPristupa.Moderator
+                            )) && (
                             <>
                                 <IconButton
                                     onClick={() => setIsPotvrdaOpen(true)}
