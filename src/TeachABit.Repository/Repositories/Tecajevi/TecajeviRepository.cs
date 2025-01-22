@@ -73,8 +73,12 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             if (minCijena == 0)
             {
                 query = query.Where(t => t.Cijena <= maxCijena);
-            } 
+            }
 
+            if (maxCijena == minCijena)
+            {
+                query = query.Where(t => t.Cijena == maxCijena);
+            }
             if (!string.IsNullOrEmpty(korisnikId))
             {
                 query = query.Include(x => x.TecajPlacanja

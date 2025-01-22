@@ -85,15 +85,27 @@ namespace TeachABit.Service.Services.Tecajevi
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
+        public async Task<ServiceResult<List<TecajDto>>> GetTecajListByFiltratingOcjena(int ocjena)
+        {
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            var tecajevi = await _tecajeviRepository.GetTecajListByFiltratingOcjena(ocjena, korisnik?.Id);
+            var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
+            return ServiceResult.Success(tecajeviDto);
+        }
+        public async Task<ServiceResult<List<TecajDto>>> GetTecajListByFiltratingCijena(int maxCijena, int minCijena)
+        {
+            if (maxCijena < minCijena) return ServiceResult.Failure(MessageDescriber.BadRequest("Minimala cijena ne može biti veća od maksmimalne cijene"));
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            var tecajevi = await _tecajeviRepository.GetTecajListByFiltratingCijena(maxCijena, minCijena, korisnik?.Id);
+            var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
+            return ServiceResult.Success(tecajeviDto);
+        }
         public async Task<ServiceResult<List<LekcijaDto>>> GetLekcijaList(string? search = null)
         {
             var lekcije = await _tecajeviRepository.GetLekcijaList(search);
             var lekcijeDto = _mapper.Map<List<LekcijaDto>>(lekcije);
             return ServiceResult.Success(lekcijeDto);
         }
-
-
-
         public async Task<ServiceResult<TecajDto>> UpdateTecaj(CreateOrUpdateTecajDto updateTecaj)
         {
             if (!updateTecaj.Id.HasValue) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
