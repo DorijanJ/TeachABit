@@ -126,6 +126,10 @@ namespace TeachABit.Service.Services.Tecajevi
         {
             Lekcija? lekcija = await _tecajeviRepository.GetLekcijaById(id);
 
+            if (lekcija == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            var tecaj = await _tecajeviRepository.GetTecaj(lekcija.TecajId);
+
             if (lekcija == null || !_ownershipService.Owns(lekcija.Tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             await _tecajeviRepository.DeleteLekcija(id, false);
@@ -136,8 +140,13 @@ namespace TeachABit.Service.Services.Tecajevi
         {
             var lekcija = await _tecajeviRepository.GetLekcijaByIdWithTracking(updateLekcija.Id);
 
-            if (lekcija == null || !_ownershipService.Owns(lekcija.Tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (lekcija == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
+            var tecaj = await _tecajeviRepository.GetTecaj(lekcija.TecajId);
+
+            if (tecaj == null || !_ownershipService.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            lekcija.Naziv = updateLekcija.Naziv;
             lekcija.Sadrzaj = updateLekcija.Sadrzaj;
             lekcija.LastUpdatedDateTime = DateTime.UtcNow;
 
