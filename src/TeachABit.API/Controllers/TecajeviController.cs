@@ -22,7 +22,7 @@ namespace TeachABit.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTecaj(int id)
+        public async Task<IActionResult> GetTecaj(int id, [FromQuery] int? ocjena = null, decimal? cijena = null, string? username = null)
         {
             return GetControllerResult(await _tecajeviService.GetTecaj(id));
         }
@@ -119,6 +119,19 @@ namespace TeachABit.API.Controllers
         public async Task<IActionResult> DeleteKomentarTecaj(int komentarId)
         {
             return GetControllerResult(await _tecajeviService.DeleteKomentarTecaj(komentarId));
+        }
+
+        [HttpPost("{tecajId}/ocjena")]
+        public async Task<IActionResult> CreateTecajOcjena(int tecajId, [FromQuery] int ocjena)
+        {
+            return GetControllerResult(await _tecajeviService.CreateTecajOcjena(tecajId, ocjena));
+        }
+
+        [HttpDelete("{tecajId}/ocjena")]
+        public async Task<IActionResult> DeleteTecajOcjena(int tecajId)
+        {
+            return GetControllerResult(await _tecajeviService.DeleteTecajOcjena(tecajId));
+
         }
     }
 }

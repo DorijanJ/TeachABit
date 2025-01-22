@@ -9,12 +9,6 @@ namespace TeachABit.Repository.Repositories.Tecajevi
     {
         private readonly TeachABitContext _context = context;
 
-
-        /*public async Task<List<Tecaj>> GetTecajList()
-        {
-            return await _context.Tecajevi.ToListAsync();
-        }*/
-
         public async Task<Tecaj?> GetTecaj(int id)
         {
             return await _context.Tecajevi
@@ -37,7 +31,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             await _context.Tecajevi.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
-        public async Task<List<Tecaj>> GetTecajList(string? search = null, string? korisnikId = null)
+        public async Task<List<Tecaj>> GetTecajList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, decimal? minCijena = null, decimal? maxCijena = null)
         {
             var query = _context.Tecajevi
                 .Include(x => x.Vlasnik)
@@ -49,10 +43,20 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 query = query.Where(t => t.Naziv.ToLower().Contains(lowerSearch));
             }
 
-            if (!string.IsNullOrEmpty(korisnikId))
+            if (minCijena != null) query = query.Where(x => x.Cijena >= minCijena);
+            if (maxCijena != null) query = query.Where(x => x.Cijena <= maxCijena);
+
+            if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
+
+            if (!string.IsNullOrEmpty(trenutniKorisnikId))
             {
-                query = query.Include(x => x.TecajPlacanja
-                    .Where(t => t.KorisnikId == korisnikId));
+                query = query
+                    .Include(x => x.KorisnikTecajFavoriti
+                        .Where(x => x.KorisnikId == trenutniKorisnikId))
+                    .Include(x => x.KorisnikTecajOcjene
+                        .Where(x => x.KorisnikId == trenutniKorisnikId))
+                    .Include(x => x.TecajPlacanja
+                        .Where(t => t.KorisnikId == trenutniKorisnikId));
             }
 
             return await query.ToListAsync();
@@ -208,6 +212,27 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public async Task<bool> HasPodkomentari(int komentarId)
         {
             return await _context.KomentariTecaj.AnyAsync(x => x.NadKomentarId == komentarId);
+        }
+        public async Task<KorisnikTecajOcjena> CreateKorisnikTecajOcjena(KorisnikTecajOcjena ocjena)
+        {
+            EntityEntry<KorisnikTecajOcjena> createdOcjena = await _context.KorisnikTecajOcjene.AddAsync(ocjena);
+            await _context.SaveChangesAsync();
+            return createdOcjena.Entity;
+        }
+        public async Task DeleteKorisnikTecajOcjena(int tecajId, string korisnikId)
+        {
+            await _context.KorisnikTecajOcjene.Where(x => x.TecajId == tecajId && x.KorisnikId == korisnikId).ExecuteDeleteAsync();
+        }
+
+        public async Task<KorisnikTecajOcjena?> GetTecajOcjenaWithTracking(int tecajId, string korisnikId)
+        {
+            return await _context.KorisnikTecajOcjene.AsTracking().FirstOrDefaultAsync(x => x.TecajId == tecajId && x.KorisnikId == korisnikId);
+        }
+
+        public async Task<KorisnikTecajOcjena> UpdateTecajOcjena(KorisnikTecajOcjena ocjena)
+        {
+            await _context.SaveChangesAsync();
+            return ocjena;
         }
     }
 }

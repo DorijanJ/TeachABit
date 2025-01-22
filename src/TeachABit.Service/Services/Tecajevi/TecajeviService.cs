@@ -26,7 +26,7 @@ namespace TeachABit.Service.Services.Tecajevi
             TecajDto? tecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.GetTecaj(id));
             if (tecaj == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
 
-            var korisnik = _authorizationService.GetKorisnikOptional();
+            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
 
             if (tecaj.Cijena != null && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
                 return ServiceResult.Failure(MessageDescriber.Unauthorized());
@@ -268,6 +268,43 @@ namespace TeachABit.Service.Services.Tecajevi
             var updatedKomentar = _mapper.Map<TecajKomentarDto>(await _tecajeviRepository.UpdateKomentarTecaj(komentar));
 
             return ServiceResult.Success(updatedKomentar);
+        }
+        public async Task<ServiceResult> CreateTecajOcjena(int tecajId, int ocjena)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+
+            if (ocjena < 1 || ocjena > 5) return ServiceResult.Failure(MessageDescriber.BadRequest("Ocjena mora biti između 1 i 5."));
+
+            var postojecaOcjena = await _tecajeviRepository.GetTecajOcjenaWithTracking(tecajId, korisnik.Id);
+
+            if (postojecaOcjena != null)
+            {
+                postojecaOcjena.Ocjena = ocjena;
+                await _tecajeviRepository.UpdateTecajOcjena(postojecaOcjena);
+                return ServiceResult.Success();
+            }
+
+            KorisnikTecajOcjena ocjenaModel = new()
+            {
+                Ocjena = ocjena,
+                KorisnikId = korisnik.Id,
+                TecajId = tecajId
+            };
+
+            await _tecajeviRepository.CreateKorisnikTecajOcjena(ocjenaModel);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> DeleteTecajOcjena(int tecajId)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+
+            var tecajOcjena = await _tecajeviRepository.GetTecajOcjenaWithTracking(tecajId, korisnik.Id);
+
+            if (tecajOcjena == null || !_ownershipService.Owns(tecajOcjena)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            await _tecajeviRepository.DeleteKorisnikTecajOcjena(tecajId, korisnik.Id);
+            return ServiceResult.Success();
         }
     }
 }

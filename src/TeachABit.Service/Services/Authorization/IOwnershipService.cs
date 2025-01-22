@@ -21,5 +21,6 @@ namespace TeachABit.Service.Services.Authorization
         public bool Owns(RadionicaKomentarDto radionicaKomentar);
         public bool Owns(TecajKomentar tecajKomentar);
         public bool Owns(TecajKomentarDto tecajKomentar);
+        public bool Owns(KorisnikTecajOcjena korisnikTecajOcjena);
     }
 }
