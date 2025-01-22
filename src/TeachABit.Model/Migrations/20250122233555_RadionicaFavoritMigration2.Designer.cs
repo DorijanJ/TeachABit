@@ -12,8 +12,8 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    [Migration("20250122233033_RadionicaFavoritMigration")]
-    partial class RadionicaFavoritMigration
+    [Migration("20250122233555_RadionicaFavoritMigration2")]
+    partial class RadionicaFavoritMigration2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -584,6 +584,9 @@ namespace TeachABit.Model.Migrations
                     b.Property<decimal?>("Cijena")
                         .HasColumnType("numeric");
 
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("NaslovnaSlikaVersion")
                         .HasColumnType("text");
 
@@ -598,9 +601,6 @@ namespace TeachABit.Model.Migrations
                     b.Property<string>("VlasnikId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("isPublished")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

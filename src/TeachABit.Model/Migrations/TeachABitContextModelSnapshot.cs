@@ -581,6 +581,9 @@ namespace TeachABit.Model.Migrations
                     b.Property<decimal?>("Cijena")
                         .HasColumnType("numeric");
 
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("NaslovnaSlikaVersion")
                         .HasColumnType("text");
 
@@ -595,9 +598,6 @@ namespace TeachABit.Model.Migrations
                     b.Property<string>("VlasnikId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("isPublished")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
