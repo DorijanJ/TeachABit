@@ -68,9 +68,10 @@ export function NavigationUser(props: Props) {
                 >
                     <MenuItem
                         sx={{ width: "220px" }}
-                        onClick={() =>
-                            navigate(`/profil/${props.user.username}`)
-                        }
+                        onClick={() => {
+                            handleClose();
+                            navigate(`/profil/${props.user.username}`);
+                        }}
                     >
                         <div style={{ display: "flex", gap: "10px" }}>
                             <PersonIcon />

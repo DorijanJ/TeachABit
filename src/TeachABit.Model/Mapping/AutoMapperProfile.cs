@@ -24,7 +24,7 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.Kupljen, opt => opt.MapFrom(x => x.TecajPlacanja.Count > 0))
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
                 .ForMember(x => x.Favorit, opt => opt.MapFrom(x => x.KorisnikTecajFavoriti.Count > 0))
-                .ForMember(x => x.Ocjena, opt => opt.MapFrom(x => x.KorisnikTecajOcjene.Select(x => x.Ocjena).Sum() / x.KorisnikTecajOcjene.Count));
+                .ForMember(x => x.Ocjena, opt => opt.MapFrom(x => x.KorisnikTecajOcjene.Count > 0 ? x.KorisnikTecajOcjene.Select(x => x.Ocjena).Sum() / x.KorisnikTecajOcjene.Count : 0));
             CreateMap<TecajDto, Tecaj>();
             CreateMap<CreateOrUpdateTecajDto, Tecaj>();
             CreateMap<Lekcija, LekcijaDto>();
@@ -43,6 +43,7 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.NadKomentarId, opt => opt.MapFrom(x => x.NadKomentarId));
             CreateMap<Radionica, RadionicaDto>()
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
+                .ForMember(x => x.Favorit, opt => opt.MapFrom(x => x.RadionicaFavoriti.Count > 0))
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName));
             CreateMap<RadionicaDto, Radionica>();
             CreateMap<Uloga, UlogaDto>();

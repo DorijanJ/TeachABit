@@ -14,15 +14,15 @@ namespace TeachABit.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetTecajList(string? search = null)
+        public async Task<IActionResult> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
         {
-            var result = await _tecajeviService.GetTecajList(search);
+            var result = await _tecajeviService.GetTecajList(search, vlasnikUsername, minCijena, maxCijena);
             return GetControllerResult(result);
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTecaj(int id, [FromQuery] int? ocjena = null, decimal? cijena = null, string? username = null)
+        public async Task<IActionResult> GetTecaj(int id)
         {
             return GetControllerResult(await _tecajeviService.GetTecaj(id));
         }

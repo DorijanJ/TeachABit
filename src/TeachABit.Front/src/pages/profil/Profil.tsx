@@ -97,14 +97,14 @@ export default function Profil() {
 
     const GetTecajList = async () => {
         const response = await requests.getWithLoading(
-            `account/${username}/tecajevi`
+            `tecajevi?vlasnikUsername=${username}`
         );
         if (response && response.data) setTecajList(response.data);
     };
 
     const GetRadionicaList = async () => {
         const response = await requests.getWithLoading(
-            `account/${username}/radionice`
+            `radionice?vlasnikUsername=${username}`
         );
         if (response && response.data) setRadionicaList(response.data);
     };
@@ -128,7 +128,7 @@ export default function Profil() {
                     justifyContent={"flex-start"}
                     gap="10px"
                 >
-                    <Card sx={{ width: 400 }}>
+                    <Card sx={{ width: 400, minWidth: 300 }}>
                         <CardContent
                             sx={{
                                 display: "flex",
@@ -263,16 +263,28 @@ export default function Profil() {
                     </Card>
                 </Box>
 
-                <Typography variant="h6" sx={{ margin: 0 }}>
-                    {"Moji tečajevi:"}
-                </Typography>
-                <CustomSliderTecaj tecajevi={tecajList}></CustomSliderTecaj>
-                <Typography variant="h6" sx={{ margin: 0 }}>
-                    {"Moje radionice:"}
-                </Typography>
-                <CustomSliderRadionica
-                    radionice={radionicaList}
-                ></CustomSliderRadionica>
+                <div>
+                    {tecajList.length > 0 && (
+                        <>
+                            <Typography variant="h6" sx={{ margin: 0 }}>
+                                {"Moji tečajevi:"}
+                            </Typography>
+                            <CustomSliderTecaj
+                                tecajevi={tecajList}
+                            ></CustomSliderTecaj>
+                        </>
+                    )}
+                    {radionicaList.length > 0 && (
+                        <>
+                            <Typography variant="h6" sx={{ margin: 0 }}>
+                                {"Moje radionice:"}
+                            </Typography>
+                            <CustomSliderRadionica
+                                radionice={radionicaList}
+                            ></CustomSliderRadionica>
+                        </>
+                    )}
+                </div>
             </Box>
         )
     );

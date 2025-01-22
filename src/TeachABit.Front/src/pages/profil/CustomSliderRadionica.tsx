@@ -21,15 +21,19 @@ export default function CustomSliderRadionica({ radionice }: Props) {
     };
 
     return (
-        <Box position="relative" width="100%" height="auto">
+        <Box
+            position="relative"
+            width="100%"
+            height={"auto"}
+            minWidth={"380px"}
+            display="flex"
+            gap="20px"
+            alignItems={"center"}
+        >
             <Button
                 variant="contained"
                 onClick={() => scroll("left")}
                 style={{
-                    position: "absolute",
-                    left: 0,
-                    top: "50%",
-                    transform: "translateY(-50%)",
                     width: "40px !important",
                     minWidth: "unset",
                     zIndex: 1,
@@ -37,36 +41,32 @@ export default function CustomSliderRadionica({ radionice }: Props) {
             >
                 ←
             </Button>
-            <Button
-                variant="contained"
-                onClick={() => scroll("right")}
-                style={{
-                    position: "absolute",
-                    right: 0,
-                    top: "50%",
-                    width: "40px !important",
-                    minWidth: "unset",
-                    transform: "translateY(-50%)",
-                    zIndex: 1,
-                }}
-            >
-                →
-            </Button>
 
             <Box
                 ref={containerRef}
-                component="div"
                 display="flex"
                 overflow="hidden"
                 whiteSpace="nowrap"
-                width="100%"
-                padding="10px 40px"
-                height="20%"
+                width="calc(100% - 40px)"
+                gap="20px"
+                padding="10px"
             >
                 {radionice.map((radionica) => (
                     <Radionica radionica={radionica} />
                 ))}
             </Box>
+
+            <Button
+                variant="contained"
+                onClick={() => scroll("right")}
+                style={{
+                    width: "40px !important",
+                    minWidth: "unset",
+                    zIndex: 1,
+                }}
+            >
+                →
+            </Button>
         </Box>
     );
 }

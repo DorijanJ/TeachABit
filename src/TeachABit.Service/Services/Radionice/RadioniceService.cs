@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
@@ -12,7 +13,7 @@ using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Radionice;
 
-public class RadioniceService(IRadioniceRepository radioniceRepository, IS3BucketService bucketService, IImageManipulationService imageManipulationService, IMapper mapper, IAuthorizationService authorizationService, IOwnershipService ownershipService) : IRadioniceService
+public class RadioniceService(IRadioniceRepository radioniceRepository, UserManager<Korisnik> userManager, IS3BucketService bucketService, IImageManipulationService imageManipulationService, IMapper mapper, IAuthorizationService authorizationService, IOwnershipService ownershipService) : IRadioniceService
 {
     private readonly IRadioniceRepository _radioniceRepository = radioniceRepository;
     private readonly IMapper _mapper = mapper;
@@ -20,10 +21,19 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IS3Bucke
     private readonly IOwnershipService _ownershipService = ownershipService;
     private readonly IImageManipulationService _imageManipulationService = imageManipulationService;
     private readonly IS3BucketService _bucketService = bucketService;
+    private readonly UserManager<Korisnik> _userManager = userManager;
 
-    public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null)
+    public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null, string? vlasnikUsername = null)
     {
-        var radionice = await _radioniceRepository.GetRadionicaList(search);
+        var korisnik = _authorizationService.GetKorisnikOptional();
+
+        string? vlasnikId = null;
+        if (!string.IsNullOrEmpty(vlasnikUsername))
+        {
+            vlasnikId = (await _userManager.FindByNameAsync(vlasnikUsername))?.Id;
+        }
+
+        var radionice = await _radioniceRepository.GetRadionicaList(search, korisnik?.Id, vlasnikId);
         var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
         return ServiceResult.Success(radioniceDto);
     }
@@ -206,4 +216,5 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, IS3Bucke
         await _radioniceRepository.DeleteKomentarReakcija(id, korisnik.Id);
         return ServiceResult.Success();
     }
+
 }

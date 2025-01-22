@@ -85,8 +85,7 @@ export default function RadionicaPage() {
         const response = await requests.deleteWithLoading(
             `radionice/${radionicaId}`
         );
-        if (response && response.message?.severity === "success")
-            navigate("/radionice");
+        if (response && response.message?.severity === "success") navigate(-1);
     };
 
     const refreshData = async () => {
@@ -130,7 +129,7 @@ export default function RadionicaPage() {
                     }}
                 >
                     <IconButton
-                        onClick={() => navigate("/radionice")}
+                        onClick={() => navigate(-1)}
                         sx={{
                             color: "#3a7ca5",
                             "&:hover": {

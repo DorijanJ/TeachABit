@@ -5,7 +5,7 @@ namespace TeachABit.Service.Services.Radionice;
 
 public interface IRadioniceService
 {
-    public Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null);
+    public Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null, string? vlasnikUsername = null);
     public Task<ServiceResult<RadionicaDto>> GetRadionica(int id);
     public Task<ServiceResult<RadionicaDto>> CreateRadionica(CreateOrUpdateRadionicaDto radionica);
     public Task<ServiceResult<RadionicaDto>> UpdateRadionica(CreateOrUpdateRadionicaDto updateRadionica);
@@ -17,6 +17,4 @@ public interface IRadioniceService
     public Task<ServiceResult> LikeRadionicaKomentar(int id);
     public Task<ServiceResult> DislikeRadionicaKomentar(int id);
     public Task<ServiceResult> ClearKomentarReaction(int id);
-
-
 }
