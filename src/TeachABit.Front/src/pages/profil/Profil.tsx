@@ -1,5 +1,5 @@
-import {useParams} from "react-router-dom";
-import {useGlobalContext} from "../../context/Global.context";
+import { useParams } from "react-router-dom";
+import { useGlobalContext } from "../../context/Global.context";
 import {
     Card,
     CardContent,
@@ -11,22 +11,19 @@ import {
     IconButton,
     Button,
 } from "@mui/material";
-import {useEffect, useMemo, useState} from "react";
+import { useEffect, useMemo, useState } from "react";
 import requests from "../../api/agent";
-import {AppUserDto} from "../../models/AppUserDto";
+import { AppUserDto } from "../../models/AppUserDto";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import EditProfilDialog from "./EditProfilDialog";
 import Uloga from "../../models/Uloga";
 import EditIcon from "@mui/icons-material/Edit";
-import {VerifikacijaEnum} from "../../enums/VerifikacijaEnum";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import CustomSliderTecaj from "../profil/CustomSliderTecaj"
-import CustomSliderRadionica from "../profil/CustomSliderRadionica"
-
-
-import {TecajDto} from "../../models/TecajDto";
-import useRequestBuilder from "../../hooks/useRequestBuilder";
+import { VerifikacijaEnum } from "../../enums/VerifikacijaEnum";
+import CustomSliderTecaj from "../profil/CustomSliderTecaj";
+import CustomSliderRadionica from "../profil/CustomSliderRadionica";
+import { TecajDto } from "../../models/TecajDto";
+import { LevelPristupa } from "../../enums/LevelPristupa";
+import { RadionicaDto } from "../../models/RadionicaDto";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -35,14 +32,11 @@ const getHighestLevelUloga = (uloge: Uloga[]) => {
     return role?.name ?? "";
 };
 
-
-
 export default function Profil() {
-    const {username} = useParams();
+    const { username } = useParams();
     const globalContext = useGlobalContext();
 
     const [user, setUser] = useState<AppUserDto>();
-
 
     const isCurrentUser = useMemo(() => {
         return globalContext.currentUser?.username === username;
@@ -91,28 +85,34 @@ export default function Profil() {
     };
 
     useEffect(() => {
-        if (globalContext.isAdmin) GetAllRoles();
-    }, [globalContext.isAdmin]);
+        if (globalContext.hasPermissions(LevelPristupa.Admin)) GetAllRoles();
+    }, []);
 
     useEffect(() => {
         if (username) GetUserByUsername(username);
     }, [username]);
 
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
+    const [radionicaList, setRadionicaList] = useState<RadionicaDto[]>([]);
 
-    const { buildRequest } = useRequestBuilder();
-
-    const GetTecajList = async (search: string | undefined = undefined) => {
+    const GetTecajList = async () => {
         const response = await requests.getWithLoading(
-            buildRequest("tecajevi", { search })
+            `account/${username}/tecajevi`
         );
         if (response && response.data) setTecajList(response.data);
     };
+
+    const GetRadionicaList = async () => {
+        const response = await requests.getWithLoading(
+            `account/${username}/radionice`
+        );
+        if (response && response.data) setRadionicaList(response.data);
+    };
+
     useEffect(() => {
         GetTecajList();
-    }, []);
-
-
+        GetRadionicaList();
+    }, [username]);
 
     return (
         user && (
@@ -120,7 +120,7 @@ export default function Profil() {
                 display="flex"
                 flexDirection={"column"}
                 justifyContent={"flex-start"}
-                gap="1rem"
+                gap="20px"
             >
                 <Box
                     display="flex"
@@ -128,7 +128,7 @@ export default function Profil() {
                     justifyContent={"flex-start"}
                     gap="10px"
                 >
-                    <Card sx={{width: 400}}>
+                    <Card sx={{ width: 400 }}>
                         <CardContent
                             sx={{
                                 display: "flex",
@@ -137,7 +137,7 @@ export default function Profil() {
                                 gap: "10px",
                             }}
                         >
-                            <Avatar sx={{width: 100, height: 100}}>
+                            <Avatar sx={{ width: 100, height: 100 }}>
                                 {user.id && user.profilnaSlikaVersion ? (
                                     <>
                                         <img
@@ -152,7 +152,7 @@ export default function Profil() {
                                             }${user.id}${
                                                 user.profilnaSlikaVersion
                                                     ? "?version=" +
-                                                    user.profilnaSlikaVersion
+                                                      user.profilnaSlikaVersion
                                                     : ""
                                             }`}
                                         />
@@ -164,9 +164,11 @@ export default function Profil() {
                             {globalContext.userIsLoggedIn === true &&
                                 isCurrentUser && (
                                     <IconButton
-                                        onClick={() => setIsOpenImageDialog(true)}
+                                        onClick={() =>
+                                            setIsOpenImageDialog(true)
+                                        }
                                     >
-                                        <EditIcon/>
+                                        <EditIcon />
                                     </IconButton>
                                 )}
                             {isOpenImageDialog && (
@@ -190,14 +192,14 @@ export default function Profil() {
                                 </Typography>
                                 {user.verifikacijaStatusId ===
                                     VerifikacijaEnum.Verificiran && (
-                                        <VerifiedIcon
-                                            sx={{
-                                                height: "25px",
-                                                width: "25px",
-                                                color: "#922728",
-                                            }}
-                                        />
-                                    )}
+                                    <VerifiedIcon
+                                        sx={{
+                                            height: "25px",
+                                            width: "25px",
+                                            color: "#922728",
+                                        }}
+                                    />
+                                )}
                             </div>
                             <div
                                 style={{
@@ -207,9 +209,12 @@ export default function Profil() {
                                     gap: "10px",
                                 }}
                             >
-                                {globalContext.isAdmin &&
+                                {globalContext.hasPermissions(
+                                    LevelPristupa.Admin
+                                ) &&
                                 selectedUloga !== "Admin" &&
-                                username !== globalContext.currentUser?.username ? (
+                                username !==
+                                    globalContext.currentUser?.username ? (
                                     <Select
                                         value={selectedUloga}
                                         onChange={(e) =>
@@ -230,41 +235,45 @@ export default function Profil() {
                                 )}
                                 {username ===
                                     globalContext.currentUser?.username && (
-                                        <>
-                                            {user.verifikacijaStatusNaziv && (
-                                                <p style={{margin: 0}}>
-                                                    {user.verifikacijaStatusNaziv}
-                                                </p>
+                                    <>
+                                        {user.verifikacijaStatusNaziv && (
+                                            <p style={{ margin: 0 }}>
+                                                {user.verifikacijaStatusNaziv}
+                                            </p>
+                                        )}
+                                        {username ===
+                                            globalContext.currentUser
+                                                ?.username &&
+                                            !user.verifikacijaStatusId && (
+                                                <Button
+                                                    variant="contained"
+                                                    onClick={() =>
+                                                        SendVerificaitonRequest()
+                                                    }
+                                                >
+                                                    {
+                                                        "Pošalji zahtjev za verifikacijom."
+                                                    }
+                                                </Button>
                                             )}
-                                            {username ===
-                                                globalContext.currentUser?.username &&
-                                                !user.verifikacijaStatusId && (
-                                                    <Button
-                                                        variant="contained"
-                                                        onClick={() =>
-                                                            SendVerificaitonRequest()
-                                                        }
-                                                    >
-                                                        {
-                                                            "Pošalji zahtjev za verifikacijom."
-                                                        }
-                                                    </Button>
-                                                )}
-                                        </>
-                                    )}
+                                    </>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
                 </Box>
 
-                <h1>Moji tecajevi</h1>
-                <CustomSliderTecaj></CustomSliderTecaj>
-                <h1>Moje radionice</h1>
-                <CustomSliderRadionica></CustomSliderRadionica>
-
+                <Typography variant="h6" sx={{ margin: 0 }}>
+                    {"Moji tečajevi:"}
+                </Typography>
+                <CustomSliderTecaj tecajevi={tecajList}></CustomSliderTecaj>
+                <Typography variant="h6" sx={{ margin: 0 }}>
+                    {"Moje radionice:"}
+                </Typography>
+                <CustomSliderRadionica
+                    radionice={radionicaList}
+                ></CustomSliderRadionica>
             </Box>
-
-
         )
     );
 }

@@ -1,65 +1,51 @@
-import {useEffect, useRef, useState} from "react";
-import requests from "../../api/agent";
-import {Box, Button, Card, CardContent, Typography} from "@mui/material";
+import { useRef } from "react";
+import { Box, Button } from "@mui/material";
+import { RadionicaDto } from "../../models/RadionicaDto";
+import Radionica from "../radionice/Radionica";
 
+interface Props {
+    radionice: RadionicaDto[];
+}
 
-import useRequestBuilder from "../../hooks/useRequestBuilder";
-import {RadionicaDto} from "../../models/RadionicaDto";
-import {useNavigate} from "react-router-dom";
-
-export default function CustomSliderRadionica(){
-    const [radionicaList, setradionicaList] = useState<RadionicaDto[]>([]);
-
-
-    const { buildRequest } = useRequestBuilder();
-
-
-
-    const GetRadionicaList = async (search: string | undefined = undefined) => {
-        const response = await requests.getWithLoading(
-            buildRequest("Radionice", { search })
-        );
-        if (response && response.data) setradionicaList(response.data);
-    };
-
-    useEffect(() => {
-        GetRadionicaList();
-    }, []);
-
+export default function CustomSliderRadionica({ radionice }: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
-
-
 
     const scroll = (direction: "left" | "right") => {
         if (containerRef.current) {
-            const scrollAmount = direction === "left" ? -300 : 300; // Adjust scroll distance
-            containerRef.current.scrollBy({left: scrollAmount, behavior: "smooth"});
+            const scrollAmount = direction === "left" ? -300 : 300;
+            containerRef.current.scrollBy({
+                left: scrollAmount,
+                behavior: "smooth",
+            });
         }
     };
 
-    const navigate = useNavigate();
-
     return (
-        <Box position="relative" width="100%">
-            {/* Navigation Arrows */}
+        <Box position="relative" width="100%" height="auto">
             <Button
+                variant="contained"
                 onClick={() => scroll("left")}
                 style={{
                     position: "absolute",
                     left: 0,
                     top: "50%",
                     transform: "translateY(-50%)",
+                    width: "40px !important",
+                    minWidth: "unset",
                     zIndex: 1,
                 }}
             >
                 ←
             </Button>
             <Button
+                variant="contained"
                 onClick={() => scroll("right")}
                 style={{
                     position: "absolute",
                     right: 0,
                     top: "50%",
+                    width: "40px !important",
+                    minWidth: "unset",
                     transform: "translateY(-50%)",
                     zIndex: 1,
                 }}
@@ -71,106 +57,16 @@ export default function CustomSliderRadionica(){
                 ref={containerRef}
                 component="div"
                 display="flex"
-                overflow="auto"
+                overflow="hidden"
                 whiteSpace="nowrap"
-                scrollBehavior="smooth"
                 width="100%"
-                padding="10px"
+                padding="10px 40px"
                 height="20%"
             >
-                {radionicaList.map((radionica) => (
-                    <Card
-                        key={radionica.id}
-                        style={{
-                            margin: "0 10px",
-                            minWidth: "200px",
-                            aspectRatio: "1 / 0.75", // Ensures width-to-height ratio
-                            flexShrink: 0,
-                            width: "20%",
-                        }}
-                        sx={{
-                            transition: "transform 0.2s, box-shadow 0.2s",
-                            "&:hover": {
-                                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
-                                transform: "scale(1.03)",
-                                border: "1px solid #3a7ca5",
-                            },
-                            borderRadius: "10px",
-                            boxSizing: "border-box",
-                            border: "1px solid lightgray",
-                            cursor: "pointer",
-                        }}
-                        onClick={() => {
-                            console.log(radionica.id)
-                            navigate(`/radionica/${radionica.id}`);
-                        }}
-                    >
-                        <CardContent
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between", // Spreads content with space between sections
-                                height: "100%",
-                                padding: "16px", // Adds padding around the content
-                            }}
-                        >
-                            {/* Top Section */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    gap: "10px",
-                                    flexDirection: "column",
-                                }}
-                            >
-                                <Box
-                                    display={"flex"}
-                                    flexDirection={"row"}
-                                    justifyContent={"space-between"}
-                                    alignItems={"flex-start"}
-                                >
-                                    <Typography
-                                        color="primary"
-                                        variant="h5"
-                                        component="div"
-                                        sx={{
-                                            textAlign: "left",
-                                            display: "-webkit-box",
-                                            WebkitBoxOrient: "vertical",
-                                            overflow: "hidden",
-                                            WebkitLineClamp: 3,
-                                            maxWidth: "100%",
-                                            height: "6rem",
-                                        }}
-                                    >
-                                        {radionica.naziv}
-                                    </Typography>
-                                </Box>
-                            </div>
-
-                            {/* Button Section */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "flex-end",
-                                    alignItems: "center",
-                                    marginTop: "auto", // Pushes this section to the bottom
-                                    marginBottom: "8px", // Adds space below the button
-                                }}
-                            >
-                                <Button
-                                    variant="contained"
-
-                                >
-                                    10€
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-
+                {radionice.map((radionica) => (
+                    <Radionica radionica={radionica} />
                 ))}
             </Box>
-
         </Box>
     );
 }
