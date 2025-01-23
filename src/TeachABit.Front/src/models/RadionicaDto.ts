@@ -1,12 +1,12 @@
 export interface RadionicaDto {
     id?: number;
     naziv: string;
-    opis?: string /*provjeri treba li ovo*/;
+    opis?: string;
     cijena?: number;
     vlasnikId?: string;
     vlasnikUsername?: string;
-    vlasnikProfilnaSlikaVersion?: string /*provjeri treba li i ovo*/;
-    brojprijavljenih?: number /*provjeri i ovo isto */;
+    vlasnikProfilnaSlikaVersion?: string;
+    brojprijavljenih?: number;
     maksimalniKapacitet?: number;
     vrijemeRadionice?: Date;
 }
