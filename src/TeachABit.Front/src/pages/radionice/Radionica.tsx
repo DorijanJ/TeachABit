@@ -85,8 +85,7 @@ export default function Radionica(props: Props) {
                     transform: "scale(1.03)",
                     border: "1px solid #3a7ca5",
                 },
-                height: "370px",
-                minWidth: "370px",
+                minWidth: "340px",
             }}
             onClick={() => {
                 navigate(`/radionica/${props.radionica.id}`);
@@ -97,14 +96,13 @@ export default function Radionica(props: Props) {
                     textAlign: "center",
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "space-between",
-                    gap: 1,
+                    gap: "24px",
                     height: "100%",
                 }}
             >
                 <Box
                     display="flex"
-                    justifyContent="space-between"
+                    gap="10px"
                     alignItems="flex-start"
                 >
                     <Typography
@@ -113,11 +111,15 @@ export default function Radionica(props: Props) {
                         variant="h5"
                         component="div"
                         sx={{
-                            overflow: "hidden",
                             textAlign: "left",
-                            whiteSpace: "wrap",
-                            textOverflow: "ellipsis",
-                            maxWidth: "70%",
+                            width: "100%",
+                            overflowWrap: "break-word",
+                            wordBreak: "break-word",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            height: "6rem",
                         }}
                     >
                         {props.radionica.naziv}
@@ -149,20 +151,20 @@ export default function Radionica(props: Props) {
                         position: "relative",
                         overflow: "hidden",
                         textAlign: "left",
-                        maxHeight: applyFade ? "6rem" : "none", // Dinamično postavljanje visine
+                        height: "6rem",
                         paddingRight: "1rem",
                         marginBottom: "1rem",
                         "&::after": applyFade
                             ? {
-                                  content: '""',
-                                  position: "absolute",
-                                  bottom: 0,
-                                  left: 0,
-                                  width: "100%",
-                                  height: "3rem", // Fade efekt
-                                  background:
-                                      "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))",
-                              }
+                                content: '""',
+                                position: "absolute",
+                                bottom: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "3rem", // Fade efekt
+                                background:
+                                    "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))",
+                            }
                             : undefined,
                     }}
                 >

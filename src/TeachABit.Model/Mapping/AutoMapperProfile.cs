@@ -27,6 +27,7 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.Ocjena, opt => opt.MapFrom(x => x.KorisnikTecajOcjene.Count > 0 ? x.KorisnikTecajOcjene.Select(x => x.Ocjena).Sum() / x.KorisnikTecajOcjene.Count : 0));
             CreateMap<TecajDto, Tecaj>();
             CreateMap<CreateOrUpdateTecajDto, Tecaj>();
+            CreateMap<CreateOrUpdateRadionicaDto, Radionica>();
             CreateMap<Lekcija, LekcijaDto>();
             CreateMap<LekcijaDto, Lekcija>();
             CreateMap<ObjavaDto, Objava>();

@@ -52,7 +52,7 @@ export default function TecajPage() {
             `tecajevi/${tecajId}`
         );
         if (response && response.message?.severity === "success")
-            navigate("/tecajevi");
+            navigate(-1);
     };
 
     return (
@@ -73,7 +73,7 @@ export default function TecajPage() {
                     }}
                 >
                     <IconButton
-                        onClick={() => navigate("/tecajevi")}
+                        onClick={() => navigate(-1)}
                         sx={{
                             color: "#3a7ca5",
                             "&:hover": {
@@ -159,9 +159,8 @@ export default function TecajPage() {
                                     objectFit: "cover",
                                     width: "70%",
                                 }}
-                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                                    tecaj.naslovnaSlikaVersion
-                                }`}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${tecaj.naslovnaSlikaVersion
+                                    }`}
                             />
                         </div>
                     )}
@@ -183,27 +182,27 @@ export default function TecajPage() {
                             globalContext.hasPermissions(
                                 LevelPristupa.Moderator
                             )) && (
-                            <>
-                                <IconButton
-                                    onClick={() => handleTecajPopupOpen()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <EditIcon color="primary"></EditIcon>
-                                </IconButton>
-                                <IconButton
-                                    onClick={() => deleteTecaj()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <DeleteIcon color="primary"></DeleteIcon>
-                                </IconButton>
-                            </>
-                        )}
+                                <>
+                                    <IconButton
+                                        onClick={() => handleTecajPopupOpen()}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <EditIcon color="primary"></EditIcon>
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() => deleteTecaj()}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <DeleteIcon color="primary"></DeleteIcon>
+                                    </IconButton>
+                                </>
+                            )}
                     </Box>
 
                     {tecaj.id && <TecajKomentari tecajId={tecaj.id} />}
