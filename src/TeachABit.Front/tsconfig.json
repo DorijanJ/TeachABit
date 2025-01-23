@@ -1,25 +1,4 @@
 {
-    "compilerOptions": {
-        "target": "es2016",
-        "module": "commonjs",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "jsx": "react-jsx",
-        "baseUrl": "./",
-        "paths": {
-            "*": ["node_modules/*"]
-        }
-    },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist"],
     "files": [],
     "references": [
         {
@@ -28,5 +7,9 @@
         {
             "path": "./tsconfig.node.json"
         }
-    ]
+    ],
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "forceConsistentCasingInFileNames": true
+    },
 }
