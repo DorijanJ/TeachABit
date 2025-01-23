@@ -15,7 +15,6 @@ import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 
 export default function RadionicaPage() {
     const [radionica, setRadionica] = useState<RadionicaDto>({
-        //sadrzaj: "",
         naziv: "",
         opis: "",
         cijena: 0,

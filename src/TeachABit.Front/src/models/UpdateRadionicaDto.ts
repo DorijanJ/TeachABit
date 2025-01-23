@@ -3,6 +3,6 @@ export interface UpdateRadionicaDto {
   naziv: string;
   opis?: string;
   cijena: number;
-  kapacitet?: number;
-  datumvrijeme: Date;
+  maksimalniKapacitet?: number;
+  vrijemeRadionice?: Date;
 }

@@ -1,34 +1,30 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, InputAdornment, TextField } from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+/*import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-import { ChangeEvent } from "react";
+import { ChangeEvent } from "react";*/
 import { RadionicaDto } from "../../models/RadionicaDto";
+//import Radionica from "./Radionica";
+import UserLink from "../profil/UserLink";
+import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import Radionica from "./Radionica";
 
 interface Props {
-  refreshData: () => Promise<any>;
-  onClose: () => void;
-  radionica?: RadionicaDto;
+    onConfirm: () => Promise<any>;
+    onClose: () => void;
+    radionica?: RadionicaDto;
 }
 
 export default function RadionicaPopup(props: Props) {
-
-
-  const handleClose = (reload: boolean = false) => {
-    props.onClose();
-    if (reload) props.refreshData();
-};
 
   return (
     <>
     <Dialog
         open
         maxWidth={"md"}
-        id="radionicaEditor"
     >
-        <DialogTitle sx={{ maxWidth: "100%" }}>
+        <DialogTitle >
             <div
                 style={{
                     display: "flex",
@@ -45,7 +41,7 @@ export default function RadionicaPopup(props: Props) {
                         maxWidth: "80%",
                     }}
                 >
-                    {`Nova radionica`}
+                    {props.radionica?.naziv}
                 </div>
             </div>
         </DialogTitle>
@@ -57,12 +53,14 @@ export default function RadionicaPopup(props: Props) {
                 flexDirection: "column",
                 gap: "20px",
                 paddingTop: "10px !important",
+                width: "100%",
             }}
 
             /*
           bilo bi dobro tu imat nekakvu sliku al je nema trenutno
         */
         >
+            {/* 
             <TextField
                 fullWidth
                 autoFocus
@@ -79,8 +77,27 @@ export default function RadionicaPopup(props: Props) {
                 }}
             >
                 Slika neka
-            </Box> */}
+            </Box> }
+            */}
 
+                        <Box
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                            display={"flex"}
+                            justifyContent={"space-between"}
+                            gap="5px"
+                        >
+                            <Box></Box>
+                            <UserLink
+                                user={{
+                                    id: props.radionica?.vlasnikId,
+                                    username: props.radionica?.vlasnikUsername,
+                                    profilnaSlikaVersion:
+                                        props.radionica?.vlasnikProfilnaSlikaVersion,
+                                }}
+                            />
+                        </Box>
+{/*
             <TextField
                 fullWidth
                 autoFocus
@@ -96,8 +113,10 @@ export default function RadionicaPopup(props: Props) {
                         ...prev,
                         opis: e.target.value,
                     }))
-                }*/
-            />
+                }
+            />*/}
+
+            <TeachABitRenderer content={props.radionica?.opis ?? ""} />
 
             <div
                 title="kapacitet-cijena-vrijeme-wrapper"
@@ -109,62 +128,32 @@ export default function RadionicaPopup(props: Props) {
                     gap: "20px", // Razmak između elemenata
                 }}
             >
-                <TextField
-                    autoFocus
-                    label="Kapacitet"
-                    variant="outlined"
+                <Box
+                    //autoFocus
+                    //label="Kapacitet"
+                    //variant="outlined"
                     sx={{
                         width: "30%",
                     }}
-                    //value={radionica.kapacitet || ""}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        const numericValue = e.target.value.replace(
-                            /[^0-9]/g,
-                            ""
-                        );
-                        /*setRadionica((prev: any) => ({
-                            ...prev,
-                            kapacitet: numericValue,
-                        }));*/
-                    }}
-                />
+                    
+                >
+                    {props.radionica?.maksimalniKapacitet}
 
-                <TextField
-                    autoFocus
-                    label="Cijena"
-                    name="cijena"
-                    sx={{
+                </Box>
+ 
+                <Box sx={{
                         width: "30%",
                     }}
-                    variant="outlined"
-                    //value={radionica.cijena?.toString() || null}
-                    //type="number"
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    €
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        const value = e.target.value.replace(
-                            /[^0-9,.]/g,
-                            ""
-                        );
-                        /*const decimalPlaces = value.toString().split(".")[1]?.length;
-        if (!(Math.floor(value) === value) && decimalPlaces > 2) {
-          return;
-        }*/
-                        /*setRadionica((prev: any) => ({
-                            ...prev,
-                            cijena: value,
-                        }));*/
-                    }}
-                />
+                    >
+                    {props.radionica?.cijena}
+                    
+                    </Box>
 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Box>
+                    {/*props.radionica?.vrijemeRadionice || undefined*/}
+                </Box>
+
+                {/*<LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DateTimePicker
                         label="Datum i vrijeme"
                         sx={{
@@ -178,18 +167,20 @@ export default function RadionicaPopup(props: Props) {
                             seconds: renderTimeViewClock,
                         }}
                     />
-                </LocalizationProvider>
+                </LocalizationProvider>*/}
             </div>
         </DialogContent>
 
         <DialogActions>
-            <Button variant="outlined" onClick={() => handleClose()}>
+            <Button variant="outlined" onClick={props.onClose}>
                 Odustani
             </Button>
             <Button
                 //disabled = {!radionica.cijena}
-                id="stvoriRadionicuButton"
                 variant="contained"
+
+                /*tu treba dodat plaćanje!!!*/
+
                 /*onClick={() => {
                     if (!radionica.id) {
                         handleStvoriRadionicu(radionica);
@@ -198,9 +189,7 @@ export default function RadionicaPopup(props: Props) {
                     }
                 }}*/
             >
-                {/*radionica.id
-                    ? "Ažuriraj podatke o radionici"
-                    : "Stvori novu radionicu"*/}
+                {props.radionica?.cijena}€
             </Button>
         </DialogActions>
     </Dialog>

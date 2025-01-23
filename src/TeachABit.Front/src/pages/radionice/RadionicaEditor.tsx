@@ -63,8 +63,8 @@ export default function RadionicaEditor(props: Props) {
             /*predavacProfilnaSlika: props.radionica?.predavacProfilnaSlika,*/
             //brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
             cijena: radionica.cijena,
-            kapacitet: radionica?.maksimalniKapacitet,
-            datumvrijeme: radionica?.vrijemeRadionice,
+            maksimalniKapacitet: radionica?.maksimalniKapacitet,
+            vrijemeRadionice: radionica?.vrijemeRadionice,
         };
         const response = await requests.putWithLoading(
             "radionice",
@@ -132,6 +132,7 @@ export default function RadionicaEditor(props: Props) {
                         autoFocus
                         label="Naziv radionice"
                         name="naziv"
+                        
                         variant="outlined"
                         //required = {true}
                         value={radionica.naziv || ""}
@@ -268,7 +269,7 @@ export default function RadionicaEditor(props: Props) {
                         Odustani
                     </Button>
                     <Button
-                        disabled={!radionica.cijena}
+                        disabled={!radionica.cijena || !radionica.naziv}
                         id="stvoriRadionicuButton"
                         variant="contained"
                         onClick={() => {
