@@ -8,9 +8,11 @@ import {
     Button,
     Link,
 } from "@mui/material";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import requests from "../../../../../api/agent";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
+
+const maxEmailLength = 50;
 
 export default function ForgotPassword() {
     const [message, setMessage] = useState<MessageResponseDto>();
@@ -25,6 +27,12 @@ export default function ForgotPassword() {
         );
         if (response && response.message) setMessage(response.message);
     };
+
+    const isValidEmail = useMemo(() => {
+        const email = passwordResetEmail ?? "";
+        if (email.length == 0 || email.length > maxEmailLength) return false;
+        return true;
+    }, [passwordResetEmail]);
 
     return (
         <>
@@ -77,6 +85,7 @@ export default function ForgotPassword() {
                     </DialogContent>
                     <DialogActions>
                         <Button
+                            disabled={!isValidEmail}
                             onClick={() =>
                                 handleForgotPassword(passwordResetEmail)
                             }
