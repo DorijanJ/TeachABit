@@ -4,11 +4,13 @@ using System.Text.Json.Serialization;
 namespace TeachABit.Model.DTOs.Tecajevi
 {
 
-    public class KomentarTecajDto
+    public class TecajKomentarDto
     {
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "Sadržaj ne smije biti prazan.")]
         [StringLength(1000, ErrorMessage = "Sadržaj je previše dugačak.")]
+        [MinLength(1, ErrorMessage = "Sadržaj ne smije biti prazan.")]
         public string Sadrzaj { get; set; } = string.Empty;
 
         public string VlasnikId { get; set; } = string.Empty;
@@ -22,7 +24,7 @@ namespace TeachABit.Model.DTOs.Tecajevi
         public string? VlasnikProfilnaSlikaVersion { get; set; }
         public int TecajId { get; set; }
         public int? NadKomentarId { get; set; } = null;
-        public List<KomentarTecajDto> PodKomentarList { get; set; } = [];
+        public List<TecajKomentarDto> PodKomentarList { get; set; } = [];
         public int LikeCount { get; set; } = 0;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

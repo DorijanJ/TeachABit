@@ -88,6 +88,8 @@ namespace TeachABit.Service.Services.Korisnici
                 var korisnikId = _authorizationService.GetKorisnik().Id;
                 var korisnik = await _userManager.FindByIdAsync(korisnikId);
 
+                if (korisnik == null || korisnik.UserName != updateKorisnik.Username) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
                 if (korisnik != null && updateKorisnik.ProfilnaSlikaBase64 != null)
                 {
                     string profilnaSlikaVersion = Guid.NewGuid().ToString();

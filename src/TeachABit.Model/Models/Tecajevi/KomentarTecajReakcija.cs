@@ -13,7 +13,7 @@ namespace TeachABit.Model.Models.Tecajevi
         public virtual Korisnik Korisnik { get; set; } = null!;
         public int KomentarId { get; set; }
         [ForeignKey(nameof(KomentarId))]
-        public virtual KomentarTecaj Komentar { get; set; } = null!;
+        public virtual TecajKomentar Komentar { get; set; } = null!;
         public bool Liked { get; set; }
     }
 }

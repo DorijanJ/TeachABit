@@ -9,7 +9,8 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 {
     private readonly TeachABitContext _context = context;
 
-    public async Task<List<Radionica>> GetRadionicaList(string? search = null)
+    public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null)
+
     {
         IQueryable<Radionica> query = _context.Radionice
             .Include(x => x.Vlasnik)
@@ -21,6 +22,13 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             query = query.Where(x => x.Naziv.ToLower().Contains(lowerSearch));
         }
 
+        if (!string.IsNullOrEmpty(trenutniKorisnikId))
+        {
+            query = query.Include(x => x.RadionicaFavoriti.Where(f => f.KorisnikId == trenutniKorisnikId));
+        }
+
+        if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
+
         return await query.ToListAsync();
     }
 
@@ -30,7 +38,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             .Include(x => x.Vlasnik)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
-    
+
     public async Task<Radionica?> GetRadionicaById(int id)
     {
         return await _context.Radionice
@@ -39,7 +47,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             .ThenInclude(x => x.Vlasnik)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
-    
+
     public async Task<Radionica> CreateRadionica(Radionica radionica)
     {
         EntityEntry<Radionica> createdZadatak = await _context.Radionice.AddAsync(radionica);
@@ -55,21 +63,21 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
     {
         await _context.Radionice.Where(x => x.Id == id).ExecuteDeleteAsync();
     }
-    
-    
+
     public async Task<Radionica?> GetRadionicaByIdWithTracking(int id)
     {
         return await _context.Radionice.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
-    
-    
-    public async Task<KomentarRadionica> CreateKomentar(KomentarRadionica komentar)
+
+
+
+    public async Task<RadionicaKomentar> CreateKomentar(RadionicaKomentar komentar)
     {
         var createdKomentar = await _context.KomentarRadionica.AddAsync(komentar);
         await _context.SaveChangesAsync();
         return createdKomentar.Entity;
     }
-    
+
     public async Task DeleteKomentar(int id, bool keepEntry = false)
     {
         if (keepEntry)
@@ -77,13 +85,13 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         else
             await _context.KomentarRadionica.Where(x => x.Id == id).ExecuteDeleteAsync();
     }
-    
-    public async Task<KomentarRadionica?> GetKomentarById(int id)
+
+    public async Task<RadionicaKomentar?> GetKomentarById(int id)
     {
         return await _context.KomentarRadionica.FirstOrDefaultAsync(x => x.Id == id);
     }
-    
-    public async Task<List<KomentarRadionica>> GetKomentarListByObjavaId(int id)
+
+    public async Task<List<RadionicaKomentar>> GetKomentarListByObjavaId(int id)
     {
         return await _context.KomentarRadionica
             .Include(x => x.Vlasnik)
@@ -93,8 +101,8 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             .OrderByDescending(x => x.CreatedDateTime)
             .ToListAsync();
     }
-    
-    public async Task<List<KomentarRadionica>> GetPodKomentarList(int radionicaId, int? nadKomentarId = null)
+
+    public async Task<List<RadionicaKomentar>> GetPodKomentarList(int radionicaId, int? nadKomentarId = null)
     {
         var komentari = await _context.KomentarRadionica
             .Include(c => c.Vlasnik)
@@ -106,47 +114,108 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         return komentari;
     }
-    
+
     public async Task<KomentarRadionicaReakcija> CreateKomentarReakcija(KomentarRadionicaReakcija komentarRadionicaReakcija)
     {
         var createdKomentarReakcija = await _context.KomentarRadionicaReakcija.AddAsync(komentarRadionicaReakcija);
         await _context.SaveChangesAsync();
         return createdKomentarReakcija.Entity;
     }
-    
+
     public async Task DeleteKomentarReakcija(int komentarId, string korisnikId)
     {
         await _context.KomentarRadionicaReakcija
             .Where(x => x.KorisnikId == korisnikId && x.KomentarId == komentarId)
             .ExecuteDeleteAsync();
     }
-    
+
     public async Task DeleteKomentarReakcija(int id)
     {
         await _context.KomentarRadionicaReakcija
             .Where(x => x.Id == id)
             .ExecuteDeleteAsync();
     }
-    
+
     public async Task<KomentarRadionicaReakcija?> GetKomentarRadionicaReakcija(int komentarId, string korisnikId)
     {
         return await _context.KomentarRadionicaReakcija.FirstOrDefaultAsync(x => x.KomentarId == komentarId && x.KorisnikId == korisnikId);
     }
-    
+
     public async Task<bool> HasPodkomentari(int komentarId)
     {
         return await _context.KomentarRadionica.AnyAsync(x => x.NadKomentarId == komentarId);
     }
-    
-    public async Task<KomentarRadionica> UpdateKomentar(KomentarRadionica komentar)
+
+    public async Task<RadionicaKomentar> UpdateKomentar(RadionicaKomentar komentar)
     {
         await _context.SaveChangesAsync();
         return komentar;
     }
-    
-    public async Task<KomentarRadionica?> GetKomentarRadionicaByIdWithTracking(int id)
+
+    public async Task<RadionicaOcjena?> GetOcjena(int radionicaId, string korisnikId)
+    {
+        return await _context.RadionicaOcjene
+            .FirstOrDefaultAsync(o => o.RadionicaId == radionicaId && o.KorisnikId == korisnikId);
+    }
+
+    public async Task<RadionicaOcjena> CreateOcjena(RadionicaOcjena ocjena)
+    {
+        var entry = await _context.RadionicaOcjene.AddAsync(ocjena);
+        await _context.SaveChangesAsync();
+        return entry.Entity;
+    }
+
+    public async Task<RadionicaOcjena> UpdateOcjena(RadionicaOcjena ocjena)
+    {
+        await _context.SaveChangesAsync();
+        return ocjena;
+    }
+
+    public async Task DeleteOcjena(int radionicaId, string korisnikId)
+    {
+        await _context.RadionicaOcjene
+            .Where(x => x.RadionicaId == radionicaId && x.KorisnikId == korisnikId)
+            .ExecuteDeleteAsync();
+    }
+
+    public async Task<RadionicaOcjena?> GetRadionicaOcjenaWithTracking(int radionicaId, string korisnikId)
+    {
+        return await _context.RadionicaOcjene.AsTracking().FirstOrDefaultAsync(x => x.RadionicaId == radionicaId && x.KorisnikId == korisnikId);
+    }
+
+    public async Task<RadionicaOcjena> UpdateRadionicaOcjena(RadionicaOcjena ocjena)
+    {
+        await _context.SaveChangesAsync();
+        return ocjena;
+    }
+
+    public async Task<RadionicaKomentar?> GetKomentarRadionicaByIdWithTracking(int id)
     {
         return await _context.KomentarRadionica.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
-    
+
+    public async Task<List<Radionica>> GetAllRadioniceForCurrentUser(string username)
+    {
+        var query = _context.Radionice
+            .Include(x => x.Vlasnik)
+            .AsQueryable();
+        if (!string.IsNullOrEmpty(username))
+        {
+            query = query.Where(a => a.Vlasnik.UserName == username);
+        }
+
+        return await query.ToListAsync();
+    }
+    public async Task<List<RadionicaFavorit>> GetAllRadioniceFavoritForCurrentUser(string username)
+    {
+        var query = _context.RadionicaFavorit
+            .Include(x => x.Korisnik)
+            .AsQueryable();
+        if (!string.IsNullOrEmpty(username))
+        {
+            query = query.Where(a => a.Korisnik.UserName == username);
+        }
+
+        return await query.ToListAsync();
+    }
 }

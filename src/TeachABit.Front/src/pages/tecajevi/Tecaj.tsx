@@ -43,7 +43,11 @@ export default function Tecaj(props: Props) {
     return (
         <Card
             onClick={() => {
-                if (props.tecaj.kupljen || !props.tecaj.cijena)
+                if (
+                    props.tecaj.kupljen ||
+                    !props.tecaj.cijena ||
+                    globalContext.currentUser?.id === props.tecaj.vlasnikId
+                )
                     navigate(`/tecajevi/${props.tecaj.id}`);
             }}
             sx={{
@@ -58,6 +62,7 @@ export default function Tecaj(props: Props) {
                     border: "1px solid #3a7ca5",
                 },
                 height: "370px",
+                minWidth: "370px",
             }}
         >
             <CardContent
@@ -85,21 +90,16 @@ export default function Tecaj(props: Props) {
                         <Typography
                             color="primary"
                             variant="h5"
-                            component="div"
                             sx={{
                                 textAlign: "left",
+                                width: "100%",
+                                overflowWrap: "break-word",
+                                wordBreak: "break-word",
                                 display: "-webkit-box",
+                                WebkitLineClamp: 3,
                                 WebkitBoxOrient: "vertical",
                                 overflow: "hidden",
-                                WebkitLineClamp: 3,
-                                maxWidth: "100%",
                                 height: "6rem",
-                                color:
-                                    props.tecaj.kupljen === true ||
-                                    !props.tecaj.cijena
-                                        ? "primary"
-                                        : "lightgray",
-                                marginBottom: "0px",
                             }}
                         >
                             {props.tecaj.naziv}
@@ -110,6 +110,7 @@ export default function Tecaj(props: Props) {
                             style={{
                                 borderRadius: "10px",
                                 objectFit: "cover",
+                                width: "340px",
                                 height: "170px",
                             }}
                             src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
@@ -121,7 +122,7 @@ export default function Tecaj(props: Props) {
                             style={{
                                 borderRadius: "10px",
                                 objectFit: "cover",
-                                width: "100%",
+                                width: "340px",
                                 height: "170px",
                                 backgroundColor: "lightblue",
                             }}
@@ -138,14 +139,14 @@ export default function Tecaj(props: Props) {
                     }}
                 >
                     <div onClick={(e) => e.stopPropagation()}>
-                    <UserLink
-                        user={{
-                            id: props.tecaj.vlasnikId,
-                            profilnaSlikaVersion:
-                                props.tecaj.vlasnikProfilnaSlikaVersion,
-                            username: props.tecaj.vlasnikUsername,
-                        }}
-                    />
+                        <UserLink
+                            user={{
+                                id: props.tecaj.vlasnikId,
+                                profilnaSlikaVersion:
+                                    props.tecaj.vlasnikProfilnaSlikaVersion,
+                                username: props.tecaj.vlasnikUsername,
+                            }}
+                        />
                     </div>
                     {props.tecaj.cijena && props.tecaj.cijena > 0 && (
                         <>
