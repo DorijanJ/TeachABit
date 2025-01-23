@@ -2,7 +2,7 @@
 
 namespace TeachABit.Model.ValidationAttributes
 {
-    public class PriceValidationAttribute : ValidationAttribute
+    public class OpcionalnaCijenaValidation : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
@@ -11,7 +11,7 @@ namespace TeachABit.Model.ValidationAttributes
                 return ValidationResult.Success;
             }
 
-            if (value is decimal price && price > 0)
+            if (value is decimal price && price >= 0 && price <= 2000)
             {
                 return ValidationResult.Success;
             }
