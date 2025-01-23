@@ -50,7 +50,11 @@ namespace TeachABit.Service.Services.Authorization
         public async Task<Korisnik> GetKorisnikFull()
         {
             var korisnik = GetKorisnik();
-            var fullKorisnik = await _userManager.Users.Include(x => x.VerifikacijaStatus).FirstOrDefaultAsync(k => k.Id == korisnik.Id);
+            var fullKorisnik = await _userManager.Users
+                .Include(x => x.KorisnikUloge)
+                .ThenInclude(x => x.Uloga)
+                .Include(x => x.VerifikacijaStatus)
+                .FirstOrDefaultAsync(k => k.Id == korisnik.Id);
             return fullKorisnik ?? throw new UnauthorizedAccessException();
         }
 

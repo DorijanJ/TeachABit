@@ -29,6 +29,11 @@ namespace TeachABit.Service.Util.Token
 
             claims.AddRange(roleClaims);
 
+            if (user.KorisnikStatusId.HasValue)
+            {
+                claims.Add(new(CustomClaimTypes.KorisnikStatus, user.KorisnikStatusId.Value.ToString()));
+            }
+
             var secretKey = _configuration["JwtSettings:Key"];
             if (secretKey == null) return null;
 

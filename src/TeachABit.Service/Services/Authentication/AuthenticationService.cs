@@ -10,16 +10,13 @@ using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
-using TeachABit.Model.DTOs.Uloge;
 using TeachABit.Model.Models.Korisnici;
-using TeachABit.Model.Models.Uloge;
-using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Util.Mail;
 using TeachABit.Service.Util.Token;
 
 namespace TeachABit.Service.Services.Authentication
 {
-    public class AuthenticationService(UserManager<Korisnik> userManager, RoleManager<Uloga> roleManager, IAuthorizationService authorizationService, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
+    public class AuthenticationService(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
     {
         private readonly UserManager<Korisnik> _userManager = userManager;
         private readonly SignInManager<Korisnik> _signInManager = signInManager;
@@ -28,16 +25,14 @@ namespace TeachABit.Service.Services.Authentication
         private readonly IMailSenderService _mailSenderService = mailSenderService;
         private readonly IMapper _mapper = mapper;
         private readonly IConfiguration _configuration = configuration;
-        private readonly IAuthorizationService _authorizationService = authorizationService;
-        private readonly RoleManager<Uloga> _roleManager = roleManager;
 
-        public async Task<ServiceResult<KorisnikDto>> Login(LoginAttemptDto loginAttempt)
+        public async Task<ServiceResult> Login(LoginAttemptDto loginAttempt)
         {
             var normalizedCredentials = loginAttempt.Credentials.ToUpper();
             Korisnik? user = await _userManager.Users
                 .Include(x => x.KorisnikUloge)
                 .ThenInclude(x => x.Uloga)
-                .FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedCredentials || x.UserName == normalizedCredentials);
+                .FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedCredentials || x.NormalizedUserName == normalizedCredentials);
 
             if (user == null)
             {
@@ -60,18 +55,25 @@ namespace TeachABit.Service.Services.Authentication
             ServiceResult cookieSetResult = await SetAuthCookie(user);
             if (cookieSetResult.IsError) return ServiceResult.Failure(cookieSetResult.Message);
 
-            var korisnikDto = _mapper.Map<KorisnikDto>(user);
+            var k = (await _userManager.Users.Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == user.Id));
+            if (k != null) user.KorisnikUloge = k.KorisnikUloge;
+            RefreshUserInfoDto refresh = _mapper.Map<RefreshUserInfoDto>(user);
+            refresh.IsAuthenticated = true;
 
-            return ServiceResult.Success(korisnikDto);
+            return ServiceResult.Success(refresh);
         }
 
         public ServiceResult Logout()
         {
             ClearAuthCookie();
-            return ServiceResult.Success();
+            RefreshUserInfoDto refresh = new()
+            {
+                IsAuthenticated = false
+            };
+            return ServiceResult.Success(refresh: refresh);
         }
 
-        public async Task<ServiceResult<KorisnikDto>> Register(RegisterAttemptDto registerAttempt)
+        public async Task<ServiceResult> Register(RegisterAttemptDto registerAttempt)
         {
             if (await _userManager.Users.AnyAsync(x => x.UserName == registerAttempt.Username))
                 return ServiceResult.Failure(MessageDescriber.DuplicateUsername(registerAttempt.Username));
@@ -107,7 +109,7 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult.Failure(mailResult.Message);
             }
 
-            return ServiceResult.Success(_mapper.Map<KorisnikDto>(user), MessageDescriber.EmailConfimationSent());
+            return ServiceResult.Success(MessageDescriber.EmailConfimationSent());
         }
 
         private async Task<ServiceResult> SendEmailConfirmationMail(Korisnik user)
@@ -151,7 +153,7 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        private ServiceResult ClearAuthCookie(Korisnik? user = null, bool valid = true)
+        private ServiceResult ClearAuthCookie()
         {
             var httpContext = _httpContextAccessor.HttpContext;
 
@@ -166,7 +168,7 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<KorisnikDto>> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
+        public async Task<ServiceResult> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
         {
             GoogleJsonWebSignature.Payload payload;
 
@@ -179,11 +181,7 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult.Failure(new MessageResponse("Nevaljani GoogleIdToken.", MessageSeverities.Error));
             }
 
-            var normalizedEmail = payload.Email.ToUpper();
-            Korisnik? user = await _userManager.Users
-                .Include(x => x.KorisnikUloge)
-                .ThenInclude(x => x.Uloga)
-                .FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedEmail);
+            Korisnik? user = await _userManager.FindByEmailAsync(payload.Email);
 
             if (user == null)
             {
@@ -209,9 +207,12 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult.Failure(cookieSetResult.Message);
             }
 
-            var korisnikDto = _mapper.Map<KorisnikDto>(user);
+            var k = (await _userManager.Users.Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == user.Id));
+            if (k != null) user.KorisnikUloge = k.KorisnikUloge;
+            RefreshUserInfoDto refresh = _mapper.Map<RefreshUserInfoDto>(user);
+            refresh.IsAuthenticated = true;
 
-            return ServiceResult.Success(korisnikDto);
+            return ServiceResult.Success(refresh);
 
         }
 

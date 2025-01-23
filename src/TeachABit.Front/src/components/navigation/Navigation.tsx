@@ -128,7 +128,9 @@ export default function Navigation(props: Props) {
                             }
                             isExpanded={isExpanded}
                         />
-                        {globalContext.hasPermissions(LevelPristupa.Admin) && (
+                        {globalContext.hasPermissions(
+                            LevelPristupa.Moderator
+                        ) && (
                             <NavigationItem
                                 route={"/korisnici-administracija"}
                                 name={"Korisnici"}

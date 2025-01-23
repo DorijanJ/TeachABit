@@ -34,7 +34,7 @@ export default function Radionice() {
                 alignItems: "flex-start",
                 height: "100%",
                 width: "100%",
-                minWidth: "280px",
+                minWidth: "300px",
             }}
         >
             <div
@@ -72,7 +72,7 @@ export default function Radionice() {
             <div
                 style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
                     gap: "20px",
                     maxWidth: "100%",
                     width: "100%",

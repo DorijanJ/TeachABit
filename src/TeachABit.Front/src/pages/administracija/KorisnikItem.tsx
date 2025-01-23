@@ -10,7 +10,7 @@ interface Props {
     refreshData: () => Promise<any>;
 }
 
-export default function VerifikacijaZahtjev(props: Props) {
+export default function KorisnikItem(props: Props) {
     const PotvrdiVerifikaciju = async (username: string) => {
         const response = await requests.postWithLoading(
             `account/${username}/verifikacija`
@@ -31,9 +31,11 @@ export default function VerifikacijaZahtjev(props: Props) {
                     alignItems={"center"}
                 >
                     <div>
-                        <UserLink user={props.korisnik} fontSize={"18px"} />
+                        <UserLink user={props.korisnik} fontSize={18} />
                     </div>
-                    {props.korisnik.roles && props.korisnik.roles.length > 0 && props.korisnik.roles[0].name}
+                    {props.korisnik.roles &&
+                        props.korisnik.roles.length > 0 &&
+                        props.korisnik.roles[0].name}
                     <p
                         style={{
                             margin: "0",
@@ -46,14 +48,14 @@ export default function VerifikacijaZahtjev(props: Props) {
                         {props.korisnik.verifikacijaStatusNaziv}
                         {props.korisnik.verifikacijaStatusNaziv ===
                             "Verificiran" && (
-                                <VerifiedIcon
-                                    sx={{
-                                        height: "25px",
-                                        width: "25px",
-                                        color: "#922728",
-                                    }}
-                                />
-                            )}
+                            <VerifiedIcon
+                                sx={{
+                                    height: "25px",
+                                    width: "25px",
+                                    color: "#922728",
+                                }}
+                            />
+                        )}
                     </p>
                     <Box
                         display="flex"
@@ -65,18 +67,18 @@ export default function VerifikacijaZahtjev(props: Props) {
                     >
                         {props.korisnik.verifikacijaStatusId ===
                             VerifikacijaEnum.ZahtjevPoslan && (
-                                <Button
-                                    variant="contained"
-                                    onClick={() => {
-                                        if (!props.korisnik.username) return;
-                                        PotvrdiVerifikaciju(
-                                            props.korisnik.username
-                                        );
-                                    }}
-                                >
-                                    Odobri
-                                </Button>
-                            )}
+                            <Button
+                                variant="contained"
+                                onClick={() => {
+                                    if (!props.korisnik.username) return;
+                                    PotvrdiVerifikaciju(
+                                        props.korisnik.username
+                                    );
+                                }}
+                            >
+                                Odobri
+                            </Button>
+                        )}
                     </Box>
                 </Box>
             </CardContent>

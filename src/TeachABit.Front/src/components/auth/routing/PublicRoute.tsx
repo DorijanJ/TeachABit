@@ -12,7 +12,7 @@ export default function PublicRoute(props: PrivateRouteProps) {
 
     const isLoggedIn = globalContext.userIsLoggedIn;
 
-    if (isLoggedIn === undefined) return <></>;
+    if (isLoggedIn === undefined) return <Navigate to="/" />;
 
     return isLoggedIn === false ? (
         <GenericRoute page={props.page} withNavigation={props.withNavigation} />

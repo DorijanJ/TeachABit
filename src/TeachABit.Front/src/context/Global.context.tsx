@@ -9,6 +9,7 @@ import {
 } from "react";
 import { AppUserDto } from "../models/AppUserDto";
 import { LevelPristupa } from "../enums/LevelPristupa";
+import Uloga from "../models/Uloga";
 
 interface GlobalContextProps {
     userIsLoggedIn: boolean | undefined;
@@ -17,6 +18,8 @@ interface GlobalContextProps {
     setCurrentUser: Dispatch<SetStateAction<AppUserDto | undefined>>;
     hasPermissions: (level: LevelPristupa) => boolean;
 }
+
+const ROLES = "roles";
 
 const GlobalContext = createContext<GlobalContextProps>({
     currentUser: undefined,
@@ -40,10 +43,17 @@ export function GlobalContextProvider({ children }: ProviderProps) {
 
     const hasPermissions = useCallback(
         (level: LevelPristupa) => {
-            return (
+            var has =
                 currentUser?.roles?.find((x) => x.levelPristupa >= level) !==
-                undefined
-            );
+                undefined;
+            if (!has) {
+                const updatedRoles = localStorage.getItem(ROLES);
+                if (updatedRoles == null) return false;
+                const r: Uloga[] = JSON.parse(updatedRoles);
+                if (r.find((x) => x.levelPristupa >= level) !== undefined)
+                    has = true;
+            }
+            return has;
         },
         [currentUser]
     );

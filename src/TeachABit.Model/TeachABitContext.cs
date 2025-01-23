@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Objave;
@@ -8,8 +9,12 @@ using TeachABit.Model.Models.Uloge;
 
 namespace TeachABit.Model
 {
-    public class TeachABitContext(DbContextOptions options) : IdentityDbContext<Korisnik, Uloga, string>(options)
+    public class TeachABitContext : IdentityDbContext<Korisnik, Uloga, string, IdentityUserClaim<string>, KorisnikUloga, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
+        public TeachABitContext(DbContextOptions<TeachABitContext> options) : base(options)
+        {
+        }
+
         public DbSet<Tecaj> Tecajevi { get; set; }
         public DbSet<Objava> Objave { get; set; }
         public DbSet<Radionica> Radionice { get; set; }
@@ -28,8 +33,11 @@ namespace TeachABit.Model
         public DbSet<KorisnikTecajOcjena> KorisnikTecajOcjene { get; set; }
         public DbSet<RadionicaOcjena> RadionicaOcjene { get; set; }
         public DbSet<RadionicaKomentar> RadionicaKomentari { get; set; }
+        public DbSet<KorisnikStatus> KorisnikStatusi { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
             base.OnModelCreating(builder);
 
             builder.Entity<Korisnik>(b =>

@@ -1,6 +1,12 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import globalStore from "../stores/GlobalStore";
 import { ApiResponseDto } from "../models/common/ApiResponseDto";
+import { RefreshUserInfoDto } from "../models/common/RefreshUserInfoDto";
+import useAuth from "../hooks/useAuth";
+
+const USERNAME_KEY = "username";
+const ID_KEY = "id";
+const ROLES = "roles";
 
 interface RequestInjector extends InternalAxiosRequestConfig {
     loading?: boolean;
@@ -21,6 +27,8 @@ axios.interceptors.request.use(async (config: RequestInjector) => {
 
 axios.interceptors.response.use(
     (response) => {
+        var userInfo: RefreshUserInfoDto = response.data.refreshUserInfo;
+
         const config = response.config as RequestInjector;
         if (config.loadingTimeoutId) {
             clearTimeout(config.loadingTimeoutId);
@@ -29,9 +37,32 @@ axios.interceptors.response.use(
             globalStore.decrementPageLoading();
         }
 
+        const reissuedMessage = response.headers["reissued-message"];
+
+        if (reissuedMessage && !userInfo) {
+            const reissuedMessageData = JSON.parse(reissuedMessage);
+            userInfo = reissuedMessageData;
+        }
+
+        if (userInfo) {
+            if (userInfo.isAuthenticated) {
+                localStorage.setItem(USERNAME_KEY, userInfo.userName);
+                localStorage.setItem(ID_KEY, userInfo.id);
+                localStorage.setItem(ROLES, JSON.stringify(userInfo.roles));
+                window.location.reload();
+            } else {
+                localStorage.removeItem(USERNAME_KEY);
+                localStorage.removeItem(ID_KEY);
+                localStorage.removeItem(ROLES);
+                window.location.reload();
+            }
+        }
+
         return response.data;
     },
     (error) => {
+        const userInfo: RefreshUserInfoDto =
+            error.response?.data?.refreshUserInfo;
         const config = error.config as RequestInjector;
         if (config?.loadingTimeoutId) {
             clearTimeout(config.loadingTimeoutId);
@@ -53,6 +84,21 @@ axios.interceptors.response.use(
                 severity: responseData?.message?.severity ?? "error",
             });
         }
+
+        if (userInfo) {
+            if (userInfo.isAuthenticated) {
+                localStorage.setItem(USERNAME_KEY, userInfo.userName);
+                localStorage.setItem(ID_KEY, userInfo.id);
+                localStorage.setItem(ROLES, JSON.stringify(userInfo.roles));
+                window.location.reload();
+            } else {
+                localStorage.removeItem(USERNAME_KEY);
+                localStorage.removeItem(ID_KEY);
+                localStorage.removeItem(ROLES);
+                window.location.reload();
+            }
+        }
+
         return Promise.reject({
             data: responseData,
         });

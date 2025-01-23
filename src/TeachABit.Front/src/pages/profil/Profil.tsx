@@ -24,6 +24,8 @@ import CustomSliderRadionica from "../profil/CustomSliderRadionica";
 import { TecajDto } from "../../models/TecajDto";
 import { LevelPristupa } from "../../enums/LevelPristupa";
 import { RadionicaDto } from "../../models/RadionicaDto";
+import { KorisnikStatus } from "../../enums/KorisnikStatus";
+import MicOffIcon from "@mui/icons-material/MicOff";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -50,6 +52,24 @@ export default function Profil() {
             setUser(response.data);
             const uloge: Uloga[] = response.data.roles;
             setSelectedUloga(getHighestLevelUloga(uloge));
+        }
+    };
+
+    const UtisajKorisnika = async (username: string) => {
+        const response = await requests.postWithLoading(
+            `account/${username}/utisaj`
+        );
+        if (response && response.message?.severity === "success") {
+            GetUserByUsername(username);
+        }
+    };
+
+    const OdTisajKorisnika = async (username: string) => {
+        const response = await requests.deleteWithLoading(
+            `account/${username}/utisaj`
+        );
+        if (response && response.message?.severity === "success") {
+            GetUserByUsername(username);
         }
     };
 
@@ -135,7 +155,7 @@ export default function Profil() {
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
-                                gap: "10px",
+                                gap: "5px",
                             }}
                         >
                             <Avatar sx={{ width: 100, height: 100 }}>
@@ -147,13 +167,15 @@ export default function Profil() {
                                                 width: "100%",
                                                 height: "100%",
                                             }}
-                                            src={`${import.meta.env
-                                                .VITE_REACT_AWS_BUCKET
-                                                }${user.id}${user.profilnaSlikaVersion
+                                            src={`${
+                                                import.meta.env
+                                                    .VITE_REACT_AWS_BUCKET
+                                            }${user.id}${
+                                                user.profilnaSlikaVersion
                                                     ? "?version=" +
-                                                    user.profilnaSlikaVersion
+                                                      user.profilnaSlikaVersion
                                                     : ""
-                                                }`}
+                                            }`}
                                         />
                                     </>
                                 ) : (
@@ -186,19 +208,29 @@ export default function Profil() {
                                     alignItems: "center",
                                 }}
                             >
-                                <Typography variant="h5">
+                                <Typography variant="h4" sx={{ margin: 0 }}>
                                     <b>{user.username} </b>
                                 </Typography>
                                 {user.verifikacijaStatusId ===
                                     VerifikacijaEnum.Verificiran && (
-                                        <VerifiedIcon
-                                            sx={{
-                                                height: "25px",
-                                                width: "25px",
-                                                color: "#922728",
-                                            }}
-                                        />
-                                    )}
+                                    <VerifiedIcon
+                                        sx={{
+                                            height: "25px",
+                                            width: "25px",
+                                            color: "#922728",
+                                        }}
+                                    />
+                                )}
+                                {user.korisnikStatusId ===
+                                    KorisnikStatus.Utisan && (
+                                    <MicOffIcon
+                                        sx={{
+                                            height: "25px",
+                                            width: "25px",
+                                            color: "#922728",
+                                        }}
+                                    />
+                                )}
                             </div>
                             <div
                                 style={{
@@ -206,13 +238,14 @@ export default function Profil() {
                                     flexDirection: "column",
                                     alignItems: "center",
                                     gap: "10px",
+                                    height: "110px",
                                 }}
                             >
                                 {globalContext.hasPermissions(
                                     LevelPristupa.Admin
                                 ) &&
-                                    selectedUloga !== "Admin" &&
-                                    username !==
+                                selectedUloga !== "Admin" &&
+                                username !==
                                     globalContext.currentUser?.username ? (
                                     <Select
                                         sx={{ minWidth: "100px" }}
@@ -233,12 +266,25 @@ export default function Profil() {
                                 ) : (
                                     <>{selectedUloga}</>
                                 )}
-                                {username ===
-                                    globalContext.currentUser?.username && (
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        width: "100%",
+                                        justifyContent: "center",
+                                        gap: "10px",
+                                        height: "70px",
+                                    }}
+                                >
+                                    {username ===
+                                        globalContext.currentUser?.username && (
                                         <>
-                                            {user.verifikacijaStatusNaziv && (
+                                            {user.verifikacijaStatusId ===
+                                                VerifikacijaEnum.ZahtjevPoslan && (
                                                 <p style={{ margin: 0 }}>
-                                                    {user.verifikacijaStatusNaziv}
+                                                    {
+                                                        user.verifikacijaStatusNaziv
+                                                    }
                                                 </p>
                                             )}
                                             {username ===
@@ -258,6 +304,38 @@ export default function Profil() {
                                                 )}
                                         </>
                                     )}
+                                    {globalContext.hasPermissions(
+                                        LevelPristupa.Moderator
+                                    ) &&
+                                        user.roles?.find(
+                                            (x) =>
+                                                x.levelPristupa >=
+                                                LevelPristupa.Moderator
+                                        ) === undefined && (
+                                            <Button
+                                                onClick={() => {
+                                                    if (!username) return;
+                                                    if (
+                                                        user.korisnikStatusId ===
+                                                        KorisnikStatus.Utisan
+                                                    )
+                                                        OdTisajKorisnika(
+                                                            username
+                                                        );
+                                                    else
+                                                        UtisajKorisnika(
+                                                            username
+                                                        );
+                                                }}
+                                                variant="contained"
+                                            >
+                                                {user.korisnikStatusId ===
+                                                KorisnikStatus.Utisan
+                                                    ? "Odtišaj korisnika"
+                                                    : "Utišaj korisnika"}
+                                            </Button>
+                                        )}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
