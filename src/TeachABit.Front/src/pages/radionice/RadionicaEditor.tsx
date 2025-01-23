@@ -16,6 +16,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
+import ImageUploadComponent from "../../components/ImageUploadComponent";
 /*import { Today } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
 import { isToday } from "date-fns";*/
@@ -41,6 +42,7 @@ export default function RadionicaEditor(props: Props) {
         maksimalniKapacitet: props.radionica?.maksimalniKapacitet,
         vrijemeRadionice: props.radionica?.vrijemeRadionice,
         cijena: props.radionica?.cijena,
+        naslovnaSlikaVersion: props.radionica?.naslovnaSlikaVersion,
     });
 
     const handleClose = (reload: boolean = false) => {
@@ -49,6 +51,8 @@ export default function RadionicaEditor(props: Props) {
             opis: "",
             cijena: undefined,
             vrijemeRadionice: undefined,
+            //kapacitet: undefined,
+            naslovnaSlikaVersion: undefined,
         });
         props.onClose();
         if (reload) props.refreshData();
@@ -65,6 +69,7 @@ export default function RadionicaEditor(props: Props) {
             cijena: radionica.cijena,
             maksimalniKapacitet: radionica?.maksimalniKapacitet,
             vrijemeRadionice: radionica?.vrijemeRadionice,
+            naslovnaSlikaVersion: radionica?.naslovnaSlikaVersion,
         };
         const response = await requests.putWithLoading(
             "radionice",
@@ -262,6 +267,25 @@ export default function RadionicaEditor(props: Props) {
                             />
                         </LocalizationProvider>
                     </div>
+
+                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            gap: "10px",
+                                        }}
+                                    >
+                                        <ImageUploadComponent
+                                            setFile={(file: string) => {
+                                                setRadionica((prev: any) => ({
+                                                    ...prev,
+                                                    naslovnaSlikaVersion: file,
+                                                }));
+                                            }}
+                                            ratio="2/1"
+                                            width={"70%"}
+                                        />
+                                    </div>
                 </DialogContent>
 
                 <DialogActions>

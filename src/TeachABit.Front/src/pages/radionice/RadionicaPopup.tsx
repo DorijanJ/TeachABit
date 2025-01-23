@@ -1,199 +1,201 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-/*import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
-import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-import { ChangeEvent } from "react";*/
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Box,
+  Typography,
+} from "@mui/material";
 import { RadionicaDto } from "../../models/RadionicaDto";
-//import Radionica from "./Radionica";
 import UserLink from "../profil/UserLink";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
-import Radionica from "./Radionica";
+/*import requests from "../../api/agent";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";*/
 
 interface Props {
-    onConfirm: () => Promise<any>;
-    onClose: () => void;
-    radionica?: RadionicaDto;
+  onConfirm: () => Promise<any>;
+  onClose: () => void;
+  radionica: RadionicaDto;
 }
 
+//const { radionicaId } = useParams();
+
 export default function RadionicaPopup(props: Props) {
+  /*
+    const { radionicaId } = useParams();
+
+    useEffect(() => {
+        if (radionicaId) {
+            getRadionicaById(parseInt(radionicaId));
+        }
+    }, [radionicaId]);
+
+    const getRadionicaById = async (radionicaId: number) => {
+        const response = await requests.getWithLoading(
+            `radionice/${radionicaId}`
+        );
+    };*/
 
   return (
     <>
-    <Dialog
-        open
-        maxWidth={"md"}
-    >
-        <DialogTitle >
+      <Dialog open onClose={props.onClose} maxWidth={"md"} id="radionicaPopup">
+        <DialogTitle sx={{ maxWidth: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              width: "100%",
+            }}
+          >
             <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    width: "100%",
-                }}
+              style={{
+                overflowX: "hidden",
+                whiteSpace: "normal",
+                maxWidth: "80%",
+              }}
             >
-                <div
-                    style={{
-                        overflowX: "hidden",
-                        whiteSpace: "normal",
-                        maxWidth: "80%",
-                    }}
-                >
-                    {props.radionica?.naziv}
-                </div>
+              {"Podaci o radionici"}
             </div>
+          </div>
         </DialogTitle>
 
         <DialogContent
-            sx={{
-                height: 600,
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-                paddingTop: "10px !important",
-                width: "100%",
-            }}
-
-            /*
-          bilo bi dobro tu imat nekakvu sliku al je nema trenutno
-        */
+          sx={{
+            height: 600,
+            width: 900,
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+            paddingTop: "10px !important",
+          }}
         >
-            {/* 
-            <TextField
-                fullWidth
-                autoFocus
-                label="Naziv radionice"
-                name="naziv"
-                variant="outlined"
-                //required = {true}
-                
-            />
-              
-            {/* <Box
-                sx={{
-                    border: "blue 1px dotted",
-                }}
-            >
-                Slika neka
-            </Box> }
-            */}
-
-                        <Box
-                            flexDirection={"row"}
-                            alignItems={"center"}
-                            display={"flex"}
-                            justifyContent={"space-between"}
-                            gap="5px"
+          {/* Prikaz vlasnika radionice */}
+          <Box
+            flexDirection={"row"}
+            alignItems={"center"}
+            display={"flex"}
+            justifyContent={"space-between"}
+            gap="5px"
+          >
+            <Box>
+            <Typography
+                            color="primary"
+                            variant="h5"
+                            component="div"
+                            sx={{
+                                overflow: "hidden",
+                                whiteSpace: "break-spaces",
+                                maxWidth: "100%",
+                            }}
                         >
-                            <Box></Box>
-                            <UserLink
-                                user={{
-                                    id: props.radionica?.vlasnikId,
-                                    username: props.radionica?.vlasnikUsername,
-                                    profilnaSlikaVersion:
-                                        props.radionica?.vlasnikProfilnaSlikaVersion,
-                                }}
-                            />
-                        </Box>
-{/*
-            <TextField
-                fullWidth
-                autoFocus
-                label="Opis radionice"
-                name="opis"
-                variant="outlined"
-                multiline
-                rows={2}
-                //required = {true}
-                //value={radionica.opis || ""}
-                /*onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setRadionica((prev: any) => ({
-                        ...prev,
-                        opis: e.target.value,
-                    }))
-                }
-            />*/}
+                            {props.radionica.naziv}
+                        </Typography>
+            </Box>
 
-            <TeachABitRenderer content={props.radionica?.opis ?? ""} />
+            <UserLink
+              user={{
+                id: props.radionica?.vlasnikId,
+                username: props.radionica?.vlasnikUsername,
+                profilnaSlikaVersion:
+                  props.radionica?.vlasnikProfilnaSlikaVersion,
+              }}
+            />
+          </Box>
 
-            <div
-                title="kapacitet-cijena-vrijeme-wrapper"
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center", // Centriranje po okomitoj osi
-                    flexWrap: "wrap", // Ako nema dovoljno prostora, elementi prelaze u novi red
-                    gap: "20px", // Razmak između elemenata
-                }}
-            >
-                <Box
-                    //autoFocus
-                    //label="Kapacitet"
-                    //variant="outlined"
-                    sx={{
-                        width: "30%",
-                    }}
-                    
-                >
-                    {props.radionica?.maksimalniKapacitet}
+          {/* Opis radionice */}
+          <TeachABitRenderer content={props.radionica?.opis || "Nema opisa"} />
 
-                </Box>
- 
-                <Box sx={{
-                        width: "30%",
-                    }}
-                    >
-                    {props.radionica?.cijena}
-                    
-                    </Box>
+          {/* Kapacitet, cijena i vrijeme */}
+          <div
+            title="kapacitet-cijena-vrijeme-wrapper"
+            style={{
+                //backgroundColor: "lightsteelblue",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "20px",
+            }}
+          >
+            {/* Kapacitet */}
+            <Box sx={{ 
+                //backgroundColor: "lightgray",
+                width: "30%" }}>
+                    Kapacitet: 
+            <Typography
+                            color="primary"
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                overflow: "hidden",
+                                whiteSpace: "break-spaces",
+                                maxWidth: "90%",
+                            }}
+                        >
+                            {props.radionica.maksimalniKapacitet}
+                        </Typography>
+              
+            </Box>
 
-                <Box>
-                    {/*props.radionica?.vrijemeRadionice || undefined*/}
-                </Box>
+            {/* Cijena */}
+            <Box sx={{ //backgroundColor: "lightgray", 
+                width: "30%" }}>
+            Cijena: 
+            <Typography
+                            color="primary"
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                overflow: "hidden",
+                                whiteSpace: "break-spaces",
+                                maxWidth: "90%",
+                            }}
+                        >
+                            {props.radionica.cijena}
+                        </Typography>
+            </Box>
 
-                {/*<LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                        label="Datum i vrijeme"
-                        sx={{
-                            width: "30%",
-                        }}
-                        ampm={false}
-                        disablePast={true}
-                        viewRenderers={{
-                            hours: renderTimeViewClock,
-                            minutes: renderTimeViewClock,
-                            seconds: renderTimeViewClock,
-                        }}
-                    />
-                </LocalizationProvider>*/}
-            </div>
+            {/* Vrijeme */}
+            <Box sx={{ //backgroundColor: "lightgray", 
+                width: "30%" }}>
+                Datum i vrijeme radionice: 
+            <Typography
+                            color="primary"
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                overflow: "hidden",
+                                whiteSpace: "break-spaces",
+                                maxWidth: "90%",
+                            }}
+                        >
+                            {props.radionica?.vrijemeRadionice
+                ? new Date(props.radionica.vrijemeRadionice).toLocaleString()
+                : undefined}
+                        </Typography>
+            </Box>
+          </div>
         </DialogContent>
 
         <DialogActions>
-            <Button variant="outlined" onClick={props.onClose}>
-                Odustani
-            </Button>
-            <Button
-                //disabled = {!radionica.cijena}
-                variant="contained"
-
-                /*tu treba dodat plaćanje!!!*/
-
-                /*onClick={() => {
-                    if (!radionica.id) {
-                        handleStvoriRadionicu(radionica);
-                    } else {
-                        handleUpdateRadionicu(radionica);
-                    }
-                }}*/
-            >
-                {props.radionica?.cijena}€
-            </Button>
+          <Button variant="outlined" onClick={props.onClose}>
+            Odustani
+          </Button>
+          <Button
+            id="confirmButton"
+            variant="contained"
+            onClick={props.onConfirm}
+          >
+            {props.radionica?.cijena
+              ? ` ${props.radionica.cijena} €`
+              : "Prijavi se"}
+          </Button>
         </DialogActions>
-    </Dialog>
-</>
-);
-
+      </Dialog>
+    </>
+  );
 }

@@ -5,4 +5,5 @@ export interface UpdateRadionicaDto {
   cijena: number;
   maksimalniKapacitet?: number;
   vrijemeRadionice?: Date;
+  naslovnaSlikaVersion?: string;
 }

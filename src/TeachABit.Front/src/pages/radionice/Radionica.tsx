@@ -4,17 +4,22 @@ import UserLink from "../profil/UserLink";
 import { useNavigate } from "react-router-dom";
 import { RadionicaDto } from "../../models/RadionicaDto";
 import RadionicaPopup from "./RadionicaPopup";
+import { useGlobalContext } from "../../context/Global.context";
 
 interface Props {
   radionica: RadionicaDto;
   onClose: () => void;
 }
 
+const uzivo = false;
+const kupljenaRadionica = false;
+
 export default function Radionica(props: Props) {
   const navigate = useNavigate();
   const naslovRef = useRef<HTMLDivElement>(null);
   const opisRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const globalContext = useGlobalContext();
   const [applyFade, setApplyFade] = useState(false);
   const [isSadrzajOpen, setIsSadrzajOpen] = useState(false);
 
@@ -41,7 +46,7 @@ export default function Radionica(props: Props) {
     }
   }, [props.radionica.naziv, props.radionica.opis]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (props.radionica.vrijemeRadionice === undefined) return;
     const updateRemainingTime = () => {
       const vrijemeradionice = new Date(props.radionica.vrijemeRadionice!);
@@ -74,10 +79,11 @@ export default function Radionica(props: Props) {
 
   return (
     <>
-      {isSadrzajOpen && (
+      {isSadrzajOpen && !(globalContext.currentUser?.id === props.radionica.vlasnikId) && (
         <RadionicaPopup
           onClose={() => setIsSadrzajOpen(false)}
           onConfirm={() => pom_fja()}
+          radionica={props.radionica}
         />
       )}
 
@@ -97,8 +103,7 @@ export default function Radionica(props: Props) {
           },
           height: "360px",
         }}
-        onClick={() => {
-          setIsSadrzajOpen(true);
+        onClick={() => { (globalContext.currentUser?.id === props.radionica.vlasnikId || kupljenaRadionica)? navigate(`/radionica/${props.radionica.id}`): setIsSadrzajOpen(true);
         }}
       >
         <CardContent
@@ -201,7 +206,13 @@ export default function Radionica(props: Props) {
               gap={0.7}
             >
               {props.radionica.cijena && props.radionica.cijena > 0 && (
-                <Button disabled variant="contained">
+                <Button
+                sx={{
+                    "&:hover": {
+                                
+                            },
+                }}
+                variant="contained">
                   {props.radionica.cijena}€
                 </Button>
               )}
