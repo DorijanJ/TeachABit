@@ -23,7 +23,7 @@ public class CreateOrUpdateRadionicaDto
 
     public string? VlasnikId { get; set; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Datum je obavezan.")]
     [BuduciDatumValidation]
     public DateTime VrijemeRadionice { get; set; }
 

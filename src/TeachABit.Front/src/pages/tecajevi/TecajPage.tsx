@@ -57,7 +57,7 @@ export default function TecajPage() {
                 `tecajevi/${tecajId}`
             );
             if (response && response.message?.severity === "success")
-                navigate("/tecajevi");
+                navigate(-1);
         }
     };
 
@@ -98,7 +98,7 @@ export default function TecajPage() {
                     }}
                 >
                     <IconButton
-                        onClick={() => navigate("/tecajevi")}
+                        onClick={() => navigate(-1)}
                         sx={{
                             color: "#3a7ca5",
                             "&:hover": {
@@ -158,32 +158,32 @@ export default function TecajPage() {
                             globalContext.hasPermissions(
                                 LevelPristupa.Moderator
                             )) && (
-                            <Box
-                                display={"flex"}
-                                flexDirection={"row"}
-                                alignItems={"center"}
-                                marginLeft={1}
-                            >
-                                <IconButton
-                                    onClick={() => handleTecajPopupOpen()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
+                                <Box
+                                    display={"flex"}
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
+                                    marginLeft={1}
                                 >
-                                    <EditIcon color="primary"></EditIcon>
-                                </IconButton>
-                                <IconButton
-                                    onClick={() => setIsPotvrdaOpen(true)}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <DeleteIcon color="primary"></DeleteIcon>
-                                </IconButton>
-                            </Box>
-                        )}
+                                    <IconButton
+                                        onClick={() => handleTecajPopupOpen()}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <EditIcon color="primary"></EditIcon>
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() => setIsPotvrdaOpen(true)}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <DeleteIcon color="primary"></DeleteIcon>
+                                    </IconButton>
+                                </Box>
+                            )}
                     </div>
 
                     {tecaj.naslovnaSlikaVersion && (
@@ -202,9 +202,8 @@ export default function TecajPage() {
                                     objectFit: "cover",
                                     width: "70%",
                                 }}
-                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                                    tecaj.naslovnaSlikaVersion
-                                }`}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${tecaj.naslovnaSlikaVersion
+                                    }`}
                             />
                         </div>
                     )}

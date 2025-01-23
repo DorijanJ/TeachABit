@@ -61,8 +61,7 @@ export default function Tecaj(props: Props) {
                     transform: "scale(1.03)",
                     border: "1px solid #3a7ca5",
                 },
-                height: "370px",
-                minWidth: "370px",
+                minWidth: "340px"
             }}
         >
             <CardContent
@@ -79,6 +78,7 @@ export default function Tecaj(props: Props) {
                         display: "flex",
                         gap: "10px",
                         flexDirection: "column",
+                        alignItems: "center"
                     }}
                 >
                     <Box
@@ -90,51 +90,46 @@ export default function Tecaj(props: Props) {
                         <Typography
                             color="primary"
                             variant="h5"
-                            component="div"
                             sx={{
                                 textAlign: "left",
+                                width: "100%",
+                                overflowWrap: "break-word",
+                                wordBreak: "break-word",
                                 display: "-webkit-box",
+                                WebkitLineClamp: 3,
                                 WebkitBoxOrient: "vertical",
                                 overflow: "hidden",
-                                WebkitLineClamp: 3,
-                                maxWidth: "100%",
                                 height: "6rem",
-                                color:
-                                    props.tecaj.kupljen === true ||
-                                    !props.tecaj.cijena ||
-                                    globalContext.currentUser?.id ===
-                                        props.tecaj.vlasnikId
-                                        ? "primary"
-                                        : "lightgray",
-                                marginBottom: "0px",
                             }}
                         >
                             {props.tecaj.naziv}
                         </Typography>
                     </Box>
-                    {props.tecaj.naslovnaSlikaVersion ? (
-                        <img
-                            style={{
-                                borderRadius: "10px",
-                                objectFit: "cover",
-                                width: "340px",
-                                height: "170px",
-                            }}
-                            src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                                props.tecaj?.naslovnaSlikaVersion
-                            }`}
-                        />
-                    ) : (
-                        <div
-                            style={{
-                                borderRadius: "10px",
-                                objectFit: "cover",
-                                width: "340px",
-                                height: "170px",
-                                backgroundColor: "lightblue",
-                            }}
-                        />
-                    )}
+                    <div style={{ width: "100%", aspectRatio: "2/1" }}>
+                        {props.tecaj.naslovnaSlikaVersion ? (
+                            <img
+                                style={{
+                                    borderRadius: "10px",
+                                    maxHeight: "100%",
+                                    width: "100%",
+                                    objectFit: "contain"
+                                }}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${props.tecaj?.naslovnaSlikaVersion
+                                    }`}
+                                alt="Greška pri učitavanju slike."
+                            />
+                        ) : (
+                            <div
+                                style={{
+                                    borderRadius: "10px",
+                                    objectFit: "cover",
+                                    width: "100%",
+                                    height: "100%",
+                                    backgroundColor: "lightblue",
+                                }}
+                            />
+                        )}
+                    </div>
                 </div>
                 <div
                     style={{

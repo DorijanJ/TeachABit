@@ -158,7 +158,7 @@ export default function TecajPopup(props: Props) {
                 />
                 <label>Opis:</label>
                 <TeachABitEditor
-                    content={props.tecaj?.opis}
+                    content={tecaj.opis}
                     onUpdate={(v) =>
                         setTecaj((prev: any) => ({
                             ...prev,

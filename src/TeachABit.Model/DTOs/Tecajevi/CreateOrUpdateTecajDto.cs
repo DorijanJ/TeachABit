@@ -12,7 +12,7 @@ public class CreateOrUpdateTecajDto
     [MinLength(1, ErrorMessage = "Naziv ne smije biti prazan.")]
     public string Naziv { get; set; } = string.Empty;
 
-    [CijenaValidation]
+    [OpcionalnaCijenaValidation]
     public decimal? Cijena { get; set; } = null;
 
     [Required(ErrorMessage = "Opis ne smije biti prazan.")]

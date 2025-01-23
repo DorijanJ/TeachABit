@@ -10,7 +10,7 @@ namespace TeachABit.Model.ValidationAttributes
         {
             if (value is DateTime dateTimeValue)
             {
-                return dateTimeValue > DateTime.Now;
+                return dateTimeValue > DateTime.UtcNow;
             }
             return false;
         }
