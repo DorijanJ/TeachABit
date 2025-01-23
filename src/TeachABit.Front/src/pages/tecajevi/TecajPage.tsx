@@ -13,6 +13,7 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import TecajKomentari from "./TecajKomentari";
 import { LevelPristupa } from "../../enums/LevelPristupa";
 import TecajPopup from "./TecajPopup";
+import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 
 export default function TecajPage() {
     const { tecajId } = useParams();
@@ -29,6 +30,9 @@ export default function TecajPage() {
     const [popupOpen, setTecajDialogOpen] = useState(false);
     const handleTecajPopupOpen = () => setTecajDialogOpen(true);
     const handleTecajPopupClose = () => setTecajDialogOpen(false);
+
+    /* potvrda za brisanje tecaja */
+    const [isPotvrdaOpen, setIsPotvrdaOpen] = useState(false);
 
     useEffect(() => {
         fetchTecaj();
@@ -48,15 +52,32 @@ export default function TecajPage() {
     };
 
     const deleteTecaj = async () => {
-        const response = await requests.deleteWithLoading(
-            `tecajevi/${tecajId}`
-        );
-        if (response && response.message?.severity === "success")
-            navigate("/tecajevi");
+        if (tecajId) {
+            const response = await requests.deleteWithLoading(
+                `tecajevi/${tecajId}`
+            );
+            if (response && response.message?.severity === "success")
+                navigate(-1);
+        }
     };
 
     return (
         <>
+            <TecajPopup
+                isOpen={popupOpen}
+                onClose={handleTecajPopupClose}
+                refreshData={fetchTecaj}
+                tecaj={tecaj}
+                editing={true}
+            />
+            {isPotvrdaOpen && (
+                <PotvrdiPopup
+                    onConfirm={() => deleteTecaj()}
+                    onClose={() => setIsPotvrdaOpen(false)}
+                    tekstPitanje="Jeste li sigurni da želite izbrisati tečaj?"
+                    tekstOdgovor="Izbriši"
+                />
+            )}
             <Card
                 sx={{
                     width: "100%",
@@ -66,14 +87,19 @@ export default function TecajPage() {
                 }}
             >
                 <Box
+                    display={"flex"}
+                    flexDirection={"row"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        margin: "10px",
+                        paddingTop: "20px",
+                        paddingLeft: "10px"
                     }}
                 >
                     <IconButton
-                        onClick={() => navigate("/tecajevi")}
+                        onClick={() => navigate(-1)}
                         sx={{
                             color: "#3a7ca5",
                             "&:hover": {
@@ -87,14 +113,16 @@ export default function TecajPage() {
                             }}
                         />
                     </IconButton>
+                    <UserLink
+                        user={{
+                            id: tecaj.vlasnikId,
+                            username: tecaj.vlasnikUsername,
+                            profilnaSlikaVersion:
+                                tecaj.vlasnikProfilnaSlikaVersion,
+                        }}
+                    />
                 </Box>
-                <TecajPopup
-                    isOpen={popupOpen}
-                    onClose={handleTecajPopupClose}
-                    refreshData={fetchTecaj}
-                    tecaj={tecaj}
-                    editing={true}
-                />
+
                 <CardContent
                     sx={{
                         display: "flex",
@@ -108,8 +136,10 @@ export default function TecajPage() {
                         style={{
                             width: "100%",
                             display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
+                            flexDirection: "column",
+                            //justifyContent: "space-between",
+                            alignItems: "flex-start",
+                            flexWrap: "wrap",
                         }}
                     >
                         <Typography
@@ -117,32 +147,46 @@ export default function TecajPage() {
                             variant="h5"
                             component="div"
                             sx={{
-                                textOverflow: "ellipsis",
-                                overflow: "hidden",
-                                whiteSpace: "nowrap",
+                                wordWrap: "break-word",
                                 maxWidth: "100%",
                                 color: "black",
+                                padding: "0 10px"
                             }}
                         >
                             {tecaj.naziv}
                         </Typography>
-                        <Box
-                            flexDirection={"row"}
-                            alignItems={"center"}
-                            display={"flex"}
-                            justifyContent={"space-between"}
-                            gap="5px"
-                        >
-                            <UserLink
-                                user={{
-                                    id: tecaj.vlasnikId,
-                                    username: tecaj.vlasnikUsername,
-                                    profilnaSlikaVersion:
-                                        tecaj.vlasnikProfilnaSlikaVersion,
-                                }}
-                            />
-                        </Box>
+
+                        {(globalContext.currentUser?.id === tecaj.vlasnikId ||
+                            globalContext.hasPermissions(
+                                LevelPristupa.Moderator
+                            )) && (
+                                <Box
+                                    display={"flex"}
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
+                                >
+                                    <IconButton
+                                        onClick={() => handleTecajPopupOpen()}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <EditIcon color="primary"></EditIcon>
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() => setIsPotvrdaOpen(true)}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <DeleteIcon color="primary"></DeleteIcon>
+                                    </IconButton>
+                                </Box>
+                            )}
                     </div>
+
                     {tecaj.naslovnaSlikaVersion && (
                         <div
                             style={{
@@ -159,52 +203,23 @@ export default function TecajPage() {
                                     objectFit: "cover",
                                     width: "70%",
                                 }}
-                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                                    tecaj.naslovnaSlikaVersion
-                                }`}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${tecaj.naslovnaSlikaVersion
+                                    }`}
                             />
                         </div>
                     )}
-                    <label>Opis tečaja:</label>
+
                     <TeachABitRenderer content={tecaj.opis} />
 
                     {/* Popis lekcija */}
-                    {tecaj.lekcije && <Lekcije lekcije={tecaj.lekcije} />}
-
-                    {/* Edit i Delete button */}
-                    <Box
-                        display={"flex"}
-                        flexDirection={"row"}
-                        justifyContent={"flex-end"}
-                        alignItems={"center"}
-                        gap="10px"
-                    >
-                        {(globalContext.currentUser?.id === tecaj.vlasnikId ||
-                            globalContext.hasPermissions(
-                                LevelPristupa.Moderator
-                            )) && (
-                            <>
-                                <IconButton
-                                    onClick={() => handleTecajPopupOpen()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <EditIcon color="primary"></EditIcon>
-                                </IconButton>
-                                <IconButton
-                                    onClick={() => deleteTecaj()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <DeleteIcon color="primary"></DeleteIcon>
-                                </IconButton>
-                            </>
-                        )}
-                    </Box>
+                    {tecaj.lekcije && tecajId && (
+                        <Lekcije
+                            lekcije={tecaj.lekcije}
+                            refreshData={fetchTecaj}
+                            tecajId={parseInt(tecajId)}
+                            vlasnikId={tecaj.vlasnikId}
+                        />
+                    )}
 
                     {tecaj.id && <TecajKomentari tecajId={tecaj.id} />}
                 </CardContent>

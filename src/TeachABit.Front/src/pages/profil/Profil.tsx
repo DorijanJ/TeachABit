@@ -125,10 +125,11 @@ export default function Profil() {
                 <Box
                     display="flex"
                     flexDirection={"row"}
-                    justifyContent={"flex-start"}
+                    justifyContent={"center"}
+                    width={"100%"}
                     gap="10px"
                 >
-                    <Card sx={{ width: 400, minWidth: 300 }}>
+                    <Card sx={{ minWidth: 300, width: "100%" }}>
                         <CardContent
                             sx={{
                                 display: "flex",
@@ -146,15 +147,13 @@ export default function Profil() {
                                                 width: "100%",
                                                 height: "100%",
                                             }}
-                                            src={`${
-                                                import.meta.env
-                                                    .VITE_REACT_AWS_BUCKET
-                                            }${user.id}${
-                                                user.profilnaSlikaVersion
+                                            src={`${import.meta.env
+                                                .VITE_REACT_AWS_BUCKET
+                                                }${user.id}${user.profilnaSlikaVersion
                                                     ? "?version=" +
-                                                      user.profilnaSlikaVersion
+                                                    user.profilnaSlikaVersion
                                                     : ""
-                                            }`}
+                                                }`}
                                         />
                                     </>
                                 ) : (
@@ -192,14 +191,14 @@ export default function Profil() {
                                 </Typography>
                                 {user.verifikacijaStatusId ===
                                     VerifikacijaEnum.Verificiran && (
-                                    <VerifiedIcon
-                                        sx={{
-                                            height: "25px",
-                                            width: "25px",
-                                            color: "#922728",
-                                        }}
-                                    />
-                                )}
+                                        <VerifiedIcon
+                                            sx={{
+                                                height: "25px",
+                                                width: "25px",
+                                                color: "#922728",
+                                            }}
+                                        />
+                                    )}
                             </div>
                             <div
                                 style={{
@@ -212,10 +211,11 @@ export default function Profil() {
                                 {globalContext.hasPermissions(
                                     LevelPristupa.Admin
                                 ) &&
-                                selectedUloga !== "Admin" &&
-                                username !==
+                                    selectedUloga !== "Admin" &&
+                                    username !==
                                     globalContext.currentUser?.username ? (
                                     <Select
+                                        sx={{ minWidth: "100px" }}
                                         value={selectedUloga}
                                         onChange={(e) =>
                                             UpdateKorisnikUloga(e.target.value)
@@ -235,29 +235,29 @@ export default function Profil() {
                                 )}
                                 {username ===
                                     globalContext.currentUser?.username && (
-                                    <>
-                                        {user.verifikacijaStatusNaziv && (
-                                            <p style={{ margin: 0 }}>
-                                                {user.verifikacijaStatusNaziv}
-                                            </p>
-                                        )}
-                                        {username ===
-                                            globalContext.currentUser
-                                                ?.username &&
-                                            !user.verifikacijaStatusId && (
-                                                <Button
-                                                    variant="contained"
-                                                    onClick={() =>
-                                                        SendVerificaitonRequest()
-                                                    }
-                                                >
-                                                    {
-                                                        "Pošalji zahtjev za verifikacijom."
-                                                    }
-                                                </Button>
+                                        <>
+                                            {user.verifikacijaStatusNaziv && (
+                                                <p style={{ margin: 0 }}>
+                                                    {user.verifikacijaStatusNaziv}
+                                                </p>
                                             )}
-                                    </>
-                                )}
+                                            {username ===
+                                                globalContext.currentUser
+                                                    ?.username &&
+                                                !user.verifikacijaStatusId && (
+                                                    <Button
+                                                        variant="contained"
+                                                        onClick={() =>
+                                                            SendVerificaitonRequest()
+                                                        }
+                                                    >
+                                                        {
+                                                            "Pošalji zahtjev za verifikacijom."
+                                                        }
+                                                    </Button>
+                                                )}
+                                        </>
+                                    )}
                             </div>
                         </CardContent>
                     </Card>
@@ -267,7 +267,7 @@ export default function Profil() {
                     {tecajList.length > 0 && (
                         <>
                             <Typography variant="h6" sx={{ margin: 0 }}>
-                                {"Moji tečajevi:"}
+                                {"Tečajevi:"}
                             </Typography>
                             <CustomSliderTecaj
                                 tecajevi={tecajList}
@@ -277,7 +277,7 @@ export default function Profil() {
                     {radionicaList.length > 0 && (
                         <>
                             <Typography variant="h6" sx={{ margin: 0 }}>
-                                {"Moje radionice:"}
+                                {"Radionice:"}
                             </Typography>
                             <CustomSliderRadionica
                                 radionice={radionicaList}

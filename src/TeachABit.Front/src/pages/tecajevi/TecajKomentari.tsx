@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { RadionicaKomentarDto } from "../../models/RadionicaKomentarDto";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
 import { Button, Typography } from "@mui/material";

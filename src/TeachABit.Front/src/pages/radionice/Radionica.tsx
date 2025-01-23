@@ -77,8 +77,8 @@ export default function Radionica(props: Props) {
     return () => clearInterval(interval);
   }, [props.radionica.vrijemeRadionice]);
 
-  return (
-    <>
+    return (
+        <>
       {isSadrzajOpen && !(globalContext.currentUser?.id === props.radionica.vlasnikId) && (
         <RadionicaPopup
           onClose={() => setIsSadrzajOpen(false)}
@@ -86,56 +86,66 @@ export default function Radionica(props: Props) {
           radionica={props.radionica}
         />
       )}
-
-      <Card
-        id="radionica"
-        ref={cardRef}
-        sx={{
-          borderRadius: "10px",
-          boxSizing: "border-box",
-          border: "1px solid lightgray",
-          cursor: "pointer",
-          transition: "transform 0.2s, box-shadow 0.2s",
-          "&:hover": {
-            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
-            transform: "scale(1.03)",
-            border: "1px solid #3a7ca5",
-          },
-          height: "360px",
+        <Card
+            id="radionica"
+            ref={cardRef}
+            sx={{
+                borderRadius: "10px",
+                boxSizing: "border-box",
+                border: "1px solid lightgray",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+                    transform: "scale(1.03)",
+                    border: "1px solid #3a7ca5",
+                },
+                height: "370px",
+                minWidth: "340px",
+            }}
+            onClick={() => { (globalContext.currentUser?.id === props.radionica.vlasnikId || kupljenaRadionica)? navigate(`/radionica/${props.radionica.id}`): setIsSadrzajOpen(true);
         }}
-        onClick={() => { (globalContext.currentUser?.id === props.radionica.vlasnikId || kupljenaRadionica)? navigate(`/radionica/${props.radionica.id}`): setIsSadrzajOpen(true);
-        }}
-      >
-        <CardContent
-          sx={{
-            textAlign: "center",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            gap: 1,
-            height: "100%",
-          }}
         >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="flex-start"
-          >
-            <Typography
-              ref={naslovRef}
-              color="primary"
-              variant="h5"
-              component="div"
-              sx={{
-                overflow: "hidden",
-                textAlign: "left",
-                whiteSpace: "wrap",
-                textOverflow: "ellipsis",
-                maxWidth: "70%",
-              }}
+            <CardContent
+                sx={{
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    //justifyContent: "space-between",
+                    gap: "24px",
+                    height: "100%",
+                }}
             >
-              {props.radionica.naziv}
-            </Typography>
+                <Box
+                    display="flex"
+                    //justifyContent="space-between"
+                    gap="10px"
+                    alignItems="flex-start"
+                >
+                    <Typography
+                        ref={naslovRef}
+                        color="primary"
+                        variant="h5"
+                        component="div"
+                        sx={{
+                            /*overflow: "hidden",
+                            textAlign: "left",
+                            whiteSpace: "wrap",
+                            textOverflow: "ellipsis",
+                            maxWidth: "70%",*/
+                            textAlign: "left",
+                            width: "100%",
+                            overflowWrap: "break-word",
+                            wordBreak: "break-word",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            height: "6rem",
+                        }}
+                    >
+                        {props.radionica.naziv}
+                    </Typography>
 
             <Typography
               variant="body2"
@@ -154,33 +164,33 @@ export default function Radionica(props: Props) {
             </Typography>
           </Box>
 
-          <Typography
-            ref={opisRef}
-            variant="body1"
-            component="div"
-            sx={{
-              position: "relative",
-              overflow: "hidden",
-              textAlign: "left",
-              maxHeight: applyFade ? "6rem" : "none", // Dinamično postavljanje visine
-              paddingRight: "1rem",
-              marginBottom: "1rem",
-              "&::after": applyFade
-                ? {
-                    content: '""',
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "3rem", // Fade efekt
-                    background:
-                      "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))",
-                  }
-                : undefined,
-            }}
-          >
-            {props.radionica.opis}
-          </Typography>
+                <Typography
+                    ref={opisRef}
+                    variant="body1"
+                    component="div"
+                    sx={{
+                        position: "relative",
+                        overflow: "hidden",
+                        textAlign: "left",
+                        height: "6rem",
+                        paddingRight: "1rem",
+                        marginBottom: "1rem",
+                        "&::after": applyFade
+                            ? {
+                                content: '""',
+                                position: "absolute",
+                                bottom: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "3rem", // Fade efekt
+                                background:
+                                    "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))",
+                            }
+                            : undefined,
+                    }}
+                >
+                    {props.radionica.opis}
+                </Typography>
 
           <Box
             justifyContent={"flex-end"}

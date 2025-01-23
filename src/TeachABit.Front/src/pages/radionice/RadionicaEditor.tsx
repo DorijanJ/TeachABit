@@ -64,8 +64,6 @@ export default function RadionicaEditor(props: Props) {
             id: radionica.id,
             naziv: radionica.naziv,
             opis: radionica?.opis ?? "",
-            /*predavacProfilnaSlika: props.radionica?.predavacProfilnaSlika,*/
-            //brojprijavljenih: props.radionica?.brojprijavljenih ?? 0,
             cijena: radionica.cijena,
             maksimalniKapacitet: radionica?.maksimalniKapacitet,
             vrijemeRadionice: radionica?.vrijemeRadionice,
@@ -128,9 +126,9 @@ export default function RadionicaEditor(props: Props) {
                         paddingTop: "10px !important",
                     }}
 
-                    /*
-                  bilo bi dobro tu imat nekakvu sliku al je nema trenutno
-                */
+                /*
+              bilo bi dobro tu imat nekakvu sliku al je nema trenutno
+            */
                 >
                     <TextField
                         fullWidth
