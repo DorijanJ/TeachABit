@@ -1,15 +1,18 @@
 import { Avatar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AppUserDto } from "../../models/AppUserDto";
+import { useState } from "react";
 
 interface Props {
     user: AppUserDto;
     width?: number | string;
     fontSize?: number | string;
+    withBackground?: boolean;
 }
 
 export default function UserLink(props: Props) {
     const navigate = useNavigate();
+    const [withBackground] = useState<boolean>(props.withBackground ?? false);
 
     return (
         <div
@@ -17,7 +20,7 @@ export default function UserLink(props: Props) {
             style={{
                 padding: "8px 14px",
                 borderRadius: "3px",
-                backgroundColor: "#f1f1f1",
+                backgroundColor: withBackground ? "#f1f1f1" : "transparent",
                 display: "inline-flex",
                 flexDirection: "row",
                 alignItems: "center",

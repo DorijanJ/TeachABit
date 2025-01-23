@@ -153,6 +153,7 @@ export default function Tecaj(props: Props) {
                                     props.tecaj.vlasnikProfilnaSlikaVersion,
                                 username: props.tecaj.vlasnikUsername,
                             }}
+                            withBackground={true}
                         />
                     </div>
                     {props.tecaj.cijena && props.tecaj.cijena > 0 && (

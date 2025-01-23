@@ -16,6 +16,10 @@ import { TecajDto } from "../../models/TecajDto.ts";
 import TeachABitEditor from "../../components/editor/TeachABitTextEditor.tsx";
 import { useNavigate } from "react-router-dom";
 
+const maxNazivLength = 500;
+const maxOpisLength = 10000;
+const maxCijena = 2000;
+
 interface Props {
     refreshData: () => Promise<any>;
     onClose: () => void;
@@ -76,18 +80,26 @@ export default function TecajPopup(props: Props) {
     const isValidPrice = useMemo(() => {
         const value = tecaj.cijena;
         if (!value) return true;
-        if (isNaN(value) || value <= 0) {
+        if (isNaN(value) || value <= 0 || value > maxCijena) {
             return false;
         }
 
         return true;
     }, [tecaj.cijena]);
 
-    const isEmptyNaziv = useMemo(() => {
+    const isValidNaziv = useMemo(() => {
         const naziv = tecaj.naziv;
-        if (naziv.length == 0) return true;
-        return false;
+        if (naziv.length == 0 || naziv.length > maxNazivLength)
+            return false;
+        return true;
     }, [tecaj.naziv]);
+
+    const isValidOpis = useMemo(() => {
+        const opis = tecaj.opis;
+        if (opis.length == 0 || opis.length > maxOpisLength)
+            return false;
+        return true;
+    }, [tecaj.opis]);
 
     return (
         <Dialog
@@ -136,7 +148,7 @@ export default function TecajPopup(props: Props) {
                     variant="outlined"
                     required={true}
                     fullWidth
-                    defaultValue={tecaj.naziv}
+                    value={tecaj.naziv}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setTecaj((prev: any) => ({
                             ...prev,
@@ -146,6 +158,7 @@ export default function TecajPopup(props: Props) {
                 />
                 <label>Opis:</label>
                 <TeachABitEditor
+                    content={props.tecaj?.opis}
                     onUpdate={(v) =>
                         setTecaj((prev: any) => ({
                             ...prev,
@@ -161,8 +174,7 @@ export default function TecajPopup(props: Props) {
                         width: "200px",
                     }}
                     variant="outlined"
-                    //value={tecaj.cijena}
-                    defaultValue={tecaj.cijena}
+                    value={tecaj.cijena}
                     type="number"
                     slotProps={{
                         input: {
@@ -222,7 +234,7 @@ export default function TecajPopup(props: Props) {
                         Odustani
                     </Button>
                     <Button
-                        disabled={!isValidPrice || isEmptyNaziv}
+                        disabled={!isValidPrice || !isValidNaziv || !isValidOpis}
                         className={localStyles.myButton}
                         variant="contained"
                         onClick={() => {
