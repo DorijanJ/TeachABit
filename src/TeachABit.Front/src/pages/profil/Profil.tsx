@@ -215,6 +215,7 @@ export default function Profil() {
                                     username !==
                                     globalContext.currentUser?.username ? (
                                     <Select
+                                        sx={{ minWidth: "100px" }}
                                         value={selectedUloga}
                                         onChange={(e) =>
                                             UpdateKorisnikUloga(e.target.value)
@@ -266,7 +267,7 @@ export default function Profil() {
                     {tecajList.length > 0 && (
                         <>
                             <Typography variant="h6" sx={{ margin: 0 }}>
-                                {"Moji tečajevi:"}
+                                {"Tečajevi:"}
                             </Typography>
                             <CustomSliderTecaj
                                 tecajevi={tecajList}
@@ -276,7 +277,7 @@ export default function Profil() {
                     {radionicaList.length > 0 && (
                         <>
                             <Typography variant="h6" sx={{ margin: 0 }}>
-                                {"Moje radionice:"}
+                                {"Radionice:"}
                             </Typography>
                             <CustomSliderRadionica
                                 radionice={radionicaList}
