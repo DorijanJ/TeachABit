@@ -9,8 +9,7 @@ import {
 } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import requests from "../../api/agent";
-import { RadionicaDto } from "../../models/RadionicaDto";
-import { UpdateRadionicaDto } from "../../models/UpdateRadionicaDto";
+import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
@@ -25,11 +24,11 @@ interface Props {
     refreshData: () => Promise<any>;
     onClose: () => void;
     isOpen: boolean;
-    radionica?: RadionicaDto;
+    radionica?: CreateOrUpdateRadionicaDto;
 }
 
 export default function RadionicaEditor(props: Props) {
-    const [radionica, setRadionica] = useState<RadionicaDto>({
+    const [radionica, setRadionica] = useState<CreateOrUpdateRadionicaDto>({
         naziv: props.radionica?.naziv ?? "",
         /*{sadrzaj: props.radionica?.sadrzaj ?? "",}*/
         id: props.radionica?.id,
@@ -58,9 +57,9 @@ export default function RadionicaEditor(props: Props) {
         if (reload) props.refreshData();
     };
 
-    const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
+    const handleUpdateRadionicu = async (radionica: CreateOrUpdateRadionicaDto) => {
         if (!radionica.cijena || !radionica.vrijemeRadionice) return;
-        const updateRadionicaDto: UpdateRadionicaDto = {
+        const updateRadionicaDto: CreateOrUpdateRadionicaDto = {
             id: radionica.id,
             naziv: radionica.naziv,
             opis: radionica?.opis ?? "",
@@ -78,7 +77,7 @@ export default function RadionicaEditor(props: Props) {
         }
     };
 
-    const handleStvoriRadionicu = async (radionica: RadionicaDto) => {
+    const handleStvoriRadionicu = async (radionica: CreateOrUpdateRadionicaDto) => {
         const response = await requests.postWithLoading("radionice", radionica);
         if (response && response.data) {
             handleClose(true);

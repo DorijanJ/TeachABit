@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Button } from "@mui/material";
-import { RadionicaDto } from "../../models/RadionicaDto";
+import { RadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
 import Radionica from "../radionice/Radionica";
 
 interface Props {

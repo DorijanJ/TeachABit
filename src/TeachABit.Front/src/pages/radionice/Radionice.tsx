@@ -4,7 +4,7 @@ import SearchBox from "../../components/searchbox/SearchBox";
 import { useEffect, useState } from "react";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
 import requests from "../../api/agent";
-import { RadionicaDto } from "../../models/RadionicaDto";
+import { RadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
 import Radionica from "./Radionica";
 import RadionicaEditor from "./RadionicaEditor";
 

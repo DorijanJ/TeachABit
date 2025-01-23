@@ -1,27 +1,49 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Box, Button } from "@mui/material";
 import UserLink from "../profil/UserLink";
 import { useNavigate } from "react-router-dom";
-import { RadionicaDto } from "../../models/RadionicaDto";
+import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
 import RadionicaPopup from "./RadionicaPopup";
 import { useGlobalContext } from "../../context/Global.context";
+import globalStore from "../../stores/GlobalStore";
+import requests from "../../api/agent";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
 interface Props {
-  radionica: RadionicaDto;
+  radionica: CreateOrUpdateRadionicaDto;
   onClose: () => void;
 }
 
-const uzivo = false;
-const kupljenaRadionica = false;
-
 export default function Radionica(props: Props) {
+
+    const handleCheckout = async (tecajId?: number) => {
+        if (!globalContext.userIsLoggedIn) {
+            globalStore.addNotification({
+                message: "Niste prijavljeni",
+                severity: "error",
+            });
+            return;
+        }
+
+        if (!tecajId) return;
+        const response = await requests.postWithLoading(
+            "placanja/create-checkout-session",
+            { tecajId: tecajId }
+        );
+        const stripe = await stripePromise;
+
+        const sessionId: any = response?.data.url;
+
+        stripe?.redirectToCheckout({ sessionId });
+    };
+
   const navigate = useNavigate();
-  const naslovRef = useRef<HTMLDivElement>(null);
-  const opisRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
   const globalContext = useGlobalContext();
-  const [applyFade, setApplyFade] = useState(false);
   const [isSadrzajOpen, setIsSadrzajOpen] = useState(false);
+  const [isLive, setIsLive] = useState(false);
+  const [isKupljenaRadionica, setIsKupljenaRadionica] = useState(false);
 
   const pom_fja = async () => {
     console.log("Plaćanje");
@@ -35,18 +57,6 @@ export default function Radionica(props: Props) {
   });
 
   useEffect(() => {
-    if (naslovRef.current && opisRef.current && cardRef.current) {
-      const naslovHeight = naslovRef.current.offsetHeight;
-      const opisHeight = opisRef.current.offsetHeight;
-      const cardHeight = cardRef.current.offsetHeight;
-      const totalContentHeight = naslovHeight + opisHeight;
-      const contentRatio = totalContentHeight / cardHeight;
-
-      setApplyFade(contentRatio > 0.6); // Fade efekt samo ako sadržaj prelazi 70% visine kartice
-    }
-  }, [props.radionica.naziv, props.radionica.opis]);
-
-    useEffect(() => {
     if (props.radionica.vrijemeRadionice === undefined) return;
     const updateRemainingTime = () => {
       const vrijemeradionice = new Date(props.radionica.vrijemeRadionice!);
@@ -54,6 +64,7 @@ export default function Radionica(props: Props) {
       const razlika = vrijemeradionice.getTime() - sadasnjevrijeme.getTime();
 
       if (razlika > 0) {
+        setIsLive(false);
         setRemainingTime({
           dani: Math.floor(razlika / (1000 * 60 * 60 * 24)),
           sati: Math.floor(
@@ -63,6 +74,7 @@ export default function Radionica(props: Props) {
           sekunde: Math.floor((razlika % (1000 * 60)) / 1000),
         });
       } else {
+        setIsLive(true);
         setRemainingTime({ dani: 0, sati: 0, minute: 0, sekunde: 0 });
       }
     };
@@ -77,75 +89,77 @@ export default function Radionica(props: Props) {
     return () => clearInterval(interval);
   }, [props.radionica.vrijemeRadionice]);
 
-    return (
-        <>
-      {isSadrzajOpen && !(globalContext.currentUser?.id === props.radionica.vlasnikId) && (
-        <RadionicaPopup
-          onClose={() => setIsSadrzajOpen(false)}
-          onConfirm={() => pom_fja()}
-          radionica={props.radionica}
-        />
-      )}
-        <Card
-            id="radionica"
-            ref={cardRef}
-            sx={{
-                borderRadius: "10px",
-                boxSizing: "border-box",
-                border: "1px solid lightgray",
-                cursor: "pointer",
-                transition: "transform 0.2s, box-shadow 0.2s",
-                "&:hover": {
-                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
-                    transform: "scale(1.03)",
-                    border: "1px solid #3a7ca5",
-                },
-                height: "370px",
-                minWidth: "340px",
-            }}
-            onClick={() => { (globalContext.currentUser?.id === props.radionica.vlasnikId || kupljenaRadionica)? navigate(`/radionica/${props.radionica.id}`): setIsSadrzajOpen(true);
+  return (
+    <>
+      {isSadrzajOpen &&
+        !(globalContext.currentUser?.id === props.radionica.vlasnikId) && (
+          <RadionicaPopup
+            onClose={() => setIsSadrzajOpen(false)}
+            onConfirm={() => pom_fja()}
+            radionica={props.radionica}
+          />
+        )}
+      <Card
+        id="radionica"
+        sx={{
+          borderRadius: "10px",
+          boxSizing: "border-box",
+          border: "1px solid lightgray",
+          cursor: "pointer",
+          transition: "transform 0.2s, box-shadow 0.2s",
+          "&:hover": {
+            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+            transform: "scale(1.03)",
+            border: "1px solid #3a7ca5",
+          },
+          minWidth: "340px",
         }}
+        onClick={() => {
+          globalContext.currentUser?.id === props.radionica.vlasnikId ||
+          isKupljenaRadionica
+            ? navigate(`/radionica/${props.radionica.id}`)
+            : setIsSadrzajOpen(true);
+        }}
+      >
+        <CardContent
+          sx={{
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            //justifyContent: "space-between",
+            gap: "24px",
+            height: "100%",
+          }}
         >
-            <CardContent
-                sx={{
-                    textAlign: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    //justifyContent: "space-between",
-                    gap: "24px",
-                    height: "100%",
-                }}
-            >
-                <Box
-                    display="flex"
-                    //justifyContent="space-between"
-                    gap="10px"
-                    alignItems="flex-start"
-                >
-                    <Typography
-                        ref={naslovRef}
-                        color="primary"
-                        variant="h5"
-                        component="div"
-                        sx={{
-                            /*overflow: "hidden",
+          <Box
+            display="flex"
+            //justifyContent="space-between"
+            gap="10px"
+            alignItems="flex-start"
+          >
+            <Typography
+              color="primary"
+              variant="h5"
+              component="div"
+              sx={{
+                /*overflow: "hidden",
                             textAlign: "left",
                             whiteSpace: "wrap",
                             textOverflow: "ellipsis",
                             maxWidth: "70%",*/
-                            textAlign: "left",
-                            width: "100%",
-                            overflowWrap: "break-word",
-                            wordBreak: "break-word",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 3,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            height: "6rem",
-                        }}
-                    >
-                        {props.radionica.naziv}
-                    </Typography>
+                textAlign: "left",
+                width: "100%",
+                overflowWrap: "break-word",
+                wordBreak: "break-word",
+                display: "-webkit-box",
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                height: "6rem",
+              }}
+            >
+              {props.radionica.naziv}
+            </Typography>
 
             <Typography
               variant="body2"
@@ -155,42 +169,53 @@ export default function Radionica(props: Props) {
                 padding: "4px 8px",
                 backgroundColor: "#f0f0f0",
                 borderRadius: "5px",
+                color: isLive ? "red" : "#254F6A",
               }}
             >
+              {isLive
+                ? "UŽIVO"
+                : remainingTime.dani > 0
+                ? `${remainingTime.dani}d ${remainingTime.sati}h `
+                : remainingTime.sati > 0
+                ? `${remainingTime.sati}h ${remainingTime.minute}m `
+                : remainingTime.minute > 0
+                ? `${remainingTime.minute}m ${remainingTime.sekunde}s `
+                : `${remainingTime.sekunde}s `}
+              {/*
               {remainingTime.dani > 0 && `${remainingTime.dani}d `}
               {remainingTime.sati > 0 && `${remainingTime.sati}h `}
               {remainingTime.minute > 0 && `${remainingTime.minute}m `}
               {remainingTime.sekunde > 0 ? `${remainingTime.minute}s ` : "UŽIVO"}
+              {remainingTime.dani > 0? */}
             </Typography>
           </Box>
 
-                <Typography
-                    ref={opisRef}
-                    variant="body1"
-                    component="div"
-                    sx={{
-                        position: "relative",
-                        overflow: "hidden",
-                        textAlign: "left",
-                        height: "6rem",
-                        paddingRight: "1rem",
-                        marginBottom: "1rem",
-                        "&::after": applyFade
-                            ? {
-                                content: '""',
-                                position: "absolute",
-                                bottom: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "3rem", // Fade efekt
-                                background:
-                                    "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))",
-                            }
-                            : undefined,
-                    }}
-                >
-                    {props.radionica.opis}
-                </Typography>
+          <div style={{ width: "100%", aspectRatio: "2/1" }}>
+            {props.radionica.naslovnaSlikaVersion ? (
+              <img
+                style={{
+                  borderRadius: "10px",
+                  maxHeight: "100%",
+                  width: "100%",
+                  objectFit: "contain",
+                }}
+                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                  props.radionica?.naslovnaSlikaVersion
+                }`}
+                alt="Greška pri učitavanju slike."
+              />
+            ) : (
+              <div
+                style={{
+                  borderRadius: "10px",
+                  objectFit: "cover",
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "lightblue",
+                }}
+              />
+            )}
+          </div>
 
           <Box
             justifyContent={"flex-end"}
@@ -217,12 +242,11 @@ export default function Radionica(props: Props) {
             >
               {props.radionica.cijena && props.radionica.cijena > 0 && (
                 <Button
-                sx={{
-                    "&:hover": {
-                                
-                            },
-                }}
-                variant="contained">
+                    onClick={(e) => {handleCheckout(props.radionica.id);
+                        e.stopPropagation();
+                    }}
+                  variant="contained"
+                >
                   {props.radionica.cijena}€
                 </Button>
               )}

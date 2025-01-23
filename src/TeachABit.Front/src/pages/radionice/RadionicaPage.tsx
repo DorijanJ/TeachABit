@@ -9,13 +9,13 @@ import { useGlobalContext } from "../../context/Global.context";
 import EditIcon from "@mui/icons-material/Edit";
 import RadionicaEditor from "./RadionicaEditor";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { RadionicaDto } from "../../models/RadionicaDto";
+import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
 import RadionicaKomentari from "./RadionicaKomentari";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import { LevelPristupa } from "../../enums/LevelPristupa";
 
 export default function RadionicaPage() {
-    const [radionica, setRadionica] = useState<RadionicaDto>({
+    const [radionica, setRadionica] = useState<CreateOrUpdateRadionicaDto>({
         naziv: "",
         opis: "",
         cijena: 0,

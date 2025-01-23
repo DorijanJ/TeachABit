@@ -1,4 +1,4 @@
-export interface RadionicaDto {
+export interface CreateOrUpdateRadionicaDto {
     id?: number;
     naziv: string;
     opis?: string;

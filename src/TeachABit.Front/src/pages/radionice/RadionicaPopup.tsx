@@ -7,7 +7,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { RadionicaDto } from "../../models/RadionicaDto";
+import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
 import UserLink from "../profil/UserLink";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 /*import requests from "../../api/agent";
@@ -17,7 +17,7 @@ import { useParams } from "react-router-dom";*/
 interface Props {
   onConfirm: () => Promise<any>;
   onClose: () => void;
-  radionica: RadionicaDto;
+  radionica: CreateOrUpdateRadionicaDto;
 }
 
 //const { radionicaId } = useParams();
