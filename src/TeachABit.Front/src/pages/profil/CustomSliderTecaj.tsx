@@ -51,7 +51,7 @@ export default function CustomSliderTecaj({ tecajevi }: Props) {
                 padding="10px"
             >
                 {tecajevi.map((tecaj) => (
-                    <Tecaj tecaj={tecaj} />
+                    <Tecaj tecaj={tecaj} key={"tecaj" + tecaj.id} />
                 ))}
             </Box>
             <Button

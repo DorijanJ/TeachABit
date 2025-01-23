@@ -52,7 +52,10 @@ export default function CustomSliderRadionica({ radionice }: Props) {
                 padding="10px"
             >
                 {radionice.map((radionica) => (
-                    <Radionica radionica={radionica} />
+                    <Radionica
+                        radionica={radionica}
+                        key={"radionica" + radionica.id}
+                    />
                 ))}
             </Box>
 

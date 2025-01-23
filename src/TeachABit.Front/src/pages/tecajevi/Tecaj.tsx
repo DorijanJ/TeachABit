@@ -90,23 +90,16 @@ export default function Tecaj(props: Props) {
                         <Typography
                             color="primary"
                             variant="h5"
-                            component="div"
                             sx={{
                                 textAlign: "left",
+                                width: "100%",
+                                overflowWrap: "break-word",
+                                wordBreak: "break-word",
                                 display: "-webkit-box",
+                                WebkitLineClamp: 3,
                                 WebkitBoxOrient: "vertical",
                                 overflow: "hidden",
-                                WebkitLineClamp: 3,
-                                maxWidth: "100%",
                                 height: "6rem",
-                                color:
-                                    props.tecaj.kupljen === true ||
-                                    !props.tecaj.cijena ||
-                                    globalContext.currentUser?.id ===
-                                        props.tecaj.vlasnikId
-                                        ? "primary"
-                                        : "lightgray",
-                                marginBottom: "0px",
                             }}
                         >
                             {props.tecaj.naziv}
