@@ -37,11 +37,14 @@ namespace TeachABit.Service.Services.Korisnici
         public async Task<ServiceResult<List<KorisnikDto>>> GetAllUsers(string? search)
         {
             var korisnik = _authorizationService.GetKorisnik();
-            var authorized = await _userManager.IsInRoleAsync(korisnik, "Moderator") || await _userManager.IsInRoleAsync(korisnik, "Admin");
+            var authorized = await _authorizationService.HasPermission(LevelPristupaEnum.Moderator);
 
             if (!authorized) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
-            var korisnici = _userManager.Users.Include(x => x.VerifikacijaStatus).AsQueryable();
+            var korisnici = _userManager.Users
+                .Include(x => x.KorisnikUloge)
+                .ThenInclude(x => x.Uloga)
+                .Include(x => x.VerifikacijaStatus).AsQueryable();
 
             if (!string.IsNullOrEmpty(search)) korisnici = korisnici.Where(k => k.NormalizedUserName == search.ToUpper());
 

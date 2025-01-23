@@ -68,7 +68,7 @@ export default function Lekcije(props: Props) {
     };
 
     return (
-        <Box sx={{ p: 2 }}>
+        <Box sx={{}}>
             <LekcijaPopup
                 refreshData={props.refreshData}
                 onClose={handleLekcijaPopupClose}
@@ -130,35 +130,35 @@ export default function Lekcije(props: Props) {
                                     globalContext.hasPermissions(
                                         LevelPristupa.Moderator
                                     )) && (
-                                    <>
-                                        <IconButton
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleLekcijaPopupOpen(
-                                                    lekcija.id
-                                                );
-                                            }}
-                                            sx={{
-                                                width: "40px",
-                                                height: "40px",
-                                            }}
-                                        >
-                                            <EditIcon color="primary"></EditIcon>
-                                        </IconButton>
-                                        <IconButton
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleOpenPotvrda(lekcija.id);
-                                            }}
-                                            sx={{
-                                                width: "40px",
-                                                height: "40px",
-                                            }}
-                                        >
-                                            <DeleteIcon color="primary"></DeleteIcon>
-                                        </IconButton>
-                                    </>
-                                )}
+                                        <>
+                                            <IconButton
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleLekcijaPopupOpen(
+                                                        lekcija.id
+                                                    );
+                                                }}
+                                                sx={{
+                                                    width: "40px",
+                                                    height: "40px",
+                                                }}
+                                            >
+                                                <EditIcon color="primary"></EditIcon>
+                                            </IconButton>
+                                            <IconButton
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleOpenPotvrda(lekcija.id);
+                                                }}
+                                                sx={{
+                                                    width: "40px",
+                                                    height: "40px",
+                                                }}
+                                            >
+                                                <DeleteIcon color="primary"></DeleteIcon>
+                                            </IconButton>
+                                        </>
+                                    )}
 
                                 {/* strelica gumb/ikona */}
                                 <IconButton>
@@ -184,10 +184,7 @@ export default function Lekcije(props: Props) {
             ))}
 
             {/* Gumb za dodavanje lekcija */}
-            {(globalContext.currentUser?.id === props.vlasnikId ||
-                globalContext.hasPermissions(
-                    LevelPristupa.Moderator
-                )) && (
+            {(globalContext.currentUser?.id === props.vlasnikId) && (
                 <Box
                     sx={{
                         display: "flex",

@@ -33,8 +33,11 @@ namespace TeachABit.Service.Services.Authentication
 
         public async Task<ServiceResult<KorisnikDto>> Login(LoginAttemptDto loginAttempt)
         {
-            Korisnik? user = await _userManager.FindByEmailAsync(loginAttempt.Credentials)
-                ?? await _userManager.FindByNameAsync(loginAttempt.Credentials);
+            var normalizedCredentials = loginAttempt.Credentials.ToUpper();
+            Korisnik? user = await _userManager.Users
+                .Include(x => x.KorisnikUloge)
+                .ThenInclude(x => x.Uloga)
+                .FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedCredentials || x.UserName == normalizedCredentials);
 
             if (user == null)
             {
@@ -58,9 +61,6 @@ namespace TeachABit.Service.Services.Authentication
             if (cookieSetResult.IsError) return ServiceResult.Failure(cookieSetResult.Message);
 
             var korisnikDto = _mapper.Map<KorisnikDto>(user);
-
-            var roles = await _userManager.GetRolesAsync(user);
-            korisnikDto.Roles = _mapper.Map<List<UlogaDto>>(await _roleManager.Roles.Where(role => !string.IsNullOrEmpty(role.Name) && roles.Contains(role.Name)).ToListAsync());
 
             return ServiceResult.Success(korisnikDto);
         }
@@ -179,7 +179,11 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult.Failure(new MessageResponse("Nevaljani GoogleIdToken.", MessageSeverities.Error));
             }
 
-            Korisnik? user = await _userManager.FindByEmailAsync(payload.Email);
+            var normalizedEmail = payload.Email.ToUpper();
+            Korisnik? user = await _userManager.Users
+                .Include(x => x.KorisnikUloge)
+                .ThenInclude(x => x.Uloga)
+                .FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedEmail);
 
             if (user == null)
             {
@@ -206,9 +210,6 @@ namespace TeachABit.Service.Services.Authentication
             }
 
             var korisnikDto = _mapper.Map<KorisnikDto>(user);
-
-            var roles = await _userManager.GetRolesAsync(user);
-            korisnikDto.Roles = _mapper.Map<List<UlogaDto>>(await _roleManager.Roles.Where(role => !string.IsNullOrEmpty(role.Name) && roles.Contains(role.Name)).ToListAsync());
 
             return ServiceResult.Success(korisnikDto);
 
@@ -287,13 +288,15 @@ namespace TeachABit.Service.Services.Authentication
 
         public async Task<ServiceResult<KorisnikDto>> GetKorisnikByUsername(string username)
         {
-            var user = await _userManager.Users.Include(x => x.VerifikacijaStatus).FirstOrDefaultAsync(x => x.UserName == username);
+            var user = await _userManager.Users
+                .Include(x => x.VerifikacijaStatus)
+                .Include(x => x.KorisnikUloge)
+                .ThenInclude(x => x.Uloga)
+                .FirstOrDefaultAsync(x => x.UserName == username);
+
             if (user == null) return ServiceResult.Failure(MessageDescriber.UserNotFound());
 
             var korisnikDto = _mapper.Map<KorisnikDto>(user);
-
-            var roles = await _userManager.GetRolesAsync(user);
-            korisnikDto.Roles = _mapper.Map<List<UlogaDto>>(await _roleManager.Roles.Where(role => !string.IsNullOrEmpty(role.Name) && roles.Contains(role.Name)).ToListAsync());
 
             return ServiceResult.Success(korisnikDto);
         }

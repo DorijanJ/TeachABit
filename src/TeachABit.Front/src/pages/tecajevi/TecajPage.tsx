@@ -94,7 +94,7 @@ export default function TecajPage() {
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        paddingTop: "20px",
+                        paddingTop: "10px",
                         paddingLeft: "10px"
                     }}
                 >
@@ -132,30 +132,47 @@ export default function TecajPage() {
                         width: "100%",
                     }}
                 >
-                    <div
-                        style={{
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            //justifyContent: "space-between",
-                            alignItems: "flex-start",
-                            flexWrap: "wrap",
-                        }}
-                    >
-                        <Typography
-                            color="primary"
-                            variant="h5"
-                            component="div"
-                            sx={{
-                                wordWrap: "break-word",
-                                maxWidth: "100%",
-                                color: "black",
-                                padding: "0 10px"
+                    <Box display={"flex"} flexDirection={"row"} alignItems={"flex-start"} justifyContent={"flex-start"} gap={"20px"}>
+                        {tecaj.naslovnaSlikaVersion && (
+                            <img
+                                style={{
+                                    borderRadius: "10px",
+                                    objectFit: "cover",
+                                    width: "500px",
+                                }}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${tecaj.naslovnaSlikaVersion
+                                    }`}
+                            />
+                        )}
+                        <div
+                            style={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                //justifyContent: "space-between",
+                                alignItems: "flex-start",
+                                flexWrap: "wrap",
                             }}
                         >
-                            {tecaj.naziv}
-                        </Typography>
-
+                            <Typography
+                                color="primary"
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    wordWrap: "break-word",
+                                    maxWidth: "100%",
+                                    color: "black",
+                                    padding: "0 10px"
+                                }}
+                            >
+                                {tecaj.naziv}
+                            </Typography>
+                        </div>
+                    </Box>
+                    <div style={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "flex-end" }}>
+                        <div>
+                            {"Opis:"}
+                        </div>
                         {(globalContext.currentUser?.id === tecaj.vlasnikId ||
                             globalContext.hasPermissions(
                                 LevelPristupa.Moderator
@@ -185,30 +202,8 @@ export default function TecajPage() {
                                     </IconButton>
                                 </Box>
                             )}
+
                     </div>
-
-                    {tecaj.naslovnaSlikaVersion && (
-                        <div
-                            style={{
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "center",
-                                paddingTop: "20px",
-                            }}
-                        >
-                            <img
-                                style={{
-                                    borderRadius: "10px",
-                                    objectFit: "cover",
-                                    width: "70%",
-                                }}
-                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${tecaj.naslovnaSlikaVersion
-                                    }`}
-                            />
-                        </div>
-                    )}
-
                     <TeachABitRenderer content={tecaj.opis} />
 
                     {/* Popis lekcija */}

@@ -17,6 +17,7 @@ namespace TeachABit.Model.Mapping
         public AutoMapperProfile()
         {
             CreateMap<Korisnik, KorisnikDto>()
+                .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.KorisnikUloge.Select(x => x.Uloga)))
                 .ForMember(x => x.VerifikacijaStatusNaziv, opt => opt.MapFrom(x => x.VerifikacijaStatus != null ? x.VerifikacijaStatus.Naziv : null));
             CreateMap<KorisnikDto, Korisnik>();
             CreateMap<Tecaj, TecajDto>()

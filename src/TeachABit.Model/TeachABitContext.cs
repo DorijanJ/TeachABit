@@ -31,6 +31,30 @@ namespace TeachABit.Model
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Korisnik>(b =>
+            {
+                b.HasMany(k => k.KorisnikUloge)
+                .WithOne(k => k.Korisnik)
+                .HasForeignKey(b => b.UserId)
+                .IsRequired();
+            });
+
+            builder.Entity<Uloga>(b =>
+            {
+                b.HasMany(u => u.KorisnikUloge)
+                .WithOne(u => u.Uloga)
+                .HasForeignKey(b => b.RoleId)
+                .IsRequired();
+            });
+
+            builder.Entity<KorisnikUloga>(b =>
+            {
+                b.HasOne(x => x.Korisnik)
+                .WithMany(k => k.KorisnikUloge);
+                b.HasOne(x => x.Uloga)
+                .WithMany(u => u.KorisnikUloge);
+            });
         }
     }
 }
