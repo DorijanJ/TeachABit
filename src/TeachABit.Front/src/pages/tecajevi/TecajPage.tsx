@@ -94,7 +94,8 @@ export default function TecajPage() {
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        margin: "10px",
+                        paddingTop: "20px",
+                        paddingLeft: "10px"
                     }}
                 >
                     <IconButton
@@ -119,7 +120,6 @@ export default function TecajPage() {
                             profilnaSlikaVersion:
                                 tecaj.vlasnikProfilnaSlikaVersion,
                         }}
-                        withBackground={false}
                     />
                 </Box>
 
@@ -136,8 +136,9 @@ export default function TecajPage() {
                         style={{
                             width: "100%",
                             display: "flex",
+                            flexDirection: "column",
                             //justifyContent: "space-between",
-                            alignItems: "center",
+                            alignItems: "flex-start",
                             flexWrap: "wrap",
                         }}
                     >
@@ -149,6 +150,7 @@ export default function TecajPage() {
                                 wordWrap: "break-word",
                                 maxWidth: "100%",
                                 color: "black",
+                                padding: "0 10px"
                             }}
                         >
                             {tecaj.naziv}
@@ -162,7 +164,6 @@ export default function TecajPage() {
                                     display={"flex"}
                                     flexDirection={"row"}
                                     alignItems={"center"}
-                                    marginLeft={1}
                                 >
                                     <IconButton
                                         onClick={() => handleTecajPopupOpen()}
