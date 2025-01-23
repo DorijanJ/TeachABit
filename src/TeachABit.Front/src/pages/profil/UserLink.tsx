@@ -17,7 +17,7 @@ export default function UserLink(props: Props) {
             style={{
                 padding: "8px 14px",
                 borderRadius: "3px",
-                backgroundColor: "#f1f1f1",
+                backgroundColor: "transparent",
                 display: "inline-flex",
                 flexDirection: "row",
                 alignItems: "center",
@@ -45,9 +45,8 @@ export default function UserLink(props: Props) {
                                 height: "100%",
                                 width: "100%",
                             }}
-                            src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                                props.user.id
-                            }${"?version=" + props.user.profilnaSlikaVersion}`}
+                            src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${props.user.id
+                                }${"?version=" + props.user.profilnaSlikaVersion}`}
                         ></img>
                     ) : (
                         <>{props.user.username ? props.user.username[0] : ""}</>

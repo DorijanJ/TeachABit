@@ -137,7 +137,7 @@ namespace TeachABit.Service.Services.Tecajevi
 
             var tecaj = await _tecajeviRepository.GetTecaj(lekcija.TecajId);
 
-            if (lekcija == null || !_ownershipService.Owns(lekcija.Tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (tecaj == null || !_ownershipService.Owns(tecaj)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             await _tecajeviRepository.DeleteLekcija(id, false);
             return ServiceResult.Success();
