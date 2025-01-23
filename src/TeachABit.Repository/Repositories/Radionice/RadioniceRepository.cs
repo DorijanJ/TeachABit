@@ -10,6 +10,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
     private readonly TeachABitContext _context = context;
 
     public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null)
+
     {
         IQueryable<Radionica> query = _context.Radionice
             .Include(x => x.Vlasnik)
@@ -63,11 +64,11 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         await _context.Radionice.Where(x => x.Id == id).ExecuteDeleteAsync();
     }
 
-
     public async Task<Radionica?> GetRadionicaByIdWithTracking(int id)
     {
         return await _context.Radionice.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
+
 
 
     public async Task<RadionicaKomentar> CreateKomentar(RadionicaKomentar komentar)
@@ -151,10 +152,48 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         return komentar;
     }
 
+    public async Task<RadionicaOcjena?> GetOcjena(int radionicaId, string korisnikId)
+    {
+        return await _context.RadionicaOcjene
+            .FirstOrDefaultAsync(o => o.RadionicaId == radionicaId && o.KorisnikId == korisnikId);
+    }
+
+    public async Task<RadionicaOcjena> CreateOcjena(RadionicaOcjena ocjena)
+    {
+        var entry = await _context.RadionicaOcjene.AddAsync(ocjena);
+        await _context.SaveChangesAsync();
+        return entry.Entity;
+    }
+
+    public async Task<RadionicaOcjena> UpdateOcjena(RadionicaOcjena ocjena)
+    {
+        await _context.SaveChangesAsync();
+        return ocjena;
+    }
+
+    public async Task DeleteOcjena(int radionicaId, string korisnikId)
+    {
+        await _context.RadionicaOcjene
+            .Where(x => x.RadionicaId == radionicaId && x.KorisnikId == korisnikId)
+            .ExecuteDeleteAsync();
+    }
+
+    public async Task<RadionicaOcjena?> GetRadionicaOcjenaWithTracking(int radionicaId, string korisnikId)
+    {
+        return await _context.RadionicaOcjene.AsTracking().FirstOrDefaultAsync(x => x.RadionicaId == radionicaId && x.KorisnikId == korisnikId);
+    }
+
+    public async Task<RadionicaOcjena> UpdateRadionicaOcjena(RadionicaOcjena ocjena)
+    {
+        await _context.SaveChangesAsync();
+        return ocjena;
+    }
+
     public async Task<RadionicaKomentar?> GetKomentarRadionicaByIdWithTracking(int id)
     {
         return await _context.KomentarRadionica.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
+
     public async Task<List<Radionica>> GetAllRadioniceForCurrentUser(string username)
     {
         var query = _context.Radionice

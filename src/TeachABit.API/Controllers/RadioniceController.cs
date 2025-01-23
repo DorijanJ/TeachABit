@@ -92,4 +92,16 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
         return GetControllerResult(await _radioniceService.ClearKomentarReaction(komentarId));
     }
 
+    [HttpPost("{radionicaId}/ocjena")]
+    public async Task<IActionResult> CreateOcjena([FromBody] double ocjena, int radionicaId)
+    {
+        return GetControllerResult(await _radioniceService.CreateOcjena(radionicaId, ocjena));
+    }
+
+    [HttpDelete("{id}/ocjena")]
+    public async Task<IActionResult> DeleteOcjena(int radionicaId)
+    {
+        return GetControllerResult(await _radioniceService.DeleteOcjena(radionicaId));
+    }
+
 }

@@ -22,4 +22,6 @@ public class Radionica
 
     public virtual List<RadionicaKomentar> Komentari { get; set; } = [];
     public virtual List<RadionicaFavorit> RadionicaFavoriti { get; set; } = [];
+
+    public virtual List<RadionicaOcjena> Ocjene { get; set; } = [];
 }

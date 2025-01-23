@@ -217,4 +217,36 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
         return ServiceResult.Success();
     }
 
+    public async Task<ServiceResult> CreateOcjena(int radionicaId, double ocjena)
+    {
+        if (ocjena < 1 || ocjena > 5) return ServiceResult.Failure(MessageDescriber.BadRequest("Ocjena mora biti između 1 i 5."));
+
+        var korisnik = _authorizationService.GetKorisnik();
+
+        var postojecaOcjena = await _radioniceRepository.GetRadionicaOcjenaWithTracking(radionicaId, korisnik.Id);
+
+        if (postojecaOcjena != null)
+        {
+            postojecaOcjena.Ocjena = ocjena;
+            await _radioniceRepository.UpdateRadionicaOcjena(postojecaOcjena);
+            return ServiceResult.Success();
+        }
+
+        var novaOcjena = new RadionicaOcjena
+        {
+            RadionicaId = radionicaId,
+            KorisnikId = korisnik.Id,
+            Ocjena = ocjena
+        };
+
+        await _radioniceRepository.CreateOcjena(novaOcjena);
+        return ServiceResult.Success();
+    }
+
+    public async Task<ServiceResult> DeleteOcjena(int radionicaId)
+    {
+        var korisnik = _authorizationService.GetKorisnik();
+        await _radioniceRepository.DeleteOcjena(radionicaId, korisnik.Id);
+        return ServiceResult.Success();
+    }
 }

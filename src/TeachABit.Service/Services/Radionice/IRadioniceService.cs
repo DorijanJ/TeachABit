@@ -17,4 +17,6 @@ public interface IRadioniceService
     public Task<ServiceResult> LikeRadionicaKomentar(int id);
     public Task<ServiceResult> DislikeRadionicaKomentar(int id);
     public Task<ServiceResult> ClearKomentarReaction(int id);
+    Task<ServiceResult> CreateOcjena(int radionicaId, double ocjena);
+    Task<ServiceResult> DeleteOcjena(int radionicaId);
 }
