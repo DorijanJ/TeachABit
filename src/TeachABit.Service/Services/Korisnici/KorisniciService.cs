@@ -151,9 +151,10 @@ namespace TeachABit.Service.Services.Korisnici
 
         public async Task<ServiceResult> DeleteKorisnik()
         {
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-            //var korisnik = _authorizationService.GetKorisnikOptional();
-            if(user == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            var korisnikId = _authorizationService.GetKorisnik().Id;
+            var user = await _userManager.FindByIdAsync(korisnikId);
+
+            if (user == null) return ServiceResult.Failure();
             await _userManager.DeleteAsync(user);
             return ServiceResult.Success();
         }
