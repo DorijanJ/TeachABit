@@ -74,7 +74,7 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
+        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null,  int? minOcjena = null, int? maxOcjena = null, bool? vremenski_najstarije=null)
         {
             var korisnik = _authorizationService.GetKorisnikOptional();
             string? vlasnikId = null;
@@ -82,7 +82,7 @@ namespace TeachABit.Service.Services.Tecajevi
             {
                 vlasnikId = (await _userManager.FindByNameAsync(vlasnikUsername))?.Id;
             }
-            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id, vlasnikId, minCijena, maxCijena);
+            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id, vlasnikId, minCijena, maxCijena, minOcjena, maxOcjena, vremenski_najstarije);
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
