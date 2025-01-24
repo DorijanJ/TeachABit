@@ -155,13 +155,13 @@ export const Profil = () => {
     };
     const GetFavoritiTecajList = async () => {
         const response = await requests.getWithLoading(
-            `tecajevi?vlasnikUsername=${username}&favorit=true`
+            `tecajevi/favoriti?vlasnikUsername=${username}`
         );
         if (response && response.data) setFavoritiTecajList(response.data);
     };
     const GetFavoritiRadioniceList = async () => {
         const response = await requests.getWithLoading(
-            `radionice?vlasnikUsername=${username}&favorit=true`
+            `radionice/favoriti?vlasnikUsername=${username}`
         );
         if (response && response.data) setFavoritiRadioniceList(response.data);
     };

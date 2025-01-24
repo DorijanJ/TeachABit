@@ -22,6 +22,7 @@ import { LevelPristupa } from "../../enums/LevelPristupa";
 import globalStore from "../../stores/GlobalStore";
 import { observer } from "mobx-react";
 import React from "react";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export const RadionicaPage = () => {
     const [value, setValue] = React.useState<number | null>(2);
@@ -100,6 +101,25 @@ export const RadionicaPage = () => {
         if (!radionicaId) return;
         const parsedRadionicaId = parseInt(radionicaId);
         await getRadionicaById(parsedRadionicaId);
+    };
+
+    const [isLiked, setIsLiked] = useState(false);
+    const handleLiked = async () => {
+        const newIsLiked = !isLiked; // Toggle the liked state
+
+
+        await requests.postWithLoading(
+            `radionice/${radionicaId}/favoriti`,
+            {isLiked: newIsLiked} // Send the new liked state in the body
+        );
+
+        // Update the state only if the request is successful
+        setIsLiked(newIsLiked);
+        setRadionica((prev) => ({
+            ...prev,
+            favorit: newIsLiked, // Update favorit field in the state
+        }));
+
     };
 
     return (
@@ -268,6 +288,21 @@ export const RadionicaPage = () => {
                             alignItems={"center"}
                             gap="10px"
                         >
+                            <IconButton
+                                onClick={() => {
+                                    setIsLiked(!isLiked);
+                                    handleLiked();
+                                }} // Toggle "liked" state
+                                sx={{
+                                    backgroundColor: "white",
+                                    color: isLiked ? "#f44336" : "grey",
+                                    "&:hover": {
+                                        backgroundColor: "#fce4ec",
+                                    },
+                                }}
+                            >
+                                <FavoriteIcon />
+                            </IconButton>
                             {globalStore.currentUser?.id ===
                                 radionica.vlasnikId && (
                                 <IconButton
