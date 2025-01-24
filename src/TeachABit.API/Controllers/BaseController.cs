@@ -4,8 +4,9 @@ using TeachABit.Model.DTOs.Result.Message;
 
 namespace TeachABit.API.Controllers
 {
-    public class BaseController : ControllerBase
+    public class BaseController() : ControllerBase
     {
+
         [NonAction]
         public IActionResult Error(ControllerResult controllerResult)
         {
@@ -21,8 +22,10 @@ namespace TeachABit.API.Controllers
             ControllerResult result = new()
             {
                 Message = serviceResult.Message ?? MessageDescriber.SuccessMessage(),
-                Data = serviceResult.Data
+                Data = serviceResult.Data,
+                RefreshUserInfo = serviceResult.RefreshUserInfo,
             };
+
             return serviceResult.IsError ? Error(result) : Ok(result);
         }
 
@@ -32,6 +35,7 @@ namespace TeachABit.API.Controllers
             ControllerResult result = new()
             {
                 Message = serviceResult.Message,
+                RefreshUserInfo = serviceResult.RefreshUserInfo,
             };
             return serviceResult.IsError ? Error(result) : Ok(result);
         }
@@ -41,7 +45,7 @@ namespace TeachABit.API.Controllers
         {
             ControllerResult result = new()
             {
-                Message = messageResponse
+                Message = messageResponse,
             };
             return messageResponse.Severity == MessageSeverities.Error ? Error(result) : Ok(result);
         }

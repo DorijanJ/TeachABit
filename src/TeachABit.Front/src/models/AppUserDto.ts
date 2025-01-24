@@ -7,4 +7,6 @@ export interface AppUserDto {
     roles?: Uloga[];
     verifikacijaStatusId?: number;
     verifikacijaStatusNaziv?: string;
+    korisnikStatus?: string;
+    korisnikStatusId?: number;
 }

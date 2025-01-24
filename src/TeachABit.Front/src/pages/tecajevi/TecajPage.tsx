@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import { useNavigate, useParams } from "react-router-dom";
 import requests from "../../api/agent";
-import { useGlobalContext } from "../../context/Global.context";
 import UserLink from "../profil/UserLink";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -14,6 +13,7 @@ import TecajKomentari from "./TecajKomentari";
 import { LevelPristupa } from "../../enums/LevelPristupa";
 import TecajPopup from "./TecajPopup";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
+import globalStore from "../../stores/GlobalStore";
 
 export default function TecajPage() {
     const { tecajId } = useParams();
@@ -24,7 +24,6 @@ export default function TecajPage() {
         cijena: undefined,
     });
     const navigate = useNavigate();
-    const globalContext = useGlobalContext();
 
     /* otvaranje i zatvaranje prozora za uredivanje tecaja */
     const [popupOpen, setTecajDialogOpen] = useState(false);
@@ -94,8 +93,8 @@ export default function TecajPage() {
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        paddingTop: "20px",
-                        paddingLeft: "10px"
+                        paddingTop: "10px",
+                        paddingLeft: "10px",
                     }}
                 >
                     <IconButton
@@ -132,83 +131,89 @@ export default function TecajPage() {
                         width: "100%",
                     }}
                 >
-                    <div
-                        style={{
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            //justifyContent: "space-between",
-                            alignItems: "flex-start",
-                            flexWrap: "wrap",
-                        }}
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        alignItems={"flex-start"}
+                        justifyContent={"flex-start"}
+                        gap={"20px"}
                     >
-                        <Typography
-                            color="primary"
-                            variant="h5"
-                            component="div"
-                            sx={{
-                                wordWrap: "break-word",
-                                maxWidth: "100%",
-                                color: "black",
-                                padding: "0 10px"
-                            }}
-                        >
-                            {tecaj.naziv}
-                        </Typography>
-
-                        {(globalContext.currentUser?.id === tecaj.vlasnikId ||
-                            globalContext.hasPermissions(
-                                LevelPristupa.Moderator
-                            )) && (
-                                <Box
-                                    display={"flex"}
-                                    flexDirection={"row"}
-                                    alignItems={"center"}
-                                >
-                                    <IconButton
-                                        onClick={() => handleTecajPopupOpen()}
-                                        sx={{
-                                            width: "40px",
-                                            height: "40px",
-                                        }}
-                                    >
-                                        <EditIcon color="primary"></EditIcon>
-                                    </IconButton>
-                                    <IconButton
-                                        onClick={() => setIsPotvrdaOpen(true)}
-                                        sx={{
-                                            width: "40px",
-                                            height: "40px",
-                                        }}
-                                    >
-                                        <DeleteIcon color="primary"></DeleteIcon>
-                                    </IconButton>
-                                </Box>
-                            )}
-                    </div>
-
-                    {tecaj.naslovnaSlikaVersion && (
-                        <div
-                            style={{
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "center",
-                                paddingTop: "20px",
-                            }}
-                        >
+                        {tecaj.naslovnaSlikaVersion && (
                             <img
                                 style={{
                                     borderRadius: "10px",
                                     objectFit: "cover",
-                                    width: "70%",
+                                    width: "500px",
                                 }}
-                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${tecaj.naslovnaSlikaVersion
-                                    }`}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                    tecaj.naslovnaSlikaVersion
+                                }`}
                             />
+                        )}
+                        <div
+                            style={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                //justifyContent: "space-between",
+                                alignItems: "flex-start",
+                                flexWrap: "wrap",
+                            }}
+                        >
+                            <Typography
+                                color="primary"
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    wordWrap: "break-word",
+                                    maxWidth: "100%",
+                                    color: "black",
+                                    padding: "0 10px",
+                                }}
+                            >
+                                {tecaj.naziv}
+                            </Typography>
                         </div>
-                    )}
-
+                    </Box>
+                    <div
+                        style={{
+                            display: "flex",
+                            width: "100%",
+                            justifyContent: "space-between",
+                            alignItems: "flex-end",
+                        }}
+                    >
+                        <div>{"Opis:"}</div>
+                        {(globalStore.currentUser?.id === tecaj.vlasnikId ||
+                            globalStore.hasPermissions(
+                                LevelPristupa.Moderator
+                            )) && (
+                            <Box
+                                display={"flex"}
+                                flexDirection={"row"}
+                                alignItems={"center"}
+                            >
+                                <IconButton
+                                    onClick={() => handleTecajPopupOpen()}
+                                    sx={{
+                                        width: "40px",
+                                        height: "40px",
+                                    }}
+                                >
+                                    <EditIcon color="primary"></EditIcon>
+                                </IconButton>
+                                <IconButton
+                                    onClick={() => setIsPotvrdaOpen(true)}
+                                    sx={{
+                                        width: "40px",
+                                        height: "40px",
+                                    }}
+                                >
+                                    <DeleteIcon color="primary"></DeleteIcon>
+                                </IconButton>
+                            </Box>
+                        )}
+                    </div>
                     <TeachABitRenderer content={tecaj.opis} />
 
                     {/* Popis lekcija */}
