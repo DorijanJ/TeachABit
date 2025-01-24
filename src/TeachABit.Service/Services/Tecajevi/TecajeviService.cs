@@ -25,11 +25,12 @@ namespace TeachABit.Service.Services.Tecajevi
 
         public async Task<ServiceResult<TecajDto>> GetTecaj(int id)
         {
-            var tecajModel = await _tecajeviRepository.GetTecaj(id);
+            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
+
+            var tecajModel = await _tecajeviRepository.GetTecaj(id, korisnik?.Id);
             TecajDto? tecaj = _mapper.Map<TecajDto>(tecajModel);
             if (tecaj == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
 
-            Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
 
             if (tecaj.Cijena != null && tecaj.Cijena != 0 && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
                 return ServiceResult.Failure(MessageDescriber.Unauthorized());

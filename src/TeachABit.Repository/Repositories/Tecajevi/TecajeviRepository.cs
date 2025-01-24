@@ -17,6 +17,11 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                 .Include(x => x.KorisnikTecajOcjene)
                 .AsQueryable();
 
+            if (korisnikId != null)
+            {
+                query = query.Include(x => x.KorisnikTecajFavoriti.Where(x => x.KorisnikId == korisnikId));
+            }
+
             return await query.FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
@@ -264,7 +269,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
         public async Task RemoveFavoritTecaj(int favoritTecajId, string korisnikId)
         {
-            await _context.TecajFavoriti.Where(x => x.Id == favoritTecajId && x.KorisnikId == korisnikId).ExecuteDeleteAsync();
+            await _context.TecajFavoriti.Where(x => x.TecajId == favoritTecajId && x.KorisnikId == korisnikId).ExecuteDeleteAsync();
         }
 
         public async Task<List<Tecaj>> GetAllTecajeviFavoritForCurrentUser(string id)

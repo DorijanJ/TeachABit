@@ -148,7 +148,7 @@ export const Tecaj = (props: Props) => {
                     }}
                 >
                     {props.tecaj.ocjena}/5
-                    <Rating value={props.tecaj.ocjena} />
+                    <Rating value={props.tecaj.ocjena} readOnly />
                     <div onClick={(e) => e.stopPropagation()}>
                         <UserLink
                             user={{
