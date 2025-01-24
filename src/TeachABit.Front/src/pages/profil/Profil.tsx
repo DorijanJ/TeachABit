@@ -394,7 +394,7 @@ export const Profil = () => {
           {favoritiTecajList.length > 0 && (
             <>
               <Typography variant="h6" sx={{ marginLeft: "10px" }}>
-                {"Radionice favoriti:"}
+                {"Tečajevi favoriti:"}
               </Typography>
               <CustomSliderTecaj
                 tecajevi={favoritiTecajList}
@@ -404,7 +404,7 @@ export const Profil = () => {
           {favoritiRadioniceList.length > 0 && (
             <>
               <Typography variant="h6" sx={{ marginLeft: "10px" }}>
-                {"Tečajevi favoriti:"}
+                {"Radionice favoriti:"}
               </Typography>
               <CustomSliderRadionica
                 radionice={favoritiRadioniceList}

@@ -55,25 +55,6 @@ export default function RadionicaEditor(props: Props) {
         if (reload) props.refreshData();
     };
 
-    const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
-        if (!radionica.cijena || !radionica.vrijemeRadionice) return;
-        const updateRadionicaDto: CreateOrUpdateRadionicaDto = {
-            id: radionica.id,
-            naziv: radionica.naziv,
-            opis: radionica?.opis ?? "",
-            cijena: radionica.cijena,
-            maksimalniKapacitet: radionica?.maksimalniKapacitet,
-            vrijemeRadionice: radionica?.vrijemeRadionice,
-            naslovnaSlikaBase64: base64image,
-        };
-        const response = await requests.putWithLoading(
-            "radionice",
-            updateRadionicaDto
-        );
-        if (response && response.data) {
-            handleClose(true);
-        }
-    };
   const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
     if (!radionica.cijena || !radionica.vrijemeRadionice) return;
     const updateRadionicaDto: CreateOrUpdateRadionicaDto = {
