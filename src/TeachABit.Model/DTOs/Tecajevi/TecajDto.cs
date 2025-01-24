@@ -18,7 +18,7 @@ namespace TeachABit.Model.DTOs.Tecajevi
         public bool? Kupljen { get; set; } = false;
         public string Opis { get; set; } = string.Empty;
         public double Ocjena { get; set; } = 0;
-        public int OcjenaTrenutna { get; set; } = 0;
+        public int? OcjenaTrenutna { get; set; } = 0;
         public string? NaslovnaSlikaVersion { get; set; } = null;
         public List<LekcijaDto>? Lekcije { get; set; } = [];
     }

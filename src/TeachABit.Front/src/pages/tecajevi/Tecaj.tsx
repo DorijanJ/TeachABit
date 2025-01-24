@@ -1,4 +1,11 @@
-import {Box, Button, Card, CardContent, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Rating,
+    Typography,
+} from "@mui/material";
 import { TecajDto } from "../../models/TecajDto";
 import { loadStripe } from "@stripe/stripe-js";
 import requests from "../../api/agent";
@@ -8,8 +15,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react";
 
-
-
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
 interface Props {
@@ -17,7 +22,6 @@ interface Props {
 }
 
 export const Tecaj = (props: Props) => {
-
     const handleCheckout = async (tecajId?: number) => {
         if (!globalStore.currentUser) {
             globalStore.addNotification({
@@ -29,7 +33,7 @@ export const Tecaj = (props: Props) => {
 
         if (!tecajId) return;
         const response = await requests.postWithLoading(
-            "placanja/create-checkout-session",
+            "tecajevi/create-checkout-session",
             { tecajId: tecajId }
         );
         const stripe = await stripePromise;
@@ -42,8 +46,6 @@ export const Tecaj = (props: Props) => {
     const navigate = useNavigate();
 
     return (
-
-
         <Card
             onClick={() => {
                 if (
@@ -145,31 +147,35 @@ export const Tecaj = (props: Props) => {
                         alignItems: "center",
                     }}
                 >
-
+                    {props.tecaj.ocjena}/5
+                    <Rating value={props.tecaj.ocjena} />
                     <div onClick={(e) => e.stopPropagation()}>
                         <UserLink
                             user={{
                                 id: props.tecaj.vlasnikId,
                                 profilnaSlikaVersion:
-                                props.tecaj.vlasnikProfilnaSlikaVersion,
+                                    props.tecaj.vlasnikProfilnaSlikaVersion,
                                 username: props.tecaj.vlasnikUsername,
                             }}
                         />
                     </div>
-                    {props.tecaj.cijena !== undefined && props.tecaj.cijena > 0 && (
-                        <>
-                            {props.tecaj.kupljen && (
-                                <CheckCircleIcon color="info" />
-                            )}
-                            <Button
-                                disabled={props.tecaj.kupljen}
-                                variant="contained"
-                                onClick={() => handleCheckout(props.tecaj.id)}
-                            >
-                                {props.tecaj.cijena}€
-                            </Button>
-                        </>
-                    )}
+                    {props.tecaj.cijena !== undefined &&
+                        props.tecaj.cijena > 0 && (
+                            <>
+                                {props.tecaj.kupljen && (
+                                    <CheckCircleIcon color="info" />
+                                )}
+                                <Button
+                                    disabled={props.tecaj.kupljen}
+                                    variant="contained"
+                                    onClick={() =>
+                                        handleCheckout(props.tecaj.id)
+                                    }
+                                >
+                                    {props.tecaj.cijena}€
+                                </Button>
+                            </>
+                        )}
                 </div>
             </CardContent>
         </Card>

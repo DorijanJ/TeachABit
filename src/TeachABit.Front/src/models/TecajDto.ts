@@ -8,11 +8,15 @@ export interface TecajDto {
     vlasnikUsername?: string;
     naslovnaSlikaVersion?: string;
     vlasnikProfilnaSlikaVersion?: string;
-    lekcije?: [{
-        id: number,
-        naziv: string,
-        sadrzaj: string,
-        createdDateTime?: string,
-        tecajId: number,
-    }];
+    ocjena?: number;
+    ocjenaTrenutna?: number;
+    lekcije?: [
+        {
+            id: number;
+            naziv: string;
+            sadrzaj: string;
+            createdDateTime?: string;
+            tecajId: number;
+        }
+    ];
 }

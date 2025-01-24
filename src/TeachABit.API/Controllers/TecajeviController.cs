@@ -124,8 +124,8 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _tecajeviService.DeleteKomentarTecaj(komentarId));
         }
 
-        [HttpPost("{tecajId}/ocjena")]
-        public async Task<IActionResult> CreateTecajOcjena(int tecajId, [FromQuery] int ocjena)
+        [HttpPost("{tecajId}/ocjena/{ocjena}")]
+        public async Task<IActionResult> CreateTecajOcjena(int tecajId, int ocjena)
         {
             return GetControllerResult(await _tecajeviService.CreateTecajOcjena(tecajId, ocjena));
         }

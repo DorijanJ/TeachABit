@@ -25,13 +25,19 @@ namespace TeachABit.Service.Services.Tecajevi
 
         public async Task<ServiceResult<TecajDto>> GetTecaj(int id)
         {
-            TecajDto? tecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.GetTecaj(id));
+            var tecajModel = await _tecajeviRepository.GetTecaj(id);
+            TecajDto? tecaj = _mapper.Map<TecajDto>(tecajModel);
             if (tecaj == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
 
             Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
 
             if (tecaj.Cijena != null && tecaj.Cijena != 0 && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
                 return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            if (korisnik != null && tecajModel != null)
+            {
+                tecaj.OcjenaTrenutna = tecajModel.KorisnikTecajOcjene.Where(x => x.KorisnikId == korisnik.Id).FirstOrDefault()?.Ocjena;
+            }
 
             return ServiceResult.Success(tecaj);
         }
@@ -83,7 +89,9 @@ namespace TeachABit.Service.Services.Tecajevi
                 vlasnikId = (await _userManager.FindByNameAsync(vlasnikUsername))?.Id;
             }
             var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id, vlasnikId, minCijena, maxCijena, minOcjena, maxOcjena, vremenski_najstarije);
-            var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
+
+            List<TecajDto> tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
+
             return ServiceResult.Success(tecajeviDto);
         }
 
