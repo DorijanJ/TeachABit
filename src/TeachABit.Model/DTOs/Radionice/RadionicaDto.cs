@@ -20,4 +20,5 @@ public class RadionicaDto
     public string? VlasnikUsername { get; set; }
     public string? VlasnikProfilnaSlikaVersion { get; set; }
     public string? NaslovnaSlikaVersion { get; set; } = null;
+    public int BrojPrijavljenih { get; set; }
 }

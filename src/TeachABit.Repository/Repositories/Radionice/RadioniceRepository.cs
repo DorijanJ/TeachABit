@@ -50,6 +50,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
     public async Task<Radionica?> GetRadionica(int id)
     {
         return await _context.Radionice
+            .Include(x => x.Placanja)
             .Include(x => x.Vlasnik)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
@@ -221,15 +222,14 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         return await query.ToListAsync();
     }
-    public async Task<List<RadionicaFavorit>> GetAllRadioniceFavoritForCurrentUser(string username)
+    public async Task<List<Radionica>> GetAllRadioniceFavoritForCurrentUser(string id)
     {
         var query = _context.RadionicaFavorit
             .Include(x => x.Korisnik)
+            .Include(x => x.Radionica)
+            .Where(a => a.KorisnikId == id)
+            .Select(x => x.Radionica)
             .AsQueryable();
-        if (!string.IsNullOrEmpty(username))
-        {
-            query = query.Where(a => a.Korisnik.UserName == username);
-        }
 
         return await query.ToListAsync();
     }

@@ -21,4 +21,5 @@ public interface IRadioniceService
     Task<ServiceResult> CreateOcjena(int radionicaId, double ocjena);
     Task<ServiceResult> DeleteOcjena(int radionicaId);
     public Task<ServiceResult> SendObavijest(ObavijestDto obavijest);
+    public Task<ServiceResult<List<RadionicaDto>>> GetAllRadioniceFavoritForCurrentUser();
 }

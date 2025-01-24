@@ -118,4 +118,9 @@ public class RadioniceController(IRadioniceService radioniceService, IPlacanjaSe
         obavijestDto.RadionicaId = radionicaId;
         return GetControllerResult(await _radioniceService.SendObavijest(obavijestDto));
     }
+    [HttpGet("favoriti")]
+    public async Task<IActionResult> GetAllRadioniceFavoritForCurrentUser()
+    {
+        return GetControllerResult(await _radioniceService.GetAllRadioniceFavoritForCurrentUser());
+    }
 }

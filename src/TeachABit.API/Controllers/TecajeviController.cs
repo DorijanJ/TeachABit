@@ -141,5 +141,23 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _placanjaService.CreateTecajCheckoutSession(request));
         }
+
+        [HttpGet("favoriti")]
+        public async Task<IActionResult> GetAllTecajeviFavoritForCurrentUser()
+        {
+            return GetControllerResult(await _tecajeviService.GetAllTecajeviFavoritForCurrentUser());
+        }
+
+        [HttpPost("{favoritTecajId}/favorit")]
+        public async Task<IActionResult> AddFavoritTecaj(int favoritTecajId)
+        {
+            return GetControllerResult(await _tecajeviService.AddFavoritTecaj(favoritTecajId));
+        }
+
+        [HttpDelete("{favoritTecajId}/favorit")]
+        public async Task<IActionResult> RemoveFavoritTecaj(int favoritTecajId)
+        {
+            return GetControllerResult(await _tecajeviService.RemoveFavoritTecaj(favoritTecajId));
+        }
     }
 }
