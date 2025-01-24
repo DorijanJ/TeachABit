@@ -202,6 +202,14 @@ namespace TeachABit.Service.Services.Authentication
                     string errorMessage = result.Errors.First().Description;
                     return ServiceResult.Failure(MessageDescriber.RegistrationError(errorMessage));
                 }
+
+                var createdUser = await _userManager.FindByNameAsync(googleSigninAttempt.Username);
+                if (createdUser == null)
+                {
+                    return ServiceResult.Failure();
+                }
+
+                await _userManager.AddToRoleAsync(createdUser, "Korisnik");
             }
 
             var cookieSetResult = await SetAuthCookie(user);

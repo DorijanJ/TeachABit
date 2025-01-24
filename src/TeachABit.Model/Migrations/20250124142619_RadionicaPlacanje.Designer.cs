@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TeachABit.Model;
@@ -11,9 +12,11 @@ using TeachABit.Model;
 namespace TeachABit.Model.Migrations
 {
     [DbContext(typeof(TeachABitContext))]
-    partial class TeachABitContextModelSnapshot : ModelSnapshot
+    [Migration("20250124142619_RadionicaPlacanje")]
+    partial class RadionicaPlacanje
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,6 +97,21 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
@@ -131,9 +149,6 @@ namespace TeachABit.Model.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<int?>("KorisnikStatusId")
-                        .HasColumnType("integer");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -176,8 +191,6 @@ namespace TeachABit.Model.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("KorisnikStatusId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -188,23 +201,6 @@ namespace TeachABit.Model.Migrations
                     b.HasIndex("VerifikacijaStatusId");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Korisnici.KorisnikStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Naziv")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("KorisnikStatus");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Korisnici.VerifikacijaStatus", b =>
@@ -748,21 +744,6 @@ namespace TeachABit.Model.Migrations
                     b.ToTable("TecajPlacanje");
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Uloge.KorisnikUloga", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
             modelBuilder.Entity("TeachABit.Model.Models.Uloge.Uloga", b =>
                 {
                     b.Property<string>("Id")
@@ -819,6 +800,21 @@ namespace TeachABit.Model.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("TeachABit.Model.Models.Uloge.Uloga", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", null)
@@ -830,15 +826,9 @@ namespace TeachABit.Model.Migrations
 
             modelBuilder.Entity("TeachABit.Model.Models.Korisnici.Korisnik", b =>
                 {
-                    b.HasOne("TeachABit.Model.Models.Korisnici.KorisnikStatus", "KorisnikStatus")
-                        .WithMany("Korisnici")
-                        .HasForeignKey("KorisnikStatusId");
-
                     b.HasOne("TeachABit.Model.Models.Korisnici.VerifikacijaStatus", "VerifikacijaStatus")
                         .WithMany()
                         .HasForeignKey("VerifikacijaStatusId");
-
-                    b.Navigation("KorisnikStatus");
 
                     b.Navigation("VerifikacijaStatus");
                 });
@@ -1152,39 +1142,13 @@ namespace TeachABit.Model.Migrations
                     b.Navigation("Tecaj");
                 });
 
-            modelBuilder.Entity("TeachABit.Model.Models.Uloge.KorisnikUloga", b =>
-                {
-                    b.HasOne("TeachABit.Model.Models.Uloge.Uloga", "Uloga")
-                        .WithMany("KorisnikUloge")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TeachABit.Model.Models.Korisnici.Korisnik", "Korisnik")
-                        .WithMany("KorisnikUloge")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Korisnik");
-
-                    b.Navigation("Uloga");
-                });
-
             modelBuilder.Entity("TeachABit.Model.Models.Korisnici.Korisnik", b =>
                 {
                     b.Navigation("KomentarReakcijaList");
 
-                    b.Navigation("KorisnikUloge");
-
                     b.Navigation("ObjavaReakcijaList");
 
                     b.Navigation("Objave");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Korisnici.KorisnikStatus", b =>
-                {
-                    b.Navigation("Korisnici");
                 });
 
             modelBuilder.Entity("TeachABit.Model.Models.Objave.Objava", b =>
@@ -1235,11 +1199,6 @@ namespace TeachABit.Model.Migrations
                     b.Navigation("KomentarReakcijaList");
 
                     b.Navigation("PodKomentarList");
-                });
-
-            modelBuilder.Entity("TeachABit.Model.Models.Uloge.Uloga", b =>
-                {
-                    b.Navigation("KorisnikUloge");
                 });
 #pragma warning restore 612, 618
         }

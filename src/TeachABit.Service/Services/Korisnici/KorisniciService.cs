@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TeachABit.Model.DTOs.Korisnici;
@@ -6,18 +7,20 @@ using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.Enums;
 using TeachABit.Model.Models.Korisnici;
+using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Util.Images;
 using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Korisnici
 {
-    public class KorisniciService(IAuthorizationService authorizationService, IS3BucketService s3BucketService, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulationService) : IKorisniciService
+    public class KorisniciService(IAuthorizationService authorizationService, IAuthenticationService authenticationService, IS3BucketService s3BucketService, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulationService, IHttpContextAccessor httpContextAccessor) : IKorisniciService
     {
         private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly IS3BucketService _s3BucketService = s3BucketService;
         private readonly UserManager<Korisnik> _userManager = userManager;
         private readonly IImageManipulationService _imageManipulationService = imageManipulationService;
+        private readonly IAuthenticationService _authenticationService = authenticationService;
         private readonly IMapper _mapper = mapper;
 
         public async Task<ServiceResult<KorisnikDto>> CreateVerifikacijaZahtjev(string username)
@@ -92,7 +95,7 @@ namespace TeachABit.Service.Services.Korisnici
                 var korisnikId = _authorizationService.GetKorisnik().Id;
                 var korisnik = await _userManager.FindByIdAsync(korisnikId);
 
-                if (korisnik == null || korisnik.UserName != updateKorisnik.Username) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+                if (korisnik == null || (!string.IsNullOrEmpty(updateKorisnik.Username) && korisnik.UserName != updateKorisnik.Username)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
                 if (korisnik != null && updateKorisnik.ProfilnaSlikaBase64 != null)
                 {
@@ -145,6 +148,27 @@ namespace TeachABit.Service.Services.Korisnici
             await _userManager.UpdateAsync(korisnik);
 
             return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> DeleteKorisnik(string username)
+        {
+            var korisnikId = _authorizationService.GetKorisnik().Id;
+            var user = await _userManager.FindByIdAsync(korisnikId);
+
+            if (user == null) return ServiceResult.Failure();
+
+            if (user.NormalizedUserName != username.ToUpper())
+            {
+                var userForDelete = await _userManager.FindByNameAsync(username);
+                if (userForDelete == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
+                if (!(await _authorizationService.HasPermission(LevelPristupaEnum.Admin))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+                if (await _userManager.IsInRoleAsync(userForDelete, "Admin")) ;
+                await _userManager.DeleteAsync(userForDelete);
+                return ServiceResult.Success();
+            }
+
+            await _userManager.DeleteAsync(user);
+            return _authenticationService.Logout();
         }
     }
 }

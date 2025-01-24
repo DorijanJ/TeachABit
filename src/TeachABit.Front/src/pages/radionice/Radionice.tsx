@@ -54,7 +54,7 @@ export const Radionice = () => {
                         variant="contained"
                         onClick={() => setIsOpenRadionicaDialog(true)}
                     >
-                        Započni novu radionicu
+                        Stvori radionicu
                     </Button>
                 )}
             </div>

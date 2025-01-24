@@ -9,7 +9,8 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 {
     private readonly TeachABitContext _context = context;
 
-    public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, decimal? minCijena = null, decimal? maxCijena = null)
+    public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, double? minOcjena = null,
+        double? maxOcjena = null, bool sortOrderAsc = true, bool samoNadolazece = true)
 
     {
         IQueryable<Radionica> query = _context.Radionice
@@ -21,9 +22,11 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             var lowerSearch = search.ToLower();
             query = query.Where(x => x.Naziv.ToLower().Contains(lowerSearch));
         }
-        
-        if (minCijena != null) query = query.Where(x => x.Cijena >= minCijena);
-        if (maxCijena != null) query = query.Where(x => x.Cijena <= maxCijena);
+
+        if (minOcjena != null || maxOcjena != null) query = query.Include(x => x.Ocjene);
+
+        if (minOcjena != null) query = query.Where(x => x.Ocjene.Average(o => o.Ocjena) >= minOcjena);
+        if (maxOcjena != null) query = query.Where(x => x.Ocjene.Average(o => o.Ocjena) <= maxOcjena);
 
         if (!string.IsNullOrEmpty(trenutniKorisnikId))
         {
@@ -33,6 +36,11 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
                 .Include(x => x.Ocjene
                     .Where(x => x.KorisnikId == trenutniKorisnikId));
         }
+
+        if (sortOrderAsc) query = query.OrderBy(x => x.VrijemeRadionice);
+        else query = query.OrderByDescending(x => x.VrijemeRadionice);
+
+        if (samoNadolazece) query = query.Where(x => x.VrijemeRadionice > DateTime.UtcNow.AddHours(-1));
 
         if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 
@@ -225,4 +233,25 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         return await query.ToListAsync();
     }
+    public async Task<bool> CheckIfRadionicaPlacen(string korisnikId, int radinicaId)
+    {
+        var placanje = await _context.RadionicaPlacanja.FirstOrDefaultAsync(x => x.KorisnikId == korisnikId && x.RadionicaId == radinicaId);
+        return placanje != null;
+    }
+
+    public async Task<RadionicaPlacanje> CreateRadionicaPlacanje(RadionicaPlacanje radionicaPlacanje)
+    {
+        var created = await _context.RadionicaPlacanja.AddAsync(radionicaPlacanje);
+        await _context.SaveChangesAsync();
+        return created.Entity;
+    }
+
+    public async Task<List<RadionicaPlacanje>> GetPrijaveForRadionica(int radionicaId)
+    {
+        return await _context.RadionicaPlacanja
+            .Include(x => x.Korisnik)
+            .Where(x => x.RadionicaId == radionicaId)
+            .ToListAsync();
+    }
+
 }
