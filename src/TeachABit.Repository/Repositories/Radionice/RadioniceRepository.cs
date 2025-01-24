@@ -245,4 +245,13 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         await _context.SaveChangesAsync();
         return created.Entity;
     }
+
+    public async Task<List<RadionicaPlacanje>> GetPrijaveForRadionica(int radionicaId)
+    {
+        return await _context.RadionicaPlacanja
+            .Include(x => x.Korisnik)
+            .Where(x => x.RadionicaId == radionicaId)
+            .ToListAsync();
+    }
+
 }

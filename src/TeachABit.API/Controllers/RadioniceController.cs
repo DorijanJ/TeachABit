@@ -112,4 +112,10 @@ public class RadioniceController(IRadioniceService radioniceService, IPlacanjaSe
     {
         return GetControllerResult(await _placanjaService.CreateRadionicaCheckoutSession(request));
     }
+    [HttpPost("{radionicaId}/obavijest")]
+    public async Task<IActionResult> SendObavijest(int radionicaId, [FromBody] ObavijestDto obavijestDto)
+    {
+        obavijestDto.RadionicaId = radionicaId;
+        return GetControllerResult(await _radioniceService.SendObavijest(obavijestDto));
+    }
 }
