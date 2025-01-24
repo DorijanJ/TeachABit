@@ -315,5 +315,15 @@ namespace TeachABit.Service.Services.Tecajevi
             await _tecajeviRepository.DeleteKorisnikTecajOcjena(tecajId, korisnik.Id);
             return ServiceResult.Success();
         }
+
+        public async Task<ServiceResult<TecajDto>> GetOcjena(int tecajId)
+        {
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            if(korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            KorisnikTecajOcjena ocjena =await _tecajeviRepository.GetTecajOcjenaWithTracking(tecajId, korisnik.Id);
+            TecajDto? tecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.GetTecaj(tecajId));
+            tecaj.OcjenaTrenutna=ocjena.Ocjena;
+            return ServiceResult.Success(tecaj);
+        }
     }
 }
