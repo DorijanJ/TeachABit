@@ -324,5 +324,29 @@ namespace TeachABit.Service.Services.Tecajevi
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
+
+        public async Task<ServiceResult> AddFavoritTecaj(int tecajId)
+        {
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            if(korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if(tecajId==null) return ServiceResult.Failure(MessageDescriber.BadRequest("Tecaj id is required"));
+            TecajFavorit favorit = new()
+            {
+                KorisnikId = korisnik.Id,
+                TecajId = tecajId
+            };
+            await _tecajeviRepository.AddFavoritTecaj(favorit);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> RemoveFavoritTecaj(int favoritTecajId)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+            if(korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if(favoritTecajId==null) return ServiceResult.Failure(MessageDescriber.BadRequest("Tecaj id is required"));
+            
+            await _tecajeviRepository.RemoveFavoritTecaj(favoritTecajId);
+            return ServiceResult.Success();
+        }
     }
 }

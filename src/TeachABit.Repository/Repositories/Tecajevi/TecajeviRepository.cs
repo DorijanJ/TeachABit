@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TeachABit.Model;
@@ -233,6 +234,23 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             await _context.SaveChangesAsync();
             return ocjena;
+        }
+
+        public async Task<TecajFavorit> AddFavoritTecaj(TecajFavorit favorit)
+        {
+            EntityEntry<TecajFavorit> favoritt = await _context.TecajFavoriti.AddAsync(favorit);
+            await _context.SaveChangesAsync();
+            return favoritt.Entity;
+        }
+
+        public async Task<TecajFavorit?> GetFavoritTecajById(int id)
+        {
+            return await _context.TecajFavoriti.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
+
+        }
+        public async Task RemoveFavoritTecaj(int favoritTecajId)
+        {
+            await _context.TecajFavoriti.Where(x=> x.Id==favoritTecajId).ExecuteDeleteAsync();
         }
         public async Task<List<TecajFavorit>> GetAllTecajeviFavoritForCurrentUser(string id)
         {

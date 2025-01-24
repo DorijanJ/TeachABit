@@ -139,5 +139,14 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _tecajeviService.GetAllTecajeviFavoritForCurrentUser());
         }
+
+        public async Task<IActionResult> AddFavoritTecaj(int favoritTecajId)
+        {
+            return GetControllerResult(await _tecajeviService.AddFavoritTecaj(favoritTecajId));
+        }
+        public async Task<IActionResult> RemoveFavoritTecaj(int favoritTecajId)
+        {
+            return GetControllerResult(await _tecajeviService.RemoveFavoritTecaj(favoritTecajId));
+        }
     }
 }
