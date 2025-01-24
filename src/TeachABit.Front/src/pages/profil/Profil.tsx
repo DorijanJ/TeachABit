@@ -256,6 +256,7 @@ export const Profil = () => {
                                 )}
                             {isOpenImageDialog && (
                                 <EditProfilDialog
+                                    username={username ?? ""}
                                     onClose={() => {
                                         setIsOpenImageDialog(false);
                                         window.location.reload();
