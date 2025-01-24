@@ -150,10 +150,10 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _authenticationService.Reauth());
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAccount()
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> DeleteAccount(string username)
         {
-            return GetControllerResult(await _korisniciService.DeleteKorisnik());
+            return GetControllerResult(await _korisniciService.DeleteKorisnik(username));
         }
 
     }

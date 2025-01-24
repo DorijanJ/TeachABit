@@ -17,9 +17,9 @@ namespace TeachABit.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
+        public async Task<IActionResult> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null, int? minOcjena = null, int? maxOcjena = null, bool vremenskiNajstarije = false)
         {
-            var result = await _tecajeviService.GetTecajList(search, vlasnikUsername, minCijena, maxCijena);
+            var result = await _tecajeviService.GetTecajList(search, vlasnikUsername, minCijena, maxCijena, minOcjena, maxOcjena, vremenskiNajstarije);
             return GetControllerResult(result);
         }
 
@@ -140,6 +140,24 @@ namespace TeachABit.API.Controllers
         public async Task<IActionResult> CreateCheckoutSession([FromBody] TecajPlacanjeRequestDto request)
         {
             return GetControllerResult(await _placanjaService.CreateTecajCheckoutSession(request));
+        }
+
+        [HttpGet("favoriti")]
+        public async Task<IActionResult> GetAllTecajeviFavoritForCurrentUser()
+        {
+            return GetControllerResult(await _tecajeviService.GetAllTecajeviFavoritForCurrentUser());
+        }
+
+        [HttpPost("{favoritTecajId}/favorit")]
+        public async Task<IActionResult> AddFavoritTecaj(int favoritTecajId)
+        {
+            return GetControllerResult(await _tecajeviService.AddFavoritTecaj(favoritTecajId));
+        }
+
+        [HttpDelete("{favoritTecajId}/favorit")]
+        public async Task<IActionResult> RemoveFavoritTecaj(int favoritTecajId)
+        {
+            return GetControllerResult(await _tecajeviService.RemoveFavoritTecaj(favoritTecajId));
         }
     }
 }

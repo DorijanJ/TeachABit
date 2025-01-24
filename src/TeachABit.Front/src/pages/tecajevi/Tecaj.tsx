@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import {Box, Button, Card, CardContent, Typography} from "@mui/material";
 import { TecajDto } from "../../models/TecajDto";
 import { loadStripe } from "@stripe/stripe-js";
 import requests from "../../api/agent";
@@ -8,6 +8,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react";
 
+
+
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
 interface Props {
@@ -15,6 +17,7 @@ interface Props {
 }
 
 export const Tecaj = (props: Props) => {
+
     const handleCheckout = async (tecajId?: number) => {
         if (!globalStore.currentUser) {
             globalStore.addNotification({
@@ -39,6 +42,8 @@ export const Tecaj = (props: Props) => {
     const navigate = useNavigate();
 
     return (
+
+
         <Card
             onClick={() => {
                 if (
@@ -140,12 +145,13 @@ export const Tecaj = (props: Props) => {
                         alignItems: "center",
                     }}
                 >
+
                     <div onClick={(e) => e.stopPropagation()}>
                         <UserLink
                             user={{
                                 id: props.tecaj.vlasnikId,
                                 profilnaSlikaVersion:
-                                    props.tecaj.vlasnikProfilnaSlikaVersion,
+                                props.tecaj.vlasnikProfilnaSlikaVersion,
                                 username: props.tecaj.vlasnikUsername,
                             }}
                         />

@@ -31,4 +31,6 @@ public interface IRadioniceRepository
     public Task<RadionicaKomentar> UpdateKomentar(RadionicaKomentar komentar);
     public Task<RadionicaPlacanje> CreateRadionicaPlacanje(RadionicaPlacanje radionicaPlacanje);
     public Task<bool> CheckIfRadionicaPlacen(string korisnikId, int radinicaId);
+    public Task<List<RadionicaPlacanje>> GetPrijaveForRadionica(int radionicaId);
+    public Task<List<Radionica>> GetAllRadioniceFavoritForCurrentUser(string id);
 }
