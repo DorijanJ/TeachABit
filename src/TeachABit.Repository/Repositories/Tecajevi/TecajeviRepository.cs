@@ -9,12 +9,19 @@ namespace TeachABit.Repository.Repositories.Tecajevi
     {
         private readonly TeachABitContext _context = context;
 
-        public async Task<Tecaj?> GetTecaj(int id)
+        public async Task<Tecaj?> GetTecaj(int id, string? korisnikId = null)
         {
-            return await _context.Tecajevi
+            var query = _context.Tecajevi
                 .Include(x => x.Vlasnik)
                 .Include(x => x.Lekcije)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(korisnikId))
+            {
+                query = query.Include(x => x.KorisnikTecajOcjene.Where(x => x.KorisnikId == korisnikId).Take(1));
+            }
+
+            return await query.FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task<Tecaj> UpdateTecaj(Tecaj tecaj)
         {

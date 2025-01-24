@@ -4,7 +4,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 {
     public interface ITecajeviRepository
     {
-        public Task<Tecaj?> GetTecaj(int id);
+        public Task<Tecaj?> GetTecaj(int id, string? korisnikId = null);
         public Task<Tecaj> CreateTecaj(Tecaj tecaj);
         public Task<Tecaj> UpdateTecaj(Tecaj tecaj);
         public Task DeleteTecaj(int id);
