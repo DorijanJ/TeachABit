@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using System.Net.Mail;
-using TeachABit.Service.Util.Mail;
 using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
@@ -11,6 +10,7 @@ using TeachABit.Model.Models.Radionice;
 using TeachABit.Repository.Repositories.Radionice;
 using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Util.Images;
+using TeachABit.Service.Util.Mail;
 using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Radionice;
@@ -25,8 +25,6 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
     private readonly IS3BucketService _bucketService = bucketService;
     private readonly UserManager<Korisnik> _userManager = userManager;
     private readonly IMailSenderService _mailSenderService = mailSenderService;
-
-
 
     public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null, string? vlasnikUsername = null, double? minOcjena = null,
         double? maxOcjena = null, bool sortOrderAsc = true, bool samoNadolazece = true)
@@ -255,43 +253,44 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
         await _radioniceRepository.DeleteOcjena(radionicaId, korisnik.Id);
         return ServiceResult.Success();
     }
-    
-    /*public async Task<ServiceResult> SendObavijest(ObavijestDto obavijest)
+
+    public async Task<ServiceResult> SendObavijest(ObavijestDto obavijest)
     {
         var prijave = await _radioniceRepository.GetPrijaveForRadionica(obavijest.RadionicaId);
         var radionica = await _radioniceRepository.GetRadionica(obavijest.RadionicaId);
-        
+
+        if (radionica == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
         if (radionica.VlasnikId != _authorizationService.GetKorisnik().Id)
         {
-            return ServiceResult.Failure();
+            return ServiceResult.Failure(MessageDescriber.Unauthorized());
         }
 
-        if (!prijave.Any())
+        if (prijave.Count == 0)
         {
-            return ServiceResult.Failure();
+            return ServiceResult.Failure(MessageDescriber.BadRequest("Nitko nije prijavljen na radionicu... :("));
         }
+
+        string[] mails = [];
 
         foreach (var prijava in prijave)
         {
             if (!string.IsNullOrEmpty(prijava.Korisnik.Email))
             {
-                MailMessage message = new()
-                {
-                    Subject = obavijest.Naslov,
-                    Body = obavijest.Poruka,
-                    IsBodyHtml = true
-                };
-
-                var mailResult = await _mailSenderService.SendMail(message, prijava.Korisnik.Email);
-
-                if (mailResult.IsError)
-                {
-                    return ServiceResult.Failure();
-                }
+                mails.Append(prijava.Korisnik.Email);
             }
         }
 
+        MailMessage message = new()
+        {
+            Subject = obavijest.Naslov,
+            Body = MailDescriber.RadionicaPrijava(radionica.Naziv, obavijest.Poruka),
+            IsBodyHtml = true
+        };
+
+        await _mailSenderService.SendMail(message, mails);
+
         return ServiceResult.Success();
-    }*/
-    
+    }
+
 }
