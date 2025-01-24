@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TeachABit.Model.DTOs.Korisnici;
@@ -12,13 +13,14 @@ using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Korisnici
 {
-    public class KorisniciService(IAuthorizationService authorizationService, IS3BucketService s3BucketService, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulationService) : IKorisniciService
+    public class KorisniciService(IAuthorizationService authorizationService, IS3BucketService s3BucketService, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulationService, IHttpContextAccessor httpContextAccessor) : IKorisniciService
     {
         private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly IS3BucketService _s3BucketService = s3BucketService;
         private readonly UserManager<Korisnik> _userManager = userManager;
         private readonly IImageManipulationService _imageManipulationService = imageManipulationService;
         private readonly IMapper _mapper = mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public async Task<ServiceResult<KorisnikDto>> CreateVerifikacijaZahtjev(string username)
         {
@@ -105,6 +107,15 @@ namespace TeachABit.Service.Services.Korisnici
             {
                 return ServiceResult.Failure(MessageDescriber.DefaultError(ex.Message));
             }
+        }
+
+        public async Task<ServiceResult> DeleteKorisnik()
+        {
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            //var korisnik = _authorizationService.GetKorisnikOptional();
+            if(user == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            await _userManager.DeleteAsync(user);
+            return ServiceResult.Success();
         }
     }
 }

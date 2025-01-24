@@ -10,5 +10,6 @@ namespace TeachABit.Service.Services.Korisnici
         Task<ServiceResult<List<KorisnikDto>>> GetKorisniciSaZahtjevomVerifikacije();
         Task<ServiceResult<KorisnikDto>> PrihvatiVerifikacijaZahtjev(string username);
         Task<ServiceResult<List<KorisnikDto>>> GetAllUsers(string? search);
+        Task<ServiceResult> DeleteKorisnik();
     }
 }
