@@ -40,9 +40,13 @@ export default function TecajPage() {
     const handleTecajPopupOpen = () => setTecajDialogOpen(true);
     const handleTecajPopupClose = () => setTecajDialogOpen(false);
 
-    const handleLiked = async () => {
-        setIsLiked(!isLiked);
-        await requests.postWithLoading("tecajevi/favoriti", isLiked);
+    const handleLiked = async (fav: boolean) => {
+        if (fav) {
+            await requests.postWithLoading(`tecajevi/${tecaj.id}/favorit`);
+        } else {
+            await requests.deleteWithLoading(`tecajevi/${tecaj.id}/favorit`);
+        }
+        fetchTecaj();
     };
 
     /* potvrda za brisanje tecaja */
@@ -78,6 +82,7 @@ export default function TecajPage() {
     const [value, setValue] = useState<number | null>(null);
 
     useEffect(() => {
+        if (tecaj.favorit) setIsLiked(tecaj.favorit);
         if (tecaj.ocjenaTrenutna) setValue(tecaj.ocjenaTrenutna);
     }, [tecaj.ocjenaTrenutna]);
 
@@ -229,7 +234,7 @@ export default function TecajPage() {
                                     alignItems={"center"}
                                     display={"flex"}
                                 >
-                                    Trenutna ocijena:{" "}
+                                    Ocijena:{" "}
                                 </Typography>
                                 {tecaj.ocjena}/5
                                 <StarIcon
@@ -250,11 +255,7 @@ export default function TecajPage() {
                                         gap="10px"
                                         sx={{ "& > legend": { mt: 2 } }}
                                     >
-                                        {
-                                            <Typography>
-                                                Ocijeni tečaj:{" "}
-                                            </Typography>
-                                        }
+                                        {<Typography>Vaša ocjena: </Typography>}
                                         <Rating
                                             name="simple-controlled"
                                             value={value}
@@ -276,21 +277,25 @@ export default function TecajPage() {
                                 position: "relative",
                             }}
                         >
-                            <IconButton
-                                onClick={() => {
-                                    setIsLiked(!isLiked);
-                                    handleLiked();
-                                }} // Toggle "liked" state
-                                sx={{
-                                    backgroundColor: "white",
-                                    color: isLiked ? "#f44336" : "grey",
-                                    "&:hover": {
-                                        backgroundColor: "#fce4ec",
-                                    },
-                                }}
-                            >
-                                <FavoriteIcon />
-                            </IconButton>
+                            {globalStore.currentUser?.id !== tecaj.vlasnikId &&
+                                globalStore.currentUser !== undefined &&
+                                (tecaj.kupljen || !tecaj.cijena) && (
+                                    <IconButton
+                                        onClick={() => {
+                                            handleLiked(!isLiked);
+                                            setIsLiked((prev) => !prev);
+                                        }}
+                                        sx={{
+                                            backgroundColor: "white",
+                                            color: isLiked ? "#f44336" : "grey",
+                                            "&:hover": {
+                                                backgroundColor: "#fce4ec",
+                                            },
+                                        }}
+                                    >
+                                        <FavoriteIcon />
+                                    </IconButton>
+                                )}
                             {globalStore.currentUser?.id ===
                                 tecaj.vlasnikId && (
                                 <IconButton

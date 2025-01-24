@@ -28,7 +28,7 @@ namespace TeachABit.Model.Mapping
                 .ForMember(x => x.VlasnikUsername, opt => opt.MapFrom(x => x.Vlasnik.UserName))
                 .ForMember(x => x.Kupljen, opt => opt.MapFrom(x => x.TecajPlacanja.Count > 0))
                 .ForMember(x => x.VlasnikProfilnaSlikaVersion, opt => opt.MapFrom(x => x.Vlasnik.ProfilnaSlikaVersion))
-                .ForMember(x => x.Favorit, opt => opt.MapFrom(x => x.KorisnikTecajFavoriti.Count > 0))
+                .ForMember(x => x.Favorit, opt => opt.MapFrom(x => x.KorisnikTecajFavoriti.Any()))
                 .ForMember(x => x.Ocjena, opt => opt.MapFrom(x => x.KorisnikTecajOcjene.Count > 0 ? x.KorisnikTecajOcjene.Select(x => x.Ocjena).Sum() / x.KorisnikTecajOcjene.Count : 0));
             CreateMap<TecajDto, Tecaj>();
             CreateMap<CreateOrUpdateTecajDto, Tecaj>();
