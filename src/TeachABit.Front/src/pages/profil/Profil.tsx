@@ -233,9 +233,13 @@ export const Profil = () => {
                                 )}
                             {isOpenImageDialog && (
                                 <EditProfilDialog
+                                    username={username ?? ""}
                                     onClose={() => {
                                         setIsOpenImageDialog(false);
-                                        window.location.reload();
+                                        if (globalStore.currentUser?.username)
+                                            navigate(
+                                                `/profil/${globalStore.currentUser?.username}`
+                                            );
                                     }}
                                 />
                             )}

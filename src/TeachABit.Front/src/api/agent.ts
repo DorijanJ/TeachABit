@@ -85,6 +85,17 @@ axios.interceptors.response.use(
             responseData?.refreshUserInfoDto;
 
         if (
+            responseData.message?.severity === "error" &&
+            (responseData.message.type === "global" ||
+                responseData.message.type === undefined)
+        ) {
+            globalStore.addNotification({
+                message: responseData.message.message,
+                severity: responseData.message.severity,
+            });
+        }
+
+        if (
             responseData?.message?.code === "reauth" &&
             !originalRequest._retry
         ) {
