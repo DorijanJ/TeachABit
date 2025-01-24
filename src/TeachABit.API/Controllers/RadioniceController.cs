@@ -18,9 +18,9 @@ public class RadioniceController(IRadioniceService radioniceService, IPlacanjaSe
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetRadionicaList(string? search = null, string? vlasnikUsername = null, double? minOcjena = null,
-        double? maxOcjena = null, bool sortOrderAsc = true, bool samoNadolazece = true)
+        double? maxOcjena = null, decimal? minCijena = null, decimal? maxCijena = null, bool sortOrderAsc = true, bool samoNadolazece = true)
     {
-        var result = await _radioniceService.GetRadionicaList(search, vlasnikUsername, minOcjena, maxOcjena, sortOrderAsc, samoNadolazece);
+        var result = await _radioniceService.GetRadionicaList(search, vlasnikUsername, minOcjena, maxOcjena, minCijena, maxCijena, sortOrderAsc, samoNadolazece);
         return GetControllerResult(result);
     }
 

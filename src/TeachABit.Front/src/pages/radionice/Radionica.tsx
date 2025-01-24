@@ -118,7 +118,7 @@ export const Radionica = (props: Props) => {
                 }}
                 onClick={() => {
                     globalStore.currentUser?.id === props.radionica.vlasnikId ||
-                    props.radionica.placen
+                    props.radionica.kupljena
                         ? navigate(`/radionica/${props.radionica.id}`)
                         : setIsSadrzajOpen(true);
                 }}
@@ -248,19 +248,9 @@ export const Radionica = (props: Props) => {
                             flexDirection={"row"}
                             gap={0.7}
                         >
-                            {globalStore.currentUser?.id !==
-                                props.radionica.vlasnikId &&
-                                !props.radionica.placen && (
-                                    <Button
-                                        onClick={(e) => {
-                                            handleCheckout(props.radionica.id);
-                                            e.stopPropagation();
-                                        }}
-                                        variant="contained"
-                                    >
-                                        {props.radionica.cijena}€
-                                    </Button>
-                                )}
+                            <Button onClick={() => {}} variant="contained">
+                                {props.radionica.cijena}€
+                            </Button>
                         </Box>
                     </Box>
                 </CardContent>

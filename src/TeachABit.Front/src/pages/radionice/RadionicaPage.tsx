@@ -22,9 +22,15 @@ import { LevelPristupa } from "../../enums/LevelPristupa";
 import globalStore from "../../stores/GlobalStore";
 import { observer } from "mobx-react";
 import React from "react";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export const RadionicaPage = () => {
-    const [value, setValue] = React.useState<number | null>(null);
+    const [isLiked, setIsLiked] = useState(false);
+    const handleLiked = async () => {
+        setIsLiked(!isLiked);
+        await requests.postWithLoading("radionice/favoriti", isLiked);
+    };
+    const [value, setValue] = React.useState<number | null>(2);
     const [radionica, setRadionica] = useState<RadionicaDto>({
         naziv: "",
         opis: "",
@@ -162,23 +168,11 @@ export const RadionicaPage = () => {
                 >
                     <Box
                         display={"flex"}
-                        flexDirection={"row"}
+                        flexDirection={"column"}
                         alignItems={"flex-start"}
                         justifyContent={"flex-start"}
                         gap={"20px"}
                     >
-                        {radionica.naslovnaSlikaVersion && (
-                            <img
-                                style={{
-                                    borderRadius: "10px",
-                                    objectFit: "cover",
-                                    width: "500px",
-                                }}
-                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                                    radionica.naslovnaSlikaVersion
-                                }`}
-                            />
-                        )}
                         <div
                             style={{
                                 width: "100%",
@@ -196,13 +190,25 @@ export const RadionicaPage = () => {
                                 sx={{
                                     wordWrap: "break-word",
                                     maxWidth: "100%",
-                                    color: "black",
                                     padding: "0 10px",
                                 }}
                             >
                                 {radionica.naziv}
                             </Typography>
                         </div>
+                        {radionica.naslovnaSlikaVersion && (
+                            <img
+                                style={{
+                                    //justifyItems:"center",
+                                    borderRadius: "10px",
+                                    objectFit: "cover",
+                                    width: "500px",
+                                }}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                    radionica.naslovnaSlikaVersion
+                                }`}
+                            />
+                        )}
                     </Box>
                     <div
                         style={{
@@ -274,6 +280,22 @@ export const RadionicaPage = () => {
                             alignItems={"center"}
                             gap="10px"
                         >
+                            <IconButton
+                                onClick={() => {
+                                    setIsLiked(!isLiked);
+                                    handleLiked();
+                                }}
+                                sx={{
+                                    backgroundColor: "white",
+                                    color: isLiked ? "#f44336" : "grey",
+                                    "&:hover": {
+                                        backgroundColor: "#fce4ec",
+                                    },
+                                }}
+                            >
+                                <FavoriteIcon />
+                            </IconButton>
+
                             {globalStore.currentUser?.id ===
                                 radionica.vlasnikId && (
                                 <IconButton
