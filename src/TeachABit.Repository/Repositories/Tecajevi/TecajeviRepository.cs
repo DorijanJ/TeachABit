@@ -1,13 +1,16 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TeachABit.Model;
+using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Tecajevi;
 
 namespace TeachABit.Repository.Repositories.Tecajevi
 {
-    public class TecajeviRepository(TeachABitContext context) : ITecajeviRepository
+    public class TecajeviRepository(TeachABitContext context, UserManager<Korisnik> userManager) : ITecajeviRepository
     {
         private readonly TeachABitContext _context = context;
+        private readonly UserManager<Korisnik> _userManager = userManager;
 
         public async Task<Tecaj?> GetTecaj(int id)
         {
@@ -31,7 +34,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             await _context.Tecajevi.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
-        public async Task<List<Tecaj>> GetTecajList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, decimal? minCijena = null, decimal? maxCijena = null)
+        public async Task<List<Tecaj>> GetTecajList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, decimal? minCijena = null, decimal? maxCijena = null,   int? minOcjena = null, int? maxOcjena = null, bool? vrmenski_najstarije=null)
         {
             var query = _context.Tecajevi
                 .Include(x => x.Vlasnik)
@@ -46,6 +49,28 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             if (minCijena != null) query = query.Where(x => x.Cijena >= minCijena);
             if (maxCijena != null) query = query.Where(x => x.Cijena <= maxCijena);
 
+            if (minOcjena.HasValue)
+            {
+                query = query.Where(x => x.KorisnikTecajOcjene.Average(o => o.Ocjena) >= minOcjena.Value);
+            }
+            else
+            {
+                query = query.Where(x => x.KorisnikTecajOcjene.Average(o => o.Ocjena) >= 0);
+
+            }
+
+            if (maxOcjena.HasValue)
+            {
+                query = query.Where(x => x.KorisnikTecajOcjene.Average(o => o.Ocjena) <= maxOcjena.Value);
+            }
+            else
+            {
+                query = query.Where(x => x.KorisnikTecajOcjene.Average(o => o.Ocjena) == 0);
+
+            }
+
+            
+
             if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 
             if (!string.IsNullOrEmpty(trenutniKorisnikId))
@@ -59,6 +84,14 @@ namespace TeachABit.Repository.Repositories.Tecajevi
                         .Where(t => t.KorisnikId == trenutniKorisnikId));
             }
 
+            if (vrmenski_najstarije.HasValue)
+            {
+                if (vrmenski_najstarije.Value == false)
+                {
+                    var list = await query.ToListAsync(); 
+                    return list.AsEnumerable().Reverse().ToList();
+                }
+            }
             return await query.ToListAsync();
         }
         public async Task<List<Lekcija>> GetLekcijaList(string? search = null)

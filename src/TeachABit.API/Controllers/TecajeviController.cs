@@ -14,7 +14,7 @@ namespace TeachABit.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
+        public async Task<IActionResult> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null, int? minOcjena = null, int? maxOcjena = null)
         {
             var result = await _tecajeviService.GetTecajList(search, vlasnikUsername, minCijena, maxCijena);
             return GetControllerResult(result);
