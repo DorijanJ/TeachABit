@@ -239,7 +239,7 @@ export const RadionicaPage = () => {
                         gap="10px"
                     >
                         {/*globalContext.currentUser?.id === radionica.vlasnikId*/}
-                        {globalStore.currentUser?.id ===
+                        {globalStore.currentUser?.id !==
                             radionica.vlasnikId && (
                             <Box
                                 display={"flex"}
@@ -254,7 +254,7 @@ export const RadionicaPage = () => {
                                     //title="Ocijeni radionicu: "
                                     name="simple-controlled"
                                     value={value}
-                                    onChange={(event, newValue) => {
+                                    onChange={(_event, newValue) => {
                                         setValue(newValue);
                                     }}
                                 />

@@ -53,7 +53,7 @@ namespace TeachABit.Service.Services.Placanja
                 },
             ],
                 Mode = "payment",
-                SuccessUrl = $"{domain}/success?session_id={{CHECKOUT_SESSION_ID}}",
+                SuccessUrl = $"{domain}/tecajevi/{tecaj.Id}",
                 CancelUrl = $"{domain}/cancel",
                 Metadata = new Dictionary<string, string>
                 {
@@ -119,7 +119,7 @@ namespace TeachABit.Service.Services.Placanja
                     },
                 ],
                 Mode = "payment",
-                SuccessUrl = $"{domain}/success?session_id={{CHECKOUT_SESSION_ID}}",
+                SuccessUrl = $"{domain}/radionice/{radionica.Id}",
                 CancelUrl = $"{domain}/cancel",
                 Metadata = new Dictionary<string, string>
                 {

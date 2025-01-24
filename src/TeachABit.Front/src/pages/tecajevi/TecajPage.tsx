@@ -1,4 +1,11 @@
-import { Box, Card, CardContent, IconButton, Typography } from "@mui/material";
+import {
+    Box,
+    Card,
+    CardContent,
+    IconButton,
+    Rating,
+    Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,6 +22,7 @@ import TecajPopup from "./TecajPopup";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import globalStore from "../../stores/GlobalStore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import StarIcon from "@mui/icons-material/Star";
 
 export default function TecajPage() {
     const { tecajId } = useParams();
@@ -64,6 +72,22 @@ export default function TecajPage() {
             );
             if (response && response.message?.severity === "success")
                 navigate(-1);
+        }
+    };
+
+    const [value, setValue] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (tecaj.ocjenaTrenutna) setValue(tecaj.ocjenaTrenutna);
+    }, [tecaj.ocjenaTrenutna]);
+
+    const updateTecajOcjena = async (value: number) => {
+        setValue(value);
+        const response = await requests.postWithLoading(
+            `tecajevi/${tecaj.id}/ocjena/${value}`
+        );
+        if (response?.message && response.message.severity === "success") {
+            fetchTecaj();
         }
     };
 
@@ -119,15 +143,16 @@ export default function TecajPage() {
                             }}
                         />
                     </IconButton>
-
-                    <UserLink
-                        user={{
-                            id: tecaj.vlasnikId,
-                            username: tecaj.vlasnikUsername,
-                            profilnaSlikaVersion:
-                                tecaj.vlasnikProfilnaSlikaVersion,
-                        }}
-                    />
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <UserLink
+                            user={{
+                                id: tecaj.vlasnikId,
+                                username: tecaj.vlasnikUsername,
+                                profilnaSlikaVersion:
+                                    tecaj.vlasnikProfilnaSlikaVersion,
+                            }}
+                        />
+                    </div>
                 </Box>
 
                 <CardContent
@@ -163,7 +188,6 @@ export default function TecajPage() {
                                 width: "100%",
                                 display: "flex",
                                 flexDirection: "column",
-                                //justifyContent: "space-between",
                                 alignItems: "flex-start",
                                 flexWrap: "wrap",
                             }}
@@ -191,7 +215,59 @@ export default function TecajPage() {
                             alignItems: "flex-end",
                         }}
                     >
-                        <div>{"Opis:"}</div>
+                        <div>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        mr: 1.5,
+                                    }}
+                                    alignItems={"center"}
+                                    display={"flex"}
+                                >
+                                    Trenutna ocijena:{" "}
+                                </Typography>
+                                {tecaj.ocjena}/5
+                                <StarIcon
+                                    color="primary"
+                                    sx={{
+                                        width: "20px",
+                                        height: "20px",
+                                    }}
+                                />
+                            </div>
+                            {globalStore.currentUser?.id !== tecaj.vlasnikId &&
+                                (tecaj.kupljen || !tecaj.cijena) && (
+                                    <Box
+                                        display={"flex"}
+                                        flexDirection={"row"}
+                                        justifySelf={"start"}
+                                        alignItems="center"
+                                        gap="10px"
+                                        sx={{ "& > legend": { mt: 2 } }}
+                                    >
+                                        {
+                                            <Typography>
+                                                Ocijeni tečaj:{" "}
+                                            </Typography>
+                                        }
+                                        <Rating
+                                            name="simple-controlled"
+                                            value={value}
+                                            onChange={(_event, newValue) => {
+                                                if (newValue != null)
+                                                    updateTecajOcjena(newValue);
+                                            }}
+                                        />
+                                    </Box>
+                                )}
+                            <div>{"Opis:"}</div>
+                        </div>
+
                         <Box
                             display={"flex"}
                             flexDirection={"row"}
@@ -215,20 +291,23 @@ export default function TecajPage() {
                             >
                                 <FavoriteIcon />
                             </IconButton>
+                            {globalStore.currentUser?.id ===
+                                tecaj.vlasnikId && (
+                                <IconButton
+                                    onClick={() => handleTecajPopupOpen()}
+                                    sx={{
+                                        width: "40px",
+                                        height: "40px",
+                                    }}
+                                >
+                                    <EditIcon />
+                                </IconButton>
+                            )}
                             {(globalStore.currentUser?.id === tecaj.vlasnikId ||
                                 globalStore.hasPermissions(
                                     LevelPristupa.Moderator
                                 )) && (
                                 <>
-                                    <IconButton
-                                        onClick={() => handleTecajPopupOpen()}
-                                        sx={{
-                                            width: "40px",
-                                            height: "40px",
-                                        }}
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
                                     <IconButton
                                         onClick={() => setIsPotvrdaOpen(true)}
                                         sx={{
