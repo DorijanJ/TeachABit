@@ -68,6 +68,7 @@ export const RadionicaPopup = (props: Props) => {
         <>
             <Dialog
                 open
+                fullWidth
                 onClose={props.onClose}
                 maxWidth={"md"}
                 id="radionicaPopup"
@@ -86,8 +87,8 @@ export const RadionicaPopup = (props: Props) => {
                             style={{
                                 overflowX: "hidden",
                                 whiteSpace: "normal",
-                                maxWidth: "80%",
-                                //width:"100%",
+                                //maxWidth: "80%",
+                                width:"100%",
                                 color: "#4f4f4f",
                             }}
                         >

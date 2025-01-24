@@ -169,6 +169,28 @@ export default function TecajPage() {
                         width: "100%",
                     }}
                 >
+                    <div
+                            style={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "flex-start",
+                                flexWrap: "wrap",
+                            }}
+                        >
+                            <Typography
+                                color="primary"
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    wordWrap: "break-word",
+                                    maxWidth: "100%",
+                                    padding: "0 10px",
+                                }}
+                            >
+                                {tecaj.naziv}
+                            </Typography>
+                        </div>
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
@@ -188,29 +210,7 @@ export default function TecajPage() {
                                 }`}
                             />
                         )}
-                        <div
-                            style={{
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "flex-start",
-                                flexWrap: "wrap",
-                            }}
-                        >
-                            <Typography
-                                color="primary"
-                                variant="h5"
-                                component="div"
-                                sx={{
-                                    wordWrap: "break-word",
-                                    maxWidth: "100%",
-                                    color: "black",
-                                    padding: "0 10px",
-                                }}
-                            >
-                                {tecaj.naziv}
-                            </Typography>
-                        </div>
+                        
                     </Box>
                     <div
                         style={{

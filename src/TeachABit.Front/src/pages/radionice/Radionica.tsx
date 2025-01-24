@@ -39,9 +39,8 @@ export const Radionica = (props: Props) => {
 
     const navigate = useNavigate();
 
-    const [isSadrzajOpen, setIsSadrzajOpen] = useState(false);
-    const [isLive, setIsLive] = useState(false);
-    const [isKupljenaRadionica, setIsKupljenaRadionica] = useState(false);
+  const [isSadrzajOpen, setIsSadrzajOpen] = useState(false);
+  const [isLive, setIsLive] = useState(false);
 
     const [remainingTime, setRemainingTime] = useState({
         dani: 0,
@@ -88,64 +87,62 @@ export const Radionica = (props: Props) => {
         return () => clearInterval(interval);
     }, [props.radionica.vrijemeRadionice]);
 
-    return (
-        <>
-            {isSadrzajOpen &&
-                !(
-                    globalStore.currentUser?.id === props.radionica.vlasnikId
-                ) && (
-                    <RadionicaPopup
-                        onClose={() => setIsSadrzajOpen(false)}
-                        onConfirm={() => handleCheckout(props.radionica.id)}
-                        radionica={props.radionica}
-                    />
-                )}
-            <Card
-                id="radionica"
-                sx={{
-                    borderRadius: "10px",
-                    boxSizing: "border-box",
-                    border: "1px solid lightgray",
-                    cursor: "pointer",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                    "&:hover": {
-                        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
-                        transform: "scale(1.03)",
-                        border: "1px solid #3a7ca5",
-                    },
-                    //width: "100%",
-                    minWidth: "340px",
-                    maxWidth: "40vw",
-                }}
-                onClick={() => {
-                    globalStore.currentUser?.id === props.radionica.vlasnikId ||
-                    isKupljenaRadionica
-                        ? navigate(`/radionica/${props.radionica.id}`)
-                        : setIsSadrzajOpen(true);
-                }}
-            >
-                <CardContent
-                    sx={{
-                        textAlign: "center",
-                        display: "flex",
-                        flexDirection: "column",
-                        //justifyContent: "space-between",
-                        gap: "24px",
-                        height: "100%",
-                    }}
-                >
-                    <Box
-                        display="flex"
-                        //justifyContent="space-between"
-                        gap="10px"
-                        alignItems="flex-start"
-                    >
-                        <Typography
-                            color="primary"
-                            variant="h5"
-                            component="div"
-                            sx={{
-                                /*overflow: "hidden",
+  return (
+    <>
+      {isSadrzajOpen &&
+        !(globalStore.currentUser?.id === props.radionica.vlasnikId) && (
+          <RadionicaPopup
+            onClose={() => setIsSadrzajOpen(false)}
+            onConfirm={() => handleCheckout(props.radionica.id)}
+            radionica={props.radionica}
+          />
+        )}
+      <Card
+        id="radionica"
+        sx={{
+          borderRadius: "10px",
+          boxSizing: "border-box",
+          border: "1px solid lightgray",
+          cursor: "pointer",
+          transition: "transform 0.2s, box-shadow 0.2s",
+          "&:hover": {
+            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+            transform: "scale(1.03)",
+            border: "1px solid #3a7ca5",
+          },
+          //width: "100%",
+          minWidth: "340px",
+          maxWidth: "40vw",
+        }}
+        onClick={() => {
+          globalStore.currentUser?.id === props.radionica.vlasnikId ||
+          props.radionica.kupljena
+            ? navigate(`/radionica/${props.radionica.id}`)
+            : setIsSadrzajOpen(true);
+        }}
+      >
+        <CardContent
+          sx={{
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            //justifyContent: "space-between",
+            gap: "24px",
+            height: "100%",
+          }}
+        >
+          <Box
+            display="flex"
+            //justifyContent="space-between"
+            gap="10px"
+            alignItems="flex-start"
+          >
+            <Typography
+              color="primary"
+              variant="h5"
+              component="div"
+              sx={{
+                /*overflow: "hidden",
                             textAlign: "left",
                             whiteSpace: "wrap",
                             textOverflow: "ellipsis",
@@ -225,47 +222,44 @@ export const Radionica = (props: Props) => {
                         )}
                     </div>
 
-                    <Box
-                        justifyContent={"flex-end"}
-                        display="flex"
-                        flexDirection={"row"}
-                        alignItems="center"
-                        gap={2}
-                    >
-                        <div onClick={(e) => e.stopPropagation()}>
-                            <UserLink
-                                user={{
-                                    id: props.radionica.vlasnikId,
-                                    username: props.radionica.vlasnikUsername,
-                                    profilnaSlikaVersion:
-                                        props.radionica
-                                            .vlasnikProfilnaSlikaVersion,
-                                }}
-                            />
-                        </div>
-                        <Box
-                            display={"flex"}
-                            alignItems={"flex-end"}
-                            flexDirection={"row"}
-                            gap={0.7}
-                        >
-                            {globalStore.currentUser?.id !==
-                                props.radionica.vlasnikId && (
-                                <Button
-                                    onClick={(e) => {
-                                        handleCheckout(props.radionica.id);
-                                        e.stopPropagation();
-                                    }}
-                                    variant="contained"
-                                >
-                                    {props.radionica.cijena}€
-                                </Button>
-                            )}
-                        </Box>
-                    </Box>
-                </CardContent>
-            </Card>
-        </>
-    );
+          <Box
+            justifyContent={"flex-end"}
+            display="flex"
+            flexDirection={"row"}
+            alignItems="center"
+            gap={2}
+          >
+            <div onClick={(e) => e.stopPropagation()}>
+              <UserLink
+                user={{
+                  id: props.radionica.vlasnikId,
+                  username: props.radionica.vlasnikUsername,
+                  profilnaSlikaVersion:
+                    props.radionica.vlasnikProfilnaSlikaVersion,
+                }}
+              />
+            </div>
+            <Box
+              display={"flex"}
+              alignItems={"flex-end"}
+              flexDirection={"row"}
+              gap={0.7}
+            >
+               
+                <Button
+                  onClick={() => {
+                    
+                  }}
+                  variant="contained"
+                >
+                  {props.radionica.cijena}€
+                </Button>
+              
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+    </>
+  );
 };
 export default observer(Radionica);
