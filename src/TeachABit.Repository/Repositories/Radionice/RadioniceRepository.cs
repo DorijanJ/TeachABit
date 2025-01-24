@@ -9,7 +9,8 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 {
     private readonly TeachABitContext _context = context;
 
-    public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null)
+    public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, double? minOcjena = null,
+        double? maxOcjena = null, bool sortOrderAsc = true)
 
     {
         IQueryable<Radionica> query = _context.Radionice
@@ -22,10 +23,22 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             query = query.Where(x => x.Naziv.ToLower().Contains(lowerSearch));
         }
 
+        if (minOcjena != null || maxOcjena != null) query = query.Include(x => x.Ocjene);
+
+        if (minOcjena != null) query = query.Where(x => x.Ocjene.Average(o => o.Ocjena) >= minOcjena);
+        if (maxOcjena != null) query = query.Where(x => x.Ocjene.Average(o => o.Ocjena) <= maxOcjena);
+
         if (!string.IsNullOrEmpty(trenutniKorisnikId))
         {
-            query = query.Include(x => x.RadionicaFavoriti.Where(f => f.KorisnikId == trenutniKorisnikId));
+            query = query
+                .Include(x => x.RadionicaFavoriti
+                    .Where(f => f.KorisnikId == trenutniKorisnikId))
+                .Include(x => x.Ocjene
+                    .Where(x => x.KorisnikId == trenutniKorisnikId));
         }
+
+        if (sortOrderAsc) query = query.OrderBy(x => x.VrijemeRadionice);
+        else query = query.OrderByDescending(x => x.VrijemeRadionice);
 
         if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 
