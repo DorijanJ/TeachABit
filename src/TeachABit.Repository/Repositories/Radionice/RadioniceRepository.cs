@@ -218,4 +218,16 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         return await query.ToListAsync();
     }
+    public async Task<bool> CheckIfRadionicaPlacen(string korisnikId, int radinicaId)
+    {
+        var placanje = await _context.RadionicaPlacanja.FirstOrDefaultAsync(x => x.KorisnikId == korisnikId && x.RadionicaId == radinicaId);
+        return placanje != null;
+    }
+
+    public async Task<RadionicaPlacanje> CreateRadionicaPlacanje(RadionicaPlacanje radionicaPlacanje)
+    {
+        var created = await _context.RadionicaPlacanja.AddAsync(radionicaPlacanje);
+        await _context.SaveChangesAsync();
+        return created.Entity;
+    }
 }

@@ -1,16 +1,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachABit.API.Middleware;
+using TeachABit.Model.DTOs.Placanja;
 using TeachABit.Model.DTOs.Radionice;
+using TeachABit.Service.Services.Placanja;
 using TeachABit.Service.Services.Radionice;
 
 namespace TeachABit.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RadioniceController(IRadioniceService radioniceService) : BaseController
+public class RadioniceController(IRadioniceService radioniceService, IPlacanjaService placanjaService) : BaseController
 {
     private readonly IRadioniceService _radioniceService = radioniceService;
+    private readonly IPlacanjaService _placanjaService = placanjaService;
 
     [AllowAnonymous]
     [HttpGet]
@@ -103,5 +106,9 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.DeleteOcjena(radionicaId));
     }
-
+    [HttpPost("create-checkout-session")]
+    public async Task<IActionResult> CreateCheckoutSession([FromBody] RadionicaPlacanjeRequestDto request)
+    {
+        return GetControllerResult(await _placanjaService.CreateRadionicaCheckoutSession(request));
+    }
 }
