@@ -28,7 +28,11 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         if (!string.IsNullOrEmpty(trenutniKorisnikId))
         {
-            query = query.Include(x => x.RadionicaFavoriti.Where(f => f.KorisnikId == trenutniKorisnikId));
+            query = query
+                .Include(x => x.RadionicaFavoriti
+                    .Where(f => f.KorisnikId == trenutniKorisnikId))
+                .Include(x => x.Ocjene
+                    .Where(x => x.KorisnikId == trenutniKorisnikId));
         }
         
         if (sortOrderAsc) query = query.OrderBy(x => x.VrijemeRadionice);

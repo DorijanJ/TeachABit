@@ -26,7 +26,7 @@ public partial class ImageFileAttribute : ValidationAttribute
         {
             var imageBytes = Convert.FromBase64String(base64Image);
             if (imageBytes.Length > _maxFileSize)
-                return new ValidationResult($"Slika je veća od {_maxFileSize} MB.");
+                return new ValidationResult($"Slika je veća od {_maxFileSize / 1024 / 1024} MB.");
         }
         catch
         {

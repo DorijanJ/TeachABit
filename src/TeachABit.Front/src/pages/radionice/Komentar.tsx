@@ -7,12 +7,13 @@ import ReplyIcon from "@mui/icons-material/Reply";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import LikeInfo from "./LikeInfo";
 import requests from "../../api/agent";
-import { useGlobalContext } from "../../context/Global.context";
 import KomentarEditor from "./KomentarEditor";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { hr } from "date-fns/locale";
 import { LevelPristupa } from "../../enums/LevelPristupa";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
 interface Props {
     komentar: RadionicaKomentarDto;
@@ -24,7 +25,7 @@ interface Props {
     toggleCollapse: (komentarId: number | undefined) => void;
 }
 
-export default function Komentar(props: Props) {
+export const Komentar = (props: Props) => {
     const isHidden = useMemo(() => {
         return (
             props.komentar.id !== undefined &&
@@ -39,8 +40,6 @@ export default function Komentar(props: Props) {
         props.komentar.liked
     );
     const [isEditing, setIsEditing] = useState(false);
-
-    const globalContext = useGlobalContext();
 
     const likeKomentar = async () => {
         await requests.postWithLoading(
@@ -208,7 +207,7 @@ export default function Komentar(props: Props) {
                             >
                                 {!props.komentar.isDeleted && (
                                     <>
-                                        {globalContext.currentUser?.id ===
+                                        {globalStore.currentUser?.id ===
                                             props.komentar.vlasnikId && (
                                             <IconButton
                                                 sx={{
@@ -225,9 +224,9 @@ export default function Komentar(props: Props) {
                                                 />
                                             </IconButton>
                                         )}
-                                        {(globalContext.currentUser?.id ===
+                                        {(globalStore.currentUser?.id ===
                                             props.komentar.vlasnikId ||
-                                            globalContext.hasPermissions(
+                                            globalStore.hasPermissions(
                                                 LevelPristupa.Moderator
                                             )) && (
                                             <>
@@ -257,7 +256,7 @@ export default function Komentar(props: Props) {
                                     liked={liked}
                                     size="small"
                                 />
-                                {globalContext.userIsLoggedIn && (
+                                {globalStore.currentUser !== undefined && (
                                     <IconButton
                                         sx={{ width: "30px", height: "30px" }}
                                         onClick={() => {
@@ -285,4 +284,6 @@ export default function Komentar(props: Props) {
             />
         </>
     );
-}
+};
+
+export default observer(Komentar);

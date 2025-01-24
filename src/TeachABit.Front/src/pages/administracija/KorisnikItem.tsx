@@ -10,7 +10,7 @@ interface Props {
     refreshData: () => Promise<any>;
 }
 
-export default function VerifikacijaZahtjev(props: Props) {
+export default function KorisnikItem(props: Props) {
     const PotvrdiVerifikaciju = async (username: string) => {
         const response = await requests.postWithLoading(
             `account/${username}/verifikacija`
@@ -30,9 +30,12 @@ export default function VerifikacijaZahtjev(props: Props) {
                     height={"100%"}
                     alignItems={"center"}
                 >
-                    <div style={{ width: "180px" }}>
-                        <UserLink user={props.korisnik} fontSize={"18px"} />
+                    <div>
+                        <UserLink user={props.korisnik} fontSize={18} />
                     </div>
+                    {props.korisnik.roles &&
+                        props.korisnik.roles.length > 0 &&
+                        props.korisnik.roles[0].name}
                     <p
                         style={{
                             margin: "0",

@@ -5,7 +5,6 @@ import requests from "../../api/agent";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import UserLink from "../profil/UserLink";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useGlobalContext } from "../../context/Global.context";
 import EditIcon from "@mui/icons-material/Edit";
 import RadionicaEditor from "./RadionicaEditor";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
@@ -13,10 +12,11 @@ import { RadionicaDto } from "../../models/RadionicaDto";
 import RadionicaKomentari from "./RadionicaKomentari";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import { LevelPristupa } from "../../enums/LevelPristupa";
+import globalStore from "../../stores/GlobalStore";
+import { observer } from "mobx-react";
 
-export default function RadionicaPage() {
+export const RadionicaPage = () => {
     const [radionica, setRadionica] = useState<RadionicaDto>({
-        //sadrzaj: "",
         naziv: "",
         opis: "",
         cijena: 0,
@@ -45,7 +45,6 @@ export default function RadionicaPage() {
     };
 
     const navigate = useNavigate();
-    const globalContext = useGlobalContext();
 
     /*const likeRadionica = async () => {
         try {
@@ -197,7 +196,32 @@ export default function RadionicaPage() {
                             />
                         </Box>
                     </div>
+
+                    {radionica.naslovnaSlikaVersion && (
+                        <div
+                            style={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                paddingTop: "20px",
+                            }}
+                        >
+                            <img
+                                style={{
+                                    borderRadius: "10px",
+                                    objectFit: "cover",
+                                    width: "70%",
+                                }}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                    radionica.naslovnaSlikaVersion
+                                }`}
+                            />
+                        </div>
+                    )}
+
                     <TeachABitRenderer content={radionica.opis ?? ""} />
+
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
@@ -205,7 +229,7 @@ export default function RadionicaPage() {
                         alignItems={"center"}
                         gap="10px"
                     >
-                        {globalContext.currentUser?.id ===
+                        {globalStore.currentUser?.id ===
                             radionica.vlasnikId && (
                             <IconButton
                                 onClick={() => setIsEditing(true)}
@@ -217,9 +241,8 @@ export default function RadionicaPage() {
                                 <EditIcon color="primary"></EditIcon>
                             </IconButton>
                         )}
-                        {(globalContext.currentUser?.id ===
-                            radionica.vlasnikId ||
-                            globalContext.hasPermissions(
+                        {(globalStore.currentUser?.id === radionica.vlasnikId ||
+                            globalStore.hasPermissions(
                                 LevelPristupa.Moderator
                             )) && (
                             <>
@@ -234,13 +257,6 @@ export default function RadionicaPage() {
                                 </IconButton>
                             </>
                         )}
-                        {/*<LikeInfo
-                            likeCount={radionica.likeCount}
-                            onClear={clearReaction}
-                            onDislike={dislikeRadionica}
-                            onLike={likeRadionica}
-                            liked={radionica.liked}
-                        />*/}
                     </Box>
                     {radionica.id && (
                         <RadionicaKomentari radionicaId={radionica.id} />
@@ -249,4 +265,5 @@ export default function RadionicaPage() {
             </Card>
         </>
     );
-}
+};
+export default observer(RadionicaPage);
