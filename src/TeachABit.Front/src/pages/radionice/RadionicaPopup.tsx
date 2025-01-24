@@ -97,115 +97,117 @@ export const RadionicaPopup = (props: Props) => {
                     </div>
                 </DialogTitle>
 
-        <DialogContent
-          sx={{
-            height: 600,
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-            paddingTop: "10px !important",
-          }}
-        >
-          {/* Prikaz vlasnika radionice */}
-          <Box
-            flexDirection={"row"}
-            alignItems={"center"}
-            display={"flex"}
-            justifyContent={"space-between"}
-            gap="5px"
-            width={"100%"}
-          >
-            <Box>
-              <Typography
-                color="primary"
-                variant="h5"
-                component="div"
-                sx={{
-                  overflow: "hidden",
-                  whiteSpace: "break-spaces",
-                  maxWidth: "100%",
-                }}
-              >
-                {props.radionica.naziv}
-              </Typography>
-            </Box>
+                <DialogContent
+                    sx={{
+                        height: 600,
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "20px",
+                        paddingTop: "10px !important",
+                        minWidth: "800px",
+                    }}
+                >
+                    {/* Prikaz vlasnika radionice */}
+                    <Box
+                        flexDirection={"row"}
+                        alignItems={"center"}
+                        display={"flex"}
+                        justifyContent={"space-between"}
+                        gap="5px"
+                        width={"100%"}
+                    >
+                        <Box>
+                            <Typography
+                                color="primary"
+                                variant="h5"
+                                component="div"
+                                sx={{
+                                    overflow: "hidden",
+                                    whiteSpace: "break-spaces",
+                                    maxWidth: "100%",
+                                }}
+                            >
+                                {props.radionica.naziv}
+                            </Typography>
+                        </Box>
 
-            <UserLink
-              user={{
-                id: props.radionica?.vlasnikId,
-                username: props.radionica?.vlasnikUsername,
-                profilnaSlikaVersion:
-                  props.radionica?.vlasnikProfilnaSlikaVersion,
-              }}
-            />
-          </Box>
+                        <UserLink
+                            user={{
+                                id: props.radionica?.vlasnikId,
+                                username: props.radionica?.vlasnikUsername,
+                                profilnaSlikaVersion:
+                                    props.radionica
+                                        ?.vlasnikProfilnaSlikaVersion,
+                            }}
+                        />
+                    </Box>
 
-          {props.radionica.naslovnaSlikaVersion && (
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                paddingTop: "20px",
-              }}
-            >
-              <img
-                style={{
-                    borderRadius: "10px",
-                    objectFit: "cover",
-                    maxWidth: "100%",
-                    height: "auto",
-                }}
-                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                  props.radionica.naslovnaSlikaVersion
-                }`}
-              />
-            </div>
-          )}
+                    {props.radionica.naslovnaSlikaVersion && (
+                        <div
+                            style={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                paddingTop: "20px",
+                            }}
+                        >
+                            <img
+                                style={{
+                                    borderRadius: "10px",
+                                    objectFit: "cover",
+                                    maxWidth: "100%",
+                                    height: "auto",
+                                }}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                    props.radionica.naslovnaSlikaVersion
+                                }`}
+                            />
+                        </div>
+                    )}
 
                     {/* Opis radionice */}
                     <TeachABitRenderer
                         content={props.radionica?.opis || "Nema opisa"}
                     />
 
-          {/* Kapacitet, cijena i vrijeme */}
-          <div
-            title="kapacitet-cijena-vrijeme-wrapper"
-            style={{
-              //backgroundColor: "lightsteelblue",
-              display: "flex",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: "20px",
-            }}
-          >
-            {/* Kapacitet */}
-            <Box
-              sx={{
-                //backgroundColor: "lightgray",
-                width: "30%",
-                color: "#4f4f4f",
-              }}
-            >
-              Kapacitet:
-              <Typography
-                color="primary"
-                variant="h6"
-                component="div"
-                sx={{
-                  overflow: "hidden",
-                  whiteSpace: "break-spaces",
-                  maxWidth: "90%",
-                }}
-              >
-                {props.radionica.maksimalniKapacitet}
-              </Typography>
-            </Box>
+                    {/* Kapacitet, cijena i vrijeme */}
+                    <div
+                        title="kapacitet-cijena-vrijeme-wrapper"
+                        style={{
+                            //backgroundColor: "lightsteelblue",
+                            display: "flex",
+                            justifyContent: "space-evenly",
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                            gap: "20px",
+                        }}
+                    >
+                        {/* Kapacitet */}
+                        <Box
+                            sx={{
+                                //backgroundColor: "lightgray",
+                                width: "30%",
+                                color: "#4f4f4f",
+                            }}
+                        >
+                            Kapacitet:
+                            <Typography
+                                color="primary"
+                                variant="h6"
+                                component="div"
+                                sx={{
+                                    overflow: "hidden",
+                                    whiteSpace: "break-spaces",
+                                    maxWidth: "90%",
+                                }}
+                            >
+                                {props.radionica.maksimalniKapacitet}
+                            </Typography>
+                        </Box>
 
-            {/* Cijena 
+                        {/* Cijena 
             <Box
               sx={{
                 //backgroundColor: "lightgray",
@@ -229,32 +231,34 @@ export const RadionicaPopup = (props: Props) => {
             </Box>
             */}
 
-            {/* Vrijeme */}
-            <Box
-              sx={{
-                //backgroundColor: "lightgray",
-                width: "30%",
-                color: "#4f4f4f",
-              }}
-            >
-              Datum i vrijeme radionice:
-              <Typography
-                color="primary"
-                variant="h6"
-                component="div"
-                sx={{
-                  overflow: "hidden",
-                  whiteSpace: "break-spaces",
-                  maxWidth: "90%",
-                }}
-              >
-                {props.radionica?.vrijemeRadionice
-                  ? new Date(props.radionica.vrijemeRadionice).toLocaleString()
-                  : undefined}
-              </Typography>
-            </Box>
-          </div>
-        </DialogContent>
+                        {/* Vrijeme */}
+                        <Box
+                            sx={{
+                                //backgroundColor: "lightgray",
+                                width: "30%",
+                                color: "#4f4f4f",
+                            }}
+                        >
+                            Datum i vrijeme radionice:
+                            <Typography
+                                color="primary"
+                                variant="h6"
+                                component="div"
+                                sx={{
+                                    overflow: "hidden",
+                                    whiteSpace: "break-spaces",
+                                    maxWidth: "90%",
+                                }}
+                            >
+                                {props.radionica?.vrijemeRadionice
+                                    ? new Date(
+                                          props.radionica.vrijemeRadionice
+                                      ).toLocaleString()
+                                    : undefined}
+                            </Typography>
+                        </Box>
+                    </div>
+                </DialogContent>
 
                 <DialogActions>
                     <Button variant="outlined" onClick={props.onClose}>

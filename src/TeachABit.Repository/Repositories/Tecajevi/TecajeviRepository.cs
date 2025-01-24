@@ -14,12 +14,8 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             var query = _context.Tecajevi
                 .Include(x => x.Vlasnik)
                 .Include(x => x.Lekcije)
+                .Include(x => x.KorisnikTecajOcjene)
                 .AsQueryable();
-
-            if (!string.IsNullOrEmpty(korisnikId))
-            {
-                query = query.Include(x => x.KorisnikTecajOcjene.Where(x => x.KorisnikId == korisnikId).Take(1));
-            }
 
             return await query.FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -42,6 +38,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             var query = _context.Tecajevi
                 .Include(x => x.Vlasnik)
+                .Include(x => x.KorisnikTecajOcjene)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
@@ -71,8 +68,6 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             {
                 query = query
                     .Include(x => x.KorisnikTecajFavoriti
-                        .Where(x => x.KorisnikId == trenutniKorisnikId))
-                    .Include(x => x.KorisnikTecajOcjene
                         .Where(x => x.KorisnikId == trenutniKorisnikId))
                     .Include(x => x.TecajPlacanja
                         .Where(t => t.KorisnikId == trenutniKorisnikId));

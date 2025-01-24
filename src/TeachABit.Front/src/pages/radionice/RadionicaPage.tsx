@@ -199,37 +199,38 @@ export const RadionicaPage = () => {
             }}
           ></div>
 
-          <div>{"Opis:"}</div>
-          <TeachABitRenderer content={radionica.opis ?? ""} />
-          <Box
-            className="ocjena-edit-delete-wrapper"
-            display={"flex"}
-            flexDirection={"row"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            gap="10px"
-          >
-            {/*globalContext.currentUser?.id === radionica.vlasnikId*/}
-            {globalStore.currentUser?.id === radionica.vlasnikId && (
-              <Box
-                display={"flex"}
-                flexDirection={"row"}
-                justifySelf={"start"}
-                alignItems="center"
-                gap="10px"
-                sx={{ "& > legend": { mt: 2 } }}
-              >
-                {<Typography>Ocijeni radionicu: </Typography>}
-                <Rating
-                  //title="Ocijeni radionicu: "
-                  name="simple-controlled"
-                  value={value}
-                  onChange={(event, newValue) => {
-                    setValue(newValue);
-                  }}
-                />
-              </Box>
-            )}
+                    <div>{"Opis:"}</div>
+                    <TeachABitRenderer content={radionica.opis ?? ""} />
+                    <Box
+                        className="ocjena-edit-delete-wrapper"
+                        display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                        gap="10px"
+                    >
+                        {/*globalContext.currentUser?.id === radionica.vlasnikId*/}
+                        {globalStore.currentUser?.id !==
+                            radionica.vlasnikId && (
+                            <Box
+                                display={"flex"}
+                                flexDirection={"row"}
+                                justifySelf={"start"}
+                                alignItems="center"
+                                gap="10px"
+                                sx={{ "& > legend": { mt: 2 } }}
+                            >
+                                {<Typography>Ocijeni radionicu: </Typography>}
+                                <Rating
+                                    //title="Ocijeni radionicu: "
+                                    name="simple-controlled"
+                                    value={value}
+                                    onChange={(_event, newValue) => {
+                                        setValue(newValue);
+                                    }}
+                                />
+                            </Box>
+                        )}
 
             <Box
               display={"flex"}

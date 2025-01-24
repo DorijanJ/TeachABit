@@ -123,4 +123,17 @@ public class RadioniceController(IRadioniceService radioniceService, IPlacanjaSe
     {
         return GetControllerResult(await _radioniceService.GetAllRadioniceFavoritForCurrentUser());
     }
+    
+    [HttpPost("{favoritRadionicaId}/favorit")]
+    public async Task<IActionResult> AddFavoritRadionica(int favoritRadionicaId)
+    {
+        return GetControllerResult(await _radioniceService.AddFavoritRadionica(favoritRadionicaId));
+    }
+
+    [HttpDelete("{favoritRadionicaId}/favorit")]
+    public async Task<IActionResult> RemoveFavoritRadionica(int favoritRadionicaId)
+    {
+        return GetControllerResult(await _radioniceService.RemoveFavoritRadionica(favoritRadionicaId));
+    }
+    
 }
