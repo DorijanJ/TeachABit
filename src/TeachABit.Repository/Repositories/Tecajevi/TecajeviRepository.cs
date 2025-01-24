@@ -45,6 +45,9 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
             if (minCijena != null) query = query.Where(x => x.Cijena >= minCijena);
             if (maxCijena != null) query = query.Where(x => x.Cijena <= maxCijena);
+            
+            if(minCijena==null) query=query.Where(x => x.Cijena >= 0);
+            if(maxCijena == null) query = query.Where(x => x.Cijena == 0);
 
             if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 
