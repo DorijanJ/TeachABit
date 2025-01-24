@@ -22,7 +22,9 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             var lowerSearch = search.ToLower();
             query = query.Where(x => x.Naziv.ToLower().Contains(lowerSearch));
         }
-        
+
+        if (minOcjena != null || maxOcjena != null) query = query.Include(x => x.Ocjene);
+
         if (minOcjena != null) query = query.Where(x => x.Ocjene.Average(o => o.Ocjena) >= minOcjena);
         if (maxOcjena != null) query = query.Where(x => x.Ocjene.Average(o => o.Ocjena) <= maxOcjena);
 
@@ -34,9 +36,9 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
                 .Include(x => x.Ocjene
                     .Where(x => x.KorisnikId == trenutniKorisnikId));
         }
-        
+
         if (sortOrderAsc) query = query.OrderBy(x => x.VrijemeRadionice);
-        if (!sortOrderAsc) query = query.OrderByDescending(x => x.VrijemeRadionice);
+        else query = query.OrderByDescending(x => x.VrijemeRadionice);
 
         if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 
