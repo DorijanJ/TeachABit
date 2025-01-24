@@ -19,6 +19,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
             if (korisnikId != null)
             {
+                query = query.Include(x => x.TecajPlacanja.Where(x => x.KorisnikId == korisnikId));
                 query = query.Include(x => x.KorisnikTecajFavoriti.Where(x => x.KorisnikId == korisnikId));
             }
 

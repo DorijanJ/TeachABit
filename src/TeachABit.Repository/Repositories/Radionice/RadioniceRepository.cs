@@ -31,6 +31,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         if (!string.IsNullOrEmpty(trenutniKorisnikId))
         {
             query = query
+                .Include(x => x.Placanja.Where(x => x.KorisnikId == trenutniKorisnikId))
                 .Include(x => x.RadionicaFavoriti
                     .Where(f => f.KorisnikId == trenutniKorisnikId))
                 .Include(x => x.Ocjene
@@ -47,7 +48,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         return await query.ToListAsync();
     }
 
-    public async Task<Radionica?> GetRadionica(int id)
+    public async Task<Radionica?> GetRadionica(int id, string? korisnikId)
     {
         return await _context.Radionice
             .Include(x => x.Placanja)
@@ -253,19 +254,19 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             .Where(x => x.RadionicaId == radionicaId)
             .ToListAsync();
     }
-    
+
     public async Task<RadionicaFavorit> AddFavoritRadionica(RadionicaFavorit favorit)
     {
         EntityEntry<RadionicaFavorit> radionicaFavorit = await _context.RadionicaFavorit.AddAsync(favorit);
         await _context.SaveChangesAsync();
         return radionicaFavorit.Entity;
     }
-    
+
     public async Task RemoveFavoritRadionica(int favoritRadionicaId, string korisnikId)
     {
         await _context.RadionicaFavorit.Where(x => x.Id == favoritRadionicaId && x.KorisnikId == korisnikId).ExecuteDeleteAsync();
     }
-    
+
     public async Task<bool> VecFavorit(int radionicaId, string korisnikId)
     {
         return await _context.RadionicaFavorit.AnyAsync(x => x.KorisnikId == korisnikId && radionicaId == x.RadionicaId);

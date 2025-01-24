@@ -41,7 +41,6 @@ export const Radionica = (props: Props) => {
 
     const [isSadrzajOpen, setIsSadrzajOpen] = useState(false);
     const [isLive, setIsLive] = useState(false);
-    const [isKupljenaRadionica, setIsKupljenaRadionica] = useState(false);
 
     const [remainingTime, setRemainingTime] = useState({
         dani: 0,
@@ -119,7 +118,7 @@ export const Radionica = (props: Props) => {
                 }}
                 onClick={() => {
                     globalStore.currentUser?.id === props.radionica.vlasnikId ||
-                    isKupljenaRadionica
+                    props.radionica.placen
                         ? navigate(`/radionica/${props.radionica.id}`)
                         : setIsSadrzajOpen(true);
                 }}
@@ -250,17 +249,18 @@ export const Radionica = (props: Props) => {
                             gap={0.7}
                         >
                             {globalStore.currentUser?.id !==
-                                props.radionica.vlasnikId && (
-                                <Button
-                                    onClick={(e) => {
-                                        handleCheckout(props.radionica.id);
-                                        e.stopPropagation();
-                                    }}
-                                    variant="contained"
-                                >
-                                    {props.radionica.cijena}€
-                                </Button>
-                            )}
+                                props.radionica.vlasnikId &&
+                                !props.radionica.placen && (
+                                    <Button
+                                        onClick={(e) => {
+                                            handleCheckout(props.radionica.id);
+                                            e.stopPropagation();
+                                        }}
+                                        variant="contained"
+                                    >
+                                        {props.radionica.cijena}€
+                                    </Button>
+                                )}
                         </Box>
                     </Box>
                 </CardContent>

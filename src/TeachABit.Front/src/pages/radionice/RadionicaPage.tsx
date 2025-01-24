@@ -24,7 +24,7 @@ import { observer } from "mobx-react";
 import React from "react";
 
 export const RadionicaPage = () => {
-    const [value, setValue] = React.useState<number | null>(2);
+    const [value, setValue] = React.useState<number | null>(null);
     const [radionica, setRadionica] = useState<RadionicaDto>({
         naziv: "",
         opis: "",
@@ -52,40 +52,21 @@ export const RadionicaPage = () => {
             navigate("/radionice");
         }
     };
-
-    const navigate = useNavigate();
-
-    /*const likeRadionica = async () => {
-        try {
-            await requests.postWithLoading(`radionice/${radionicaId}/like`);
-            setRadionica((prev: RadionicaDto) => ({
-                ...prev,
-                likeCount:
-                    (prev.likeCount ?? 0) + (prev.liked === false ? 2 : 1),
-                liked: true,
-            }));
-        } catch (exception) {
-            console.log(exception);
+    const updateRadionicaOcjena = async (value: number) => {
+        setValue(value);
+        const response = await requests.postWithLoading(
+            `radionice/${radionica.id}/ocjena/${value}`
+        );
+        if (
+            response?.message &&
+            response.message.severity === "success" &&
+            radionicaId !== undefined
+        ) {
+            getRadionicaById(parseInt(radionicaId));
         }
-    };*/
-
-    /*const dislikeRadionica = async () => {
-        await requests.postWithLoading(`radionice/${radionicaId}/dislike`);
-        setRadionica((prev: RadionicaDto) => ({
-            ...prev,
-            likeCount: (prev.likeCount ?? 0) - (prev.liked === true ? 2 : 1),
-            liked: false,
-        }));
     };
 
-    const clearReaction = async () => {
-        await requests.deleteWithLoading(`radionice/${radionicaId}/reakcija`);
-        setRadionica((prev: RadionicaDto) => ({
-            ...prev,
-            likeCount: (prev.likeCount ?? 0) + (prev.liked === true ? -1 : 1),
-            liked: undefined,
-        }));
-    };*/
+    const navigate = useNavigate();
 
     const [isPotvrdaOpen, setIsPotvrdaOpen] = useState(false);
 
@@ -101,6 +82,10 @@ export const RadionicaPage = () => {
         const parsedRadionicaId = parseInt(radionicaId);
         await getRadionicaById(parsedRadionicaId);
     };
+
+    useEffect(() => {
+        if (radionica.ocjenaTrenutna) setValue(radionica.ocjenaTrenutna);
+    }, [radionica.ocjenaTrenutna]);
 
     return (
         <>
@@ -228,6 +213,27 @@ export const RadionicaPage = () => {
                         }}
                     ></div>
 
+                    {globalStore.currentUser?.id !== radionica.vlasnikId &&
+                        (radionica.kupljen || !radionica.cijena) && (
+                            <Box
+                                display={"flex"}
+                                flexDirection={"row"}
+                                justifySelf={"start"}
+                                alignItems="center"
+                                gap="10px"
+                                sx={{ "& > legend": { mt: 2 } }}
+                            >
+                                {<Typography>Vaša ocjena: </Typography>}
+                                <Rating
+                                    name="simple-controlled"
+                                    value={value}
+                                    onChange={(_event, newValue) => {
+                                        if (newValue != null)
+                                            updateRadionicaOcjena(newValue);
+                                    }}
+                                />
+                            </Box>
+                        )}
                     <div>{"Opis:"}</div>
                     <TeachABitRenderer content={radionica.opis ?? ""} />
                     <Box
