@@ -154,15 +154,11 @@ export const Profil = () => {
         if (response && response.data) setRadionicaList(response.data);
     };
     const GetFavoritiTecajList = async () => {
-        const response = await requests.getWithLoading(
-            `tecajevi?vlasnikUsername=${username}&favorit=true`
-        );
+        const response = await requests.getWithLoading(`tecajevi/favoriti`);
         if (response && response.data) setFavoritiTecajList(response.data);
     };
     const GetFavoritiRadioniceList = async () => {
-        const response = await requests.getWithLoading(
-            `radionice?vlasnikUsername=${username}&favorit=true`
-        );
+        const response = await requests.getWithLoading(`radionice/favoriti`);
         if (response && response.data) setFavoritiRadioniceList(response.data);
     };
 
