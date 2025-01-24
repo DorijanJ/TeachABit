@@ -44,7 +44,8 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
 
     public async Task<ServiceResult<RadionicaDto>> GetRadionica(int id)
     {
-        RadionicaDto? radionica = _mapper.Map<RadionicaDto>(await _radioniceRepository.GetRadionica(id));
+        var korisnik = _authorizationService.GetKorisnikOptional();
+        RadionicaDto? radionica = _mapper.Map<RadionicaDto>(await _radioniceRepository.GetRadionica(id, korisnik?.Id));
         if (radionica == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
         return ServiceResult.Success(radionica);
     }
@@ -301,7 +302,7 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
         var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
         return ServiceResult.Success(radioniceDto);
     }
-    
+
     public async Task<ServiceResult> AddFavoritRadionica(int radionicaId)
     {
         var korisnik = _authorizationService.GetKorisnik();
@@ -318,12 +319,12 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
         await _radioniceRepository.AddFavoritRadionica(favorit);
         return ServiceResult.Success();
     }
-    
+
     public async Task<ServiceResult> RemoveFavoritRadionica(int favoritRadionicaId)
     {
         var korisnik = _authorizationService.GetKorisnik();
         await _radioniceRepository.RemoveFavoritRadionica(favoritRadionicaId, korisnik.Id);
         return ServiceResult.Success();
     }
-    
+
 }

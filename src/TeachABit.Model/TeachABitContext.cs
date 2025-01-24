@@ -34,7 +34,6 @@ namespace TeachABit.Model
         public DbSet<RadionicaOcjena> RadionicaOcjene { get; set; }
         public DbSet<RadionicaKomentar> RadionicaKomentari { get; set; }
         public DbSet<KorisnikStatus> KorisnikStatusi { get; set; }
-
         public DbSet<RadionicaPlacanje> RadionicaPlacanja { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
