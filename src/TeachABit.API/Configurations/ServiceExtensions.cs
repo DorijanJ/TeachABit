@@ -114,7 +114,7 @@ namespace TeachABit.API.Configurations
                     IssuerSigningKey = key,
                     ValidIssuer = configuration["JwtSettings:Issuer"],
                     ValidAudience = configuration["JwtSettings:Audience"],
-                    ClockSkew = TimeSpan.FromMinutes(5),
+                    ClockSkew = TimeSpan.FromMinutes(10),
                 };
                 opt.Events = new JwtBearerEvents
                 {
@@ -122,7 +122,9 @@ namespace TeachABit.API.Configurations
                     {
                         context.Request.Cookies.TryGetValue("AuthToken", out var token);
                         if (!string.IsNullOrEmpty(token))
+                        {
                             context.Token = token;
+                        }
                         return Task.CompletedTask;
                     },
                     OnAuthenticationFailed = async context =>
@@ -132,29 +134,33 @@ namespace TeachABit.API.Configurations
                         context.Response.Cookies.Delete("AuthToken", new CookieOptions
                         {
                             HttpOnly = true,
-                            Secure = false,
+                            Secure = true,
                             SameSite = SameSiteMode.Strict,
                         });
-                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated() });
+                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated(), RefreshUserInfo = new() { IsAuthenticated = false } });
                     },
                     OnForbidden = async context =>
                     {
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
                         context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthorized() });
+                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthorized(), });
                     },
                     OnChallenge = async context =>
                     {
-                        context.HandleResponse();
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "application/json";
-                        context.Response.Cookies.Delete("AuthToken", new CookieOptions
+                        if (!context.Response.HasStarted)
                         {
-                            HttpOnly = true,
-                            Secure = false,
-                            SameSite = SameSiteMode.Strict,
-                        });
-                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated() });
+
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+                            context.Response.Cookies.Delete("AuthToken", new CookieOptions
+                            {
+                                HttpOnly = true,
+                                Secure = true,
+                                SameSite = SameSiteMode.Strict,
+                            });
+                            await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated(), RefreshUserInfo = new() { IsAuthenticated = false } });
+                        }
+                        context.HandleResponse();
                     }
                 };
             });

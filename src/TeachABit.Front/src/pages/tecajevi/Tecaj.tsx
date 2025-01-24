@@ -2,11 +2,11 @@ import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { TecajDto } from "../../models/TecajDto";
 import { loadStripe } from "@stripe/stripe-js";
 import requests from "../../api/agent";
-import { useGlobalContext } from "../../context/Global.context";
 import globalStore from "../../stores/GlobalStore";
 import UserLink from "../profil/UserLink";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router-dom";
+import { observer } from "mobx-react";
 
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
@@ -14,11 +14,9 @@ interface Props {
     tecaj: TecajDto;
 }
 
-export default function Tecaj(props: Props) {
-    const globalContext = useGlobalContext();
-
+export const Tecaj = (props: Props) => {
     const handleCheckout = async (tecajId?: number) => {
-        if (!globalContext.userIsLoggedIn) {
+        if (!globalStore.currentUser) {
             globalStore.addNotification({
                 message: "Niste prijavljeni",
                 severity: "error",
@@ -46,7 +44,7 @@ export default function Tecaj(props: Props) {
                 if (
                     props.tecaj.kupljen ||
                     !props.tecaj.cijena ||
-                    globalContext.currentUser?.id === props.tecaj.vlasnikId
+                    globalStore.currentUser?.id === props.tecaj.vlasnikId
                 )
                     navigate(`/tecajevi/${props.tecaj.id}`);
             }}
@@ -61,7 +59,8 @@ export default function Tecaj(props: Props) {
                     transform: "scale(1.03)",
                     border: "1px solid #3a7ca5",
                 },
-                minWidth: "340px"
+                minWidth: "340px",
+                maxWidth: "40vw",
             }}
         >
             <CardContent
@@ -78,7 +77,7 @@ export default function Tecaj(props: Props) {
                         display: "flex",
                         gap: "10px",
                         flexDirection: "column",
-                        alignItems: "center"
+                        alignItems: "center",
                     }}
                 >
                     <Box
@@ -112,10 +111,11 @@ export default function Tecaj(props: Props) {
                                     borderRadius: "10px",
                                     maxHeight: "100%",
                                     width: "100%",
-                                    objectFit: "contain"
+                                    objectFit: "contain",
                                 }}
-                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${props.tecaj?.naslovnaSlikaVersion
-                                    }`}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                    props.tecaj?.naslovnaSlikaVersion
+                                }`}
                                 alt="Greška pri učitavanju slike."
                             />
                         ) : (
@@ -168,4 +168,6 @@ export default function Tecaj(props: Props) {
             </CardContent>
         </Card>
     );
-}
+};
+
+export default observer(Tecaj);

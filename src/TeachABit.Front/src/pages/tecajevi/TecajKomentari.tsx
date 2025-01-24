@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import requests from "../../api/agent";
-import { useGlobalContext } from "../../context/Global.context";
 import { Button, Typography } from "@mui/material";
 import Komentar from "./Komentar";
 import CreateKomentar from "./KomentarEditor";
 import { TecajKomentarDto } from "../../models/TecajKomentarDto.ts";
+import globalStore from "../../stores/GlobalStore.ts";
 
 interface Props {
     tecajId: number;
@@ -33,8 +33,6 @@ export default function TecajKomentari(props: Props) {
             setKomentari(response.data);
         }
     };
-
-    const globalContext = useGlobalContext();
 
     const [selectedNadKomentarId, setSelectedNadKomentarId] =
         useState<number>();
@@ -103,14 +101,17 @@ export default function TecajKomentari(props: Props) {
                 <Typography color="textDisabled" variant="h6" component="div">
                     Komentari:
                 </Typography>
-                {!isOpenKomentarDialog && globalContext.userIsLoggedIn && (
-                    <Button
-                        onClick={() => setIsOpenKomentarDialog((prev) => !prev)}
-                        variant="contained"
-                    >
-                        Dodaj Komentar
-                    </Button>
-                )}
+                {!isOpenKomentarDialog &&
+                    globalStore.currentUser !== undefined && (
+                        <Button
+                            onClick={() =>
+                                setIsOpenKomentarDialog((prev) => !prev)
+                            }
+                            variant="contained"
+                        >
+                            Dodaj Komentar
+                        </Button>
+                    )}
             </div>
             <CreateKomentar
                 refreshData={() => getKomentarListByTecajId(props.tecajId)}

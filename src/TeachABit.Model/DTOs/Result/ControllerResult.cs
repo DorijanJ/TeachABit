@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Result.Message;
 
 namespace TeachABit.Model.DTOs.Result
@@ -9,5 +10,7 @@ namespace TeachABit.Model.DTOs.Result
         public object? Data { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public MessageResponse? Message { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public RefreshUserInfoDto? RefreshUserInfo { get; set; } = null;
     }
 }

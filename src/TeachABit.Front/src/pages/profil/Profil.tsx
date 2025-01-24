@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { useGlobalContext } from "../../context/Global.context";
 import {
     Card,
     CardContent,
@@ -24,6 +23,10 @@ import CustomSliderRadionica from "../profil/CustomSliderRadionica";
 import { TecajDto } from "../../models/TecajDto";
 import { LevelPristupa } from "../../enums/LevelPristupa";
 import { RadionicaDto } from "../../models/RadionicaDto";
+import { KorisnikStatus } from "../../enums/KorisnikStatus";
+import MicOffIcon from "@mui/icons-material/MicOff";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -32,15 +35,14 @@ const getHighestLevelUloga = (uloge: Uloga[]) => {
     return role?.name ?? "";
 };
 
-export default function Profil() {
+export const Profil = () => {
     const { username } = useParams();
-    const globalContext = useGlobalContext();
 
     const [user, setUser] = useState<AppUserDto>();
 
     const isCurrentUser = useMemo(() => {
-        return globalContext.currentUser?.username === username;
-    }, [globalContext.currentUser?.username, username]);
+        return globalStore.currentUser?.username === username;
+    }, [globalStore.currentUser?.username, username]);
 
     const GetUserByUsername = async (username: string) => {
         const response = await requests.getWithLoading(
@@ -50,6 +52,24 @@ export default function Profil() {
             setUser(response.data);
             const uloge: Uloga[] = response.data.roles;
             setSelectedUloga(getHighestLevelUloga(uloge));
+        }
+    };
+
+    const UtisajKorisnika = async (username: string) => {
+        const response = await requests.postWithLoading(
+            `account/${username}/utisaj`
+        );
+        if (response && response.message?.severity === "success") {
+            GetUserByUsername(username);
+        }
+    };
+
+    const OdTisajKorisnika = async (username: string) => {
+        const response = await requests.deleteWithLoading(
+            `account/${username}/utisaj`
+        );
+        if (response && response.message?.severity === "success") {
+            GetUserByUsername(username);
         }
     };
 
@@ -85,7 +105,7 @@ export default function Profil() {
     };
 
     useEffect(() => {
-        if (globalContext.hasPermissions(LevelPristupa.Admin)) GetAllRoles();
+        if (globalStore.hasPermissions(LevelPristupa.Admin)) GetAllRoles();
     }, []);
 
     useEffect(() => {
@@ -135,7 +155,7 @@ export default function Profil() {
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
-                                gap: "10px",
+                                gap: "5px",
                             }}
                         >
                             <Avatar sx={{ width: 100, height: 100 }}>
@@ -147,20 +167,22 @@ export default function Profil() {
                                                 width: "100%",
                                                 height: "100%",
                                             }}
-                                            src={`${import.meta.env
-                                                .VITE_REACT_AWS_BUCKET
-                                                }${user.id}${user.profilnaSlikaVersion
+                                            src={`${
+                                                import.meta.env
+                                                    .VITE_REACT_AWS_BUCKET
+                                            }${user.id}${
+                                                user.profilnaSlikaVersion
                                                     ? "?version=" +
-                                                    user.profilnaSlikaVersion
+                                                      user.profilnaSlikaVersion
                                                     : ""
-                                                }`}
+                                            }`}
                                         />
                                     </>
                                 ) : (
                                     <>{user.username ? user.username[0] : ""}</>
                                 )}
                             </Avatar>
-                            {globalContext.userIsLoggedIn === true &&
+                            {globalStore.currentUser !== undefined &&
                                 isCurrentUser && (
                                     <IconButton
                                         onClick={() =>
@@ -186,19 +208,29 @@ export default function Profil() {
                                     alignItems: "center",
                                 }}
                             >
-                                <Typography variant="h5">
+                                <Typography variant="h4" sx={{ margin: 0 }}>
                                     <b>{user.username} </b>
                                 </Typography>
                                 {user.verifikacijaStatusId ===
                                     VerifikacijaEnum.Verificiran && (
-                                        <VerifiedIcon
-                                            sx={{
-                                                height: "25px",
-                                                width: "25px",
-                                                color: "#922728",
-                                            }}
-                                        />
-                                    )}
+                                    <VerifiedIcon
+                                        sx={{
+                                            height: "25px",
+                                            width: "25px",
+                                            color: "#922728",
+                                        }}
+                                    />
+                                )}
+                                {user.korisnikStatusId ===
+                                    KorisnikStatus.Utisan && (
+                                    <MicOffIcon
+                                        sx={{
+                                            height: "25px",
+                                            width: "25px",
+                                            color: "#922728",
+                                        }}
+                                    />
+                                )}
                             </div>
                             <div
                                 style={{
@@ -206,14 +238,15 @@ export default function Profil() {
                                     flexDirection: "column",
                                     alignItems: "center",
                                     gap: "10px",
+                                    height: "110px",
                                 }}
                             >
-                                {globalContext.hasPermissions(
+                                {globalStore.hasPermissions(
                                     LevelPristupa.Admin
                                 ) &&
-                                    selectedUloga !== "Admin" &&
-                                    username !==
-                                    globalContext.currentUser?.username ? (
+                                selectedUloga !== "Admin" &&
+                                username !==
+                                    globalStore.currentUser?.username ? (
                                     <Select
                                         sx={{ minWidth: "100px" }}
                                         value={selectedUloga}
@@ -233,19 +266,33 @@ export default function Profil() {
                                 ) : (
                                     <>{selectedUloga}</>
                                 )}
-                                {username ===
-                                    globalContext.currentUser?.username && (
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        width: "100%",
+                                        justifyContent: "center",
+                                        gap: "10px",
+                                        height: "70px",
+                                    }}
+                                >
+                                    {username ===
+                                        globalStore.currentUser?.username && (
                                         <>
-                                            {user.verifikacijaStatusNaziv && (
+                                            {user.verifikacijaStatusId ===
+                                                VerifikacijaEnum.ZahtjevPoslan && (
                                                 <p style={{ margin: 0 }}>
-                                                    {user.verifikacijaStatusNaziv}
+                                                    {
+                                                        user.verifikacijaStatusNaziv
+                                                    }
                                                 </p>
                                             )}
                                             {username ===
-                                                globalContext.currentUser
+                                                globalStore.currentUser
                                                     ?.username &&
                                                 !user.verifikacijaStatusId && (
                                                     <Button
+                                                        sx={{ height: "30px" }}
                                                         variant="contained"
                                                         onClick={() =>
                                                             SendVerificaitonRequest()
@@ -258,6 +305,39 @@ export default function Profil() {
                                                 )}
                                         </>
                                     )}
+                                    {globalStore.hasPermissions(
+                                        LevelPristupa.Moderator
+                                    ) &&
+                                        user.roles?.find(
+                                            (x) =>
+                                                x.levelPristupa >=
+                                                LevelPristupa.Moderator
+                                        ) === undefined && (
+                                            <Button
+                                                sx={{ height: "30px" }}
+                                                onClick={() => {
+                                                    if (!username) return;
+                                                    if (
+                                                        user.korisnikStatusId ===
+                                                        KorisnikStatus.Utisan
+                                                    )
+                                                        OdTisajKorisnika(
+                                                            username
+                                                        );
+                                                    else
+                                                        UtisajKorisnika(
+                                                            username
+                                                        );
+                                                }}
+                                                variant="contained"
+                                            >
+                                                {user.korisnikStatusId ===
+                                                KorisnikStatus.Utisan
+                                                    ? "Odtišaj korisnika"
+                                                    : "Utišaj korisnika"}
+                                            </Button>
+                                        )}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -288,4 +368,6 @@ export default function Profil() {
             </Box>
         )
     );
-}
+};
+
+export default observer(Profil);

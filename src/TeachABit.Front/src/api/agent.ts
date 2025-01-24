@@ -1,6 +1,18 @@
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios, {
+    AxiosError,
+    AxiosResponse,
+    InternalAxiosRequestConfig,
+} from "axios";
 import globalStore from "../stores/GlobalStore";
 import { ApiResponseDto } from "../models/common/ApiResponseDto";
+import { RefreshUserInfoDto } from "../models/common/RefreshUserInfoDto";
+
+const USER_STORAGE_KEYS = {
+    USERNAME: "username",
+    ID: "id",
+    ROLES: "roles",
+    STATUS: "status",
+};
 
 interface RequestInjector extends InternalAxiosRequestConfig {
     loading?: boolean;
@@ -8,6 +20,83 @@ interface RequestInjector extends InternalAxiosRequestConfig {
 }
 
 axios.defaults.withCredentials = true;
+
+const saveUserInfo = (userInfo: RefreshUserInfoDto) => {
+    if (userInfo.isAuthenticated) {
+        localStorage.setItem(USER_STORAGE_KEYS.USERNAME, userInfo.userName);
+        localStorage.setItem(USER_STORAGE_KEYS.ID, userInfo.id);
+        localStorage.setItem(
+            USER_STORAGE_KEYS.ROLES,
+            JSON.stringify(userInfo.roles)
+        );
+        localStorage.setItem(
+            USER_STORAGE_KEYS.STATUS,
+            userInfo.korisnikStatusId?.toString() || ""
+        );
+        globalStore.setCurrentUser({
+            id: userInfo.id,
+            username: userInfo.userName,
+            korisnikStatusId: userInfo.korisnikStatusId,
+            roles: userInfo.roles,
+        });
+    } else {
+        clearUserInfo();
+    }
+};
+
+const clearUserInfo = () => {
+    Object.values(USER_STORAGE_KEYS).forEach((key) =>
+        localStorage.removeItem(key)
+    );
+    globalStore.setCurrentUser(undefined);
+};
+
+const manageLoadingState = (config?: RequestInjector, decrement = false) => {
+    if (config?.loadingTimeoutId) {
+        clearTimeout(config.loadingTimeoutId);
+    }
+    if (config?.loading) {
+        decrement
+            ? globalStore.decrementPageLoading()
+            : globalStore.incrementPageLoading();
+    }
+};
+
+axios.interceptors.response.use(
+    (response: AxiosResponse) => {
+        const config = response.config as RequestInjector;
+        manageLoadingState(config, true);
+
+        const userInfo = response.data.refreshUserInfo;
+
+        if (userInfo) saveUserInfo(userInfo);
+
+        return response.data;
+    },
+    async (error: AxiosError) => {
+        const config = error.config as RequestInjector;
+        manageLoadingState(config, true);
+        const originalRequest = error.config as InternalAxiosRequestConfig & {
+            _retry?: boolean;
+        };
+        const responseData: ApiResponseDto = error.response
+            ?.data as ApiResponseDto;
+        const userInfo: RefreshUserInfoDto | undefined =
+            responseData?.refreshUserInfoDto;
+
+        if (
+            responseData?.message?.code === "reauth" &&
+            !originalRequest._retry
+        ) {
+            originalRequest._retry = true;
+            await requests.get("account/reauth");
+            return axios(originalRequest);
+        }
+        if (userInfo) saveUserInfo(userInfo);
+
+        return Promise.reject({ data: responseData });
+    }
+);
 
 axios.interceptors.request.use(async (config: RequestInjector) => {
     if (config.loading) {
@@ -19,49 +108,9 @@ axios.interceptors.request.use(async (config: RequestInjector) => {
     return config;
 });
 
-axios.interceptors.response.use(
-    (response) => {
-        const config = response.config as RequestInjector;
-        if (config.loadingTimeoutId) {
-            clearTimeout(config.loadingTimeoutId);
-        }
-        if (config.loading) {
-            globalStore.decrementPageLoading();
-        }
-
-        return response.data;
-    },
-    (error) => {
-        const config = error.config as RequestInjector;
-        if (config?.loadingTimeoutId) {
-            clearTimeout(config.loadingTimeoutId);
-        }
-        if (config?.loading) {
-            globalStore.decrementPageLoading();
-        }
-
-        const responseData: ApiResponseDto | undefined = error.response?.data;
-
-        if (
-            responseData?.message?.type === "global" ||
-            responseData?.message?.type === undefined
-        ) {
-            globalStore.addNotification({
-                message:
-                    responseData?.message?.message ??
-                    "Nešto je pošlo po krivu.",
-                severity: responseData?.message?.severity ?? "error",
-            });
-        }
-        return Promise.reject({
-            data: responseData,
-        });
-    }
-);
-
-const handleRequest = async (
-    promise: Promise<any>
-): Promise<ApiResponseDto | undefined> => {
+const handleRequest = async <T>(
+    promise: Promise<T>
+): Promise<T | undefined> => {
     try {
         return await promise;
     } catch (error: any) {
@@ -72,43 +121,35 @@ const handleRequest = async (
 const requests = {
     get: async (
         endpoint: string,
-        loading: boolean = false
-    ): Promise<ApiResponseDto | undefined> => {
-        return handleRequest(
+        loading = false
+    ): Promise<ApiResponseDto | undefined> =>
+        handleRequest(
             axios.get(`${import.meta.env.VITE_REACT_API_URL}/${endpoint}`, {
                 loading,
             } as RequestInjector)
-        );
-    },
+        ),
+
     post: async (
         endpoint: string,
         data: any,
-        loading: boolean = false
-    ): Promise<ApiResponseDto | undefined> => {
-        return handleRequest(
+        loading = false
+    ): Promise<ApiResponseDto | undefined> =>
+        handleRequest(
             axios.post(
                 `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
                 data,
-                { loading } as RequestInjector
+                {
+                    loading,
+                } as RequestInjector
             )
-        );
-    },
-    delete: async (
-        endpoint: string,
-        loading: boolean = false
-    ): Promise<ApiResponseDto | undefined> => {
-        return handleRequest(
-            axios.delete(`${import.meta.env.VITE_REACT_API_URL}/${endpoint}`, {
-                loading,
-            } as RequestInjector)
-        );
-    },
+        ),
+
     put: async (
         endpoint: string,
         data: any,
-        loading: boolean = false
-    ): Promise<ApiResponseDto | undefined> => {
-        return handleRequest(
+        loading = false
+    ): Promise<ApiResponseDto | undefined> =>
+        handleRequest(
             axios.put(
                 `${import.meta.env.VITE_REACT_API_URL}/${endpoint}`,
                 data,
@@ -116,20 +157,25 @@ const requests = {
                     loading,
                 } as RequestInjector
             )
-        );
-    },
-    getWithLoading: async (endpoint: string) => {
-        return requests.get(endpoint, true);
-    },
-    postWithLoading: async (endpoint: string, data?: any) => {
-        return requests.post(endpoint, data, true);
-    },
-    deleteWithLoading: async (endpoint: string) => {
-        return requests.delete(endpoint, true);
-    },
-    putWithLoading: async (endpoint: string, data?: any) => {
-        return requests.put(endpoint, data, true);
-    },
+        ),
+
+    delete: async (
+        endpoint: string,
+        loading = false
+    ): Promise<ApiResponseDto | undefined> =>
+        handleRequest(
+            axios.delete(`${import.meta.env.VITE_REACT_API_URL}/${endpoint}`, {
+                loading,
+            } as RequestInjector)
+        ),
+
+    getWithLoading: async (endpoint: string) => requests.get(endpoint, true),
+    postWithLoading: async (endpoint: string, data?: any) =>
+        requests.post(endpoint, data, true),
+    putWithLoading: async (endpoint: string, data?: any) =>
+        requests.put(endpoint, data, true),
+    deleteWithLoading: async (endpoint: string) =>
+        requests.delete(endpoint, true),
 };
 
 export default requests;

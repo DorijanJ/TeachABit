@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
 using TeachABit.Model;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Uloge;
@@ -71,11 +70,39 @@ namespace TeachABit.API.Seed
 
             statusi = [zahtjevOdbijen, zahtjevPoslan, verificiran];
 
-            foreach(var status in statusi)
+            foreach (var status in statusi)
             {
-                if(!await _context.VerifikacijaStatus.AnyAsync(x => x.Id == status.Id && x.Naziv == status.Naziv))
+                if (!await _context.VerifikacijaStatus.AnyAsync(x => x.Id == status.Id && x.Naziv == status.Naziv))
                 {
-                    await _context.AddAsync(status);
+                    await _context.VerifikacijaStatus.AddAsync(status);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public static async Task SeedKorisnikStatusi(IServiceProvider serviceProvider)
+        {
+            var _context = serviceProvider.GetRequiredService<TeachABitContext>();
+
+            KorisnikStatus utisan = new()
+            {
+                Id = 1,
+                Naziv = "Utišan"
+            };
+            KorisnikStatus zabranjenPristup = new()
+            {
+                Id = 2,
+                Naziv = "Zabranjen pristup"
+            };
+
+            List<KorisnikStatus> statusi = [utisan, zabranjenPristup];
+
+            foreach (var status in statusi)
+            {
+                if (!await _context.KorisnikStatusi.AnyAsync(x => x.Naziv == status.Naziv && x.Id == status.Id))
+                {
+                    await _context.KorisnikStatusi.AddAsync(status);
                 }
             }
 
