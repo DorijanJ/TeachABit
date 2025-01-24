@@ -1,22 +1,26 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachABit.API.Middleware;
+using TeachABit.Model.DTOs.Placanja;
 using TeachABit.Model.DTOs.Radionice;
+using TeachABit.Service.Services.Placanja;
 using TeachABit.Service.Services.Radionice;
 
 namespace TeachABit.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RadioniceController(IRadioniceService radioniceService) : BaseController
+public class RadioniceController(IRadioniceService radioniceService, IPlacanjaService placanjaService) : BaseController
 {
     private readonly IRadioniceService _radioniceService = radioniceService;
+    private readonly IPlacanjaService _placanjaService = placanjaService;
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> GetRadionicaList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
+    public async Task<IActionResult> GetRadionicaList(string? search = null, string? vlasnikUsername = null, double? minOcjena = null,
+        double? maxOcjena = null, bool sortOrderAsc = true, bool samoNadolazece = true)
     {
-        var result = await _radioniceService.GetRadionicaList(search, vlasnikUsername, minCijena, maxCijena);
+        var result = await _radioniceService.GetRadionicaList(search, vlasnikUsername, minOcjena, maxOcjena, sortOrderAsc, samoNadolazece);
         return GetControllerResult(result);
     }
 
@@ -103,5 +107,20 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.DeleteOcjena(radionicaId));
     }
-
+    [HttpPost("create-checkout-session")]
+    public async Task<IActionResult> CreateCheckoutSession([FromBody] RadionicaPlacanjeRequestDto request)
+    {
+        return GetControllerResult(await _placanjaService.CreateRadionicaCheckoutSession(request));
+    }
+    [HttpPost("{radionicaId}/obavijest")]
+    public async Task<IActionResult> SendObavijest(int radionicaId, [FromBody] ObavijestDto obavijestDto)
+    {
+        obavijestDto.RadionicaId = radionicaId;
+        return GetControllerResult(await _radioniceService.SendObavijest(obavijestDto));
+    }
+    [HttpGet("favoriti")]
+    public async Task<IActionResult> GetAllRadioniceFavoritForCurrentUser()
+    {
+        return GetControllerResult(await _radioniceService.GetAllRadioniceFavoritForCurrentUser());
+    }
 }

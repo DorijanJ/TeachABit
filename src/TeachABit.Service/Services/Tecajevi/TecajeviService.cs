@@ -30,7 +30,7 @@ namespace TeachABit.Service.Services.Tecajevi
 
             Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
 
-            if (tecaj.Cijena != null && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
+            if (tecaj.Cijena != null && tecaj.Cijena != 0 && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
                 return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             return ServiceResult.Success(tecaj);
@@ -74,7 +74,7 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
+        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null, int? minOcjena = null, int? maxOcjena = null, bool? vremenski_najstarije = null)
         {
             var korisnik = _authorizationService.GetKorisnikOptional();
             string? vlasnikId = null;
@@ -82,7 +82,7 @@ namespace TeachABit.Service.Services.Tecajevi
             {
                 vlasnikId = (await _userManager.FindByNameAsync(vlasnikUsername))?.Id;
             }
-            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id, vlasnikId, minCijena, maxCijena);
+            var tecajevi = await _tecajeviRepository.GetTecajList(search, korisnik?.Id, vlasnikId, minCijena, maxCijena, minOcjena, maxOcjena, vremenski_najstarije);
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
         }
@@ -313,6 +313,39 @@ namespace TeachABit.Service.Services.Tecajevi
             if (tecajOcjena == null || !_ownershipService.Owns(tecajOcjena)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             await _tecajeviRepository.DeleteKorisnikTecajOcjena(tecajId, korisnik.Id);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult<List<TecajDto>>> GetAllTecajeviFavoritForCurrentUser()
+        {
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            if (korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            var tecajevi = await _tecajeviRepository.GetAllTecajeviFavoritForCurrentUser(korisnik.Id);
+            var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
+            return ServiceResult.Success(tecajeviDto);
+        }
+
+        public async Task<ServiceResult> AddFavoritTecaj(int tecajId)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+
+            var vecFavorit = await _tecajeviRepository.VecFavorit(tecajId, korisnik.Id);
+
+            if (vecFavorit) return ServiceResult.Failure(MessageDescriber.BadRequest("Već u favoritima."));
+
+            TecajFavorit favorit = new()
+            {
+                KorisnikId = korisnik.Id,
+                TecajId = tecajId
+            };
+            await _tecajeviRepository.AddFavoritTecaj(favorit);
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> RemoveFavoritTecaj(int favoritTecajId)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+            await _tecajeviRepository.RemoveFavoritTecaj(favoritTecajId, korisnik.Id);
             return ServiceResult.Success();
         }
     }

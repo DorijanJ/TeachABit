@@ -16,17 +16,13 @@ namespace TeachABit.API.Middleware
         {
             var user = context.HttpContext.User;
 
-            var roleClaim = user.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.KorisnikStatus);
-            if (roleClaim == null)
+            var statusClaim = user.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.KorisnikStatus);
+            if (statusClaim == null)
             {
-                context.Result = new UnauthorizedObjectResult(new ControllerResult()
-                {
-                    Message = MessageDescriber.Unauthorized()
-                });
                 return;
             }
 
-            if (!int.TryParse(roleClaim.Value, out var roleValue) || roleValue == (int)_status)
+            if (!int.TryParse(statusClaim.Value, out var roleValue) || roleValue == (int)_status)
             {
                 context.Result = new UnauthorizedObjectResult(new ControllerResult()
                 {

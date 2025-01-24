@@ -8,7 +8,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public Task<Tecaj> CreateTecaj(Tecaj tecaj);
         public Task<Tecaj> UpdateTecaj(Tecaj tecaj);
         public Task DeleteTecaj(int id);
-        public Task<List<Tecaj>> GetTecajList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, decimal? minCijena = null, decimal? maxCijena = null);
+        public Task<List<Tecaj>> GetTecajList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, decimal? minCijena = null, decimal? maxCijena = null, int? minOcjena = null, int? maxOcjena = null, bool? vrmenski_najstarije = null);
         public Task<Tecaj?> GetTecajByIdWithTracking(int id);
         public Task<Lekcija?> GetLekcijaByIdWithTracking(int id);
         public Task<Lekcija> CreateLekcija(Lekcija lekcija);
@@ -35,5 +35,9 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public Task DeleteKorisnikTecajOcjena(int tecajId, string korisnikId);
         public Task<KorisnikTecajOcjena?> GetTecajOcjenaWithTracking(int tecajId, string korisnikId);
         public Task<KorisnikTecajOcjena> UpdateTecajOcjena(KorisnikTecajOcjena ocjena);
+        public Task<List<Tecaj>> GetAllTecajeviFavoritForCurrentUser(string username);
+        public Task RemoveFavoritTecaj(int favoritTecajId, string korisnikId);
+        public Task<TecajFavorit> AddFavoritTecaj(TecajFavorit favorit);
+        public Task<bool> VecFavorit(int tecajId, string korisnikId);
     }
 }

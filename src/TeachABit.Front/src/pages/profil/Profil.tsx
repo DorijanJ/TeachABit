@@ -29,6 +29,9 @@ import { KorisnikStatus } from "../../enums/KorisnikStatus";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import { observer } from "mobx-react";
 import globalStore from "../../stores/GlobalStore";
+import { useNavigate } from "react-router-dom";
+import DeleteButtonAndPrompt from "./DeleteButtonAndPrompt";
+import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
   const role = uloge.reduce((max, obj) =>
@@ -38,6 +41,7 @@ const getHighestLevelUloga = (uloge: Uloga[]) => {
 };
 
 export const Profil = () => {
+    const navigate = useNavigate();
     const { username } = useParams();
     const navigate = useNavigate();
 
@@ -87,25 +91,42 @@ export const Profil = () => {
     }
   };
 
-  const UpdateKorisnikUloga = async (uloga: string) => {
-    const response = await requests.postWithLoading(
-      `account/${username}/postavi-ulogu`,
-      {
-        roleName: uloga,
-      }
-    );
-    if (response && username) {
-      setSelectedUloga(uloga);
-      GetUserByUsername(username);
-    }
-  };
+    const UpdateKorisnikUloga = async (uloga: string) => {
+        const response = await requests.postWithLoading(
+            `account/${username}/postavi-ulogu`,
+            {
+                roleName: uloga,
+            }
+        );
+        if (response && username) {
+            setSelectedUloga(uloga);
+            GetUserByUsername(username);
+        }
+    };
 
-  const SendVerificaitonRequest = async () => {
-    const response = await requests.postWithLoading(
-      `account/${username}/verifikacija-zahtjev`
-    );
-    if (response && response.data && username) GetUserByUsername(username);
-  };
+    const [verificationDialog, setVerificationDialog] = useState(false);
+
+    const SendVerificaitonRequest = async () => {
+        const response = await requests.postWithLoading(
+            `account/${username}/verifikacija-zahtjev`
+        );
+        if (response && response.data && username) {
+            GetUserByUsername(username);
+            setVerificationDialog(false);
+        }
+    };
+
+    const deleteRacun = async () => {
+        const isDeletingSelf = globalStore.currentUser?.username === username;
+        const response = await requests.deleteWithLoading(
+            `account/${username}`
+        );
+        if (response && response.message?.severity === "success") {
+            if (isDeletingSelf) {
+                navigate("/tecajevi");
+            } else navigate(-1);
+        }
+    };
 
     useEffect(() => {
         if (globalStore.hasPermissions(LevelPristupa.Admin)) GetAllRoles();
@@ -115,8 +136,12 @@ export const Profil = () => {
     if (username) GetUserByUsername(username);
   }, [username]);
 
-  const [tecajList, setTecajList] = useState<TecajDto[]>([]);
-  const [radionicaList, setRadionicaList] = useState<RadionicaDto[]>([]);
+    const [tecajList, setTecajList] = useState<TecajDto[]>([]);
+    const [radionicaList, setRadionicaList] = useState<RadionicaDto[]>([]);
+    const [favoritiTecajList, setFavoritiTecajList] = useState<TecajDto[]>([]);
+    const [favoritiRadioniceList, setFavoritiRadioniceList] = useState<
+        RadionicaDto[]
+    >([]);
 
   const GetTecajList = async () => {
     const response = await requests.getWithLoading(
@@ -125,17 +150,31 @@ export const Profil = () => {
     if (response && response.data) setTecajList(response.data);
   };
 
-  const GetRadionicaList = async () => {
-    const response = await requests.getWithLoading(
-      `radionice?vlasnikUsername=${username}`
-    );
-    if (response && response.data) setRadionicaList(response.data);
-  };
+    const GetRadionicaList = async () => {
+        const response = await requests.getWithLoading(
+            `radionice?vlasnikUsername=${username}`
+        );
+        if (response && response.data) setRadionicaList(response.data);
+    };
+    const GetFavoritiTecajList = async () => {
+        const response = await requests.getWithLoading(
+            `tecajevi?vlasnikUsername=${username}&favorit=true`
+        );
+        if (response && response.data) setFavoritiTecajList(response.data);
+    };
+    const GetFavoritiRadioniceList = async () => {
+        const response = await requests.getWithLoading(
+            `radionice?vlasnikUsername=${username}&favorit=true`
+        );
+        if (response && response.data) setFavoritiRadioniceList(response.data);
+    };
 
-  useEffect(() => {
-    GetTecajList();
-    GetRadionicaList();
-  }, [username]);
+    useEffect(() => {
+        GetTecajList();
+        GetRadionicaList();
+        GetFavoritiTecajList();
+        GetFavoritiRadioniceList();
+    }, [username]);
 
     return (
         user && (
@@ -282,11 +321,15 @@ export const Profil = () => {
                                         <>
                                             {user.verifikacijaStatusId ===
                                                 VerifikacijaEnum.ZahtjevPoslan && (
-                                                <p style={{ margin: 0 }}>
+                                                <Button
+                                                    disabled
+                                                    variant="outlined"
+                                                    sx={{ height: "30px" }}
+                                                >
                                                     {
                                                         user.verifikacijaStatusNaziv
                                                     }
-                                                </p>
+                                                </Button>
                                             )}
                                             {username ===
                                                 globalStore.currentUser
@@ -296,15 +339,28 @@ export const Profil = () => {
                                                     sx={{ height: "30px"}}
                                                         variant="contained"
                                                         onClick={() =>
-                                                            SendVerificaitonRequest()
+                                                            setVerificationDialog(
+                                                                true
+                                                            )
                                                         }
                                                     >
                                                         {
-                                                            "Pošalji zahtjev za verifikacijom."
+                                                            "Zahtjev za verifikacijom"
                                                         }
                                                     </Button>
                                                 )}
                                         </>
+                                    )}
+                                    {(globalStore.currentUser?.id === user.id ||
+                                        (globalStore.hasPermissions(
+                                            LevelPristupa.Admin
+                                        ) &&
+                                            user.roles?.find(
+                                                (x) => x.name === "Admin"
+                                            ) === undefined)) && (
+                                        <DeleteButtonAndPrompt
+                                            deleteRacun={deleteRacun}
+                                        />
                                     )}
                                     {globalStore.hasPermissions(
                                         LevelPristupa.Moderator
@@ -347,7 +403,10 @@ export const Profil = () => {
                 <div>
                     {tecajList.length > 0 && (
                         <>
-                            <Typography variant="h6" sx={{ margin: 0 }}>
+                            <Typography
+                                variant="h6"
+                                sx={{ marginLeft: "10px" }}
+                            >
                                 {"Tečajevi:"}
                             </Typography>
                             <CustomSliderTecaj
@@ -357,7 +416,10 @@ export const Profil = () => {
                     )}
                     {radionicaList.length > 0 && (
                         <>
-                            <Typography variant="h6" sx={{ margin: 0 }}>
+                            <Typography
+                                variant="h6"
+                                sx={{ marginLeft: "10px" }}
+                            >
                                 {"Radionice:"}
                             </Typography>
                             <CustomSliderRadionica
@@ -365,7 +427,41 @@ export const Profil = () => {
                             ></CustomSliderRadionica>
                         </>
                     )}
+                    {favoritiTecajList.length > 0 && (
+                        <>
+                            <Typography
+                                variant="h6"
+                                sx={{ marginLeft: "10px" }}
+                            >
+                                {"Radionice favoriti:"}
+                            </Typography>
+                            <CustomSliderTecaj
+                                tecajevi={favoritiTecajList}
+                            ></CustomSliderTecaj>
+                        </>
+                    )}
+                    {favoritiRadioniceList.length > 0 && (
+                        <>
+                            <Typography
+                                variant="h6"
+                                sx={{ marginLeft: "10px" }}
+                            >
+                                {"Tečajevi favoriti:"}
+                            </Typography>
+                            <CustomSliderRadionica
+                                radionice={favoritiRadioniceList}
+                            ></CustomSliderRadionica>
+                        </>
+                    )}
                 </div>
+                {verificationDialog && (
+                    <PotvrdiPopup
+                        onClose={() => setVerificationDialog(false)}
+                        onConfirm={() => SendVerificaitonRequest()}
+                        tekstPitanje="Poslati zahtjev za verifikacijom?"
+                        tekstOdgovor="Pošalji"
+                    />
+                )}
             </Box>
         )
     );

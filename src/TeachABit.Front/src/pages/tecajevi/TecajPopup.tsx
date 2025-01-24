@@ -4,7 +4,6 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    InputAdornment,
     TextField,
 } from "@mui/material";
 import localStyles from "../../components/auth/form/AuthForm.module.css";
@@ -15,9 +14,11 @@ import ImageUploadComponent from "../../components/ImageUploadComponent.tsx";
 import { TecajDto } from "../../models/TecajDto.ts";
 import TeachABitEditor from "../../components/editor/TeachABitTextEditor.tsx";
 import { useNavigate } from "react-router-dom";
+import CijenaFancyInput from "./CijenaFancyInput.tsx";
 
 const maxNazivLength = 500;
 const maxOpisLength = 10000;
+const minCijena = 0;
 const maxCijena = 2000;
 
 interface Props {
@@ -79,8 +80,7 @@ export default function TecajPopup(props: Props) {
 
     const isValidPrice = useMemo(() => {
         const value = tecaj.cijena;
-        if (!value) return true;
-        if (isNaN(value) || value <= 0 || value > maxCijena) {
+        if (value == undefined || isNaN(value) || value < minCijena || value > maxCijena) {
             return false;
         }
 
@@ -166,44 +166,10 @@ export default function TecajPopup(props: Props) {
                         }))
                     }
                 />
-
-                <TextField
-                    label="Cijena"
-                    name="cijena"
-                    sx={{
-                        width: "200px",
-                    }}
-                    variant="outlined"
-                    value={tecaj.cijena}
-                    type="number"
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    €
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        const value = parseFloat(e.target.value);
-                        const decimalPlaces = value
-                            .toString()
-                            .split(".")[1]?.length;
-                        if (
-                            !(Math.floor(value) === value) &&
-                            decimalPlaces > 2
-                        ) {
-                            return;
-                        }
-                        setTecaj((prev: any) => ({
-                            ...prev,
-                            cijena:
-                                e.target.value !== ""
-                                    ? e.target.value ?? undefined
-                                    : undefined,
-                        }));
-                    }}
+                
+                <CijenaFancyInput
+                    tecaj={tecaj}
+                    setTecaj={setTecaj}
                 />
 
                 <div
@@ -234,7 +200,9 @@ export default function TecajPopup(props: Props) {
                         Odustani
                     </Button>
                     <Button
-                        disabled={!isValidPrice || !isValidNaziv || !isValidOpis}
+                        disabled={
+                            !isValidPrice || !isValidNaziv || !isValidOpis
+                        }
                         className={localStyles.myButton}
                         variant="contained"
                         onClick={() => {
