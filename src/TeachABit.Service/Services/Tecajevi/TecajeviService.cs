@@ -30,7 +30,7 @@ namespace TeachABit.Service.Services.Tecajevi
 
             Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
 
-            if (tecaj.Cijena != null && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
+            if (tecaj.Cijena != null && tecaj.Cijena != 0 && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
                 return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             return ServiceResult.Success(tecaj);

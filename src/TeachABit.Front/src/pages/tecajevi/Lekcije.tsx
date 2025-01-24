@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Typography, Collapse, Box, Paper, IconButton } from "@mui/material";
+import {
+    Typography,
+    Collapse,
+    Box,
+    Paper,
+    IconButton,
+    Button,
+} from "@mui/material";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import requests from "../../api/agent";
 import AddIcon from "@mui/icons-material/Add";
@@ -192,17 +199,20 @@ export const Lekcije = (props: Props) => {
                         justifyContent: "flex-end",
                     }}
                 >
-                    <IconButton
-                        onClick={() => {
-                            handleLekcijaPopupOpen(undefined);
-                        }}
+                    <Button
+                        onClick={() => handleLekcijaPopupOpen(undefined)}
+                        variant="contained"
                         sx={{
-                            width: "40px",
-                            height: "40px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: "5px",
+                            paddingLeft: 1,
                         }}
                     >
-                        <AddIcon color="primary"></AddIcon>
-                    </IconButton>
+                        <AddIcon />
+                        Dodaj Lekciju
+                    </Button>
                 </Box>
             )}
         </Box>
