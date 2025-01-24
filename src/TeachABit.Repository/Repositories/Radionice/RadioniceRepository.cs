@@ -27,7 +27,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             query = query.Include(x => x.RadionicaFavoriti.Where(f => f.KorisnikId == trenutniKorisnikId));
         }
         
-        if (samoNadolazece) query = query.Where(x => x.VrijemeRadionice > DateTime.Now);
+        if (samoNadolazece) query = query.Where(x => x.VrijemeRadionice > DateTime.Now.AddHours(-1));
 
         if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 
