@@ -39,8 +39,8 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         if (sortOrderAsc) query = query.OrderBy(x => x.VrijemeRadionice);
         else query = query.OrderByDescending(x => x.VrijemeRadionice);
-        
-        if (samoNadolazece) query = query.Where(x => x.VrijemeRadionice > DateTime.Now.AddHours(-1));
+
+        if (samoNadolazece) query = query.Where(x => x.VrijemeRadionice > DateTime.UtcNow.AddHours(-1));
 
         if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 
