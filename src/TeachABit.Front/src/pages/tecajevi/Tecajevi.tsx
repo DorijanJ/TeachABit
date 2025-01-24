@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import requests from "../../api/agent";
 import { Button } from "@mui/material";
-import { useGlobalContext } from "../../context/Global.context";
-import Tecaj from "./Tecaj";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
 import TecajPopup from "./TecajPopup";
+import globalStore from "../../stores/GlobalStore";
+import { Tecaj } from "./Tecaj";
+import { observer } from "mobx-react";
 
-export default function Tecajevi() {
+export const Tecajevi = () => {
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
-    const globalContext = useGlobalContext();
     const { buildRequest } = useRequestBuilder();
 
     const [popupOpen, setDialogOpen] = useState(false);
@@ -52,7 +52,7 @@ export default function Tecajevi() {
             >
                 <SearchBox onSearch={GetTecajList} />
 
-                {globalContext.userIsLoggedIn && (
+                {globalStore.currentUser !== undefined && (
                     <Button
                         variant="contained"
                         onClick={() => {
@@ -95,4 +95,6 @@ export default function Tecajevi() {
             </div>
         </div>
     );
-}
+};
+
+export default observer(Tecajevi);

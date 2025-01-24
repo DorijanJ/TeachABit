@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { useGlobalContext } from "../../context/Global.context";
 import {
     Card,
     CardContent,
@@ -26,6 +25,8 @@ import { LevelPristupa } from "../../enums/LevelPristupa";
 import { RadionicaDto } from "../../models/RadionicaDto";
 import { KorisnikStatus } from "../../enums/KorisnikStatus";
 import MicOffIcon from "@mui/icons-material/MicOff";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -34,15 +35,14 @@ const getHighestLevelUloga = (uloge: Uloga[]) => {
     return role?.name ?? "";
 };
 
-export default function Profil() {
+export const Profil = () => {
     const { username } = useParams();
-    const globalContext = useGlobalContext();
 
     const [user, setUser] = useState<AppUserDto>();
 
     const isCurrentUser = useMemo(() => {
-        return globalContext.currentUser?.username === username;
-    }, [globalContext.currentUser?.username, username]);
+        return globalStore.currentUser?.username === username;
+    }, [globalStore.currentUser?.username, username]);
 
     const GetUserByUsername = async (username: string) => {
         const response = await requests.getWithLoading(
@@ -105,7 +105,7 @@ export default function Profil() {
     };
 
     useEffect(() => {
-        if (globalContext.hasPermissions(LevelPristupa.Admin)) GetAllRoles();
+        if (globalStore.hasPermissions(LevelPristupa.Admin)) GetAllRoles();
     }, []);
 
     useEffect(() => {
@@ -182,7 +182,7 @@ export default function Profil() {
                                     <>{user.username ? user.username[0] : ""}</>
                                 )}
                             </Avatar>
-                            {globalContext.userIsLoggedIn === true &&
+                            {globalStore.currentUser !== undefined &&
                                 isCurrentUser && (
                                     <IconButton
                                         onClick={() =>
@@ -241,12 +241,12 @@ export default function Profil() {
                                     height: "110px",
                                 }}
                             >
-                                {globalContext.hasPermissions(
+                                {globalStore.hasPermissions(
                                     LevelPristupa.Admin
                                 ) &&
                                 selectedUloga !== "Admin" &&
                                 username !==
-                                    globalContext.currentUser?.username ? (
+                                    globalStore.currentUser?.username ? (
                                     <Select
                                         sx={{ minWidth: "100px" }}
                                         value={selectedUloga}
@@ -277,7 +277,7 @@ export default function Profil() {
                                     }}
                                 >
                                     {username ===
-                                        globalContext.currentUser?.username && (
+                                        globalStore.currentUser?.username && (
                                         <>
                                             {user.verifikacijaStatusId ===
                                                 VerifikacijaEnum.ZahtjevPoslan && (
@@ -288,10 +288,11 @@ export default function Profil() {
                                                 </p>
                                             )}
                                             {username ===
-                                                globalContext.currentUser
+                                                globalStore.currentUser
                                                     ?.username &&
                                                 !user.verifikacijaStatusId && (
                                                     <Button
+                                                        sx={{ height: "30px" }}
                                                         variant="contained"
                                                         onClick={() =>
                                                             SendVerificaitonRequest()
@@ -304,7 +305,7 @@ export default function Profil() {
                                                 )}
                                         </>
                                     )}
-                                    {globalContext.hasPermissions(
+                                    {globalStore.hasPermissions(
                                         LevelPristupa.Moderator
                                     ) &&
                                         user.roles?.find(
@@ -313,6 +314,7 @@ export default function Profil() {
                                                 LevelPristupa.Moderator
                                         ) === undefined && (
                                             <Button
+                                                sx={{ height: "30px" }}
                                                 onClick={() => {
                                                     if (!username) return;
                                                     if (
@@ -366,4 +368,6 @@ export default function Profil() {
             </Box>
         )
     );
-}
+};
+
+export default observer(Profil);

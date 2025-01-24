@@ -1,12 +1,13 @@
 import requests from "../api/agent";
-import { useGlobalContext } from "../context/Global.context";
 import { ApiResponseDto } from "../models/common/ApiResponseDto";
 import { LoginAttemptDto } from "../models/LoginAttemptDto";
 import { RegisterAttemptDto } from "../models/RegistetAttemptDto";
+import globalStore from "../stores/GlobalStore";
 
 const USERNAME_KEY = "username";
 const ID_KEY = "id";
-const ROLES = "roles";
+const ROLES_KEY = "roles";
+const STATUS_KEY = "status";
 
 interface GoogleAuthRequest {
     token: string;
@@ -14,23 +15,21 @@ interface GoogleAuthRequest {
 }
 
 const useAuth = () => {
-    const globalContext = useGlobalContext();
-
     const handleUserLoggedInCheck = () => {
         const username = localStorage.getItem(USERNAME_KEY);
         const id = localStorage.getItem(ID_KEY);
-        const roles = localStorage.getItem(ROLES);
+        const roles = localStorage.getItem(ROLES_KEY);
+        const status = localStorage.getItem(STATUS_KEY);
 
         if (username !== null && id !== null && roles !== null) {
-            globalContext.setCurrentUser({
+            globalStore.setCurrentUser({
                 username: username,
                 id: id,
                 roles: JSON.parse(roles),
+                korisnikStatusId: !status ? undefined : parseInt(status),
             });
-            globalContext.setIsUserLoggedIn(true);
         } else {
-            globalContext.setCurrentUser(undefined);
-            globalContext.setIsUserLoggedIn(false);
+            globalStore.setCurrentUser(undefined);
         }
     };
 

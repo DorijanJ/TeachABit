@@ -139,5 +139,11 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _korisniciService.OdTisajKorisnika(username));
         }
+
+        [HttpGet("reauth")]
+        public async Task<IActionResult> Reauth()
+        {
+            return GetControllerResult(await _authenticationService.Reauth());
+        }
     }
 }

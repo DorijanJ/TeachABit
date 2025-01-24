@@ -1,7 +1,8 @@
 import { Navigate } from "react-router-dom";
-import { useGlobalContext } from "../../../context/Global.context";
 import GenericRoute from "./GenericRoute";
 import { LevelPristupa } from "../../../enums/LevelPristupa";
+import { observer } from "mobx-react";
+import globalStore from "../../../stores/GlobalStore";
 
 const USERNAME_KEY = "username";
 
@@ -11,21 +12,16 @@ interface PrivateRouteProps {
     accessLevel?: LevelPristupa;
 }
 
-export default function PrivateRoute(props: PrivateRouteProps) {
-    const globalContext = useGlobalContext();
-
-    var isLoggedIn = globalContext.userIsLoggedIn;
-
-    if (isLoggedIn === undefined) {
-        isLoggedIn = localStorage.getItem(USERNAME_KEY) !== null;
-    }
-    if (isLoggedIn == null) return <Navigate to="/" />;
-    if (props.accessLevel && !globalContext.hasPermissions(props.accessLevel))
+export const PrivateRoute = (props: PrivateRouteProps) => {
+    if (!globalStore.currentUser) return <Navigate to="/" />;
+    if (props.accessLevel && !globalStore.hasPermissions(props.accessLevel))
         return <Navigate to="/" />;
 
-    return isLoggedIn === true ? (
+    return globalStore.currentUser !== undefined ? (
         <GenericRoute page={props.page} withNavigation={props.withNavigation} />
     ) : (
         <Navigate to="/" />
     );
-}
+};
+
+export default observer(PrivateRoute);

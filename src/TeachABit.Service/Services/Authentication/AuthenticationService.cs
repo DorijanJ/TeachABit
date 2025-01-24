@@ -10,13 +10,15 @@ using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
+using TeachABit.Model.DTOs.Uloge;
 using TeachABit.Model.Models.Korisnici;
+using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Util.Mail;
 using TeachABit.Service.Util.Token;
 
 namespace TeachABit.Service.Services.Authentication
 {
-    public class AuthenticationService(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
+    public class AuthenticationService(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, IAuthorizationService authorizationService, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
     {
         private readonly UserManager<Korisnik> _userManager = userManager;
         private readonly SignInManager<Korisnik> _signInManager = signInManager;
@@ -25,6 +27,7 @@ namespace TeachABit.Service.Services.Authentication
         private readonly IMailSenderService _mailSenderService = mailSenderService;
         private readonly IMapper _mapper = mapper;
         private readonly IConfiguration _configuration = configuration;
+        private readonly IAuthorizationService _authorizationService = authorizationService;
 
         public async Task<ServiceResult> Login(LoginAttemptDto loginAttempt)
         {
@@ -300,6 +303,28 @@ namespace TeachABit.Service.Services.Authentication
             var korisnikDto = _mapper.Map<KorisnikDto>(user);
 
             return ServiceResult.Success(korisnikDto);
+        }
+
+        public async Task<ServiceResult> Reauth()
+        {
+            var user = await _userManager.FindByIdAsync(_authorizationService.GetKorisnik().Id);
+
+            if (user == null) return ServiceResult.Failure();
+
+            var dbUser = await _userManager.Users.Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == user.Id);
+
+            if (dbUser == null) return ServiceResult.Failure();
+
+            RefreshUserInfoDto refreshUserInfoDto = new()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                IsAuthenticated = true,
+                Roles = _mapper.Map<List<UlogaDto>>(dbUser.KorisnikUloge.Select(x => x.Uloga)),
+                KorisnikStatusId = user.KorisnikStatusId,
+            };
+
+            return ServiceResult.Success(refreshUserInfoDto);
         }
     }
 }

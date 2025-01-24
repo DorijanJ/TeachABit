@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import { useGlobalContext } from "../../context/Global.context";
 import SearchBox from "../../components/searchbox/SearchBox";
 import { useEffect, useState } from "react";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
@@ -7,11 +6,13 @@ import requests from "../../api/agent";
 import { RadionicaDto } from "../../models/RadionicaDto";
 import Radionica from "./Radionica";
 import RadionicaEditor from "./RadionicaEditor";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
-export default function Radionice() {
+export const Radionice = () => {
     const [radionicaList, setRadionicaList] = useState<RadionicaDto[]>([]);
     const [isOpenRadionicaDialog, setIsOpenRadionicaDialog] = useState(false);
-    const globalContext = useGlobalContext();
+
     const { buildRequest } = useRequestBuilder();
 
     const GetRadionicaList = async (search: string | undefined = undefined) => {
@@ -48,7 +49,7 @@ export default function Radionice() {
                 }}
             >
                 <SearchBox onSearch={GetRadionicaList} />
-                {globalContext.userIsLoggedIn && (
+                {globalStore.currentUser !== undefined && (
                     <Button
                         variant="contained"
                         onClick={() => setIsOpenRadionicaDialog(true)}
@@ -96,4 +97,6 @@ export default function Radionice() {
             />
         </div>
     );
-}
+};
+
+export default observer(Radionice);

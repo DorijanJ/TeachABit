@@ -1,7 +1,6 @@
 import { Box, Drawer, IconButton, List } from "@mui/material";
 import ForumIcon from "@mui/icons-material/Forum";
 import AuthForm from "../auth/form/AuthForm";
-import { useGlobalContext } from "../../context/Global.context";
 import localStyles from "./Navigation.module.css";
 import Logo from "../../images/logo.png";
 import NavigationItem from "./NavigationItem";
@@ -12,13 +11,14 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { LaptopChromebook, MenuBook } from "@mui/icons-material";
 import { LevelPristupa } from "../../enums/LevelPristupa";
+import globalStore from "../../stores/GlobalStore";
+import { observer } from "mobx-react";
 
 interface Props {
     isExpanded?: boolean | undefined;
 }
 
-export default function Navigation(props: Props) {
-    const globalContext = useGlobalContext();
+export const Navigation = (props: Props) => {
     const location = useLocation();
     const isActive = (route: string) => location.pathname === route;
 
@@ -62,8 +62,6 @@ export default function Navigation(props: Props) {
                                 transform: isExpanded
                                     ? "rotate(0deg)"
                                     : "rotate(180deg)",
-                                //justifyContent: isExpanded? "" : "center",
-                                //padding: isExpanded ? "20px" : "100px",
                                 color: "#3a7ca5",
                                 transition: "transform 0.3s ease", // dodaje animiranu tranziciju
                             }}
@@ -128,7 +126,7 @@ export default function Navigation(props: Props) {
                             }
                             isExpanded={isExpanded}
                         />
-                        {globalContext.hasPermissions(
+                        {globalStore.hasPermissions(
                             LevelPristupa.Moderator
                         ) && (
                             <NavigationItem
@@ -148,17 +146,17 @@ export default function Navigation(props: Props) {
 
                     <Box sx={{ flexGrow: 1 }} />
 
-                    {globalContext.userIsLoggedIn === true &&
-                        globalContext.currentUser &&
-                        isExpanded && (
-                            <NavigationUser user={globalContext.currentUser} />
-                        )}
+                    {globalStore.currentUser !== undefined && isExpanded && (
+                        <NavigationUser user={globalStore.currentUser} />
+                    )}
 
-                    {globalContext.userIsLoggedIn === false && isExpanded && (
+                    {globalStore.currentUser === undefined && isExpanded && (
                         <AuthForm />
                     )}
                 </Box>
             </Drawer>
         </>
     );
-}
+};
+
+export default observer(Navigation);

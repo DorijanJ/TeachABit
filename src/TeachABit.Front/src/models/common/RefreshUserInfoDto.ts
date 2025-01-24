@@ -5,4 +5,5 @@ export interface RefreshUserInfoDto {
     userName: string;
     roles: Uloga[];
     isAuthenticated: boolean;
+    korisnikStatusId?: number;
 }

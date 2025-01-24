@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.Security.Claims;
 using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Result;
@@ -16,15 +15,6 @@ namespace TeachABit.API.Middleware
     {
         private readonly RequestDelegate _next = next;
 
-        private readonly ControllerResult invalidResult = new()
-        {
-            Message = MessageDescriber.Unauthorized(),
-            RefreshUserInfo = new()
-            {
-                IsAuthenticated = false,
-            }
-        };
-
         public async Task InvokeAsync(HttpContext context, IServiceProvider serviceProvider)
         {
             if (!context.User.Identity?.IsAuthenticated ?? true)
@@ -34,77 +24,96 @@ namespace TeachABit.API.Middleware
             }
 
             using var scope = serviceProvider.CreateScope();
-            var _userManager = scope.ServiceProvider.GetRequiredService<UserManager<Korisnik>>();
 
-            var korisnikStatusClaim = context.User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.KorisnikStatus)?.Value;
-            var korisnikRoleClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Korisnik>>();
+            var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+            var tokenService = scope.ServiceProvider.GetRequiredService<ITokenService>();
 
-            var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(korisnikRoleClaim))
-            {
-                context.Response.Cookies.Delete("AuthToken", new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict
-                });
-
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                return;
-            }
-
-            var korisnik = await _userManager.FindByIdAsync(userId);
+            var korisnik = await GetAuthenticatedUserAsync(context, userManager);
             if (korisnik == null)
             {
-                context.Response.Cookies.Delete("AuthToken", new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict
-                });
-
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsJsonAsync(invalidResult);
+                await RespondUnauthorizedAsync(context);
                 return;
             }
-            var _mapper = serviceProvider.GetRequiredService<IMapper>();
 
-            List<UlogaDto>? korisnikUloge = _mapper.Map<List<UlogaDto>>((await _userManager.Users.Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == korisnik.Id))?.KorisnikUloge.Select(x => x.Uloga));
-            string? statusId = korisnik.KorisnikStatusId?.ToString();
-            List<string> parsedRoleClaim = [.. korisnikRoleClaim.Split(",")];
-            List<string> ulogaNazivi = korisnikUloge.Select(x => x.Name).ToList();
-
-            if (korisnikStatusClaim != statusId || (parsedRoleClaim != null && !parsedRoleClaim.SequenceEqual(ulogaNazivi)))
+            var korisnikUloge = await GetUserRolesAsync(korisnik, userManager, mapper);
+            if (IsUserInfoInvalid(context, korisnik, korisnikUloge))
             {
-                var tokenMaker = serviceProvider.GetService<ITokenService>() ?? throw new Exception();
-                var token = await tokenMaker.CreateToken(korisnik) ?? throw new Exception();
-
-                context.Response.Cookies.Append("AuthToken", token, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = false,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = DateTime.UtcNow.AddHours(6),
-                });
-
-                context.Response.StatusCode = StatusCodes.Status200OK;
-
-                RefreshUserInfoDto reissuedMessage = new()
-                {
-                    Id = korisnik.Id,
-                    IsAuthenticated = true,
-                    Roles = korisnikUloge,
-                    UserName = korisnik.UserName,
-                };
-                context.Response.Headers.Add("reissued-message", JsonConvert.SerializeObject(reissuedMessage));
+                await ReissueTokenAsync(context, tokenService, korisnik, korisnikUloge);
+                return;
             }
 
             await _next(context);
         }
 
-        private async Task RespondUnauthorizedAsync(HttpContext context)
+        private static async Task<Korisnik?> GetAuthenticatedUserAsync(HttpContext context, UserManager<Korisnik> userManager)
         {
+            string userId = context.User.FindFirst(ClaimTypes.NameIdentifier)!.Value!;
+            return string.IsNullOrEmpty(userId) ? null : await userManager.FindByIdAsync(userId);
+        }
+
+        private static async Task<List<UlogaDto>> GetUserRolesAsync(Korisnik korisnik, UserManager<Korisnik> userManager, IMapper mapper)
+        {
+            var userWithRoles = await userManager.Users
+                .Include(u => u.KorisnikUloge)
+                .ThenInclude(ku => ku.Uloga)
+                .FirstOrDefaultAsync(u => u.Id == korisnik.Id);
+
+            return mapper.Map<List<UlogaDto>>(userWithRoles?.KorisnikUloge.Select(ku => ku.Uloga));
+        }
+
+        private static bool IsUserInfoInvalid(HttpContext context, Korisnik korisnik, List<UlogaDto> korisnikUloge)
+        {
+            var korisnikStatusClaim = context.User.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.KorisnikStatus)?.Value;
+            var korisnikRolesClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+            string? currentStatusId = korisnik.KorisnikStatusId?.ToString();
+            var parsedRolesFromClaim = korisnikRolesClaim?.Split(",") ?? Array.Empty<string>();
+            var ulogaNazivi = korisnikUloge.Select(u => u.Name).ToArray();
+
+            return korisnikStatusClaim != currentStatusId || !parsedRolesFromClaim.SequenceEqual(ulogaNazivi);
+        }
+
+        private static async Task ReissueTokenAsync(HttpContext context, ITokenService tokenService, Korisnik korisnik, List<UlogaDto> korisnikUloge)
+        {
+            var token = await tokenService.CreateToken(korisnik);
+
+            context.Response.Cookies.Append("AuthToken", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddHours(6),
+            });
+
+            var refreshUserInfo = new ControllerResult()
+            {
+                RefreshUserInfo = new()
+                {
+                    Id = korisnik.Id,
+                    IsAuthenticated = true,
+                    Roles = korisnikUloge,
+                    UserName = korisnik.UserName,
+                    KorisnikStatusId = korisnik.KorisnikStatusId,
+                },
+                Message = MessageDescriber.Reauthenticate()
+            };
+
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await context.Response.WriteAsJsonAsync(refreshUserInfo);
+        }
+
+        private static async Task RespondUnauthorizedAsync(HttpContext context)
+        {
+            var invalidResult = new ControllerResult
+            {
+                Message = MessageDescriber.Unauthenticated(),
+                RefreshUserInfo = new RefreshUserInfoDto
+                {
+                    IsAuthenticated = false,
+                },
+            };
+
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             await context.Response.WriteAsJsonAsync(invalidResult);
         }

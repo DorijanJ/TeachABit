@@ -15,5 +15,6 @@ namespace TeachABit.Service.Services.Authentication
         Task<ServiceResult> ResendMailConfirmationLink(ResendConfirmEmailDto resendConfirmEmail);
         ServiceResult Logout();
         Task<ServiceResult<KorisnikDto>> GetKorisnikByUsername(string username);
+        Task<ServiceResult> Reauth();
     }
 }
