@@ -12,8 +12,8 @@ import { RadionicaDto } from "../../models/RadionicaDto";
 import RadionicaKomentari from "./RadionicaKomentari";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import { LevelPristupa } from "../../enums/LevelPristupa";
-import { observer } from "mobx-react";
 import globalStore from "../../stores/GlobalStore";
+import { observer } from "mobx-react";
 
 export const RadionicaPage = () => {
     const [radionica, setRadionica] = useState<RadionicaDto>({
@@ -196,7 +196,32 @@ export const RadionicaPage = () => {
                             />
                         </Box>
                     </div>
+
+                    {radionica.naslovnaSlikaVersion && (
+                        <div
+                            style={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                paddingTop: "20px",
+                            }}
+                        >
+                            <img
+                                style={{
+                                    borderRadius: "10px",
+                                    objectFit: "cover",
+                                    width: "70%",
+                                }}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                    radionica.naslovnaSlikaVersion
+                                }`}
+                            />
+                        </div>
+                    )}
+
                     <TeachABitRenderer content={radionica.opis ?? ""} />
+
                     <Box
                         display={"flex"}
                         flexDirection={"row"}
@@ -241,5 +266,4 @@ export const RadionicaPage = () => {
         </>
     );
 };
-
 export default observer(RadionicaPage);
