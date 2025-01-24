@@ -28,7 +28,8 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
 
 
 
-    public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
+    public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null, string? vlasnikUsername = null, double? minOcjena = null,
+        double? maxOcjena = null, bool sortOrderAsc = true, bool samoNadolazece = true)
     {
         var korisnik = _authorizationService.GetKorisnikOptional();
 
@@ -38,7 +39,7 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
             vlasnikId = (await _userManager.FindByNameAsync(vlasnikUsername))?.Id;
         }
 
-        var radionice = await _radioniceRepository.GetRadionicaList(search, korisnik?.Id, vlasnikId, minCijena, maxCijena);
+        var radionice = await _radioniceRepository.GetRadionicaList(search, korisnik?.Id, vlasnikId, minOcjena, maxOcjena, sortOrderAsc, samoNadolazece);
         var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
         return ServiceResult.Success(radioniceDto);
     }

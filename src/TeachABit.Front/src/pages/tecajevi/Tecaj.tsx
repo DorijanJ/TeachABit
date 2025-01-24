@@ -60,6 +60,7 @@ export const Tecaj = (props: Props) => {
                     border: "1px solid #3a7ca5",
                 },
                 minWidth: "340px",
+                maxWidth: "40vw",
             }}
         >
             <CardContent
@@ -149,7 +150,7 @@ export const Tecaj = (props: Props) => {
                             }}
                         />
                     </div>
-                    {props.tecaj.cijena && props.tecaj.cijena > 0 && (
+                    {props.tecaj.cijena !== undefined && props.tecaj.cijena > 0 && (
                         <>
                             {props.tecaj.kupljen && (
                                 <CheckCircleIcon color="info" />

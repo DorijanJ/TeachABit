@@ -62,8 +62,6 @@ const manageLoadingState = (config?: RequestInjector, decrement = false) => {
     }
 };
 
-let isRefreshing = false;
-
 axios.interceptors.response.use(
     (response: AxiosResponse) => {
         const config = response.config as RequestInjector;
@@ -91,9 +89,7 @@ axios.interceptors.response.use(
             !originalRequest._retry
         ) {
             originalRequest._retry = true;
-            isRefreshing = true;
             await requests.get("account/reauth");
-            isRefreshing = false;
             return axios(originalRequest);
         }
         if (userInfo) saveUserInfo(userInfo);

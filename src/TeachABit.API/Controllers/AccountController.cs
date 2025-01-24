@@ -13,7 +13,10 @@ namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAuthenticationService authenticationService, IKorisniciService korisniciService, IUlogeService rolesService) : BaseController
+    public class AccountController(
+        IAuthenticationService authenticationService,
+        IKorisniciService korisniciService,
+        IUlogeService rolesService) : BaseController
     {
         private readonly IAuthenticationService _authenticationService = authenticationService;
         private readonly IKorisniciService _korisniciService = korisniciService;
@@ -104,7 +107,8 @@ namespace TeachABit.API.Controllers
 
         [HttpPost("{username}/postavi-ulogu")]
         [ModelStateFilter]
-        public async Task<IActionResult> AddKorisnikToRole(string username, [FromBody] AddKorisnikToRoleDto addKorisnikToRole)
+        public async Task<IActionResult> AddKorisnikToRole(string username,
+            [FromBody] AddKorisnikToRoleDto addKorisnikToRole)
         {
             return GetControllerResult(await _rolesService.AddUserToUloga(username, addKorisnikToRole.RoleName));
         }
@@ -145,5 +149,12 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _authenticationService.Reauth());
         }
+
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> DeleteAccount(string username)
+        {
+            return GetControllerResult(await _korisniciService.DeleteKorisnik(username));
+        }
+
     }
 }

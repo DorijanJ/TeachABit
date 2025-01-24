@@ -5,6 +5,7 @@ import Komentar from "./Komentar";
 import CreateKomentar from "./KomentarEditor";
 import { TecajKomentarDto } from "../../models/TecajKomentarDto.ts";
 import globalStore from "../../stores/GlobalStore.ts";
+import AddIcon from "@mui/icons-material/Add";
 
 interface Props {
     tecajId: number;
@@ -108,7 +109,15 @@ export default function TecajKomentari(props: Props) {
                                 setIsOpenKomentarDialog((prev) => !prev)
                             }
                             variant="contained"
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "5px",
+                                paddingLeft: 1,
+                            }}
                         >
+                            <AddIcon />
                             Dodaj Komentar
                         </Button>
                     )}

@@ -4,6 +4,7 @@ import requests from "../../api/agent";
 import { Button, Typography } from "@mui/material";
 import Komentar from "./Komentar";
 import CreateKomentar from "./KomentarEditor";
+import AddIcon from "@mui/icons-material/Add";
 import { observer } from "mobx-react";
 import globalStore from "../../stores/GlobalStore";
 
@@ -116,7 +117,15 @@ export const ObjavaKomentari = (props: Props) => {
                                 setIsOpenKomentarDialog((prev) => !prev)
                             }
                             variant="contained"
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "5px",
+                                paddingLeft: 1,
+                            }}
                         >
+                            <AddIcon />
                             Dodaj Komentar
                         </Button>
                     )}

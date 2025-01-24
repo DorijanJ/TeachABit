@@ -6,6 +6,7 @@ import Komentar from "./Komentar";
 import CreateKomentar from "./KomentarEditor";
 import globalStore from "../../stores/GlobalStore";
 import { observer } from "mobx-react";
+import AddIcon from "@mui/icons-material/Add";
 
 interface Props {
     radionicaId: number;
@@ -113,7 +114,15 @@ export const RadionicaKomentari = (props: Props) => {
                                 setIsOpenKomentarDialog((prev) => !prev)
                             }
                             variant="contained"
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "5px",
+                                paddingLeft: 1,
+                            }}
                         >
+                            <AddIcon />
                             Dodaj Komentar
                         </Button>
                     )}
