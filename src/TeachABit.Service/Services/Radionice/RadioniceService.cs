@@ -23,7 +23,7 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
     private readonly IS3BucketService _bucketService = bucketService;
     private readonly UserManager<Korisnik> _userManager = userManager;
 
-    public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null, string? vlasnikUsername = null)
+    public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null, string? vlasnikUsername = null, bool samoNadolazece = true)
     {
         var korisnik = _authorizationService.GetKorisnikOptional();
 
@@ -33,7 +33,7 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
             vlasnikId = (await _userManager.FindByNameAsync(vlasnikUsername))?.Id;
         }
 
-        var radionice = await _radioniceRepository.GetRadionicaList(search, korisnik?.Id, vlasnikId);
+        var radionice = await _radioniceRepository.GetRadionicaList(search, korisnik?.Id, vlasnikId, samoNadolazece);
         var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
         return ServiceResult.Success(radioniceDto);
     }

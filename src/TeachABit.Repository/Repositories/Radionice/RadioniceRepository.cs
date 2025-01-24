@@ -9,7 +9,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 {
     private readonly TeachABitContext _context = context;
 
-    public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null)
+    public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, bool samoNadolazece = true)
 
     {
         IQueryable<Radionica> query = _context.Radionice
@@ -26,6 +26,8 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         {
             query = query.Include(x => x.RadionicaFavoriti.Where(f => f.KorisnikId == trenutniKorisnikId));
         }
+        
+        if (samoNadolazece) query = query.Where(x => x.VrijemeRadionice > DateTime.Now);
 
         if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 

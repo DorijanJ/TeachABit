@@ -5,7 +5,7 @@ namespace TeachABit.Repository.Repositories.Radionice;
 public interface IRadioniceRepository
 {
 
-    Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null);
+    Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, bool samoNadolazece = true);
     Task<Radionica?> GetRadionica(int id);
     public Task<Radionica?> GetRadionicaById(int id);
     Task<Radionica> CreateRadionica(Radionica radionica);
