@@ -5,7 +5,8 @@ import { AppUserDto } from "../../models/AppUserDto";
 interface Props {
     user: AppUserDto;
     width?: number | string;
-    fontSize?: number | string;
+    height?: number | string;
+    fontSize?: number;
 }
 
 export default function UserLink(props: Props) {
@@ -23,9 +24,10 @@ export default function UserLink(props: Props) {
                 alignItems: "center",
                 gap: "5px",
                 cursor: "pointer",
+                width: props.width ?? "auto",
                 minWidth: "fitContent",
                 maxWidth: "180px",
-                height: "40px",
+                height: props.height ?? "40px",
             }}
         >
             <div
@@ -37,7 +39,12 @@ export default function UserLink(props: Props) {
                     maxWidth: "100%",
                 }}
             >
-                <Avatar sx={{ width: 25, height: 25 }}>
+                <Avatar
+                    sx={{
+                        width: props.fontSize ? props.fontSize * 2 : 25,
+                        height: props.fontSize ? props.fontSize * 2 : 25,
+                    }}
+                >
                     {props.user.profilnaSlikaVersion ? (
                         <img
                             style={{
@@ -45,8 +52,9 @@ export default function UserLink(props: Props) {
                                 height: "100%",
                                 width: "100%",
                             }}
-                            src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${props.user.id
-                                }${"?version=" + props.user.profilnaSlikaVersion}`}
+                            src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                props.user.id
+                            }${"?version=" + props.user.profilnaSlikaVersion}`}
                         ></img>
                     ) : (
                         <>{props.user.username ? props.user.username[0] : ""}</>
@@ -58,6 +66,7 @@ export default function UserLink(props: Props) {
                         maxWidth: "100%",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
+                        fontSize: props.fontSize ?? "auto",
                     }}
                 >
                     {props.user.username}

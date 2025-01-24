@@ -43,6 +43,8 @@ namespace TeachABit.Service.Services.Tecajevi
                 tecaj.Cijena = Math.Round(tecaj.Cijena.Value, 2);
             }
 
+            if (tecaj.Cijena == 0) tecaj.Cijena = null;
+
             var korisnik = _authorizationService.GetKorisnik();
             tecaj.VlasnikId = korisnik.Id;
 
@@ -109,7 +111,7 @@ namespace TeachABit.Service.Services.Tecajevi
 
             tecaj.Naziv = updateTecaj.Naziv;
             tecaj.Opis = updateTecaj.Opis;
-            tecaj.Cijena = updateTecaj.Cijena;
+            tecaj.Cijena = updateTecaj.Cijena == 0 ? null : updateTecaj.Cijena;
 
             var updatedTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.UpdateTecaj(tecaj));
 
