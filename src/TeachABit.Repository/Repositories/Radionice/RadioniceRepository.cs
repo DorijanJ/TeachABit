@@ -225,4 +225,13 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         return await query.ToListAsync();
     }
+    
+    /*public async Task<List<RadionicaPrijava>> GetPrijaveForRadionica(int radionicaId)
+    {
+        return await _context.RadionicaPrijava
+            .Include(x => x.Korisnik)    
+            .Where(x => x.RadionicaId == radionicaId)
+            .ToListAsync();
+    }*/
+    
 }

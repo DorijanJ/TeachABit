@@ -28,4 +28,5 @@ public interface IRadioniceRepository
     public Task<KomentarRadionicaReakcija?> GetKomentarRadionicaReakcija(int komentarId, string korisnikId);
     public Task<RadionicaKomentar?> GetKomentarRadionicaByIdWithTracking(int id);
     public Task<RadionicaKomentar> UpdateKomentar(RadionicaKomentar komentar);
+    //public Task<List<RadionicaPrijava>> GetPrijaveForRadionica(int radionicaId);
 }

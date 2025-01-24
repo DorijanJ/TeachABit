@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using System.Net.Mail;
+using TeachABit.Service.Util.Mail;
 using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
@@ -13,7 +15,7 @@ using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Radionice;
 
-public class RadioniceService(IRadioniceRepository radioniceRepository, UserManager<Korisnik> userManager, IS3BucketService bucketService, IImageManipulationService imageManipulationService, IMapper mapper, IAuthorizationService authorizationService, IOwnershipService ownershipService) : IRadioniceService
+public class RadioniceService(IRadioniceRepository radioniceRepository, UserManager<Korisnik> userManager, IS3BucketService bucketService, IImageManipulationService imageManipulationService, IMapper mapper, IAuthorizationService authorizationService, IOwnershipService ownershipService, IMailSenderService mailSenderService) : IRadioniceService
 {
     private readonly IRadioniceRepository _radioniceRepository = radioniceRepository;
     private readonly IMapper _mapper = mapper;
@@ -22,6 +24,9 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
     private readonly IImageManipulationService _imageManipulationService = imageManipulationService;
     private readonly IS3BucketService _bucketService = bucketService;
     private readonly UserManager<Korisnik> _userManager = userManager;
+    private readonly IMailSenderService _mailSenderService = mailSenderService;
+
+
 
     public async Task<ServiceResult<List<RadionicaDto>>> GetRadionicaList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
     {
@@ -249,4 +254,43 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
         await _radioniceRepository.DeleteOcjena(radionicaId, korisnik.Id);
         return ServiceResult.Success();
     }
+    
+    /*public async Task<ServiceResult> SendObavijest(ObavijestDto obavijest)
+    {
+        var prijave = await _radioniceRepository.GetPrijaveForRadionica(obavijest.RadionicaId);
+        var radionica = await _radioniceRepository.GetRadionica(obavijest.RadionicaId);
+        
+        if (radionica.VlasnikId != _authorizationService.GetKorisnik().Id)
+        {
+            return ServiceResult.Failure();
+        }
+
+        if (!prijave.Any())
+        {
+            return ServiceResult.Failure();
+        }
+
+        foreach (var prijava in prijave)
+        {
+            if (!string.IsNullOrEmpty(prijava.Korisnik.Email))
+            {
+                MailMessage message = new()
+                {
+                    Subject = obavijest.Naslov,
+                    Body = obavijest.Poruka,
+                    IsBodyHtml = true
+                };
+
+                var mailResult = await _mailSenderService.SendMail(message, prijava.Korisnik.Email);
+
+                if (mailResult.IsError)
+                {
+                    return ServiceResult.Failure();
+                }
+            }
+        }
+
+        return ServiceResult.Success();
+    }*/
+    
 }
