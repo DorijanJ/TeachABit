@@ -136,8 +136,9 @@ export const Profil = () => {
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
     const [radionicaList, setRadionicaList] = useState<RadionicaDto[]>([]);
     const [favoritiTecajList, setFavoritiTecajList] = useState<TecajDto[]>([]);
-    const [favoritiRadioniceList, setFavoritiRadioniceList] = useState<RadionicaDto[]>([]);
-
+    const [favoritiRadioniceList, setFavoritiRadioniceList] = useState<
+        RadionicaDto[]
+    >([]);
 
     const GetTecajList = async () => {
         const response = await requests.getWithLoading(
@@ -401,7 +402,10 @@ export const Profil = () => {
                 <div>
                     {tecajList.length > 0 && (
                         <>
-                            <Typography variant="h6" sx={{ margin: 0 }}>
+                            <Typography
+                                variant="h6"
+                                sx={{ marginLeft: "10px" }}
+                            >
                                 {"Tečajevi:"}
                             </Typography>
                             <CustomSliderTecaj
@@ -411,7 +415,10 @@ export const Profil = () => {
                     )}
                     {radionicaList.length > 0 && (
                         <>
-                            <Typography variant="h6" sx={{ margin: 0 }}>
+                            <Typography
+                                variant="h6"
+                                sx={{ marginLeft: "10px" }}
+                            >
                                 {"Radionice:"}
                             </Typography>
                             <CustomSliderRadionica
@@ -421,25 +428,30 @@ export const Profil = () => {
                     )}
                     {favoritiTecajList.length > 0 && (
                         <>
-                            <Typography variant="h6" sx={{ margin: 0 }}>
+                            <Typography
+                                variant="h6"
+                                sx={{ marginLeft: "10px" }}
+                            >
                                 {"Radionice favoriti:"}
-                            </Typography>
-                            <CustomSliderRadionica
-                                radionice={favoritiRadioniceList}
-                            ></CustomSliderRadionica>
-                        </>
-                    )}
-                    {tecajList.length > 0 && (
-                        <>
-                            <Typography variant="h6" sx={{ margin: 0 }}>
-                                {"Tečajevi favoriti:"}
                             </Typography>
                             <CustomSliderTecaj
                                 tecajevi={favoritiTecajList}
                             ></CustomSliderTecaj>
                         </>
                     )}
-
+                    {favoritiRadioniceList.length > 0 && (
+                        <>
+                            <Typography
+                                variant="h6"
+                                sx={{ marginLeft: "10px" }}
+                            >
+                                {"Tečajevi favoriti:"}
+                            </Typography>
+                            <CustomSliderRadionica
+                                radionice={favoritiRadioniceList}
+                            ></CustomSliderRadionica>
+                        </>
+                    )}
                 </div>
                 {verificationDialog && (
                     <PotvrdiPopup
