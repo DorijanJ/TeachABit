@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Objave;
 using TeachABit.Model.DTOs.Radionice;
@@ -16,7 +17,11 @@ namespace TeachABit.Model.Mapping
     {
         public AutoMapperProfile()
         {
+            CreateMap<Korisnik, RefreshUserInfoDto>()
+                .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.KorisnikUloge.Select(x => x.Uloga)));
             CreateMap<Korisnik, KorisnikDto>()
+                .ForMember(x => x.KorisnikStatus, opt => opt.MapFrom(x => x.KorisnikStatus != null ? x.KorisnikStatus.Naziv : null))
+                .ForMember(x => x.Roles, opt => opt.MapFrom(x => x.KorisnikUloge.Select(x => x.Uloga)))
                 .ForMember(x => x.VerifikacijaStatusNaziv, opt => opt.MapFrom(x => x.VerifikacijaStatus != null ? x.VerifikacijaStatus.Naziv : null));
             CreateMap<KorisnikDto, Korisnik>();
             CreateMap<Tecaj, TecajDto>()

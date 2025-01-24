@@ -1,6 +1,12 @@
 import { useState } from "react";
-import { useGlobalContext } from "../../context/Global.context";
-import { Typography, Collapse, Box, Paper, IconButton } from "@mui/material";
+import {
+    Typography,
+    Collapse,
+    Box,
+    Paper,
+    IconButton,
+    Button,
+} from "@mui/material";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import requests from "../../api/agent";
 import AddIcon from "@mui/icons-material/Add";
@@ -12,6 +18,8 @@ import { LekcijaDto } from "../../models/LekcijaDto";
 import LekcijaPopup from "./LekcijaPopup";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import { LevelPristupa } from "../../enums/LevelPristupa";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
 interface Props {
     refreshData: () => Promise<any>;
@@ -20,8 +28,7 @@ interface Props {
     vlasnikId?: string;
 }
 
-export default function Lekcije(props: Props) {
-    const globalContext = useGlobalContext();
+export const Lekcije = (props: Props) => {
     let lekcijeCounter = 0;
 
     const [otvorenalekcija, setExpandedLesson] = useState<number | null>(null);
@@ -68,7 +75,7 @@ export default function Lekcije(props: Props) {
     };
 
     return (
-        <Box sx={{ p: 2 }}>
+        <Box sx={{}}>
             <LekcijaPopup
                 refreshData={props.refreshData}
                 onClose={handleLekcijaPopupClose}
@@ -125,9 +132,9 @@ export default function Lekcije(props: Props) {
                                 }}
                             >
                                 {/* Edit i delete gumbi */}
-                                {(globalContext.currentUser?.id ===
+                                {(globalStore.currentUser?.id ===
                                     props.vlasnikId ||
-                                    globalContext.hasPermissions(
+                                    globalStore.hasPermissions(
                                         LevelPristupa.Moderator
                                     )) && (
                                     <>
@@ -184,10 +191,7 @@ export default function Lekcije(props: Props) {
             ))}
 
             {/* Gumb za dodavanje lekcija */}
-            {(globalContext.currentUser?.id === props.vlasnikId ||
-                globalContext.hasPermissions(
-                    LevelPristupa.Moderator
-                )) && (
+            {globalStore.currentUser?.id === props.vlasnikId && (
                 <Box
                     sx={{
                         display: "flex",
@@ -195,19 +199,23 @@ export default function Lekcije(props: Props) {
                         justifyContent: "flex-end",
                     }}
                 >
-                    <IconButton
-                        onClick={() => {
-                            handleLekcijaPopupOpen(undefined);
-                        }}
+                    <Button
+                        onClick={() => handleLekcijaPopupOpen(undefined)}
+                        variant="contained"
                         sx={{
-                            width: "40px",
-                            height: "40px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: "5px",
+                            paddingLeft: 1,
                         }}
                     >
-                        <AddIcon color="primary"></AddIcon>
-                    </IconButton>
+                        <AddIcon />
+                        Dodaj Lekciju
+                    </Button>
                 </Box>
             )}
         </Box>
     );
-}
+};
+export default observer(Lekcije);

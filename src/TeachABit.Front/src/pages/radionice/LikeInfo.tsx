@@ -1,7 +1,8 @@
 import { IconButton } from "@mui/material";
-import { useGlobalContext } from "../../context/Global.context";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
 interface Props {
     onLike: () => Promise<any>;
@@ -12,9 +13,7 @@ interface Props {
     size?: "medium" | "small";
 }
 
-export default function LikeInfo(props: Props) {
-    const globalContext = useGlobalContext();
-
+export const LikeInfo = (props: Props) => {
     return (
         <>
             <div
@@ -27,7 +26,7 @@ export default function LikeInfo(props: Props) {
                 }}
             >
                 <IconButton
-                    disabled={!globalContext.userIsLoggedIn}
+                    disabled={globalStore.currentUser === undefined}
                     onClick={
                         props.liked !== true ? props.onLike : props.onClear
                     }
@@ -35,14 +34,15 @@ export default function LikeInfo(props: Props) {
                     <ThumbUpIcon
                         fontSize={props.size ?? "medium"}
                         color={
-                            props.liked === true && globalContext.userIsLoggedIn
+                            props.liked === true &&
+                            globalStore.currentUser !== undefined
                                 ? "primary"
                                 : "disabled"
                         }
                     ></ThumbUpIcon>
                 </IconButton>
                 <IconButton
-                    disabled={!globalContext.userIsLoggedIn}
+                    disabled={globalStore.currentUser === undefined}
                     onClick={
                         props.liked !== false ? props.onDislike : props.onClear
                     }
@@ -51,7 +51,7 @@ export default function LikeInfo(props: Props) {
                         fontSize={props.size ?? "medium"}
                         color={
                             props.liked === false &&
-                            globalContext.userIsLoggedIn
+                            globalStore.currentUser !== undefined
                                 ? "primary"
                                 : "disabled"
                         }
@@ -63,4 +63,6 @@ export default function LikeInfo(props: Props) {
             </div>
         </>
     );
-}
+};
+
+export default observer(LikeInfo);
