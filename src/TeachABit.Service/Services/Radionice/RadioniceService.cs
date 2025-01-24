@@ -293,4 +293,12 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
         return ServiceResult.Success();
     }
 
+
+    public async Task<ServiceResult<List<RadionicaDto>>> GetAllRadioniceFavoritForCurrentUser()
+    {
+        var korisnik = _authorizationService.GetKorisnik();
+        var radionice = await _radioniceRepository.GetAllRadioniceFavoritForCurrentUser(korisnik.Id);
+        var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
+        return ServiceResult.Success(radioniceDto);
+    }
 }
