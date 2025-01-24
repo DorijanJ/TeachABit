@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {TecajDto} from "../../models/TecajDto";
 import requests from "../../api/agent";
-import {Button} from "@mui/material";
+import {Button, Menu, MenuItem} from "@mui/material";
 import {useGlobalContext} from "../../context/Global.context";
 import Tecaj from "./Tecaj";
 import SearchBox from "../../components/searchbox/SearchBox";
@@ -20,6 +20,8 @@ export default function Tecajevi() {
     const [popupOpen, setDialogOpen] = useState(false);
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
     const [PriceRangeOpen, setPriceRangeOpen] = useState(false);
+    const [OwnerSelectorOpen, setOwnerSelectorOpen] = useState(false);
+    const [owner, setOwner] = useState<string | undefined>(undefined);
 
 
     const handlePopupOpen = () => setDialogOpen(true);
@@ -27,6 +29,9 @@ export default function Tecajevi() {
 
     const handlePriceRangePopupOpen = () => setPriceRangeOpen(true);
     const handlePriceRangePopupClose = () => setPriceRangeOpen(false);
+
+    const handleOwnerPopupOpen = () => setOwnerSelectorOpen(true);
+    const handleOwnerPopupClose = () => setOwnerSelectorOpen(false);
 
     const getIntersection = <T, >(list1: T[], list2: T[]): T[] => {
         return list1.filter(item => list2.includes(item));
@@ -45,12 +50,28 @@ export default function Tecajevi() {
         else if (responseMax && responseMax.data) setTecajList(responseMax.data);
     };
 
+    const GetTecajListOwnerFilter = async (vlasnikUsername: string | undefined = undefined) => {
+        const response = await requests.getWithLoading(
+            buildRequest("tecajevi", {vlasnikUsername})
+        );
+        if (response && response.data) setTecajList(response.data);
+    };
+
 
     const GetTecajList = async (search: string | undefined = undefined) => {
         const response = await requests.getWithLoading(
             buildRequest("tecajevi", {search})
         );
         if (response && response.data) setTecajList(response.data);
+    };
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
     };
 
     useEffect(() => {
@@ -83,12 +104,47 @@ export default function Tecajevi() {
 
                 <Button
                     variant="contained"
-                    onClick={() => {
-                        handlePriceRangePopupOpen();
-                    }}
+                    onClick={handleClick}
                 >
                     Filtriraj
                 </Button>
+                <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "center",
+                    }}
+                    transformOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center",
+                    }}
+                    onClose={handleClose}
+                    MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                    }}
+                >
+                    <MenuItem
+                        sx={{width: "220px"}}
+                        onClick={() => {
+                            handleClose();
+                            handlePriceRangePopupOpen();
+                        }}
+                    >
+                        <div style={{display: "flex", gap: "10px"}}>
+                            Cijena
+                        </div>
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                        handleClose();
+                        handleOwnerPopupOpen();
+                    }}>
+                        <div style={{display: "flex", gap: "10px"}}>
+                            Po vlasniku
+                        </div>
+                    </MenuItem>
+                </Menu>
 
                 {PriceRangeOpen && (
                     <div>
@@ -101,54 +157,80 @@ export default function Tecajevi() {
                             }}
                         />
                         <p>Raspon cijene: ${priceRange[0]} - ${priceRange[1]}</p>
-                        <IconButton onClick={handlePriceRangePopupClose}>
+                        <IconButton
+                            onClick={() => {
+                                handlePriceRangePopupClose();
+                                GetTecajList();
+                            }}
+                        >
                             ✖
                         </IconButton>
                     </div>
                 )}
-            {globalContext.userIsLoggedIn && (
-                <Button
-                    variant="contained"
-                    onClick={() => {
-                        handlePopupOpen();
-                    }}
-                >
-                    Stvori tecaj
-                </Button>
-            )}
+                {OwnerSelectorOpen && (
+                    <div>
+                        <SearchBox
+                            onSearch={(text) => {GetTecajListOwnerFilter(text);
+                                setOwner(text);
+                                console.log(text)}}
+                            height="3rem"
+                            width="5rem"
+                        />
 
-            <TecajPopup
-                isOpen={popupOpen}
-                onClose={handlePopupClose}
-                refreshData={() => GetTecajList()}
-            />
+                        <IconButton
+                            onClick={() => {
+                                handleOwnerPopupClose();
+                                GetTecajList();
+                            }}
+                        >
+                            ✖
+                        </IconButton>
+                    </div>
+                )}
+                {globalContext.userIsLoggedIn && (
+                    <Button
+                        variant="contained"
+                        onClick={() => {
+                            handlePopupOpen();
+                        }}
+                    >
+                        Stvori tecaj
+                    </Button>
+                )}
+
+
+                <TecajPopup
+                    isOpen={popupOpen}
+                    onClose={handlePopupClose}
+                    refreshData={() => GetTecajList()}
+                />
+            </div>
+            <div
+                style={{
+                    color: "#4f4f4f",
+                    fontSize: 20,
+                    margin: 0,
+                    width: "100%",
+                }}
+            >
+                Tečajevi:
+                <hr style={{border: "1px solid #cccccc"}}/>
+            </div>
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+                    gap: "20px",
+                    maxWidth: "100%",
+                    width: "100%",
+                    paddingBottom: "20px",
+                }}
+            >
+                {tecajList.map((tecaj) => (
+                    <Tecaj key={"tecaj" + tecaj.id} tecaj={tecaj}/>
+                ))}
+            </div>
         </div>
-    <div
-        style={{
-            color: "#4f4f4f",
-            fontSize: 20,
-            margin: 0,
-            width: "100%",
-        }}
-    >
-        Tečajevi:
-        <hr style={{border: "1px solid #cccccc"}}/>
-    </div>
-    <div
-        style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
-            gap: "20px",
-            maxWidth: "100%",
-            width: "100%",
-            paddingBottom: "20px",
-        }}
-    >
-        {tecajList.map((tecaj) => (
-            <Tecaj key={"tecaj" + tecaj.id} tecaj={tecaj}/>
-        ))}
-    </div>
-</div>
-)
-    ;
+    )
+        ;
 }
