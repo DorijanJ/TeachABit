@@ -114,6 +114,9 @@ export const Profil = () => {
 
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
     const [radionicaList, setRadionicaList] = useState<RadionicaDto[]>([]);
+    const [favoritiTecajList, setFavoritiTecajList] = useState<TecajDto[]>([]);
+    const [favoritiRadioniceList, setFavoritiRadioniceList] = useState<RadionicaDto[]>([]);
+
 
     const GetTecajList = async () => {
         const response = await requests.getWithLoading(
@@ -128,10 +131,24 @@ export const Profil = () => {
         );
         if (response && response.data) setRadionicaList(response.data);
     };
+    const GetFavoritiTecajList = async () => {
+        const response = await requests.getWithLoading(
+            `tecajevi?vlasnikUsername=${username}&favorit=true`
+        );
+        if (response && response.data) setFavoritiTecajList(response.data);
+    };
+    const GetFavoritiRadioniceList = async () => {
+        const response = await requests.getWithLoading(
+            `radionice?vlasnikUsername=${username}&favorit=true`
+        );
+        if (response && response.data) setFavoritiRadioniceList(response.data);
+    };
 
     useEffect(() => {
         GetTecajList();
         GetRadionicaList();
+        GetFavoritiTecajList();
+        GetFavoritiRadioniceList();
     }, [username]);
 
     return (
@@ -364,6 +381,27 @@ export const Profil = () => {
                             ></CustomSliderRadionica>
                         </>
                     )}
+                    {favoritiTecajList.length > 0 && (
+                        <>
+                            <Typography variant="h6" sx={{ margin: 0 }}>
+                                {"Radionice favoriti:"}
+                            </Typography>
+                            <CustomSliderRadionica
+                                radionice={favoritiRadioniceList}
+                            ></CustomSliderRadionica>
+                        </>
+                    )}
+                    {tecajList.length > 0 && (
+                        <>
+                            <Typography variant="h6" sx={{ margin: 0 }}>
+                                {"Tečajevi favoriti:"}
+                            </Typography>
+                            <CustomSliderTecaj
+                                tecajevi={favoritiTecajList}
+                            ></CustomSliderTecaj>
+                        </>
+                    )}
+
                 </div>
             </Box>
         )
