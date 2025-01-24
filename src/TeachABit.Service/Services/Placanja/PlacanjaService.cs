@@ -84,14 +84,14 @@ namespace TeachABit.Service.Services.Placanja
             if (radionica == null || radionica.Cijena == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
 
             var korisnik = _authorizationService.GetKorisnik();
-            
+
             int brojPrijavljenih = radionica.Placanja.Count;
 
             if (radionica.MaksimalniKapacitet.HasValue)
             {
                 if (brojPrijavljenih >= radionica.MaksimalniKapacitet.Value)
                 {
-                    return ServiceResult.Failure();
+                    return ServiceResult.Failure(MessageDescriber.BadRequest("Radionica je puna."));
                 }
             }
 
