@@ -50,6 +50,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
     public async Task<Radionica?> GetRadionica(int id)
     {
         return await _context.Radionice
+            .Include(x => x.Placanja)
             .Include(x => x.Vlasnik)
             .FirstOrDefaultAsync(x => x.Id == id);
     }

@@ -85,6 +85,17 @@ namespace TeachABit.Service.Services.Placanja
 
             var korisnik = _authorizationService.GetKorisnik();
 
+            int brojPrijavljenih = radionica.Placanja.Count;
+
+            if (radionica.MaksimalniKapacitet.HasValue)
+            {
+                if (brojPrijavljenih >= radionica.MaksimalniKapacitet.Value)
+                {
+                    return ServiceResult.Failure(MessageDescriber.BadRequest("Radionica je puna."));
+                }
+            }
+
+
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes =
