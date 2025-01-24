@@ -1,4 +1,4 @@
-import { Card, Typography, CardContent, Box, IconButton } from "@mui/material";
+import { Card, Typography, CardContent, Box, IconButton, Rating } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import requests from "../../api/agent";
@@ -13,9 +13,12 @@ import { RadionicaDto } from "../../models/RadionicaDto";
 import RadionicaKomentari from "./RadionicaKomentari";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import { LevelPristupa } from "../../enums/LevelPristupa";
+import React from "react";
 
 export default function RadionicaPage() {
-  const [radionica, setRadionica] = useState<RadionicaDto>({
+
+    const [value, setValue] = React.useState<number | null>(2);
+    const [radionica, setRadionica] = useState<RadionicaDto>({
     naziv: "",
     opis: "",
     cijena: 0,
@@ -43,6 +46,7 @@ export default function RadionicaPage() {
 
   const navigate = useNavigate();
   const globalContext = useGlobalContext();
+  
 
   /*const likeRadionica = async () => {
         try {
@@ -219,6 +223,35 @@ export default function RadionicaPage() {
 
           <TeachABitRenderer content={radionica.opis ?? ""} />
 
+        <Box className="ocjena-edit-delete-wrapper"
+        display={"flex"}
+        flexDirection={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        gap="10px"
+        >
+            {/*globalContext.currentUser?.id === radionica.vlasnikId*/}
+        {globalContext.currentUser?.id === radionica.vlasnikId && (
+            <Box 
+            display={"flex"}
+            flexDirection={"row"}
+            justifySelf={"start"}
+            alignItems="center"
+            gap="10px"
+        sx={{ '& > legend': { mt: 2 } }}>
+
+      {<Typography>Ocijeni radionicu: </Typography>}
+      <Rating
+        //title="Ocijeni radionicu: "
+        name="simple-controlled"
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+        }}
+      />
+        
+      </Box> )}
+
           <Box
             display={"flex"}
             flexDirection={"row"}
@@ -258,6 +291,7 @@ export default function RadionicaPage() {
                             onLike={likeRadionica}
                             liked={radionica.liked}
                         />*/}
+            </Box>
           </Box>
           {radionica.id && <RadionicaKomentari radionicaId={radionica.id} />}
         </CardContent>

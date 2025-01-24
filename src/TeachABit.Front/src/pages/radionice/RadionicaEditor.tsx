@@ -16,7 +16,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/L
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
 import ImageUploadComponent from "../../components/ImageUploadComponent";
-import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionica";
+import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
 /*import { Today } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
 import { isToday } from "date-fns";*/
@@ -29,6 +29,8 @@ interface Props {
 }
 
 export default function RadionicaEditor(props: Props) {
+  const [base64image, setBase64Image] = useState<string>();
+
   const [radionica, setRadionica] = useState<RadionicaDto>({
     naziv: props.radionica?.naziv ?? "",
     id: props.radionica?.id,
@@ -56,9 +58,7 @@ export default function RadionicaEditor(props: Props) {
     if (reload) props.refreshData();
   };
 
-  const handleUpdateRadionicu = async (
-    radionica: RadionicaDto
-  ) => {
+  const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
     if (!radionica.cijena || !radionica.vrijemeRadionice) return;
     const updateRadionicaDto: CreateOrUpdateRadionicaDto = {
       id: radionica.id,
@@ -67,7 +67,7 @@ export default function RadionicaEditor(props: Props) {
       cijena: radionica.cijena,
       maksimalniKapacitet: radionica?.maksimalniKapacitet,
       vrijemeRadionice: radionica?.vrijemeRadionice,
-      naslovnaSlikaBase64: radionica?.naslovnaSlikaVersion,
+      naslovnaSlikaBase64: base64image,
     };
     const response = await requests.putWithLoading(
       "radionice",
@@ -79,20 +79,23 @@ export default function RadionicaEditor(props: Props) {
   };
 
   const handleStvoriRadionicu = async (
-    radionica: RadionicaDto       //nisam siguran jel tu treba ić samo CreateOrUpdateRadionicaDto?
+    radionica: RadionicaDto //nisam siguran jel tu treba ić samo CreateOrUpdateRadionicaDto?
   ) => {
     if (!radionica.cijena || !radionica.vrijemeRadionice) return;
     const createRadionicaDto: CreateOrUpdateRadionicaDto = {
-        id: radionica.id,
-        naziv: radionica.naziv,
-        opis: radionica?.opis ?? "",
-        cijena: radionica.cijena,
-        maksimalniKapacitet: radionica?.maksimalniKapacitet,
-        vrijemeRadionice: radionica?.vrijemeRadionice,
-        naslovnaSlikaBase64: radionica?.naslovnaSlikaVersion, // Provjeri ovo
-      };
-    
-    const response = await requests.postWithLoading("radionice", createRadionicaDto);
+      id: radionica.id,
+      naziv: radionica.naziv,
+      opis: radionica?.opis ?? "",
+      cijena: radionica.cijena,
+      maksimalniKapacitet: radionica?.maksimalniKapacitet,
+      vrijemeRadionice: radionica?.vrijemeRadionice,
+      naslovnaSlikaBase64: base64image,
+    };
+
+    const response = await requests.postWithLoading(
+      "radionice",
+      createRadionicaDto
+    );
     if (response && response.data) {
       handleClose(true);
     }
@@ -186,7 +189,7 @@ export default function RadionicaEditor(props: Props) {
           />
 
           <div
-            title="kapacitet-cijena-vrijeme-wrapper"
+            className="kapacitet-cijena-vrijeme-wrapper"
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -220,7 +223,6 @@ export default function RadionicaEditor(props: Props) {
                 width: "30%",
               }}
               variant="outlined"
-              value={radionica.cijena?.toString() || null}
               //type="number"
               slotProps={{
                 input: {
@@ -229,12 +231,9 @@ export default function RadionicaEditor(props: Props) {
                   ),
                 },
               }}
+              value={radionica.cijena || ""}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value.replace(/[^0-9,.]/g, "");
-                /*const decimalPlaces = value.toString().split(".")[1]?.length;
-                if (!(Math.floor(value) === value) && decimalPlaces > 2) {
-                  return;
-                }*/
+                const value = e.target.value.replace(/[^0-9]/g, ""); //POPRAVI DA SE MOGU DECIMALNI UNOSIT
                 setRadionica((prev: any) => ({
                   ...prev,
                   cijena: value,
@@ -279,10 +278,7 @@ export default function RadionicaEditor(props: Props) {
           >
             <ImageUploadComponent
               setFile={(file: string) => {
-                setRadionica((prev: any) => ({
-                  ...prev,
-                  naslovnaSlikaVersion: file,
-                }));
+                setBase64Image(file);
               }}
               ratio="2/1"
               width={"70%"}

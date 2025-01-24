@@ -18,7 +18,6 @@ interface Props {
 
 export default function Radionica(props: Props) {
 
-
   const handleCheckout = async (radionicaId?: number) => {
     if (!globalContext.userIsLoggedIn) {
       globalStore.addNotification({
@@ -46,10 +45,6 @@ export default function Radionica(props: Props) {
   const [isSadrzajOpen, setIsSadrzajOpen] = useState(false);
   const [isLive, setIsLive] = useState(false);
   const [isKupljenaRadionica, setIsKupljenaRadionica] = useState(false);
-
-  const pom_fja = async () => {
-    console.log("Plaćanje");
-  };
 
   const [remainingTime, setRemainingTime] = useState({
     dani: 0,
@@ -114,7 +109,8 @@ export default function Radionica(props: Props) {
             transform: "scale(1.03)",
             border: "1px solid #3a7ca5",
           },
-          minWidth: "340px",
+            //minWidth: "340px",
+            width:"100%"
         }}
         onClick={() => {
           globalContext.currentUser?.id === props.radionica.vlasnikId ||
@@ -219,7 +215,7 @@ export default function Radionica(props: Props) {
                 }}
                 
               >
-                {"Nema slike ¯\_(ツ)_/¯"}
+                {"Nema slike ¯\\_(ツ)_/¯"}
                 </div>
             )}
           </div>
@@ -247,7 +243,7 @@ export default function Radionica(props: Props) {
               flexDirection={"row"}
               gap={0.7}
             >
-              {props.radionica.cijena && props.radionica.cijena > 0 && (
+              {globalContext.currentUser?.id !== props.radionica.vlasnikId && (
                 <Button
                   onClick={(e) => {
                     handleCheckout(props.radionica.id);

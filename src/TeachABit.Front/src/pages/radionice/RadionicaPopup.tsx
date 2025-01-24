@@ -68,7 +68,7 @@ export default function RadionicaPopup(props: Props) {
 
   return (
     <>
-      <Dialog open onClose={props.onClose} maxWidth={"md"} id="radionicaPopup">
+      <Dialog open onClose={props.onClose} maxWidth="md" fullWidth id="radionicaPopup">
         <DialogTitle sx={{ maxWidth: "100%" }}>
           <div
             style={{
@@ -81,9 +81,9 @@ export default function RadionicaPopup(props: Props) {
           >
             <div
               style={{
-                overflowX: "hidden",
                 whiteSpace: "normal",
-                maxWidth: "80%",
+                width: "100%",
+                color: "#4f4f4f",
               }}
             >
               {"Podaci o radionici"}
@@ -94,7 +94,7 @@ export default function RadionicaPopup(props: Props) {
         <DialogContent
           sx={{
             height: 600,
-            width: 900,
+            width: "100%",
             display: "flex",
             flexDirection: "column",
             gap: "20px",
@@ -108,6 +108,7 @@ export default function RadionicaPopup(props: Props) {
             display={"flex"}
             justifyContent={"space-between"}
             gap="5px"
+            width={"100%"}
           >
             <Box>
               <Typography
@@ -134,6 +135,30 @@ export default function RadionicaPopup(props: Props) {
             />
           </Box>
 
+          {props.radionica.naslovnaSlikaVersion && (
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                paddingTop: "20px",
+              }}
+            >
+              <img
+                style={{
+                    borderRadius: "10px",
+                    objectFit: "cover",
+                    maxWidth: "100%",
+                    height: "auto",
+                }}
+                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                  props.radionica.naslovnaSlikaVersion
+                }`}
+              />
+            </div>
+          )}
+
           {/* Opis radionice */}
           <TeachABitRenderer content={props.radionica?.opis || "Nema opisa"} />
 
@@ -143,7 +168,7 @@ export default function RadionicaPopup(props: Props) {
             style={{
               //backgroundColor: "lightsteelblue",
               display: "flex",
-              justifyContent: "space-between",
+              justifyContent: "space-evenly",
               alignItems: "center",
               flexWrap: "wrap",
               gap: "20px",
@@ -154,6 +179,7 @@ export default function RadionicaPopup(props: Props) {
               sx={{
                 //backgroundColor: "lightgray",
                 width: "30%",
+                color: "#4f4f4f",
               }}
             >
               Kapacitet:
@@ -171,11 +197,12 @@ export default function RadionicaPopup(props: Props) {
               </Typography>
             </Box>
 
-            {/* Cijena */}
+            {/* Cijena 
             <Box
               sx={{
                 //backgroundColor: "lightgray",
                 width: "30%",
+                color: "#4f4f4f",
               }}
             >
               Cijena:
@@ -192,12 +219,14 @@ export default function RadionicaPopup(props: Props) {
                 {props.radionica.cijena}
               </Typography>
             </Box>
+            */}
 
             {/* Vrijeme */}
             <Box
               sx={{
                 //backgroundColor: "lightgray",
                 width: "30%",
+                color: "#4f4f4f",
               }}
             >
               Datum i vrijeme radionice:
