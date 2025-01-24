@@ -22,8 +22,15 @@ import { LevelPristupa } from "../../enums/LevelPristupa";
 import globalStore from "../../stores/GlobalStore";
 import { observer } from "mobx-react";
 import React from "react";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export const RadionicaPage = () => {
+
+    const [isLiked, setIsLiked] = useState(false);
+    const handleLiked = async () => {
+        setIsLiked(!isLiked);
+        await requests.postWithLoading("radionice/favoriti", isLiked);
+    }
   const [value, setValue] = React.useState<number | null>(2);
   const [radionica, setRadionica] = useState<RadionicaDto>({
     naziv: "",
@@ -52,38 +59,6 @@ export const RadionicaPage = () => {
   };
 
   const navigate = useNavigate();
-
-  /*const likeRadionica = async () => {
-        try {
-            await requests.postWithLoading(`radionice/${radionicaId}/like`);
-            setRadionica((prev: RadionicaDto) => ({
-                ...prev,
-                likeCount:
-                    (prev.likeCount ?? 0) + (prev.liked === false ? 2 : 1),
-                liked: true,
-            }));
-        } catch (exception) {
-            console.log(exception);
-        }
-    };*/
-
-  /*const dislikeRadionica = async () => {
-        await requests.postWithLoading(`radionice/${radionicaId}/dislike`);
-        setRadionica((prev: RadionicaDto) => ({
-            ...prev,
-            likeCount: (prev.likeCount ?? 0) - (prev.liked === true ? 2 : 1),
-            liked: false,
-        }));
-    };
-
-    const clearReaction = async () => {
-        await requests.deleteWithLoading(`radionice/${radionicaId}/reakcija`);
-        setRadionica((prev: RadionicaDto) => ({
-            ...prev,
-            likeCount: (prev.likeCount ?? 0) + (prev.liked === true ? -1 : 1),
-            liked: undefined,
-        }));
-    };*/
 
   const [isPotvrdaOpen, setIsPotvrdaOpen] = useState(false);
 
@@ -237,7 +212,7 @@ export const RadionicaPage = () => {
             gap="10px"
           >
             {/*globalContext.currentUser?.id === radionica.vlasnikId*/}
-            {globalStore.currentUser?.id === radionica.vlasnikId && (
+            {globalStore.currentUser?.id !== radionica.vlasnikId && (
               <Box
                 display={"flex"}
                 flexDirection={"row"}
@@ -248,7 +223,6 @@ export const RadionicaPage = () => {
               >
                 {<Typography>Ocijeni radionicu: </Typography>}
                 <Rating
-                  //title="Ocijeni radionicu: "
                   name="simple-controlled"
                   value={value}
                   onChange={(event, newValue) => {
@@ -265,6 +239,22 @@ export const RadionicaPage = () => {
               alignItems={"center"}
               gap="10px"
             >
+              <IconButton
+                onClick={() => {
+                  setIsLiked(!isLiked);
+                  handleLiked();
+                }}
+                sx={{
+                  backgroundColor: "white",
+                  color: isLiked ? "#f44336" : "grey",
+                  "&:hover": {
+                    backgroundColor: "#fce4ec",
+                  },
+                }}
+              >
+                <FavoriteIcon />
+              </IconButton>
+
               {globalStore.currentUser?.id === radionica.vlasnikId && (
                 <IconButton
                   onClick={() => setIsEditing(true)}
