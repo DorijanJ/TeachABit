@@ -60,6 +60,7 @@ export const Tecaj = (props: Props) => {
                     border: "1px solid #3a7ca5",
                 },
                 minWidth: "340px",
+                maxWidth: "40vw",
             }}
         >
             <CardContent

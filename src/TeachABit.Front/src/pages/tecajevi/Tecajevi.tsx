@@ -1,89 +1,49 @@
 import { useEffect, useState } from "react";
 import { TecajDto } from "../../models/TecajDto";
 import requests from "../../api/agent";
-import { Button, Menu, MenuItem } from "@mui/material";
+import { Button } from "@mui/material";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
 import TecajPopup from "./TecajPopup";
 import globalStore from "../../stores/GlobalStore";
 import { Tecaj } from "./Tecaj";
 import { observer } from "mobx-react";
-import PriceRangeSelector from "./PriceRangeSelector.tsx";
-import { IconButton } from "@mui/material";
+import NumberRangeSelector from "./NumberRangeSelector.tsx";
+import TecajeviFilter from "./TecajeviFilter.tsx";
+
+interface TecajSearch {
+    search?: string | undefined;
+    minPrice?: number;
+    maxPrice?: number;
+    minLikes?: number;
+    maxLikes?: number;
+    ownerUsername?: string;
+}
 
 export const Tecajevi = () => {
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
     const { buildRequest } = useRequestBuilder();
+    const [popupOpen, setPopupOpen] = useState(false);
 
-    const [popupOpen, setDialogOpen] = useState(false);
-    const [reversedOrder, setReversedOrder] = useState<boolean>(false);
+    const [searchParams, setSearchParams] = useState<TecajSearch>({
+        maxLikes: 5,
+        minLikes: 1,
+        maxPrice: 2000,
+        minPrice: 0,
+    });
 
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
-    const [PriceRangeOpen, setPriceRangeOpen] = useState(false);
-
-    const [LikesRangeOpen, setLikesRangeOpen] = useState(false);
-    const [likesRange, setLikesRange] = useState<[number, number]>([0, 100]);
-
-    const [OwnerSelectorOpen, setOwnerSelectorOpen] = useState(false);
-    const [owner, setOwner] = useState<string | undefined>(undefined);
-
-    const handlePopupOpen = () => setDialogOpen(true);
-    const handlePopupClose = () => setDialogOpen(false);
-
-    const handlePriceRangePopupOpen = () => setPriceRangeOpen(true);
-    const handlePriceRangePopupClose = () => setPriceRangeOpen(false);
-
-    const handleNewestFirst = () => {
-        if (reversedOrder) {
-            setTecajList(reverseList(tecajList));
-            setReversedOrder(false);
-        }
-    };
-    const handleOldestFirst = () => {
-        if (!reversedOrder) {
-            setTecajList(reverseList(tecajList));
-            setReversedOrder(true);
-        }
-    };
-
-    const handleOwnerPopupOpen = () => setOwnerSelectorOpen(true);
-    const handleOwnerPopupClose = () => setOwnerSelectorOpen(false);
-
-    const handleLikesPopupOpen = () => setLikesRangeOpen(true);
-    const handleLikesPopupClose = () => setLikesRangeOpen(false);
-
-    const GetTecajList = async (
-        search: string | undefined = undefined,
-        minPrice?: string,
-        maxPrice?: string,
-        minLikes?: string,
-        maxLikes?: string,
-        ownerUsername?: string
-    ) => {
+    const GetTecajList = async () => {
         const response = await requests.getWithLoading(
             buildRequest("tecajevi", {
-                search,
-                minPrice,
-                maxPrice,
-                minLikes,
-                maxLikes,
-                ownerUsername,
+                search: searchParams?.search,
+                vlasnikUsername: searchParams?.ownerUsername,
+                minCijena: searchParams?.minPrice,
+                maxCijena: searchParams?.maxPrice,
+                minOcijena: searchParams?.minLikes,
+                maxOcijena: searchParams?.maxLikes,
             })
         );
         if (response && response.data) setTecajList(response.data);
-    };
-
-    const reverseList = (list: TecajDto[]): TecajDto[] => {
-        return [...list].reverse(); // Create a copy and reverse
-    };
-
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
     };
 
     useEffect(() => {
@@ -107,228 +67,99 @@ export const Tecajevi = () => {
                     display: "flex",
                     flexDirection: "row",
                     gap: "20px",
-                    alignItems: "center",
+                    alignItems: "flex-start",
                     width: "100%",
+                    justifyContent: "space-between",
                     flexWrap: "wrap",
                 }}
             >
-                <SearchBox onSearch={GetTecajList} />
-
-                <Button variant="contained" onClick={handleClick}>
-                    Filtriraj
-                </Button>
-                <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl} // Make sure anchorEl refers to the button element
-                    open={open}
-                    anchorOrigin={{
-                        vertical: "bottom", // Anchor to the bottom of the button
-                        horizontal: "center", // Center horizontally relative to the button
-                    }}
-                    transformOrigin={{
-                        vertical: "top", // Start the menu from the top of itself
-                        horizontal: "center", // Align horizontally with the button
-                    }}
-                    onClose={handleClose}
-                    MenuListProps={{
-                        "aria-labelledby": "basic-button",
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: "30px",
+                        width: "90%",
+                        flexWrap: "wrap",
                     }}
                 >
-                    <MenuItem
-                        sx={{ width: "220px" }}
-                        onClick={() => {
-                            handleClose();
-                            handlePriceRangePopupOpen();
-                        }}
-                    >
-                        <div style={{ display: "flex", gap: "10px" }}>
-                            Cijena
-                        </div>
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            handleClose();
-                            handleOwnerPopupOpen();
-                        }}
-                    >
-                        <div style={{ display: "flex", gap: "10px" }}>
-                            Po vlasniku
-                        </div>
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            handleClose();
-                            handleLikesPopupOpen();
-                        }}
-                    >
-                        <div style={{ display: "flex", gap: "10px" }}>
-                            Po ocjeni
-                        </div>
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            handleClose();
-                            handleNewestFirst();
-                        }}
-                    >
-                        <div style={{ display: "flex", gap: "10px" }}>
-                            Najnovije
-                        </div>
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            handleClose();
-                            handleOldestFirst();
-                        }}
-                    >
-                        <div style={{ display: "flex", gap: "10px" }}>
-                            Najstarije
-                        </div>
-                    </MenuItem>
-                </Menu>
-
-                {PriceRangeOpen && (
                     <div
                         style={{
                             display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
+                            flexDirection: "column",
+                            gap: "10px",
                         }}
                     >
-                        <div>
-                            <PriceRangeSelector
-                                min={0}
-                                max={100}
-                                onChange={(value: [number, number]) => {
-                                    setPriceRange(value); // Update state with the new
-                                }}
-                            />
-
-                            <p>
-                                Raspon cijene: ${priceRange[0]} - $
-                                {priceRange[1]}
-                            </p>
-                        </div>
-                        <IconButton
-                            onClick={() => {
-                                setPriceRange([0, 100]); // Reset price range
-                                handlePriceRangePopupClose();
-
-                                // Reapply remaining filters
-                                GetTecajList(
-                                    undefined,
-                                    undefined,
-                                    undefined, // Reset price filters
-                                    likesRange[0].toString(),
-                                    likesRange[1].toString(),
-                                    owner
-                                );
+                        <SearchBox
+                            onSearch={(s) => {
+                                setSearchParams((prev: any) => ({
+                                    ...prev,
+                                    search: s,
+                                }));
+                                GetTecajList();
                             }}
-                        >
-                            ✖
-                        </IconButton>
+                        />
                     </div>
-                )}
-                {LikesRangeOpen && (
                     <div
                         style={{
                             display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
+                            gap: "50px",
+                            alignItems: "flex-start",
+                            flexWrap: "wrap",
                         }}
                     >
-                        <div>
-                            <PriceRangeSelector
+                        <div style={{ width: "300px" }}>
+                            <NumberRangeSelector
                                 min={1}
                                 max={5}
-                                onChange={(value: [number, number]) => {
-                                    setLikesRange(value); // Update state with the new range
-                                    GetTecajList(
-                                        undefined,
-                                        priceRange[0].toString(),
-                                        priceRange[1].toString(),
-                                        value[0].toString(),
-                                        value[1].toString(), // Apply new likes filter
-                                        owner
-                                    );
+                                onChangeCommited={(_value: number[]) =>
+                                    GetTecajList()
+                                }
+                                onChange={(value: number[]) => {
+                                    setSearchParams((prev: any) => ({
+                                        ...prev,
+                                        minLikes: value[0],
+                                        maxLikes: value[1],
+                                    }));
                                 }}
                             />
 
-                            <p>
-                                Raspon ocjene: {priceRange[0]} - {priceRange[1]}
-                            </p>
+                            <div>
+                                Raspon ocjene: {searchParams?.minLikes} -{" "}
+                                {searchParams?.maxLikes}
+                            </div>
                         </div>
-                        <IconButton
-                            onClick={() => {
-                                setLikesRange([1, 5]); // Reset likes range
-                                handleLikesPopupClose();
 
-                                // Reapply remaining filters
-                                GetTecajList(
-                                    undefined,
-                                    priceRange[0].toString(),
-                                    priceRange[1].toString(),
-                                    undefined, // Reset likes filters
-                                    undefined,
-                                    owner
-                                );
-                            }}
-                        >
-                            ✖
-                        </IconButton>
-                    </div>
-                )}
-                {OwnerSelectorOpen && (
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
-                    >
-                        <div>
-                            <SearchBox
-                                onSearch={(text) => {
-                                    setOwner(text); // Update state with the selected owner
-                                    GetTecajList(
-                                        undefined,
-                                        priceRange[0].toString(),
-                                        priceRange[1].toString(),
-                                        likesRange[0].toString(),
-                                        likesRange[1].toString(),
-                                        text // Apply owner filter
-                                    );
+                        <div style={{ width: "300px" }}>
+                            <NumberRangeSelector
+                                min={0}
+                                minDistance={10}
+                                onChangeCommited={(_value: number[]) => {
+                                    GetTecajList();
                                 }}
-                                height="3rem"
-                                width="5rem"
+                                max={2000}
+                                onChange={(value: number[]) => {
+                                    setSearchParams((prev: any) => ({
+                                        ...prev,
+                                        minPrice: value[0],
+                                        maxPrice: value[1],
+                                    }));
+                                }}
                             />
-                        </div>
-                        <IconButton
-                            onClick={() => {
-                                setOwner(undefined); // Reset owner filter
-                                handleOwnerPopupClose();
 
-                                // Reapply remaining filters
-                                GetTecajList(
-                                    undefined,
-                                    priceRange[0].toString(),
-                                    priceRange[1].toString(),
-                                    likesRange[0].toString(),
-                                    likesRange[1].toString(),
-                                    undefined // Reset owner filter
-                                );
-                            }}
-                        >
-                            ✖
-                        </IconButton>
+                            <div>
+                                Raspon cijene: ${searchParams?.minPrice} - $
+                                {searchParams?.maxPrice}
+                            </div>
+                        </div>
                     </div>
-                )}
+                </div>
 
                 {globalStore.currentUser !== undefined && (
                     <Button
+                        sx={{ marginTop: "10px" }}
                         variant="contained"
                         onClick={() => {
-                            handlePopupOpen();
+                            setPopupOpen(true);
                         }}
                     >
                         Stvori tecaj
@@ -337,7 +168,7 @@ export const Tecajevi = () => {
 
                 <TecajPopup
                     isOpen={popupOpen}
-                    onClose={handlePopupClose}
+                    onClose={() => setPopupOpen(false)}
                     refreshData={() => GetTecajList()}
                 />
             </div>
