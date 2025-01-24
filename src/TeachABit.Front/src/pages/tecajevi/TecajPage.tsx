@@ -234,7 +234,7 @@ export default function TecajPage() {
                                     alignItems={"center"}
                                     display={"flex"}
                                 >
-                                    Ocijena:{" "}
+                                    Ocjena:{" "}
                                 </Typography>
                                 {tecaj.ocjena}/5
                                 <StarIcon
