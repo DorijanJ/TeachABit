@@ -155,5 +155,12 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _korisniciService.DeleteKorisnik(username));
         }
+        
+        /*[HttpPost("{username}/prijavi")]
+        public async Task<IActionResult> PrijaviKorisnika(string username)
+        {
+            return GetControllerResult(await _korisniciService.PrijaviKorisnika(username));
+        }*/
+        
     }
 }
