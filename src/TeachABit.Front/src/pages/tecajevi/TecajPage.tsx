@@ -15,6 +15,7 @@ import TecajPopup from "./TecajPopup";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import globalStore from "../../stores/GlobalStore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import TecajRating from "./TecajRating";
 
 export default function TecajPage() {
     const { tecajId } = useParams();
@@ -24,6 +25,8 @@ export default function TecajPage() {
         naziv: "",
         opis: "",
         cijena: undefined,
+        ocjena: undefined,
+        ocjenaTrenutna: undefined,
     });
     const navigate = useNavigate();
 
@@ -131,7 +134,6 @@ export default function TecajPage() {
                     />
                 </Box>
 
-
                 <CardContent
                     sx={{
                         display: "flex",
@@ -190,29 +192,29 @@ export default function TecajPage() {
                             display: "flex",
                             width: "100%",
                             justifyContent: "space-between",
-                            alignItems: "flex-end",
+                            alignItems: "center",
                         }}
                     >
                         <div>{"Opis:"}</div>
-                        {(globalStore.currentUser?.id === tecaj.vlasnikId ||
-                            globalStore.hasPermissions(
-                                LevelPristupa.Moderator
-                            )) && (
-                            <Box
-                                display={"flex"}
-                                flexDirection={"row"}
-                                alignItems={"center"}
-                                sx={{
-                                    position: "relative",
-                                }}
-                            >
-                                {/* Favorite Icon to the left of Edit Icon */}
+                        <Box
+                            display={"flex"}
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                            sx={{
+                                position: "relative",
+                            }}
+                        >
+                            Ukupna ocjena: {tecaj.ocjena} / 5
+                            {/* Favorite Icon to the left of Edit Icon */}
+                            {globalStore.currentUser !== undefined && (
                                 <IconButton
-                                    onClick={() => {setIsLiked(!isLiked)
-                                        handleLiked();}} // Toggle "liked" state
+                                    onClick={() => {
+                                        setIsLiked(!isLiked);
+                                        handleLiked();
+                                    }} // Toggle "liked" state
                                     sx={{
                                         backgroundColor: "white",
-                                        color: isLiked ?  "#f44336" : "grey" ,
+                                        color: isLiked ? "#f44336" : "grey",
                                         "&:hover": {
                                             backgroundColor: "#fce4ec",
                                         },
@@ -220,27 +222,40 @@ export default function TecajPage() {
                                 >
                                     <FavoriteIcon />
                                 </IconButton>
-                                <IconButton
-                                    onClick={() => handleTecajPopupOpen()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <EditIcon />
-                                </IconButton>
-                                <IconButton
-                                    onClick={() => setIsPotvrdaOpen(true)}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <DeleteIcon color="primary" />
-                                </IconButton>
-                            </Box>
-
-                        )}
+                            )}
+                            {(globalStore.currentUser?.id === tecaj.vlasnikId ||
+                                globalStore.hasPermissions(
+                                    LevelPristupa.Moderator
+                                )) && (
+                                <>
+                                    <IconButton
+                                        onClick={() => handleTecajPopupOpen()}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() => setIsPotvrdaOpen(true)}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <DeleteIcon color="primary" />
+                                    </IconButton>
+                                </>
+                            )}
+                            {globalStore.currentUser?.id !== tecaj.vlasnikId &&
+                                globalStore.currentUser !== undefined && (
+                                    <TecajRating
+                                        tecajId={tecaj.id}
+                                        userRating={tecaj.ocjenaTrenutna}
+                                    />
+                                )}
+                        </Box>
                     </div>
                     <TeachABitRenderer content={tecaj.opis} />
 

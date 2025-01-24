@@ -3,6 +3,8 @@ export interface TecajDto {
     naziv: string;
     opis: string;
     cijena?: number;
+    ocjena?: number;
+    ocjenaTrenutna?: number;
     kupljen?: boolean;
     vlasnikId?: string;
     vlasnikUsername?: string;
