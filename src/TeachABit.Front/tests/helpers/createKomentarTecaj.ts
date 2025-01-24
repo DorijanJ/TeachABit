@@ -1,5 +1,5 @@
 import { expect, Page } from "@playwright/test";
-export default async function createTecaj(page: Page) {
+export default async function createKomentarTecaj(page: Page){
     await page.goto("https://localhost:3000");
     const korisnik = page.locator("#navigationUser-korisnik");
     try {
@@ -27,4 +27,33 @@ export default async function createTecaj(page: Page) {
 
     const Button3 = page.locator('button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-colorPrimary.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-colorPrimary._myButton_183jv_21')
     await Button3.click()
+
+    await page.waitForTimeout(10000)
+    const addCommentButton = page.locator('button:has-text("Dodaj Komentar")');
+    await addCommentButton.click();
+
+    const editor = page.locator('div[contenteditable="true"]');
+    await editor.fill("tekst");
+
+    const button = page.locator('button:has-text("Stvori komentar")');
+    await button.click();
+
+
+    /*
+    const addButton = page.locator('button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.css-hefddw');
+    await addButton.click();
+
+    const label = page.locator('label:has-text("Naziv")');
+    await expect(label).toBeVisible();
+
+    const inputField3 = page.locator('input[name="naziv"]');
+    await inputField3.fill('Lekcija_1');
+
+    const editor = page.locator('div[contenteditable="true"]');
+    await editor.fill("Objasnjenje");
+
+    const button = page.locator('button:has-text("Stvori lekciju")');
+    await button.click();
+    */
+
 }
