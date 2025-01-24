@@ -248,7 +248,7 @@ export const Radionica = (props: Props) => {
                
                 <Button
                   onClick={() => {
-                    handleCheckout(props.radionica.id);
+                    
                   }}
                   variant="contained"
                 >
