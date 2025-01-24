@@ -29,6 +29,7 @@ import { observer } from "mobx-react";
 import globalStore from "../../stores/GlobalStore";
 import { useNavigate } from "react-router-dom";
 import DeleteButtonAndPrompt from "./DeleteButtonAndPrompt";
+import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -100,19 +101,28 @@ export const Profil = () => {
         }
     };
 
+    const [verificationDialog, setVerificationDialog] = useState(false);
+
     const SendVerificaitonRequest = async () => {
         const response = await requests.postWithLoading(
             `account/${username}/verifikacija-zahtjev`
         );
-        if (response && response.data && username) GetUserByUsername(username);
+        if (response && response.data && username) {
+            GetUserByUsername(username);
+            setVerificationDialog(false);
+        }
     };
 
     const deleteRacun = async () => {
+        const isDeletingSelf = globalStore.currentUser?.username === username;
         const response = await requests.deleteWithLoading(
             `account/${username}`
         );
-        if (response && response.message?.severity === "success")
-            navigate("/tecajevi");
+        if (response && response.message?.severity === "success") {
+            if (isDeletingSelf) {
+                navigate("/tecajevi");
+            } else navigate(-1);
+        }
     };
 
     useEffect(() => {
@@ -292,11 +302,15 @@ export const Profil = () => {
                                         <>
                                             {user.verifikacijaStatusId ===
                                                 VerifikacijaEnum.ZahtjevPoslan && (
-                                                <p style={{ margin: 0 }}>
+                                                <Button
+                                                    disabled
+                                                    variant="outlined"
+                                                    sx={{ height: "30px" }}
+                                                >
                                                     {
                                                         user.verifikacijaStatusNaziv
                                                     }
-                                                </p>
+                                                </Button>
                                             )}
                                             {username ===
                                                 globalStore.currentUser
@@ -306,21 +320,25 @@ export const Profil = () => {
                                                         sx={{ height: "30px" }}
                                                         variant="contained"
                                                         onClick={() =>
-                                                            SendVerificaitonRequest()
+                                                            setVerificationDialog(
+                                                                true
+                                                            )
                                                         }
                                                     >
                                                         {
-                                                            "Pošalji zahtjev za verifikacijom."
+                                                            "Zahtjev za verifikacijom"
                                                         }
                                                     </Button>
                                                 )}
                                         </>
                                     )}
-                                    {(globalContext.currentUser?.id ===
-                                        user.id ||
-                                        globalContext.hasPermissions(
+                                    {(globalStore.currentUser?.id === user.id ||
+                                        (globalStore.hasPermissions(
                                             LevelPristupa.Admin
-                                        )) && (
+                                        ) &&
+                                            user.roles?.find(
+                                                (x) => x.name === "Admin"
+                                            ) === undefined)) && (
                                         <DeleteButtonAndPrompt
                                             deleteRacun={deleteRacun}
                                         />
@@ -385,6 +403,14 @@ export const Profil = () => {
                         </>
                     )}
                 </div>
+                {verificationDialog && (
+                    <PotvrdiPopup
+                        onClose={() => setVerificationDialog(false)}
+                        onConfirm={() => SendVerificaitonRequest()}
+                        tekstPitanje="Poslati zahtjev za verifikacijom?"
+                        tekstOdgovor="Pošalji"
+                    />
+                )}
             </Box>
         )
     );
