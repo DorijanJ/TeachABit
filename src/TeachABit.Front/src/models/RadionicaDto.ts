@@ -3,6 +3,7 @@ export interface RadionicaDto {
     naziv: string;
     opis?: string;
     cijena?: number;
+    kupljen? : false;
     vlasnikId?: string;
     vlasnikUsername?: string;
     vlasnikProfilnaSlikaVersion?: string;
@@ -11,4 +12,5 @@ export interface RadionicaDto {
     vrijemeRadionice?: Date;
     naslovnaSlikaVersion?: string;
     favorit?: boolean;
+    ocjena?: number;
 }

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     Card,
     CardContent,
@@ -20,6 +20,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { VerifikacijaEnum } from "../../enums/VerifikacijaEnum";
 import CustomSliderTecaj from "../profil/CustomSliderTecaj";
 import CustomSliderRadionica from "../profil/CustomSliderRadionica";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { TecajDto } from "../../models/TecajDto";
 import { LevelPristupa } from "../../enums/LevelPristupa";
 import { RadionicaDto } from "../../models/RadionicaDto";
@@ -27,7 +28,6 @@ import { KorisnikStatus } from "../../enums/KorisnikStatus";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import { observer } from "mobx-react";
 import globalStore from "../../stores/GlobalStore";
-import { useNavigate } from "react-router-dom";
 import DeleteButtonAndPrompt from "./DeleteButtonAndPrompt";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 
@@ -39,8 +39,8 @@ const getHighestLevelUloga = (uloge: Uloga[]) => {
 };
 
 export const Profil = () => {
-    const navigate = useNavigate();
     const { username } = useParams();
+    const navigate = useNavigate();
 
     const [user, setUser] = useState<AppUserDto>();
 
@@ -189,6 +189,29 @@ export const Profil = () => {
                     gap="10px"
                 >
                     <Card sx={{ minWidth: 300, width: "100%" }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                margin: "10px",
+                            }}
+                        >
+                            <IconButton
+                                onClick={() => navigate(-1)}
+                                sx={{
+                                    color: "#3a7ca5",
+                                    "&:hover": {
+                                        color: "#1e4f72",
+                                    },
+                                }}
+                            >
+                                <NavigateBeforeIcon
+                                    sx={{
+                                        fontSize: 30,
+                                    }}
+                                />
+                            </IconButton>
+                        </Box>
                         <CardContent
                             sx={{
                                 display: "flex",
@@ -236,10 +259,11 @@ export const Profil = () => {
                                     username={username ?? ""}
                                     onClose={() => {
                                         setIsOpenImageDialog(false);
-                                        if (globalStore.currentUser?.username)
+                                        if (globalStore.currentUser?.username) {
                                             navigate(
-                                                `/profil/${globalStore.currentUser?.username}`
+                                                `/profil/${globalStore.currentUser.username}`
                                             );
+                                        }
                                     }}
                                 />
                             )}
@@ -436,7 +460,7 @@ export const Profil = () => {
                                 variant="h6"
                                 sx={{ marginLeft: "10px" }}
                             >
-                                {"Radionice favoriti:"}
+                                {"Tečajevi favoriti:"}
                             </Typography>
                             <CustomSliderTecaj
                                 tecajevi={favoritiTecajList}
@@ -449,7 +473,7 @@ export const Profil = () => {
                                 variant="h6"
                                 sx={{ marginLeft: "10px" }}
                             >
-                                {"Tečajevi favoriti:"}
+                                {"Radionice favoriti:"}
                             </Typography>
                             <CustomSliderRadionica
                                 radionice={favoritiRadioniceList}

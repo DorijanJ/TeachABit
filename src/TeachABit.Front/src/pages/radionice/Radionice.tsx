@@ -15,16 +15,16 @@ export const Radionice = () => {
 
     const { buildRequest } = useRequestBuilder();
 
-    const GetRadionicaList = async (search: string | undefined = undefined) => {
-        const response = await requests.getWithLoading(
-            buildRequest("Radionice", { search })
-        );
-        if (response && response.data) setRadionicaList(response.data);
-    };
+  const GetRadionicaList = async (search: string | undefined = undefined) => {
+    const response = await requests.getWithLoading(
+      buildRequest("Radionice", { search })
+    );
+    if (response && response.data) setRadionicaList(response.data);
+  };
 
-    useEffect(() => {
-        GetRadionicaList();
-    }, []);
+  useEffect(() => {
+    GetRadionicaList();
+  }, []);
 
     return (
         <div
@@ -59,16 +59,16 @@ export const Radionice = () => {
                 )}
             </div>
 
-            <div
-                style={{
-                    color: "#4f4f4f",
-                    fontSize: 20,
-                    width: "100%",
-                }}
-            >
-                Nadolazeće radionice:
-                <hr style={{ border: "1px solid #cccccc" }} />
-            </div>
+      <div
+        style={{
+          color: "#4f4f4f",
+          fontSize: 20,
+          width: "100%",
+        }}
+      >
+        Nadolazeće radionice:
+        <hr style={{ border: "1px solid #cccccc" }} />
+      </div>
 
             <div
                 style={{

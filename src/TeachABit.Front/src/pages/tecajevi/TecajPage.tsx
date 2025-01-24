@@ -35,8 +35,7 @@ export default function TecajPage() {
     const handleLiked = async () => {
         setIsLiked(!isLiked);
         await requests.postWithLoading("tecajevi/favoriti", isLiked);
-    }
-
+    };
 
     /* potvrda za brisanje tecaja */
     const [isPotvrdaOpen, setIsPotvrdaOpen] = useState(false);
@@ -131,7 +130,6 @@ export default function TecajPage() {
                     />
                 </Box>
 
-
                 <CardContent
                     sx={{
                         display: "flex",
@@ -194,53 +192,55 @@ export default function TecajPage() {
                         }}
                     >
                         <div>{"Opis:"}</div>
-                        {(globalStore.currentUser?.id === tecaj.vlasnikId ||
-                            globalStore.hasPermissions(
-                                LevelPristupa.Moderator
-                            )) && (
-                            <Box
-                                display={"flex"}
-                                flexDirection={"row"}
-                                alignItems={"center"}
+                        <Box
+                            display={"flex"}
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                            sx={{
+                                position: "relative",
+                            }}
+                        >
+                            <IconButton
+                                onClick={() => {
+                                    setIsLiked(!isLiked);
+                                    handleLiked();
+                                }} // Toggle "liked" state
                                 sx={{
-                                    position: "relative",
+                                    backgroundColor: "white",
+                                    color: isLiked ? "#f44336" : "grey",
+                                    "&:hover": {
+                                        backgroundColor: "#fce4ec",
+                                    },
                                 }}
                             >
-                                {/* Favorite Icon to the left of Edit Icon */}
-                                <IconButton
-                                    onClick={() => {setIsLiked(!isLiked)
-                                        handleLiked();}} // Toggle "liked" state
-                                    sx={{
-                                        backgroundColor: "white",
-                                        color: isLiked ?  "#f44336" : "grey" ,
-                                        "&:hover": {
-                                            backgroundColor: "#fce4ec",
-                                        },
-                                    }}
-                                >
-                                    <FavoriteIcon />
-                                </IconButton>
-                                <IconButton
-                                    onClick={() => handleTecajPopupOpen()}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <EditIcon />
-                                </IconButton>
-                                <IconButton
-                                    onClick={() => setIsPotvrdaOpen(true)}
-                                    sx={{
-                                        width: "40px",
-                                        height: "40px",
-                                    }}
-                                >
-                                    <DeleteIcon color="primary" />
-                                </IconButton>
-                            </Box>
-
-                        )}
+                                <FavoriteIcon />
+                            </IconButton>
+                            {(globalStore.currentUser?.id === tecaj.vlasnikId ||
+                                globalStore.hasPermissions(
+                                    LevelPristupa.Moderator
+                                )) && (
+                                <>
+                                    <IconButton
+                                        onClick={() => handleTecajPopupOpen()}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() => setIsPotvrdaOpen(true)}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <DeleteIcon color="primary" />
+                                    </IconButton>
+                                </>
+                            )}
+                        </Box>
                     </div>
                     <TeachABitRenderer content={tecaj.opis} />
 

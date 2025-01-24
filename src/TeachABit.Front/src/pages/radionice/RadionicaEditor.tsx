@@ -16,7 +16,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/L
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
 import ImageUploadComponent from "../../components/ImageUploadComponent";
-import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionica";
+import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
 interface Props {
     refreshData: () => Promise<any>;
     onClose: () => void;
@@ -55,25 +55,25 @@ export default function RadionicaEditor(props: Props) {
         if (reload) props.refreshData();
     };
 
-    const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
-        if (!radionica.cijena || !radionica.vrijemeRadionice) return;
-        const updateRadionicaDto: CreateOrUpdateRadionicaDto = {
-            id: radionica.id,
-            naziv: radionica.naziv,
-            opis: radionica?.opis ?? "",
-            cijena: radionica.cijena,
-            maksimalniKapacitet: radionica?.maksimalniKapacitet,
-            vrijemeRadionice: radionica?.vrijemeRadionice,
-            naslovnaSlikaBase64: base64image,
-        };
-        const response = await requests.putWithLoading(
-            "radionice",
-            updateRadionicaDto
-        );
-        if (response && response.data) {
-            handleClose(true);
-        }
+  const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
+    if (!radionica.cijena || !radionica.vrijemeRadionice) return;
+    const updateRadionicaDto: CreateOrUpdateRadionicaDto = {
+      id: radionica.id,
+      naziv: radionica.naziv,
+      opis: radionica?.opis ?? "",
+      cijena: radionica.cijena,
+      maksimalniKapacitet: radionica?.maksimalniKapacitet,
+      vrijemeRadionice: radionica?.vrijemeRadionice,
+      naslovnaSlikaBase64: base64image,
     };
+    const response = await requests.putWithLoading(
+      "radionice",
+      updateRadionicaDto
+    );
+    if (response && response.data) {
+      handleClose(true);
+    }
+  };
 
     const handleStvoriRadionicu = async (
         radionica: RadionicaDto //nisam siguran jel tu treba ić samo CreateOrUpdateRadionicaDto?
@@ -215,40 +215,31 @@ export default function RadionicaEditor(props: Props) {
                             }}
                         />
 
-                        <TextField
-                            autoFocus
-                            label="Cijena"
-                            name="cijena"
-                            sx={{
-                                width: "30%",
-                            }}
-                            variant="outlined"
-                            value={radionica.cijena?.toString() || null}
-                            //type="number"
-                            slotProps={{
-                                input: {
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            €
-                                        </InputAdornment>
-                                    ),
-                                },
-                            }}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                const value = e.target.value.replace(
-                                    /[^0-9,.]/g,
-                                    ""
-                                );
-                                /*const decimalPlaces = value.toString().split(".")[1]?.length;
-                if (!(Math.floor(value) === value) && decimalPlaces > 2) {
-                  return;
-                }*/
-                                setRadionica((prev: any) => ({
-                                    ...prev,
-                                    cijena: value,
-                                }));
-                            }}
-                        />
+            <TextField
+              autoFocus
+              label="Cijena"
+              name="cijena"
+              sx={{
+                width: "30%",
+              }}
+              variant="outlined"
+              //type="number"
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">€</InputAdornment>
+                  ),
+                },
+              }}
+              value={radionica.cijena || ""}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                const value = e.target.value.replace(/[^0-9]/g, ""); //POPRAVI DA SE MOGU DECIMALNI UNOSIT
+                setRadionica((prev: any) => ({
+                  ...prev,
+                  cijena: value,
+                }));
+              }}
+            />
 
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
@@ -278,22 +269,22 @@ export default function RadionicaEditor(props: Props) {
                         </LocalizationProvider>
                     </div>
 
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "10px",
-                        }}
-                    >
-                        <ImageUploadComponent
-                            setFile={(file: string) => {
-                                setBase64Image(file);
-                            }}
-                            ratio="2/1"
-                            width={"70%"}
-                        />
-                    </div>
-                </DialogContent>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
+            <ImageUploadComponent
+              setFile={(file: string) => {
+                setBase64Image(file);
+              }}
+              ratio="2/1"
+              width={"70%"}
+            />
+          </div>
+        </DialogContent>
 
                 <DialogActions>
                     <Button variant="outlined" onClick={() => handleClose()}>
