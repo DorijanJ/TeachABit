@@ -1,6 +1,5 @@
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Tecajevi;
-using TeachABit.Model.Models.Tecajevi;
 
 namespace TeachABit.Service.Services.Tecajevi
 {
@@ -24,7 +23,6 @@ namespace TeachABit.Service.Services.Tecajevi
         public Task<ServiceResult<TecajKomentarDto>> UpdateKomentarTecaj(UpdateKomentarTecajDto updateKomentarTecaj);
         public Task<ServiceResult> CreateTecajOcjena(int tecajId, int ocjena);
         public Task<ServiceResult> DeleteTecajOcjena(int tecajId);
-        public Task<ServiceResult<TecajDto>> GetOcjena(int tecajId);
         public Task<ServiceResult<List<TecajDto>>> GetAllTecajeviFavoritForCurrentUser();
         public Task<ServiceResult> AddFavoritTecaj(int tecajId);
         public Task<ServiceResult> RemoveFavoritTecaj(int tecajId);

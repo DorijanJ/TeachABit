@@ -142,11 +142,6 @@ namespace TeachABit.API.Controllers
             return GetControllerResult(await _placanjaService.CreateTecajCheckoutSession(request));
         }
 
-        public async Task<IActionResult> GetOcjena(int id)
-        {
-            return GetControllerResult(await _tecajeviService.GetOcjena(id));
-        }
-
         [HttpGet("favoriti")]
         public async Task<IActionResult> GetAllTecajeviFavoritForCurrentUser()
         {
