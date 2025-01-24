@@ -234,5 +234,17 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             await _context.SaveChangesAsync();
             return ocjena;
         }
+        public async Task<List<TecajFavorit>> GetAllTecajeviFavoritForCurrentUser(string id)
+        {
+            var query = _context.TecajFavoriti
+                .Include(x => x.Korisnik)
+                .AsQueryable();
+            if (!string.IsNullOrEmpty(id))
+            {
+                query = query.Where(a => a.KorisnikId == id);
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }

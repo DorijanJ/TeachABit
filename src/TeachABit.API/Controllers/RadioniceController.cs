@@ -103,5 +103,9 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     {
         return GetControllerResult(await _radioniceService.DeleteOcjena(radionicaId));
     }
-
+    [HttpGet("favoriti")]
+    public async Task<IActionResult> GetAllRadioniceFavoritForCurrentUser()
+    {
+        return GetControllerResult(await _radioniceService.GetAllRadioniceFavoritForCurrentUser());
+    }
 }

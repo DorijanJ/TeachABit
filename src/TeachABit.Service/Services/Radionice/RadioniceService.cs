@@ -249,4 +249,13 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
         await _radioniceRepository.DeleteOcjena(radionicaId, korisnik.Id);
         return ServiceResult.Success();
     }
+
+    public async Task<ServiceResult<List<RadionicaDto>>> GetAllRadioniceFavoritForCurrentUser()
+    {
+        var korisnik = _authorizationService.GetKorisnikOptional();
+        if(korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+        var radionice = await _radioniceRepository.GetAllRadioniceFavoritForCurrentUser(korisnik.Id);
+        var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
+        return ServiceResult.Success(radioniceDto);
+    }
 }

@@ -35,5 +35,6 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         public Task DeleteKorisnikTecajOcjena(int tecajId, string korisnikId);
         public Task<KorisnikTecajOcjena?> GetTecajOcjenaWithTracking(int tecajId, string korisnikId);
         public Task<KorisnikTecajOcjena> UpdateTecajOcjena(KorisnikTecajOcjena ocjena);
+        public Task<List<TecajFavorit>> GetAllTecajeviFavoritForCurrentUser(string username);
     }
 }

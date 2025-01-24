@@ -315,5 +315,14 @@ namespace TeachABit.Service.Services.Tecajevi
             await _tecajeviRepository.DeleteKorisnikTecajOcjena(tecajId, korisnik.Id);
             return ServiceResult.Success();
         }
+
+        public async Task<ServiceResult<List<TecajDto>>> GetAllTecajeviFavoritForCurrentUser()
+        {
+            var korisnik = _authorizationService.GetKorisnikOptional();
+            if(korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            var tecajevi = await _tecajeviRepository.GetAllTecajeviFavoritForCurrentUser(korisnik.Id);
+            var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
+            return ServiceResult.Success(tecajeviDto);
+        }
     }
 }
