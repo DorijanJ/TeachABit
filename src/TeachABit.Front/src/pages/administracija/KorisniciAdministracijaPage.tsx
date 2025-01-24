@@ -87,7 +87,7 @@ export default function KorisniciAdministracijaPage() {
             field: "korisnikStatusId",
             headerAlign: "center",
             headerName: "Status",
-            align: "left",
+            align: "center",
             display: "flex",
             renderCell: (params: GridRenderCellParams<any, number>) =>
                 params.value === KorisnikStatus.Utisan ? (
