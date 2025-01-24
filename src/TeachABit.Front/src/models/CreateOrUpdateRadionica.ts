@@ -1,9 +1,9 @@
-export interface UpdateRadionicaDto {
+export interface CreateOrUpdateRadionicaDto {
   id?: number;
   naziv: string;
   opis?: string;
   cijena: number;
   maksimalniKapacitet?: number;
   vrijemeRadionice?: Date;
-  naslovnaSlikaVersion?: string;
+  naslovnaSlikaBase64?: string;
 }

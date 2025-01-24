@@ -23,7 +23,7 @@ import CustomSliderTecaj from "../profil/CustomSliderTecaj";
 import CustomSliderRadionica from "../profil/CustomSliderRadionica";
 import { TecajDto } from "../../models/TecajDto";
 import { LevelPristupa } from "../../enums/LevelPristupa";
-import { RadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
+import { RadionicaDto } from "../../models/RadionicaDto";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>

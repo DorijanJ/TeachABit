@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Box, Button } from "@mui/material";
 import UserLink from "../profil/UserLink";
 import { useNavigate } from "react-router-dom";
-import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
+import { RadionicaDto } from "../../models/RadionicaDto";
 import RadionicaPopup from "./RadionicaPopup";
 import { useGlobalContext } from "../../context/Global.context";
 import globalStore from "../../stores/GlobalStore";
@@ -12,32 +12,34 @@ import { loadStripe } from "@stripe/stripe-js";
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
 interface Props {
-  radionica: CreateOrUpdateRadionicaDto;
+  radionica: RadionicaDto;
   onClose: () => void;
 }
 
 export default function Radionica(props: Props) {
 
-    const handleCheckout = async (tecajId?: number) => {
-        if (!globalContext.userIsLoggedIn) {
-            globalStore.addNotification({
-                message: "Niste prijavljeni",
-                severity: "error",
-            });
-            return;
-        }
 
-        if (!tecajId) return;
-        const response = await requests.postWithLoading(
-            "placanja/create-checkout-session",
-            { tecajId: tecajId }
-        );
-        const stripe = await stripePromise;
+  const handleCheckout = async (radionicaId?: number) => {
+    if (!globalContext.userIsLoggedIn) {
+      globalStore.addNotification({
+        message: "Niste prijavljeni",
+        severity: "error",
+      });
+      return;
+    }
 
-        const sessionId: any = response?.data.url;
+    if (!radionicaId) return;
+    const response = await requests.postWithLoading(
+      "placanja/create-checkout-session",
+      { radionicaId: radionicaId }
+    );
+    const stripe = await stripePromise;
 
-        stripe?.redirectToCheckout({ sessionId });
-    };
+    const sessionId: any = response?.data.url;
+
+    stripe?.redirectToCheckout({ sessionId });
+
+  };
 
   const navigate = useNavigate();
   const globalContext = useGlobalContext();
@@ -95,7 +97,7 @@ export default function Radionica(props: Props) {
         !(globalContext.currentUser?.id === props.radionica.vlasnikId) && (
           <RadionicaPopup
             onClose={() => setIsSadrzajOpen(false)}
-            onConfirm={() => pom_fja()}
+            onConfirm={() => handleCheckout(props.radionica.id)}
             radionica={props.radionica}
           />
         )}
@@ -212,8 +214,13 @@ export default function Radionica(props: Props) {
                   width: "100%",
                   height: "100%",
                   backgroundColor: "lightblue",
+                  justifyContent: "center",
+                  alignContent: "center",
                 }}
-              />
+                
+              >
+                {"Nema slike ¯\_(ツ)_/¯"}
+                </div>
             )}
           </div>
 
@@ -242,9 +249,10 @@ export default function Radionica(props: Props) {
             >
               {props.radionica.cijena && props.radionica.cijena > 0 && (
                 <Button
-                    onClick={(e) => {handleCheckout(props.radionica.id);
-                        e.stopPropagation();
-                    }}
+                  onClick={(e) => {
+                    handleCheckout(props.radionica.id);
+                    e.stopPropagation();
+                  }}
                   variant="contained"
                 >
                   {props.radionica.cijena}€

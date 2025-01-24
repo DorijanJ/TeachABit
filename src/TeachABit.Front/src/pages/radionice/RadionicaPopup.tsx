@@ -7,22 +7,50 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionicaDto";
+import { RadionicaDto } from "../../models/RadionicaDto";
 import UserLink from "../profil/UserLink";
 import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
-/*import requests from "../../api/agent";
-import { useEffect } from "react";
+import { useGlobalContext } from "../../context/Global.context";
+import globalStore from "../../stores/GlobalStore";
+import requests from "../../api/agent";
+import { loadStripe } from "@stripe/stripe-js";
+/*import { useEffect } from "react";
 import { useParams } from "react-router-dom";*/
+
+const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
 interface Props {
   onConfirm: () => Promise<any>;
   onClose: () => void;
-  radionica: CreateOrUpdateRadionicaDto;
+  radionica: RadionicaDto;
 }
 
 //const { radionicaId } = useParams();
 
 export default function RadionicaPopup(props: Props) {
+  const globalContext = useGlobalContext();
+
+  const handleCheckout = async (radionicaId?: number) => {
+    if (!globalContext.userIsLoggedIn) {
+      globalStore.addNotification({
+        message: "Niste prijavljeni",
+        severity: "error",
+      });
+      return;
+    }
+
+    if (!radionicaId) return;
+    const response = await requests.postWithLoading(
+      "placanja/create-checkout-session",
+      { radionicaId: radionicaId }
+    );
+    const stripe = await stripePromise;
+
+    const sessionId: any = response?.data.url;
+
+    stripe?.redirectToCheckout({ sessionId });
+  };
+
   /*
     const { radionicaId } = useParams();
 
@@ -82,18 +110,18 @@ export default function RadionicaPopup(props: Props) {
             gap="5px"
           >
             <Box>
-            <Typography
-                            color="primary"
-                            variant="h5"
-                            component="div"
-                            sx={{
-                                overflow: "hidden",
-                                whiteSpace: "break-spaces",
-                                maxWidth: "100%",
-                            }}
-                        >
-                            {props.radionica.naziv}
-                        </Typography>
+              <Typography
+                color="primary"
+                variant="h5"
+                component="div"
+                sx={{
+                  overflow: "hidden",
+                  whiteSpace: "break-spaces",
+                  maxWidth: "100%",
+                }}
+              >
+                {props.radionica.naziv}
+              </Typography>
             </Box>
 
             <UserLink
@@ -113,7 +141,7 @@ export default function RadionicaPopup(props: Props) {
           <div
             title="kapacitet-cijena-vrijeme-wrapper"
             style={{
-                //backgroundColor: "lightsteelblue",
+              //backgroundColor: "lightsteelblue",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
@@ -122,61 +150,71 @@ export default function RadionicaPopup(props: Props) {
             }}
           >
             {/* Kapacitet */}
-            <Box sx={{ 
+            <Box
+              sx={{
                 //backgroundColor: "lightgray",
-                width: "30%" }}>
-                    Kapacitet: 
-            <Typography
-                            color="primary"
-                            variant="h6"
-                            component="div"
-                            sx={{
-                                overflow: "hidden",
-                                whiteSpace: "break-spaces",
-                                maxWidth: "90%",
-                            }}
-                        >
-                            {props.radionica.maksimalniKapacitet}
-                        </Typography>
-              
+                width: "30%",
+              }}
+            >
+              Kapacitet:
+              <Typography
+                color="primary"
+                variant="h6"
+                component="div"
+                sx={{
+                  overflow: "hidden",
+                  whiteSpace: "break-spaces",
+                  maxWidth: "90%",
+                }}
+              >
+                {props.radionica.maksimalniKapacitet}
+              </Typography>
             </Box>
 
             {/* Cijena */}
-            <Box sx={{ //backgroundColor: "lightgray", 
-                width: "30%" }}>
-            Cijena: 
-            <Typography
-                            color="primary"
-                            variant="h6"
-                            component="div"
-                            sx={{
-                                overflow: "hidden",
-                                whiteSpace: "break-spaces",
-                                maxWidth: "90%",
-                            }}
-                        >
-                            {props.radionica.cijena}
-                        </Typography>
+            <Box
+              sx={{
+                //backgroundColor: "lightgray",
+                width: "30%",
+              }}
+            >
+              Cijena:
+              <Typography
+                color="primary"
+                variant="h6"
+                component="div"
+                sx={{
+                  overflow: "hidden",
+                  whiteSpace: "break-spaces",
+                  maxWidth: "90%",
+                }}
+              >
+                {props.radionica.cijena}
+              </Typography>
             </Box>
 
             {/* Vrijeme */}
-            <Box sx={{ //backgroundColor: "lightgray", 
-                width: "30%" }}>
-                Datum i vrijeme radionice: 
-            <Typography
-                            color="primary"
-                            variant="h6"
-                            component="div"
-                            sx={{
-                                overflow: "hidden",
-                                whiteSpace: "break-spaces",
-                                maxWidth: "90%",
-                            }}
-                        >
-                            {props.radionica?.vrijemeRadionice
-                ? new Date(props.radionica.vrijemeRadionice).toLocaleString()
-                : undefined}
-                        </Typography>
+            <Box
+              sx={{
+                //backgroundColor: "lightgray",
+                width: "30%",
+              }}
+            >
+              Datum i vrijeme radionice:
+              <Typography
+                color="primary"
+                variant="h6"
+                component="div"
+                sx={{
+                  overflow: "hidden",
+                  whiteSpace: "break-spaces",
+                  maxWidth: "90%",
+                }}
+              >
+                {props.radionica?.vrijemeRadionice
+                  ? new Date(props.radionica.vrijemeRadionice).toLocaleString()
+                  : undefined}
+              </Typography>
             </Box>
           </div>
         </DialogContent>
@@ -188,7 +226,7 @@ export default function RadionicaPopup(props: Props) {
           <Button
             id="confirmButton"
             variant="contained"
-            onClick={props.onConfirm}
+            onClick={() => handleCheckout(props.radionica.id)}
           >
             {props.radionica?.cijena
               ? ` ${props.radionica.cijena} €`

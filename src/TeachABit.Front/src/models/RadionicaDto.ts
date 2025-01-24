@@ -1,4 +1,4 @@
-export interface CreateOrUpdateRadionicaDto {
+export interface RadionicaDto {
     id?: number;
     naziv: string;
     opis?: string;
@@ -10,4 +10,5 @@ export interface CreateOrUpdateRadionicaDto {
     maksimalniKapacitet?: number;
     vrijemeRadionice?: Date;
     naslovnaSlikaVersion?: string;
+    favorit?: boolean;
 }
