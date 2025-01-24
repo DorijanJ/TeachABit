@@ -5,6 +5,7 @@ import { useGlobalContext } from "../../context/Global.context";
 import { Button, Typography } from "@mui/material";
 import Komentar from "./Komentar";
 import CreateKomentar from "./KomentarEditor";
+import AddIcon from "@mui/icons-material/Add";
 
 interface Props {
     radionicaId: number;
@@ -109,7 +110,15 @@ export default function RadionicaKomentari(props: Props) {
                     <Button
                         onClick={() => setIsOpenKomentarDialog((prev) => !prev)}
                         variant="contained"
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: "5px",
+                            paddingLeft: 1,
+                        }}
                     >
+                        <AddIcon/>
                         Dodaj Komentar
                     </Button>
                 )}
