@@ -14,9 +14,11 @@ import { LevelPristupa } from "../../enums/LevelPristupa";
 import TecajPopup from "./TecajPopup";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import globalStore from "../../stores/GlobalStore";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export default function TecajPage() {
     const { tecajId } = useParams();
+    const [isLiked, setIsLiked] = useState(false);
     const [tecaj, setTecaj] = useState<TecajDto>({
         id: tecajId ? parseInt(tecajId) : undefined,
         naziv: "",
@@ -29,6 +31,12 @@ export default function TecajPage() {
     const [popupOpen, setTecajDialogOpen] = useState(false);
     const handleTecajPopupOpen = () => setTecajDialogOpen(true);
     const handleTecajPopupClose = () => setTecajDialogOpen(false);
+
+    const handleLiked = async () => {
+        setIsLiked(!isLiked);
+        await requests.postWithLoading("tecajevi/favoriti", isLiked);
+    }
+
 
     /* potvrda za brisanje tecaja */
     const [isPotvrdaOpen, setIsPotvrdaOpen] = useState(false);
@@ -112,6 +120,7 @@ export default function TecajPage() {
                             }}
                         />
                     </IconButton>
+
                     <UserLink
                         user={{
                             id: tecaj.vlasnikId,
@@ -121,6 +130,7 @@ export default function TecajPage() {
                         }}
                     />
                 </Box>
+
 
                 <CardContent
                     sx={{
@@ -192,7 +202,24 @@ export default function TecajPage() {
                                 display={"flex"}
                                 flexDirection={"row"}
                                 alignItems={"center"}
+                                sx={{
+                                    position: "relative",
+                                }}
                             >
+                                {/* Favorite Icon to the left of Edit Icon */}
+                                <IconButton
+                                    onClick={() => {setIsLiked(!isLiked)
+                                        handleLiked();}} // Toggle "liked" state
+                                    sx={{
+                                        backgroundColor: "white",
+                                        color: isLiked ?  "#f44336" : "grey" ,
+                                        "&:hover": {
+                                            backgroundColor: "#fce4ec",
+                                        },
+                                    }}
+                                >
+                                    <FavoriteIcon />
+                                </IconButton>
                                 <IconButton
                                     onClick={() => handleTecajPopupOpen()}
                                     sx={{
@@ -200,7 +227,7 @@ export default function TecajPage() {
                                         height: "40px",
                                     }}
                                 >
-                                    <EditIcon color="primary"></EditIcon>
+                                    <EditIcon />
                                 </IconButton>
                                 <IconButton
                                     onClick={() => setIsPotvrdaOpen(true)}
@@ -209,9 +236,10 @@ export default function TecajPage() {
                                         height: "40px",
                                     }}
                                 >
-                                    <DeleteIcon color="primary"></DeleteIcon>
+                                    <DeleteIcon color="primary" />
                                 </IconButton>
                             </Box>
+
                         )}
                     </div>
                     <TeachABitRenderer content={tecaj.opis} />
