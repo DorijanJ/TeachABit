@@ -301,4 +301,29 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
         var radioniceDto = _mapper.Map<List<RadionicaDto>>(radionice);
         return ServiceResult.Success(radioniceDto);
     }
+    
+    public async Task<ServiceResult> AddFavoritRadionica(int radionicaId)
+    {
+        var korisnik = _authorizationService.GetKorisnik();
+
+        var vecFavorit = await _radioniceRepository.VecFavorit(radionicaId, korisnik.Id);
+
+        if (vecFavorit) return ServiceResult.Failure(MessageDescriber.BadRequest("Već u favoritima."));
+
+        RadionicaFavorit favorit = new()
+        {
+            KorisnikId = korisnik.Id,
+            RadionicaId = radionicaId
+        };
+        await _radioniceRepository.AddFavoritRadionica(favorit);
+        return ServiceResult.Success();
+    }
+    
+    public async Task<ServiceResult> RemoveFavoritRadionica(int favoritRadionicaId)
+    {
+        var korisnik = _authorizationService.GetKorisnik();
+        await _radioniceRepository.RemoveFavoritRadionica(favoritRadionicaId, korisnik.Id);
+        return ServiceResult.Success();
+    }
+    
 }

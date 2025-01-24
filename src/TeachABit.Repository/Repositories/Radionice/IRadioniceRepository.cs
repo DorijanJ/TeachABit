@@ -33,4 +33,7 @@ public interface IRadioniceRepository
     public Task<bool> CheckIfRadionicaPlacen(string korisnikId, int radinicaId);
     public Task<List<RadionicaPlacanje>> GetPrijaveForRadionica(int radionicaId);
     public Task<List<Radionica>> GetAllRadioniceFavoritForCurrentUser(string id);
+    public Task<RadionicaFavorit> AddFavoritRadionica(RadionicaFavorit favorit);
+    public Task RemoveFavoritRadionica(int favoritRadionicaId, string korisnikId);
+    public Task<bool> VecFavorit(int radionicaId, string korisnikId);
 }
