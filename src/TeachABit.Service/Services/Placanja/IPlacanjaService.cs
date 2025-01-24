@@ -7,5 +7,11 @@ namespace TeachABit.Service.Services.Placanja
     {
         public Task<ServiceResult<PlacanjeLinkDto>> CreateTecajCheckoutSession(TecajPlacanjeRequestDto requestDto);
         public Task<ServiceResult> CreateTecajPlacanje(string korisnikId, int tecajId);
+
+        public Task<ServiceResult<PlacanjeLinkDto>> CreateRadionicaCheckoutSession(
+            RadionicaPlacanjeRequestDto requestDto);
+
+        public Task<ServiceResult> CreateRadionicaPlacanje(string korisnikId, int radionicaId);
+
     }
 }

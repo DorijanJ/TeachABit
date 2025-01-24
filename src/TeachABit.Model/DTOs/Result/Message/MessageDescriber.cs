@@ -12,6 +12,7 @@
         public static MessageResponse EmailConfirmed() => new("Vaš email je potvrđen.", MessageTypes.Hidden, MessageSeverities.Success);
         public static MessageResponse EmailNotConfirmed() => new("Email nije povtrđen.", MessageSeverities.Error, MessageTypes.Hidden, messageStatusCode: MessageStatusCode.Unauthorized);
         public static MessageResponse UsernameNotProvided() => new("Korisničko ime ne smije biti prazno.", MessageSeverities.Error, MessageTypes.Hidden, messageStatusCode: MessageStatusCode.BadRequest, code: MessageCodes.UsernameNotProvided);
+        public static MessageResponse Reauthenticate() => new("Potrebno obnoviti podatke o korisniku.", MessageSeverities.Error, MessageTypes.Hidden, MessageCodes.Reauth, MessageStatusCode.Unauthorized);
         public static MessageResponse AccountLockedOut(DateTimeOffset duration)
         {
             var time = duration - DateTimeOffset.UtcNow;
@@ -36,6 +37,7 @@
     public static class MessageCodes
     {
         public static string UsernameNotProvided => "username_not_provided";
+        public static string Reauth => "reauth";
     }
 
 }

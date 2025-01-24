@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TeachABit.API.Middleware;
 using TeachABit.Model.DTOs.Objave;
+using TeachABit.Model.Enums;
 using TeachABit.Service.Services.Objave;
 
 namespace TeachABit.API.Controllers
@@ -27,6 +28,7 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpPost]
+        [NotStatus(KorisnikStatusEnum.Utisan)]
         [ModelStateFilter]
         public async Task<IActionResult> CreateObjava(ObjavaDto objava)
         {
@@ -34,6 +36,7 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpPut]
+        [NotStatus(KorisnikStatusEnum.Utisan)]
         [ModelStateFilter]
         public async Task<IActionResult> UpdateObjava(UpdateObjavaDto updateObjava)
         {
@@ -54,6 +57,7 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpPost("{id}/komentari")]
+        [NotStatus(KorisnikStatusEnum.Utisan)]
         [ModelStateFilter]
         public async Task<IActionResult> CreateKomentar([FromBody] ObjavaKomentarDto komentar, int id)
         {
@@ -98,6 +102,7 @@ namespace TeachABit.API.Controllers
 
         [HttpPut("komentari")]
         [ModelStateFilter]
+        [NotStatus(KorisnikStatusEnum.Utisan)]
         public async Task<IActionResult> UpdateKomentar(UpdateObjavaKomentarDto updateKomentar)
         {
             return GetControllerResult(await _objaveService.UpdateObjavaKomentar(updateKomentar));

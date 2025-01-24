@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TeachABit.Model.DTOs.Korisnici;
@@ -12,13 +13,14 @@ using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Korisnici
 {
-    public class KorisniciService(IAuthorizationService authorizationService, IS3BucketService s3BucketService, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulationService) : IKorisniciService
+    public class KorisniciService(IAuthorizationService authorizationService, IS3BucketService s3BucketService, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulationService, IHttpContextAccessor httpContextAccessor) : IKorisniciService
     {
         private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly IS3BucketService _s3BucketService = s3BucketService;
         private readonly UserManager<Korisnik> _userManager = userManager;
         private readonly IImageManipulationService _imageManipulationService = imageManipulationService;
         private readonly IMapper _mapper = mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public async Task<ServiceResult<KorisnikDto>> CreateVerifikacijaZahtjev(string username)
         {
@@ -37,11 +39,15 @@ namespace TeachABit.Service.Services.Korisnici
         public async Task<ServiceResult<List<KorisnikDto>>> GetAllUsers(string? search)
         {
             var korisnik = _authorizationService.GetKorisnik();
-            var authorized = await _userManager.IsInRoleAsync(korisnik, "Moderator") || await _userManager.IsInRoleAsync(korisnik, "Admin");
+            var authorized = await _authorizationService.HasPermission(LevelPristupaEnum.Moderator);
 
             if (!authorized) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
-            var korisnici = _userManager.Users.Include(x => x.VerifikacijaStatus).AsQueryable();
+            var korisnici = _userManager.Users
+                .Include(x => x.KorisnikUloge)
+                .ThenInclude(x => x.Uloga)
+                .Include(x => x.KorisnikStatus)
+                .Include(x => x.VerifikacijaStatus).AsQueryable();
 
             if (!string.IsNullOrEmpty(search)) korisnici = korisnici.Where(k => k.NormalizedUserName == search.ToUpper());
 
@@ -105,6 +111,52 @@ namespace TeachABit.Service.Services.Korisnici
             {
                 return ServiceResult.Failure(MessageDescriber.DefaultError(ex.Message));
             }
+        }
+
+        public async Task<ServiceResult> UtisajKorisnika(string username)
+        {
+            if (!(await _authorizationService.HasPermission(LevelPristupaEnum.Moderator))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            var korisnik = await _userManager.FindByNameAsync(username);
+            if (korisnik == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisnik nije pronađen"));
+
+            var roles = await _userManager.GetRolesAsync(korisnik);
+            if (roles.Any(x => x == "Admin" || x == "Moderator")) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            if (korisnik.KorisnikStatusId == (int)KorisnikStatusEnum.Utisan) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisnik već utišan."));
+
+            korisnik.KorisnikStatusId = (int)KorisnikStatusEnum.Utisan;
+            await _userManager.UpdateAsync(korisnik);
+
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> OdTisajKorisnika(string username)
+        {
+            if (!(await _authorizationService.HasPermission(LevelPristupaEnum.Moderator))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            var korisnik = await _userManager.FindByNameAsync(username);
+            if (korisnik == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisnik nije pronađen"));
+
+            var roles = await _userManager.GetRolesAsync(korisnik);
+            if (roles.Any(x => x == "Admin" || x == "Moderator")) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+            if (korisnik.KorisnikStatusId != (int)KorisnikStatusEnum.Utisan) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisnik nije utišan."));
+
+            korisnik.KorisnikStatusId = null;
+            await _userManager.UpdateAsync(korisnik);
+
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> DeleteKorisnik()
+        {
+            var korisnikId = _authorizationService.GetKorisnik().Id;
+            var user = await _userManager.FindByIdAsync(korisnikId);
+
+            if (user == null) return ServiceResult.Failure();
+            await _userManager.DeleteAsync(user);
+            return ServiceResult.Success();
         }
     }
 }

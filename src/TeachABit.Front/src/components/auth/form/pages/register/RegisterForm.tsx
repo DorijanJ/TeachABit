@@ -1,9 +1,15 @@
-import { TextField, Button, Alert } from "@mui/material";
-import { useState, FormEvent, ChangeEvent } from "react";
+import { TextField, Button, Alert, Tooltip, IconButton, Typography, } from "@mui/material";
+import HelpIcon from "@mui/icons-material/Help";
+import { useState, FormEvent, ChangeEvent, useMemo } from "react";
 import useAuth from "../../../../../hooks/useAuth";
 import { MessageResponseDto } from "../../../../../models/common/MessageResponseDto";
 import { RegisterAttemptDto } from "../../../../../models/RegistetAttemptDto";
 import localStyles from "../../AuthForm.module.css";
+
+const maxEmailLength = 50;
+const maxUsernameLength = 50;
+const minPasswordLength = 8;
+const maxPasswordLength = 16;
 
 export default function RegisterForm() {
     const auth = useAuth();
@@ -25,6 +31,32 @@ export default function RegisterForm() {
         e.preventDefault();
         handleRegister(registerAttempt);
     };
+
+    const isValidEmail = useMemo(() => {
+        const email = registerAttempt.email;
+        if (email.length == 0 || email.length > maxEmailLength) return false;
+        return true;
+    }, [registerAttempt.email]);
+
+    const isValidUsername = useMemo(() => {
+        const username = registerAttempt.username;
+        if (username.length == 0 || username.length > maxUsernameLength)
+            return false;
+        return true;
+    }, [registerAttempt.username]);
+
+    const isValidPassword = useMemo(() => {
+        const password = registerAttempt.password;
+        if (
+            password.length < minPasswordLength ||
+            password.length > maxPasswordLength ||
+            !/[A-Z]/.test(password) ||
+            !/[a-z]/.test(password) ||
+            !/[0-9]/.test(password)
+        )
+            return false;
+        return true;
+    }, [registerAttempt.password]);
 
     return (
         <>
@@ -71,9 +103,35 @@ export default function RegisterForm() {
                             password: e.target.value,
                         }))
                     }
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <Tooltip
+                                    title={
+                                        <Typography variant="body2">
+                                            Duljina 8-16 znakova.
+                                            <br />
+                                            Mora sadržavati barem jedno malo slovo.
+                                            <br />
+                                            Mora sadržavati barem jedno veliko slovo.
+                                            <br />
+                                            Mora sadržavati barem jedan broj.
+                                        </Typography>
+                                    }
+                                >
+                                    <IconButton>
+                                        <HelpIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            ),
+                        },
+                    }}
                 />
                 <Button
                     className={localStyles.myButton}
+                    disabled={
+                        !isValidEmail || !isValidUsername || !isValidPassword
+                    }
                     variant="contained"
                     type="submit"
                     color="primary"

@@ -12,6 +12,8 @@ import { useParams } from "react-router-dom";
 import requests from "../../api/agent";
 import { UpdateKomentarDto } from "../../models/UpdateKomentarDto";
 
+const maxSadrzajLength = 1000;
+
 interface Props {
     refreshData: () => Promise<any>;
     onClose: () => void;
@@ -31,6 +33,12 @@ export default function KomentarEditor(props: Props) {
         if (!tecajId) return undefined;
         return parseInt(tecajId);
     }, [tecajId]);
+
+    const isValidSadrzaj = useMemo(() => {
+        const sadrzaj = komentar.sadrzaj;
+        if (sadrzaj.length == 0 || sadrzaj.length > maxSadrzajLength) return false;
+        return true;
+    }, [komentar.sadrzaj]);
 
     const handleStvoriKomentar = async () => {
 
@@ -127,6 +135,7 @@ export default function KomentarEditor(props: Props) {
                         Odustani
                     </Button>
                     <Button
+                        disabled={!isValidSadrzaj}
                         variant="contained"
                         onClick={() => {
                             if (!props.komentar?.id) handleStvoriKomentar();
