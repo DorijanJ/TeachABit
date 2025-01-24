@@ -13,5 +13,6 @@ namespace TeachABit.Model.DTOs.Korisnici
         public string? KorisnikStatus { get; set; } = string.Empty;
         public bool Verificiran { get; set; } = false;
         public int? KorisnikStatusId { get; set; } = null;
+        public int BrojPrijava { get; set; } = 0;
     }
 }
