@@ -148,23 +148,11 @@ export const RadionicaPage = () => {
         >
           <Box
             display={"flex"}
-            flexDirection={"row"}
+            flexDirection={"column"}
             alignItems={"flex-start"}
             justifyContent={"flex-start"}
             gap={"20px"}
           >
-            {radionica.naslovnaSlikaVersion && (
-              <img
-                style={{
-                  borderRadius: "10px",
-                  objectFit: "cover",
-                  width: "500px",
-                }}
-                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
-                  radionica.naslovnaSlikaVersion
-                }`}
-              />
-            )}
             <div
               style={{
                 width: "100%",
@@ -182,13 +170,25 @@ export const RadionicaPage = () => {
                 sx={{
                   wordWrap: "break-word",
                   maxWidth: "100%",
-                  color: "black",
                   padding: "0 10px",
                 }}
               >
                 {radionica.naziv}
               </Typography>
             </div>
+            {radionica.naslovnaSlikaVersion && (
+              <img
+                style={{
+                  //justifyItems:"center",
+                  borderRadius: "10px",
+                  objectFit: "cover",
+                  width: "500px",
+                }}
+                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                  radionica.naslovnaSlikaVersion
+                }`}
+              />
+            )}
           </Box>
           <div
             style={{
@@ -199,38 +199,37 @@ export const RadionicaPage = () => {
             }}
           ></div>
 
-                    <div>{"Opis:"}</div>
-                    <TeachABitRenderer content={radionica.opis ?? ""} />
-                    <Box
-                        className="ocjena-edit-delete-wrapper"
-                        display={"flex"}
-                        flexDirection={"row"}
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
-                        gap="10px"
-                    >
-                        {/*globalContext.currentUser?.id === radionica.vlasnikId*/}
-                        {globalStore.currentUser?.id !==
-                            radionica.vlasnikId && (
-                            <Box
-                                display={"flex"}
-                                flexDirection={"row"}
-                                justifySelf={"start"}
-                                alignItems="center"
-                                gap="10px"
-                                sx={{ "& > legend": { mt: 2 } }}
-                            >
-                                {<Typography>Ocijeni radionicu: </Typography>}
-                                <Rating
-                                    //title="Ocijeni radionicu: "
-                                    name="simple-controlled"
-                                    value={value}
-                                    onChange={(_event, newValue) => {
-                                        setValue(newValue);
-                                    }}
-                                />
-                            </Box>
-                        )}
+          <div>{"Opis:"}</div>
+          <TeachABitRenderer content={radionica.opis ?? "Nema opisa"} />
+          <Box
+            className="ocjena-edit-delete-wrapper"
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            gap="10px"
+          >
+            {/*globalContext.currentUser?.id === radionica.vlasnikId*/}
+            {globalStore.currentUser?.id !== radionica.vlasnikId && (
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                justifySelf={"start"}
+                alignItems="center"
+                gap="10px"
+                sx={{ "& > legend": { mt: 2 } }}
+              >
+                {<Typography>Ocijeni radionicu: </Typography>}
+                <Rating
+                  //title="Ocijeni radionicu: "
+                  name="simple-controlled"
+                  value={value}
+                  onChange={(_event, newValue) => {
+                    setValue(newValue);
+                  }}
+                />
+              </Box>
+            )}
 
             <Box
               display={"flex"}
