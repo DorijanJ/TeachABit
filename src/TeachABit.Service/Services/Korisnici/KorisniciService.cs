@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
@@ -87,25 +88,38 @@ namespace TeachABit.Service.Services.Korisnici
             return ServiceResult.Success(_mapper.Map<KorisnikDto>(korisnikZaVerifikaciju));
         }
 
-        public async Task<ServiceResult<KorisnikDto>> UpdateKorisnik(UpdateKorisnikDto updateKorisnik)
+        public async Task<ServiceResult> UpdateKorisnik(UpdateKorisnikDto updateKorisnik)
         {
             try
             {
                 var korisnikId = _authorizationService.GetKorisnik().Id;
                 var korisnik = await _userManager.FindByIdAsync(korisnikId);
 
-                if (korisnik == null || (!string.IsNullOrEmpty(updateKorisnik.Username) && korisnik.UserName != updateKorisnik.Username)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+                if ((await _userManager.FindByNameAsync(updateKorisnik.Username)) != null) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisničko ime zauzeto."));
 
-                if (korisnik != null && updateKorisnik.ProfilnaSlikaBase64 != null)
+                if (korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+                if (korisnik != null)
                 {
-                    string profilnaSlikaVersion = Guid.NewGuid().ToString();
-                    var resizedSlika = await _imageManipulationService.ConvertToProfilePhoto(updateKorisnik.ProfilnaSlikaBase64);
-                    await _s3BucketService.UploadImageAsync(korisnikId, resizedSlika);
-                    korisnik.ProfilnaSlikaVersion = profilnaSlikaVersion;
+                    if (!string.IsNullOrEmpty(updateKorisnik.ProfilnaSlikaBase64))
+                    {
+
+                        string profilnaSlikaVersion = Guid.NewGuid().ToString();
+                        var resizedSlika = await _imageManipulationService.ConvertToProfilePhoto(updateKorisnik.ProfilnaSlikaBase64);
+                        await _s3BucketService.UploadImageAsync(korisnikId, resizedSlika);
+                        korisnik.ProfilnaSlikaVersion = profilnaSlikaVersion;
+                    }
+                    korisnik.UserName = updateKorisnik.Username;
                     await _userManager.UpdateAsync(korisnik);
-                    return ServiceResult.Success(_mapper.Map<KorisnikDto>(korisnik));
+
+                    korisnik.KorisnikUloge = (await _userManager.Users.Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == korisnik.Id))!.KorisnikUloge;
+
+                    var refresh = _mapper.Map<RefreshUserInfoDto>(korisnik);
+                    refresh.IsAuthenticated = true;
+
+                    return ServiceResult.Success(refresh);
                 }
-                return ServiceResult.Success(_mapper.Map<KorisnikDto>(korisnik));
+                return ServiceResult.Success();
             }
             catch (Exception ex)
             {
@@ -168,6 +182,14 @@ namespace TeachABit.Service.Services.Korisnici
 
             await _userManager.DeleteAsync(user);
             return _authenticationService.Logout();
+        }
+        public async Task<ServiceResult<KorisnikDto>> UpdateName(string username)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+            korisnik.UserName = username;
+            await _userManager.UpdateAsync(korisnik);
+            KorisnikDto korisnikDto = _mapper.Map<KorisnikDto>(korisnik);
+            return ServiceResult.Success(korisnikDto);
         }
     }
 }

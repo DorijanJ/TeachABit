@@ -155,6 +155,5 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _korisniciService.DeleteKorisnik(username));
         }
-
     }
 }
