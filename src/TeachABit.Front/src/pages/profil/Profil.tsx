@@ -24,6 +24,8 @@ import CustomSliderRadionica from "../profil/CustomSliderRadionica";
 import { TecajDto } from "../../models/TecajDto";
 import { LevelPristupa } from "../../enums/LevelPristupa";
 import { RadionicaDto } from "../../models/RadionicaDto";
+import { useNavigate } from "react-router-dom";
+import DeleteButtonAndPrompt from "./DeleteButtonAndPrompt";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
     const role = uloge.reduce((max, obj) =>
@@ -33,6 +35,7 @@ const getHighestLevelUloga = (uloge: Uloga[]) => {
 };
 
 export default function Profil() {
+    const navigate = useNavigate();
     const { username } = useParams();
     const globalContext = useGlobalContext();
 
@@ -83,6 +86,13 @@ export default function Profil() {
         );
         if (response && response.data && username) GetUserByUsername(username);
     };
+
+    const deleteRacun = async () => {
+        const response = await requests.deleteWithLoading(
+            `account/${username}`
+        );
+        if (response && response.message?.severity === "success") navigate("/tecajevi");
+    }
 
     useEffect(() => {
         if (globalContext.hasPermissions(LevelPristupa.Admin)) GetAllRoles();
@@ -258,6 +268,14 @@ export default function Profil() {
                                                 )}
                                         </>
                                     )}
+                            {(globalContext.currentUser?.id === user.id ||
+                                globalContext.hasPermissions(
+                                    LevelPristupa.Admin
+                                )) && (
+                                <DeleteButtonAndPrompt
+                                    deleteRacun={deleteRacun}
+                                />
+                            )}
                             </div>
                         </CardContent>
                     </Card>
