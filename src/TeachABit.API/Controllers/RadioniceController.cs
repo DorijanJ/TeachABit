@@ -15,9 +15,9 @@ public class RadioniceController(IRadioniceService radioniceService) : BaseContr
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetRadionicaList(string? search = null, string? vlasnikUsername = null, double? minOcjena = null,
-        double? maxOcjena = null)
+        double? maxOcjena = null, bool sortOrderAsc = true)
     {
-        var result = await _radioniceService.GetRadionicaList(search, vlasnikUsername, minOcjena, maxOcjena);
+        var result = await _radioniceService.GetRadionicaList(search, vlasnikUsername, minOcjena, maxOcjena, sortOrderAsc);
         return GetControllerResult(result);
     }
 
