@@ -5,7 +5,8 @@ namespace TeachABit.Repository.Repositories.Radionice;
 public interface IRadioniceRepository
 {
 
-    Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, decimal? minCijena = null, decimal? maxCijena = null);
+    Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, double? minOcjena = null,
+        double? maxOcjena = null, bool sortOrderAsc = true, bool samoNadolazece = true);
     Task<Radionica?> GetRadionica(int id);
     public Task<Radionica?> GetRadionicaById(int id);
     Task<Radionica> CreateRadionica(Radionica radionica);
@@ -28,5 +29,8 @@ public interface IRadioniceRepository
     public Task<KomentarRadionicaReakcija?> GetKomentarRadionicaReakcija(int komentarId, string korisnikId);
     public Task<RadionicaKomentar?> GetKomentarRadionicaByIdWithTracking(int id);
     public Task<RadionicaKomentar> UpdateKomentar(RadionicaKomentar komentar);
+    public Task<RadionicaPlacanje> CreateRadionicaPlacanje(RadionicaPlacanje radionicaPlacanje);
+    public Task<bool> CheckIfRadionicaPlacen(string korisnikId, int radinicaId);
+    public Task<List<RadionicaPlacanje>> GetPrijaveForRadionica(int radionicaId);
     public Task<List<RadionicaFavorit>> GetAllRadioniceFavoritForCurrentUser(string id);
 }

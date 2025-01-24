@@ -1,22 +1,25 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachABit.API.Middleware;
+using TeachABit.Model.DTOs.Placanja;
 using TeachABit.Model.DTOs.Tecajevi;
+using TeachABit.Service.Services.Placanja;
 using TeachABit.Service.Services.Tecajevi;
 
 namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TecajeviController(ITecajeviService tecajeviService) : BaseController
+    public class TecajeviController(ITecajeviService tecajeviService, IPlacanjaService placanjaService) : BaseController
     {
         private readonly ITecajeviService _tecajeviService = tecajeviService;
+        private readonly IPlacanjaService _placanjaService = placanjaService;
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null)
+        public async Task<IActionResult> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null, int? minOcjena = null, int? maxOcjena = null, bool vremenskiNajstarije = false)
         {
-            var result = await _tecajeviService.GetTecajList(search, vlasnikUsername, minCijena, maxCijena);
+            var result = await _tecajeviService.GetTecajList(search, vlasnikUsername, minCijena, maxCijena, minOcjena, maxOcjena, vremenskiNajstarije);
             return GetControllerResult(result);
         }
 
@@ -132,6 +135,26 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _tecajeviService.DeleteTecajOcjena(tecajId));
 
+        }
+        [HttpPost("create-checkout-session")]
+        public async Task<IActionResult> CreateCheckoutSession([FromBody] TecajPlacanjeRequestDto request)
+        {
+            return GetControllerResult(await _placanjaService.CreateTecajCheckoutSession(request));
+        }
+
+        [HttpGet("favoriti")]
+        public async Task<IActionResult> GetAllTecajeviFavoritForCurrentUser()
+        {
+            return GetControllerResult(await _tecajeviService.GetAllTecajeviFavoritForCurrentUser());
+        }
+
+        public async Task<IActionResult> AddFavoritTecaj(int favoritTecajId)
+        {
+            return GetControllerResult(await _tecajeviService.AddFavoritTecaj(favoritTecajId));
+        }
+        public async Task<IActionResult> RemoveFavoritTecaj(int favoritTecajId)
+        {
+            return GetControllerResult(await _tecajeviService.RemoveFavoritTecaj(favoritTecajId));
         }
 
         [HttpGet("favoriti")]
