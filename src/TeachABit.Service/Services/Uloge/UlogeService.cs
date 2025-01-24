@@ -22,15 +22,15 @@ namespace TeachABit.Service.Services.Uloge
         {
             if (!await _authorizationService.HasPermission(LevelPristupaEnum.Admin)) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
-            var korisnik = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+            var korisnik = await _userManager.FindByNameAsync(userName);
             if (korisnik == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Korisnik ne postoji."));
 
             var uloga = await _roleManager.FindByNameAsync(roleName);
             if (uloga == null) return ServiceResult.Failure(MessageDescriber.BadRequest("Uloga ne postoji."));
 
             var roles = await _userManager.GetRolesAsync(korisnik);
-            if (roles.Any(x => x == "Admin")) return ServiceResult.Failure(MessageDescriber.Unauthorized());
-            await _userManager.RemoveFromRolesAsync(korisnik, roles);
+            if (roles != null && roles.Any(x => x == "Admin")) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (roles != null && roles.Any()) await _userManager.RemoveFromRolesAsync(korisnik, roles);
 
             if (roleName == "Moderator")
             {

@@ -1,9 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import requests from "../../api/agent";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MessageResponseDto } from "../../models/common/MessageResponseDto";
-import { Alert, Button, InputAdornment, Stack, TextField } from "@mui/material";
+import { Alert, Button, IconButton, InputAdornment, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import HelpIcon from "@mui/icons-material/Help";
+
+const minPasswordLength = 8;
+const maxPasswordLength = 16;
 
 export default function ResetPassword() {
     const location = useLocation();
@@ -30,6 +34,19 @@ export default function ResetPassword() {
             if (response?.message) setMessage(response.message);
         }
     };
+    
+    const isValidPassword = useMemo(() => {
+        const password = newPassword;
+        if (
+            password.length < minPasswordLength ||
+            password.length > maxPasswordLength ||
+            !/[A-Z]/.test(password) ||
+            !/[a-z]/.test(password) ||
+            !/[0-9]/.test(password)
+        )
+            return false;
+        return true;
+    }, [newPassword]);
 
     const navigate = useNavigate();
 
@@ -66,6 +83,24 @@ export default function ResetPassword() {
                             slotProps={{
                                 input: {
                                     endAdornment: (
+                                        <>
+                                        <Tooltip
+                                            title={
+                                                <Typography variant="body2">
+                                                    Duljina 8-16 znakova.
+                                                    <br />
+                                                    Mora sadržavati barem jedno malo slovo.
+                                                    <br />
+                                                    Mora sadržavati barem jedno veliko slovo.
+                                                    <br />
+                                                    Mora sadržavati barem jedan broj.
+                                                </Typography>
+                                            }
+                                        >
+                                            <IconButton>
+                                                <HelpIcon />
+                                            </IconButton>
+                                        </Tooltip>
                                         <InputAdornment
                                             sx={{ cursor: "pointer" }}
                                             onClick={() =>
@@ -81,6 +116,7 @@ export default function ResetPassword() {
                                                 <VisibilityOff />
                                             )}
                                         </InputAdornment>
+                                        </>
                                     ),
                                 },
                             }}
@@ -115,7 +151,7 @@ export default function ResetPassword() {
                         />
                         <Button
                             disabled={
-                                !newPassword || newPassword !== confirmPassword
+                                !newPassword || newPassword !== confirmPassword || !isValidPassword
                             }
                             sx={{ width: "50%" }}
                             variant="contained"

@@ -10,16 +10,13 @@ import {
 import { useState, ChangeEvent } from "react";
 import requests from "../../api/agent";
 import { RadionicaDto } from "../../models/RadionicaDto";
-import { UpdateRadionicaDto } from "../../models/UpdateRadionicaDto";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
-/*import { Today } from "@mui/icons-material";
-import dayjs, { Dayjs } from "dayjs";
-import { isToday } from "date-fns";*/
-
+import ImageUploadComponent from "../../components/ImageUploadComponent";
+import { CreateOrUpdateRadionicaDto } from "../../models/CreateOrUpdateRadionica";
 interface Props {
     refreshData: () => Promise<any>;
     onClose: () => void;
@@ -28,9 +25,10 @@ interface Props {
 }
 
 export default function RadionicaEditor(props: Props) {
+    const [base64image, setBase64Image] = useState<string>();
+
     const [radionica, setRadionica] = useState<RadionicaDto>({
         naziv: props.radionica?.naziv ?? "",
-        /*{sadrzaj: props.radionica?.sadrzaj ?? "",}*/
         id: props.radionica?.id,
         opis: props.radionica?.opis ?? "",
         vlasnikId: props.radionica?.vlasnikId,
@@ -41,6 +39,7 @@ export default function RadionicaEditor(props: Props) {
         maksimalniKapacitet: props.radionica?.maksimalniKapacitet,
         vrijemeRadionice: props.radionica?.vrijemeRadionice,
         cijena: props.radionica?.cijena,
+        naslovnaSlikaVersion: props.radionica?.naslovnaSlikaVersion,
     });
 
     const handleClose = (reload: boolean = false) => {
@@ -49,6 +48,8 @@ export default function RadionicaEditor(props: Props) {
             opis: "",
             cijena: undefined,
             vrijemeRadionice: undefined,
+            maksimalniKapacitet: undefined,
+            naslovnaSlikaVersion: undefined,
         });
         props.onClose();
         if (reload) props.refreshData();
@@ -56,13 +57,14 @@ export default function RadionicaEditor(props: Props) {
 
     const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
         if (!radionica.cijena || !radionica.vrijemeRadionice) return;
-        const updateRadionicaDto: UpdateRadionicaDto = {
+        const updateRadionicaDto: CreateOrUpdateRadionicaDto = {
             id: radionica.id,
             naziv: radionica.naziv,
             opis: radionica?.opis ?? "",
             cijena: radionica.cijena,
-            kapacitet: radionica?.maksimalniKapacitet,
-            datumvrijeme: radionica?.vrijemeRadionice,
+            maksimalniKapacitet: radionica?.maksimalniKapacitet,
+            vrijemeRadionice: radionica?.vrijemeRadionice,
+            naslovnaSlikaBase64: base64image,
         };
         const response = await requests.putWithLoading(
             "radionice",
@@ -73,8 +75,24 @@ export default function RadionicaEditor(props: Props) {
         }
     };
 
-    const handleStvoriRadionicu = async (radionica: RadionicaDto) => {
-        const response = await requests.postWithLoading("radionice", radionica);
+    const handleStvoriRadionicu = async (
+        radionica: RadionicaDto //nisam siguran jel tu treba ić samo CreateOrUpdateRadionicaDto?
+    ) => {
+        if (!radionica.cijena || !radionica.vrijemeRadionice) return;
+        const createRadionicaDto: CreateOrUpdateRadionicaDto = {
+            id: radionica.id,
+            naziv: radionica.naziv,
+            opis: radionica?.opis ?? "",
+            cijena: radionica.cijena,
+            maksimalniKapacitet: radionica?.maksimalniKapacitet,
+            vrijemeRadionice: radionica?.vrijemeRadionice,
+            naslovnaSlikaBase64: base64image,
+        };
+
+        const response = await requests.postWithLoading(
+            "radionice",
+            createRadionicaDto
+        );
         if (response && response.data) {
             handleClose(true);
         }
@@ -121,7 +139,7 @@ export default function RadionicaEditor(props: Props) {
                         paddingTop: "10px !important",
                     }}
 
-                /*
+                    /*
               bilo bi dobro tu imat nekakvu sliku al je nema trenutno
             */
                 >
@@ -259,6 +277,22 @@ export default function RadionicaEditor(props: Props) {
                             />
                         </LocalizationProvider>
                     </div>
+
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "10px",
+                        }}
+                    >
+                        <ImageUploadComponent
+                            setFile={(file: string) => {
+                                setBase64Image(file);
+                            }}
+                            ratio="2/1"
+                            width={"70%"}
+                        />
+                    </div>
                 </DialogContent>
 
                 <DialogActions>
@@ -266,7 +300,7 @@ export default function RadionicaEditor(props: Props) {
                         Odustani
                     </Button>
                     <Button
-                        disabled={!radionica.cijena}
+                        disabled={!radionica.cijena || !radionica.naziv}
                         id="stvoriRadionicuButton"
                         variant="contained"
                         onClick={() => {

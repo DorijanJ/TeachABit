@@ -9,4 +9,6 @@ export interface RadionicaDto {
     brojprijavljenih?: number;
     maksimalniKapacitet?: number;
     vrijemeRadionice?: Date;
+    naslovnaSlikaVersion?: string;
+    favorit?: boolean;
 }
