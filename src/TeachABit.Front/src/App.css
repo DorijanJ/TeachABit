@@ -31,3 +31,11 @@
     border: none !important;
     background-color: whitesmoke;
 }
+
+.primary-background {
+    color: #3a7ca5;
+}
+
+.header-padded {
+    padding-left: 30px !important;
+}

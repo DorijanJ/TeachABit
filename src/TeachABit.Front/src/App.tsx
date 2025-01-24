@@ -21,6 +21,7 @@ import RadionicaPage from "./pages/radionice/RadionicaPage";
 import TecajPage from "./pages/tecajevi/TecajPage";
 import PrivateRoute from "./components/auth/routing/PrivateRoute";
 import KorisniciAdministracijaPage from "./pages/administracija/KorisniciAdministracijaPage";
+import { LevelPristupa } from "./enums/LevelPristupa";
 
 const App = observer(() => {
     const auth = useAuth();
@@ -130,6 +131,7 @@ const App = observer(() => {
                                 <PrivateRoute
                                     page={<KorisniciAdministracijaPage />}
                                     withNavigation
+                                    accessLevel={LevelPristupa.Moderator}
                                 />
                             }
                         />
