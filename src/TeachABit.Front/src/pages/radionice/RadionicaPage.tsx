@@ -12,8 +12,8 @@ import { RadionicaDto } from "../../models/RadionicaDto";
 import RadionicaKomentari from "./RadionicaKomentari";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import { LevelPristupa } from "../../enums/LevelPristupa";
-import { observer } from "mobx-react";
 import globalStore from "../../stores/GlobalStore";
+import { observer } from "mobx-react";
 
 export const RadionicaPage = () => {
     const [radionica, setRadionica] = useState<RadionicaDto>({
@@ -229,7 +229,7 @@ export const RadionicaPage = () => {
                         alignItems={"center"}
                         gap="10px"
                     >
-                        {globalContext.currentUser?.id ===
+                        {globalStore.currentUser?.id ===
                             radionica.vlasnikId && (
                             <IconButton
                                 onClick={() => setIsEditing(true)}
@@ -241,9 +241,8 @@ export const RadionicaPage = () => {
                                 <EditIcon color="primary"></EditIcon>
                             </IconButton>
                         )}
-                        {(globalContext.currentUser?.id ===
-                            radionica.vlasnikId ||
-                            globalContext.hasPermissions(
+                        {(globalStore.currentUser?.id === radionica.vlasnikId ||
+                            globalStore.hasPermissions(
                                 LevelPristupa.Moderator
                             )) && (
                             <>
@@ -258,13 +257,6 @@ export const RadionicaPage = () => {
                                 </IconButton>
                             </>
                         )}
-                        {/*<LikeInfo
-                            likeCount={radionica.likeCount}
-                            onClear={clearReaction}
-                            onDislike={dislikeRadionica}
-                            onLike={likeRadionica}
-                            liked={radionica.liked}
-                        />*/}
                     </Box>
                     {radionica.id && (
                         <RadionicaKomentari radionicaId={radionica.id} />
@@ -274,3 +266,4 @@ export const RadionicaPage = () => {
         </>
     );
 };
+export default observer(RadionicaPage);

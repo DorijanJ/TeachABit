@@ -52,10 +52,9 @@ export const Radionice = () => {
                 {globalStore.currentUser !== undefined && (
                     <Button
                         variant="contained"
-
                         onClick={() => setIsOpenRadionicaDialog(true)}
                     >
-                        filtriraj
+                        Stvori radionicu
                     </Button>
                 )}
             </div>
