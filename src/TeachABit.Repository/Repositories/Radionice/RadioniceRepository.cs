@@ -253,5 +253,22 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             .Where(x => x.RadionicaId == radionicaId)
             .ToListAsync();
     }
+    
+    public async Task<RadionicaFavorit> AddFavoritRadionica(RadionicaFavorit favorit)
+    {
+        EntityEntry<RadionicaFavorit> radionicaFavorit = await _context.RadionicaFavorit.AddAsync(favorit);
+        await _context.SaveChangesAsync();
+        return radionicaFavorit.Entity;
+    }
+    
+    public async Task RemoveFavoritRadionica(int favoritRadionicaId, string korisnikId)
+    {
+        await _context.RadionicaFavorit.Where(x => x.Id == favoritRadionicaId && x.KorisnikId == korisnikId).ExecuteDeleteAsync();
+    }
+    
+    public async Task<bool> VecFavorit(int radionicaId, string korisnikId)
+    {
+        return await _context.RadionicaFavorit.AnyAsync(x => x.KorisnikId == korisnikId && radionicaId == x.RadionicaId);
+    }
 
 }
