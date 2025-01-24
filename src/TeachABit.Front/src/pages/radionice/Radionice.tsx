@@ -53,7 +53,7 @@ export const Radionice = () => {
   useEffect(() => {
     console.log("Updated searchParams: ", searchParams);
     GetRadionicaList();
-  }, [searchParams]);
+  }, []);
 
   return (
     <div
