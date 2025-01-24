@@ -203,13 +203,7 @@ namespace TeachABit.Service.Services.Authentication
                     return ServiceResult.Failure(MessageDescriber.RegistrationError(errorMessage));
                 }
 
-                var createdUser = await _userManager.FindByNameAsync(googleSigninAttempt.Username);
-                if (createdUser == null)
-                {
-                    return ServiceResult.Failure();
-                }
-
-                await _userManager.AddToRoleAsync(createdUser, "Korisnik");
+                await _userManager.AddToRoleAsync(user, "Korisnik");
             }
 
             var cookieSetResult = await SetAuthCookie(user);
@@ -218,7 +212,7 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult.Failure(cookieSetResult.Message);
             }
 
-            var k = (await _userManager.Users.Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == user.Id));
+            var k = (await _userManager.Users.AsNoTracking().Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == user.Id));
             if (k != null) user.KorisnikUloge = k.KorisnikUloge;
             RefreshUserInfoDto refresh = _mapper.Map<RefreshUserInfoDto>(user);
             refresh.IsAuthenticated = true;
