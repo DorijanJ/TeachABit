@@ -25,6 +25,10 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { TecajDto } from "../../models/TecajDto";
 import { LevelPristupa } from "../../enums/LevelPristupa";
 import { RadionicaDto } from "../../models/RadionicaDto";
+import { KorisnikStatus } from "../../enums/KorisnikStatus";
+import MicOffIcon from "@mui/icons-material/MicOff";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
 const getHighestLevelUloga = (uloge: Uloga[]) => {
   const role = uloge.reduce((max, obj) =>
@@ -33,28 +37,44 @@ const getHighestLevelUloga = (uloge: Uloga[]) => {
   return role?.name ?? "";
 };
 
-export default function Profil() {
-  const navigate = useNavigate();
-
-  const { username } = useParams();
-  const globalContext = useGlobalContext();
+export const Profil = () => {
+    const { username } = useParams();
+    const navigate = useNavigate();
 
   const [user, setUser] = useState<AppUserDto>();
 
-  const isCurrentUser = useMemo(() => {
-    return globalContext.currentUser?.username === username;
-  }, [globalContext.currentUser?.username, username]);
+    const isCurrentUser = useMemo(() => {
+        return globalStore.currentUser?.username === username;
+    }, [globalStore.currentUser?.username, username]);
 
-  const GetUserByUsername = async (username: string) => {
-    const response = await requests.getWithLoading(
-      `account/by-username/${username}`
-    );
-    if (response && response.data) {
-      setUser(response.data);
-      const uloge: Uloga[] = response.data.roles;
-      setSelectedUloga(getHighestLevelUloga(uloge));
-    }
-  };
+    const GetUserByUsername = async (username: string) => {
+        const response = await requests.getWithLoading(
+            `account/by-username/${username}`
+        );
+        if (response && response.data) {
+            setUser(response.data);
+            const uloge: Uloga[] = response.data.roles;
+            setSelectedUloga(getHighestLevelUloga(uloge));
+        }
+    };
+
+    const UtisajKorisnika = async (username: string) => {
+        const response = await requests.postWithLoading(
+            `account/${username}/utisaj`
+        );
+        if (response && response.message?.severity === "success") {
+            GetUserByUsername(username);
+        }
+    };
+
+    const OdTisajKorisnika = async (username: string) => {
+        const response = await requests.deleteWithLoading(
+            `account/${username}/utisaj`
+        );
+        if (response && response.message?.severity === "success") {
+            GetUserByUsername(username);
+        }
+    };
 
   const [uloge, setUloge] = useState<Uloga[]>([]);
   const [selectedUloga, setSelectedUloga] = useState<string>();
@@ -87,9 +107,9 @@ export default function Profil() {
     if (response && response.data && username) GetUserByUsername(username);
   };
 
-  useEffect(() => {
-    if (globalContext.hasPermissions(LevelPristupa.Admin)) GetAllRoles();
-  }, []);
+    useEffect(() => {
+        if (globalStore.hasPermissions(LevelPristupa.Admin)) GetAllRoles();
+    }, []);
 
   useEffect(() => {
     if (username) GetUserByUsername(username);
@@ -117,179 +137,238 @@ export default function Profil() {
     GetRadionicaList();
   }, [username]);
 
-  return (
-    user && (
-      <Box
-        display="flex"
-        flexDirection={"column"}
-        justifyContent={"flex-start"}
-        gap="20px"
-      >
-        <Box
-          display="flex"
-          flexDirection={"row"}
-          justifyContent={"center"}
-          width={"100%"}
-          gap="10px"
-        >
-          <Card sx={{ minWidth: 300, width: "100%" }}>
+    return (
+        user && (
             <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                margin: "10px",
-                justifySelf: "flex-start",
-              }}
+                display="flex"
+                flexDirection={"column"}
+                justifyContent={"flex-start"}
+                gap="20px"
             >
-              <IconButton
-                onClick={() => navigate(-1)}
-                sx={{
-                  justifyItems: "start",
-                  color: "#3a7ca5",
-                  "&:hover": {
-                    color: "#1e4f72",
-                  },
-                }}
-              >
-                <NavigateBeforeIcon
-                  sx={{
-                    fontSize: 30,
-                  }}
-                />
-              </IconButton>
-            </Box>
-
-            <CardContent
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              <Avatar sx={{ width: 100, height: 100 }}>
-                {user.id && user.profilnaSlikaVersion ? (
-                  <>
-                    <img
-                      style={{
-                        objectFit: "cover",
-                        width: "100%",
-                        height: "100%",
-                      }}
-                      src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${user.id}${
-                        user.profilnaSlikaVersion
-                          ? "?version=" + user.profilnaSlikaVersion
-                          : ""
-                      }`}
-                    />
-                  </>
-                ) : (
-                  <>{user.username ? user.username[0] : ""}</>
-                )}
-              </Avatar>
-              {globalContext.userIsLoggedIn === true && isCurrentUser && (
-                <IconButton onClick={() => setIsOpenImageDialog(true)}>
-                  <EditIcon />
-                </IconButton>
-              )}
-              {isOpenImageDialog && (
-                <EditProfilDialog
-                  onClose={() => {
-                    setIsOpenImageDialog(false);
-                    window.location.reload();
-                  }}
-                />
-              )}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: "10px",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="h5">
-                  <b>{user.username} </b>
-                </Typography>
-                {user.verifikacijaStatusId === VerifikacijaEnum.Verificiran && (
-                  <VerifiedIcon
-                    sx={{
-                      height: "25px",
-                      width: "25px",
-                      color: "#922728",
-                    }}
-                  />
-                )}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "10px",
-                }}
-              >
-                {globalContext.hasPermissions(LevelPristupa.Admin) &&
-                selectedUloga !== "Admin" &&
-                username !== globalContext.currentUser?.username ? (
-                  <Select
-                    sx={{ minWidth: "100px" }}
-                    value={selectedUloga}
-                    onChange={(e) => UpdateKorisnikUloga(e.target.value)}
-                  >
-                    {uloge.map((uloga, index) => (
-                      <MenuItem key={index} value={uloga.name}>
-                        {uloga.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                ) : (
-                  <>{selectedUloga}</>
-                )}
-                {username === globalContext.currentUser?.username && (
-                  <>
-                    {user.verifikacijaStatusNaziv && (
-                      <p style={{ margin: 0 }}>
-                        {user.verifikacijaStatusNaziv}
-                      </p>
-                    )}
-                    {username === globalContext.currentUser?.username &&
-                      !user.verifikacijaStatusId && (
-                        <Button
-                          variant="contained"
-                          onClick={() => SendVerificaitonRequest()}
+                <Box
+                    display="flex"
+                    flexDirection={"row"}
+                    justifyContent={"center"}
+                    width={"100%"}
+                    gap="10px"
+                >
+                    <Card sx={{ minWidth: 300, width: "100%" }}>
+                        <CardContent
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                gap: "5px",
+                            }}
                         >
-                          {"Pošalji zahtjev za verifikacijom."}
-                        </Button>
-                      )}
-                  </>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </Box>
+                            <Avatar sx={{ width: 100, height: 100 }}>
+                                {user.id && user.profilnaSlikaVersion ? (
+                                    <>
+                                        <img
+                                            style={{
+                                                objectFit: "cover",
+                                                width: "100%",
+                                                height: "100%",
+                                            }}
+                                            src={`${import.meta.env
+                                                .VITE_REACT_AWS_BUCKET
+                                                }${user.id}${user.profilnaSlikaVersion
+                                                    ? "?version=" +
+                                                    user.profilnaSlikaVersion
+                                                    : ""
+                                                }`}
+                                        />
+                                    </>
+                                ) : (
+                                    <>{user.username ? user.username[0] : ""}</>
+                                )}
+                            </Avatar>
+                            {globalStore.currentUser !== undefined &&
+                                isCurrentUser && (
+                                    <IconButton
+                                        onClick={() =>
+                                            setIsOpenImageDialog(true)
+                                        }
+                                    >
+                                        <EditIcon />
+                                    </IconButton>
+                                )}
+                            {isOpenImageDialog && (
+                                <EditProfilDialog
+                                    onClose={() => {
+                                        setIsOpenImageDialog(false);
+                                        window.location.reload();
+                                    }}
+                                />
+                            )}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    gap: "10px",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Typography variant="h4" sx={{margin:0}}>
+                                    <b>{user.username} </b>
+                                </Typography>
+                                {user.verifikacijaStatusId ===
+                                    VerifikacijaEnum.Verificiran && (
+                                        <VerifiedIcon
+                                            sx={{
+                                                height: "25px",
+                                                width: "25px",
+                                                color: "#922728",
+                                            }}
+                                        />
+                                    )}
+                                    {user.korisnikStatusId ===
+                                    KorisnikStatus.Utisan && (
+                                    <MicOffIcon
+                                        sx={{
+                                            height: "25px",
+                                            width: "25px",
+                                            color: "#922728",
+                                        }}
+                                    />
+                                )}
+                            </div>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    gap: "10px",
+                                    height: "110px",
+                                }}
+                            >
+                                {globalStore.hasPermissions(
+                                    LevelPristupa.Admin
+                                ) &&
+                                    selectedUloga !== "Admin" &&
+                                    username !==
+                                    globalStore.currentUser?.username ? (
+                                    <Select
+                                        sx={{ minWidth: "100px" }}
+                                        value={selectedUloga}
+                                        onChange={(e) =>
+                                            UpdateKorisnikUloga(e.target.value)
+                                        }
+                                    >
+                                        {uloge.map((uloga, index) => (
+                                            <MenuItem
+                                                key={index}
+                                                value={uloga.name}
+                                            >
+                                                {uloga.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                ) : (
+                                    <>{selectedUloga}</>
+                                )}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        width: "100%",
+                                        justifyContent: "center",
+                                        gap: "10px",
+                                        height: "70px",
+                                    }}
+                                >
+                                {username ===
+                                    globalStore.currentUser?.username && (
+                                        <>
+                                            {user.verifikacijaStatusId ===
+                                                VerifikacijaEnum.ZahtjevPoslan && (
+                                                <p style={{ margin: 0 }}>
+                                                    {
+                                                        user.verifikacijaStatusNaziv
+                                                    }
+                                                </p>
+                                            )}
+                                            {username ===
+                                                globalStore.currentUser
+                                                    ?.username &&
+                                                !user.verifikacijaStatusId && (
+                                                    <Button
+                                                    sx={{ height: "30px"}}
+                                                        variant="contained"
+                                                        onClick={() =>
+                                                            SendVerificaitonRequest()
+                                                        }
+                                                    >
+                                                        {
+                                                            "Pošalji zahtjev za verifikacijom."
+                                                        }
+                                                    </Button>
+                                                )}
+                                        </>
+                                    )}
+                                    {globalStore.hasPermissions(
+                                        LevelPristupa.Moderator
+                                    ) &&
+                                        user.roles?.find(
+                                            (x) =>
+                                                x.levelPristupa >=
+                                                LevelPristupa.Moderator
+                                        ) === undefined && (
+                                            <Button
+                                                sx={{ height: "30px" }}
+                                                onClick={() => {
+                                                    if (!username) return;
+                                                    if (
+                                                        user.korisnikStatusId ===
+                                                        KorisnikStatus.Utisan
+                                                    )
+                                                        OdTisajKorisnika(
+                                                            username
+                                                        );
+                                                    else
+                                                        UtisajKorisnika(
+                                                            username
+                                                        );
+                                                }}
+                                                variant="contained"
+                                            >
+                                                {user.korisnikStatusId ===
+                                                KorisnikStatus.Utisan
+                                                    ? "Odtišaj korisnika"
+                                                    : "Utišaj korisnika"}
+                                            </Button>
+                                        )}
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </Box>
 
-        <div>
-          {tecajList.length > 0 && (
-            <>
-              <Typography variant="h6" sx={{ margin: 0 }}>
-                {"Tečajevi:"}
-              </Typography>
-              <CustomSliderTecaj tecajevi={tecajList}></CustomSliderTecaj>
-            </>
-          )}
-          {radionicaList.length > 0 && (
-            <>
-              <Typography variant="h6" sx={{ margin: 0 }}>
-                {"Radionice:"}
-              </Typography>
-              <CustomSliderRadionica
-                radionice={radionicaList}
-              ></CustomSliderRadionica>
-            </>
-          )}
-        </div>
-      </Box>
-    )
-  );
-}
+                <div>
+                    {tecajList.length > 0 && (
+                        <>
+                            <Typography variant="h6" sx={{ margin: 0 }}>
+                                {"Tečajevi:"}
+                            </Typography>
+                            <CustomSliderTecaj
+                                tecajevi={tecajList}
+                            ></CustomSliderTecaj>
+                        </>
+                    )}
+                    {radionicaList.length > 0 && (
+                        <>
+                            <Typography variant="h6" sx={{ margin: 0 }}>
+                                {"Radionice:"}
+                            </Typography>
+                            <CustomSliderRadionica
+                                radionice={radionicaList}
+                            ></CustomSliderRadionica>
+                        </>
+                    )}
+                </div>
+            </Box>
+        )
+    );
+};
+
+export default observer(Profil);
