@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { KomentarDto } from "../../models/KomentarDto";
 import requests from "../../api/agent";
 import { useGlobalContext } from "../../context/Global.context";
@@ -45,7 +45,7 @@ export default function ObjavaKomentari(props: Props) {
     }, [props.objavaId]);
 
     // Recursive rendering function
-    const renderKomentari = useCallback((komentari: KomentarDto[], level: number) => {
+    const renderKomentari = (komentari: KomentarDto[], level: number) => {
         return komentari.map((komentar: KomentarDto) => (
             <div
                 style={{
@@ -83,7 +83,7 @@ export default function ObjavaKomentari(props: Props) {
                     )}
             </div>
         ));
-    }, [komentari, collapsedComments]);
+    };
 
     return (
         <div
