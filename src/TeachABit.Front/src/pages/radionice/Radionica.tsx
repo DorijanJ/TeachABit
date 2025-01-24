@@ -118,7 +118,7 @@ export const Radionica = (props: Props) => {
                 }}
                 onClick={() => {
                     globalStore.currentUser?.id === props.radionica.vlasnikId ||
-                    props.radionica.kupljena
+                    props.radionica.placen
                         ? navigate(`/radionica/${props.radionica.id}`)
                         : setIsSadrzajOpen(true);
                 }}
@@ -242,16 +242,18 @@ export const Radionica = (props: Props) => {
                                 }}
                             />
                         </div>
-                        <Box
-                            display={"flex"}
-                            alignItems={"flex-end"}
-                            flexDirection={"row"}
-                            gap={0.7}
-                        >
-                            <Button onClick={() => {}} variant="contained">
-                                {props.radionica.cijena}€
-                            </Button>
-                        </Box>
+                        {!props.radionica.placen && (
+                            <Box
+                                display={"flex"}
+                                alignItems={"flex-end"}
+                                flexDirection={"row"}
+                                gap={0.7}
+                            >
+                                <Button onClick={() => {}} variant="contained">
+                                    {props.radionica.cijena}€
+                                </Button>
+                            </Box>
+                        )}
                     </Box>
                 </CardContent>
             </Card>
