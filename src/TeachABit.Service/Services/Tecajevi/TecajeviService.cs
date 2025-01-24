@@ -30,7 +30,7 @@ namespace TeachABit.Service.Services.Tecajevi
 
             Korisnik? korisnik = _authorizationService.GetKorisnikOptional();
 
-            if (tecaj.Cijena != null && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
+            if (tecaj.Cijena != null && tecaj.Cijena != 0 && (korisnik == null || !_ownershipService.Owns(tecaj)) && (korisnik == null || !await _tecajeviRepository.CheckIfTecajPlacen(korisnik.Id, tecaj.Id)))
                 return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
             return ServiceResult.Success(tecaj);
@@ -42,6 +42,8 @@ namespace TeachABit.Service.Services.Tecajevi
             {
                 tecaj.Cijena = Math.Round(tecaj.Cijena.Value, 2);
             }
+
+            if (tecaj.Cijena == 0) tecaj.Cijena = null;
 
             var korisnik = _authorizationService.GetKorisnik();
             tecaj.VlasnikId = korisnik.Id;
@@ -109,7 +111,7 @@ namespace TeachABit.Service.Services.Tecajevi
 
             tecaj.Naziv = updateTecaj.Naziv;
             tecaj.Opis = updateTecaj.Opis;
-            tecaj.Cijena = updateTecaj.Cijena;
+            tecaj.Cijena = updateTecaj.Cijena == 0 ? null : updateTecaj.Cijena;
 
             var updatedTecaj = _mapper.Map<TecajDto>(await _tecajeviRepository.UpdateTecaj(tecaj));
 

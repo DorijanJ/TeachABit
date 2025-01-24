@@ -4,6 +4,7 @@ using TeachABit.API.Middleware;
 using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result.Message;
+using TeachABit.Model.Enums;
 using TeachABit.Service.Services.Authentication;
 using TeachABit.Service.Services.Korisnici;
 using TeachABit.Service.Services.Uloge;
@@ -12,7 +13,10 @@ namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(IAuthenticationService authenticationService, IKorisniciService korisniciService, IUlogeService rolesService) : BaseController
+    public class AccountController(
+        IAuthenticationService authenticationService,
+        IKorisniciService korisniciService,
+        IUlogeService rolesService) : BaseController
     {
         private readonly IAuthenticationService _authenticationService = authenticationService;
         private readonly IKorisniciService _korisniciService = korisniciService;
@@ -103,12 +107,14 @@ namespace TeachABit.API.Controllers
 
         [HttpPost("{username}/postavi-ulogu")]
         [ModelStateFilter]
-        public async Task<IActionResult> AddKorisnikToRole(string username, [FromBody] AddKorisnikToRoleDto addKorisnikToRole)
+        public async Task<IActionResult> AddKorisnikToRole(string username,
+            [FromBody] AddKorisnikToRoleDto addKorisnikToRole)
         {
             return GetControllerResult(await _rolesService.AddUserToUloga(username, addKorisnikToRole.RoleName));
         }
 
         [HttpPost("{username}/verifikacija-zahtjev")]
+        [NotStatus(KorisnikStatusEnum.Utisan)]
         public async Task<IActionResult> CreateVerifikacijaZahtjev(string username)
         {
             return GetControllerResult(await _korisniciService.CreateVerifikacijaZahtjev(username));
@@ -125,5 +131,30 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _korisniciService.GetKorisniciSaZahtjevomVerifikacije());
         }
+
+        [HttpPost("{username}/utisaj")]
+        public async Task<IActionResult> UtisajKorisnika(string username)
+        {
+            return GetControllerResult(await _korisniciService.UtisajKorisnika(username));
+        }
+
+        [HttpDelete("{username}/utisaj")]
+        public async Task<IActionResult> OdTisajKorisnika(string username)
+        {
+            return GetControllerResult(await _korisniciService.OdTisajKorisnika(username));
+        }
+
+        [HttpGet("reauth")]
+        public async Task<IActionResult> Reauth()
+        {
+            return GetControllerResult(await _authenticationService.Reauth());
+        }
+
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> DeleteAccount(string username)
+        {
+            return GetControllerResult(await _korisniciService.DeleteKorisnik(username));
+        }
+
     }
 }

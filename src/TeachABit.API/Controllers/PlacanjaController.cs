@@ -76,11 +76,5 @@ namespace TeachABit.API.Controllers
 
             return Ok();
         }
-
-        [HttpPost("create-checkout-session")]
-        public async Task<IActionResult> CreateCheckoutSession([FromBody] TecajPlacanjeRequestDto request)
-        {
-            return GetControllerResult(await _placanjaService.CreateTecajCheckoutSession(request));
-        }
     }
 }
