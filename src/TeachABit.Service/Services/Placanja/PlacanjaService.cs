@@ -128,14 +128,14 @@ namespace TeachABit.Service.Services.Placanja
 
             return ServiceResult.Success(sessionId);
         }
-        
+
         public async Task<ServiceResult> CreateTecajPlacanje(string korisnikId, int tecajId)
         {
             var tecaj = await _tecajeviRepository.GetTecaj(tecajId);
 
             if (tecaj == null || !tecaj.Cijena.HasValue) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
 
-            TecajPlacanje tecajPlacanje = new() { KorisnikId = korisnikId, TecajId = tecajId, VrijemePlacanja = DateTime.Now, PoCijeni = tecaj.Cijena.Value };
+            TecajPlacanje tecajPlacanje = new() { KorisnikId = korisnikId, TecajId = tecajId, VrijemePlacanja = DateTime.UtcNow, PoCijeni = tecaj.Cijena.Value };
 
             await _tecajeviRepository.CreateTecajPlacanje(tecajPlacanje);
 
@@ -147,7 +147,7 @@ namespace TeachABit.Service.Services.Placanja
 
             if (radionica == null || !radionica.Cijena.HasValue) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
 
-            RadionicaPlacanje radionicaPlacanje = new() { KorisnikId = korisnikId, RadionicaId = radionicaId, VrijemePlacanja = DateTime.Now, PoCijeni = radionica.Cijena.Value };
+            RadionicaPlacanje radionicaPlacanje = new() { KorisnikId = korisnikId, RadionicaId = radionicaId, VrijemePlacanja = DateTime.UtcNow, PoCijeni = radionica.Cijena.Value };
 
             await _radioniceRepository.CreateRadionicaPlacanje(radionicaPlacanje);
 
