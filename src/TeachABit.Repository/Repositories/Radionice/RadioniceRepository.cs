@@ -10,7 +10,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
     private readonly TeachABitContext _context = context;
 
     public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, double? minOcjena = null,
-        double? maxOcjena = null, bool sortOrderAsc = true)
+        double? maxOcjena = null, bool sortOrderAsc = true, bool samoNadolazece = true)
 
     {
         IQueryable<Radionica> query = _context.Radionice
@@ -39,6 +39,8 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         if (sortOrderAsc) query = query.OrderBy(x => x.VrijemeRadionice);
         else query = query.OrderByDescending(x => x.VrijemeRadionice);
+
+        if (samoNadolazece) query = query.Where(x => x.VrijemeRadionice > DateTime.UtcNow.AddHours(-1));
 
         if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 

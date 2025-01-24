@@ -6,7 +6,7 @@ public interface IRadioniceRepository
 {
 
     Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, double? minOcjena = null,
-        double? maxOcjena = null, bool sortOrderAsc = true);
+        double? maxOcjena = null, bool sortOrderAsc = true, bool samoNadolazece = true);
     Task<Radionica?> GetRadionica(int id);
     public Task<Radionica?> GetRadionicaById(int id);
     Task<Radionica> CreateRadionica(Radionica radionica);
