@@ -1,7 +1,7 @@
-import { Box, Card, CardContent, IconButton, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import { TecajDto } from "../../models/TecajDto";
-import { useNavigate, useParams } from "react-router-dom";
+import {Box, Card, CardContent, IconButton, Typography} from "@mui/material";
+import {useEffect, useState} from "react";
+import {TecajDto} from "../../models/TecajDto";
+import {useNavigate, useParams} from "react-router-dom";
 import requests from "../../api/agent";
 import UserLink from "../profil/UserLink";
 import EditIcon from "@mui/icons-material/Edit";
@@ -10,20 +10,21 @@ import TeachABitRenderer from "../../components/editor/TeachaBitRenderer";
 import Lekcije from "./Lekcije";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import TecajKomentari from "./TecajKomentari";
-import { LevelPristupa } from "../../enums/LevelPristupa";
+import {LevelPristupa} from "../../enums/LevelPristupa";
 import TecajPopup from "./TecajPopup";
 import PotvrdiPopup from "../../components/dialogs/PotvrdiPopup";
 import globalStore from "../../stores/GlobalStore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export default function TecajPage() {
-    const { tecajId } = useParams();
+    const {tecajId} = useParams();
     const [isLiked, setIsLiked] = useState(false);
     const [tecaj, setTecaj] = useState<TecajDto>({
         id: tecajId ? parseInt(tecajId) : undefined,
         naziv: "",
         opis: "",
         cijena: undefined,
+        favorit: false, // Add favorit here if not already in TecajDto
     });
     const navigate = useNavigate();
 
@@ -33,9 +34,22 @@ export default function TecajPage() {
     const handleTecajPopupClose = () => setTecajDialogOpen(false);
 
     const handleLiked = async () => {
-        setIsLiked(!isLiked);
-        await requests.postWithLoading("tecajevi/favoriti", isLiked);
-    }
+        const newIsLiked = !isLiked; // Toggle the liked state
+
+
+        await requests.postWithLoading(
+            `tecajevi/${tecajId}/favoriti`,
+            {isLiked: newIsLiked} // Send the new liked state in the body
+        );
+
+        // Update the state only if the request is successful
+        setIsLiked(newIsLiked);
+        setTecaj((prev) => ({
+            ...prev,
+            favorit: newIsLiked, // Update favorit field in the state
+        }));
+
+    };
 
 
     /* potvrda za brisanje tecaja */
@@ -44,6 +58,11 @@ export default function TecajPage() {
     useEffect(() => {
         fetchTecaj();
     }, [tecajId]);
+
+    useEffect(() => {
+        // Update isLiked based on tecaj.favorit
+        setIsLiked(tecaj.favorit || false);
+    }, [tecaj]);
 
     const fetchTecaj = async () => {
         if (tecajId) {
@@ -126,11 +145,10 @@ export default function TecajPage() {
                             id: tecaj.vlasnikId,
                             username: tecaj.vlasnikUsername,
                             profilnaSlikaVersion:
-                                tecaj.vlasnikProfilnaSlikaVersion,
+                            tecaj.vlasnikProfilnaSlikaVersion,
                         }}
                     />
                 </Box>
-
 
                 <CardContent
                     sx={{
@@ -208,17 +226,16 @@ export default function TecajPage() {
                             >
                                 {/* Favorite Icon to the left of Edit Icon */}
                                 <IconButton
-                                    onClick={() => {setIsLiked(!isLiked)
-                                        handleLiked();}} // Toggle "liked" state
+                                    onClick={handleLiked}
                                     sx={{
                                         backgroundColor: "white",
-                                        color: isLiked ?  "#f44336" : "grey" ,
+                                        color: isLiked ? "#f44336" : "grey",
                                         "&:hover": {
                                             backgroundColor: "#fce4ec",
                                         },
                                     }}
                                 >
-                                    <FavoriteIcon />
+                                    <FavoriteIcon/>
                                 </IconButton>
                                 <IconButton
                                     onClick={() => handleTecajPopupOpen()}
@@ -227,7 +244,7 @@ export default function TecajPage() {
                                         height: "40px",
                                     }}
                                 >
-                                    <EditIcon />
+                                    <EditIcon/>
                                 </IconButton>
                                 <IconButton
                                     onClick={() => setIsPotvrdaOpen(true)}
@@ -236,13 +253,13 @@ export default function TecajPage() {
                                         height: "40px",
                                     }}
                                 >
-                                    <DeleteIcon color="primary" />
+                                    <DeleteIcon color="primary"/>
                                 </IconButton>
                             </Box>
 
                         )}
                     </div>
-                    <TeachABitRenderer content={tecaj.opis} />
+                    <TeachABitRenderer content={tecaj.opis}/>
 
                     {/* Popis lekcija */}
                     {tecaj.lekcije && tecajId && (
@@ -254,7 +271,7 @@ export default function TecajPage() {
                         />
                     )}
 
-                    {tecaj.id && <TecajKomentari tecajId={tecaj.id} />}
+                    {tecaj.id && <TecajKomentari tecajId={tecaj.id}/>}
                 </CardContent>
             </Card>
         </>

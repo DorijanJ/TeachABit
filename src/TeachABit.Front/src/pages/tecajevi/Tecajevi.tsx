@@ -9,7 +9,6 @@ import globalStore from "../../stores/GlobalStore";
 import { Tecaj } from "./Tecaj";
 import { observer } from "mobx-react";
 import NumberRangeSelector from "./NumberRangeSelector.tsx";
-import TecajeviFilter from "./TecajeviFilter.tsx";
 
 interface TecajSearch {
     search?: string | undefined;
@@ -31,6 +30,7 @@ export const Tecajevi = () => {
         maxPrice: 2000,
         minPrice: 0,
     });
+
 
     const GetTecajList = async () => {
         const response = await requests.getWithLoading(

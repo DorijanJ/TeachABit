@@ -15,4 +15,6 @@ export interface TecajDto {
         createdDateTime?: string,
         tecajId: number,
     }];
+    favorit?: boolean;
+
 }
