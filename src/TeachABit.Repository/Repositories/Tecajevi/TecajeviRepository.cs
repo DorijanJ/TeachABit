@@ -1,17 +1,13 @@
-using Microsoft.AspNetCore.Identity;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TeachABit.Model;
-using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Tecajevi;
 
 namespace TeachABit.Repository.Repositories.Tecajevi
 {
-    public class TecajeviRepository(TeachABitContext context, UserManager<Korisnik> userManager) : ITecajeviRepository
+    public class TecajeviRepository(TeachABitContext context) : ITecajeviRepository
     {
         private readonly TeachABitContext _context = context;
-        private readonly UserManager<Korisnik> _userManager = userManager;
 
         public async Task<Tecaj?> GetTecaj(int id)
         {
@@ -259,31 +255,30 @@ namespace TeachABit.Repository.Repositories.Tecajevi
 
         public async Task<TecajFavorit> AddFavoritTecaj(TecajFavorit favorit)
         {
-            EntityEntry<TecajFavorit> favoritt = await _context.TecajFavoriti.AddAsync(favorit);
+            EntityEntry<TecajFavorit> tecajFavorit = await _context.TecajFavoriti.AddAsync(favorit);
             await _context.SaveChangesAsync();
-            return favoritt.Entity;
+            return tecajFavorit.Entity;
         }
 
-        public async Task<TecajFavorit?> GetFavoritTecajById(int id)
+        public async Task RemoveFavoritTecaj(int favoritTecajId, string korisnikId)
         {
-            return await _context.TecajFavoriti.AsTracking().FirstOrDefaultAsync(x => x.Id == id);
+            await _context.TecajFavoriti.Where(x => x.Id == favoritTecajId && x.KorisnikId == korisnikId).ExecuteDeleteAsync();
+        }
 
-        }
-        public async Task RemoveFavoritTecaj(int favoritTecajId)
-        {
-            await _context.TecajFavoriti.Where(x=> x.Id==favoritTecajId).ExecuteDeleteAsync();
-        }
-        public async Task<List<TecajFavorit>> GetAllTecajeviFavoritForCurrentUser(string id)
+        public async Task<List<Tecaj>> GetAllTecajeviFavoritForCurrentUser(string id)
         {
             var query = _context.TecajFavoriti
-                .Include(x => x.Korisnik)
+                .Include(x => x.Tecaj)
+                .Where(x => x.KorisnikId == id)
+                .Select(x => x.Tecaj)
                 .AsQueryable();
-            if (!string.IsNullOrEmpty(id))
-            {
-                query = query.Where(a => a.KorisnikId == id);
-            }
 
             return await query.ToListAsync();
+        }
+
+        public async Task<bool> VecFavorit(int tecajId, string korisnikId)
+        {
+            return await _context.TecajFavoriti.AnyAsync(x => x.KorisnikId == korisnikId && tecajId == x.TecajId);
         }
     }
 }

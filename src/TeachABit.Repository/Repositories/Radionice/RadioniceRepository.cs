@@ -221,13 +221,14 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         return await query.ToListAsync();
     }
-    public async Task<List<RadionicaFavorit>> GetAllRadioniceFavoritForCurrentUser(string id)
+    public async Task<List<Radionica>> GetAllRadioniceFavoritForCurrentUser(string id)
     {
         var query = _context.RadionicaFavorit
             .Include(x => x.Korisnik)
+            .Include(x => x.Radionica)
+            .Where(a => a.KorisnikId == id)
+            .Select(x => x.Radionica)
             .AsQueryable();
-        query = query.Where(a => a.KorisnikId== id);
-        
 
         return await query.ToListAsync();
     }

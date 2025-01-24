@@ -74,7 +74,7 @@ namespace TeachABit.Service.Services.Tecajevi
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null,  int? minOcjena = null, int? maxOcjena = null, bool? vremenski_najstarije=null)
+        public async Task<ServiceResult<List<TecajDto>>> GetTecajList(string? search = null, string? vlasnikUsername = null, decimal? minCijena = null, decimal? maxCijena = null, int? minOcjena = null, int? maxOcjena = null, bool? vremenski_najstarije = null)
         {
             var korisnik = _authorizationService.GetKorisnikOptional();
             string? vlasnikId = null;
@@ -319,7 +319,7 @@ namespace TeachABit.Service.Services.Tecajevi
         public async Task<ServiceResult<List<TecajDto>>> GetAllTecajeviFavoritForCurrentUser()
         {
             var korisnik = _authorizationService.GetKorisnikOptional();
-            if(korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+            if (korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
             var tecajevi = await _tecajeviRepository.GetAllTecajeviFavoritForCurrentUser(korisnik.Id);
             var tecajeviDto = _mapper.Map<List<TecajDto>>(tecajevi);
             return ServiceResult.Success(tecajeviDto);
@@ -327,9 +327,12 @@ namespace TeachABit.Service.Services.Tecajevi
 
         public async Task<ServiceResult> AddFavoritTecaj(int tecajId)
         {
-            var korisnik = _authorizationService.GetKorisnikOptional();
-            if(korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
-            if(tecajId==null) return ServiceResult.Failure(MessageDescriber.BadRequest("Tecaj id is required"));
+            var korisnik = _authorizationService.GetKorisnik();
+
+            var vecFavorit = await _tecajeviRepository.VecFavorit(tecajId, korisnik.Id);
+
+            if (vecFavorit) return ServiceResult.Failure(MessageDescriber.BadRequest("Već u favoritima."));
+
             TecajFavorit favorit = new()
             {
                 KorisnikId = korisnik.Id,
@@ -342,10 +345,7 @@ namespace TeachABit.Service.Services.Tecajevi
         public async Task<ServiceResult> RemoveFavoritTecaj(int favoritTecajId)
         {
             var korisnik = _authorizationService.GetKorisnik();
-            if(korisnik == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
-            if(favoritTecajId==null) return ServiceResult.Failure(MessageDescriber.BadRequest("Tecaj id is required"));
-            
-            await _tecajeviRepository.RemoveFavoritTecaj(favoritTecajId);
+            await _tecajeviRepository.RemoveFavoritTecaj(favoritTecajId, korisnik.Id);
             return ServiceResult.Success();
         }
     }
