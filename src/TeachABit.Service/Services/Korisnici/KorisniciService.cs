@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TeachABit.Model.DTOs.Korisnici;
@@ -14,7 +13,7 @@ using TeachABit.Service.Util.S3;
 
 namespace TeachABit.Service.Services.Korisnici
 {
-    public class KorisniciService(IAuthorizationService authorizationService, IAuthenticationService authenticationService, IS3BucketService s3BucketService, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulationService, IHttpContextAccessor httpContextAccessor) : IKorisniciService
+    public class KorisniciService(IAuthorizationService authorizationService, IAuthenticationService authenticationService, IS3BucketService s3BucketService, UserManager<Korisnik> userManager, IMapper mapper, IImageManipulationService imageManipulationService) : IKorisniciService
     {
         private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly IS3BucketService _s3BucketService = s3BucketService;
@@ -162,7 +161,7 @@ namespace TeachABit.Service.Services.Korisnici
                 var userForDelete = await _userManager.FindByNameAsync(username);
                 if (userForDelete == null) return ServiceResult.Failure(MessageDescriber.ItemNotFound());
                 if (!(await _authorizationService.HasPermission(LevelPristupaEnum.Admin))) return ServiceResult.Failure(MessageDescriber.Unauthorized());
-                if (await _userManager.IsInRoleAsync(userForDelete, "Admin")) ;
+                if (await _userManager.IsInRoleAsync(userForDelete, "Admin")) return ServiceResult.Failure(MessageDescriber.Unauthorized());
                 await _userManager.DeleteAsync(userForDelete);
                 return ServiceResult.Success();
             }
