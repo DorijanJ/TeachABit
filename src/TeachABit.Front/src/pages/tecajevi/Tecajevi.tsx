@@ -9,7 +9,6 @@ import globalStore from "../../stores/GlobalStore";
 import { Tecaj } from "./Tecaj";
 import { observer } from "mobx-react";
 import NumberRangeSelector from "./NumberRangeSelector.tsx";
-import TecajeviFilter from "./TecajeviFilter.tsx";
 
 interface TecajSearch {
     search?: string | undefined;

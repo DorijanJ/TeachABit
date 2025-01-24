@@ -4,8 +4,6 @@ import { LevelPristupa } from "../../../enums/LevelPristupa";
 import { observer } from "mobx-react";
 import globalStore from "../../../stores/GlobalStore";
 
-const USERNAME_KEY = "username";
-
 interface PrivateRouteProps {
     page: JSX.Element;
     withNavigation?: boolean | undefined;
