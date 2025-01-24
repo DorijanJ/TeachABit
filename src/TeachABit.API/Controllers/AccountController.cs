@@ -155,6 +155,10 @@ namespace TeachABit.API.Controllers
         {
             return GetControllerResult(await _korisniciService.DeleteKorisnik(username));
         }
-
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> UpadteName(string username)
+        {
+            return GetControllerResult(await _korisniciService.UpdateName(username));
+        }
     }
 }

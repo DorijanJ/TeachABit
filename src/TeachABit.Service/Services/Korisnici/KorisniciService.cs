@@ -170,5 +170,13 @@ namespace TeachABit.Service.Services.Korisnici
             await _userManager.DeleteAsync(user);
             return _authenticationService.Logout();
         }
+        public async Task<ServiceResult<KorisnikDto>> UpdateName(string username)
+        {
+            var korisnik = _authorizationService.GetKorisnik();
+            korisnik.UserName = username;
+            await _userManager.UpdateAsync(korisnik);
+            KorisnikDto korisnikDto= _mapper.Map<KorisnikDto>(korisnik);
+            return ServiceResult.Success(korisnikDto);
+        }
     }
 }

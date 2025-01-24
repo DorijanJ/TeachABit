@@ -13,5 +13,6 @@ namespace TeachABit.Service.Services.Korisnici
         Task<ServiceResult> UtisajKorisnika(string username);
         Task<ServiceResult> OdTisajKorisnika(string username);
         Task<ServiceResult> DeleteKorisnik(string username);
+        public Task<ServiceResult<KorisnikDto>> UpdateName(string username);
     }
 }
