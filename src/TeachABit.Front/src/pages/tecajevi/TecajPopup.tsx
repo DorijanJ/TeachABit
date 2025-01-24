@@ -34,7 +34,7 @@ export default function TecajPopup(props: Props) {
         naziv: props.tecaj?.naziv ?? "",
         id: props.tecaj?.id,
         opis: props.tecaj?.opis ?? "",
-        cijena: props.tecaj?.cijena,
+        cijena: props.tecaj?.cijena ?? 0,
         naslovnaSlikaBase64: "",
     });
 
@@ -46,7 +46,7 @@ export default function TecajPopup(props: Props) {
                 naziv: props.tecaj.naziv ?? "",
                 id: props.tecaj.id,
                 opis: props.tecaj.opis ?? "",
-                cijena: props.tecaj?.cijena,
+                cijena: props.tecaj?.cijena ?? 0,
                 naslovnaSlikaBase64: "",
             });
         }
@@ -80,7 +80,12 @@ export default function TecajPopup(props: Props) {
 
     const isValidPrice = useMemo(() => {
         const value = tecaj.cijena;
-        if (value == undefined || isNaN(value) || value < minCijena || value > maxCijena) {
+        if (
+            value == undefined ||
+            isNaN(value) ||
+            value < minCijena ||
+            value > maxCijena
+        ) {
             return false;
         }
 
@@ -89,15 +94,13 @@ export default function TecajPopup(props: Props) {
 
     const isValidNaziv = useMemo(() => {
         const naziv = tecaj.naziv;
-        if (naziv.length == 0 || naziv.length > maxNazivLength)
-            return false;
+        if (naziv.length == 0 || naziv.length > maxNazivLength) return false;
         return true;
     }, [tecaj.naziv]);
 
     const isValidOpis = useMemo(() => {
         const opis = tecaj.opis;
-        if (opis.length == 0 || opis.length > maxOpisLength)
-            return false;
+        if (opis.length == 0 || opis.length > maxOpisLength) return false;
         return true;
     }, [tecaj.opis]);
 
@@ -166,11 +169,8 @@ export default function TecajPopup(props: Props) {
                         }))
                     }
                 />
-                
-                <CijenaFancyInput
-                    tecaj={tecaj}
-                    setTecaj={setTecaj}
-                />
+
+                <CijenaFancyInput tecaj={tecaj} setTecaj={setTecaj} />
 
                 <div
                     style={{
