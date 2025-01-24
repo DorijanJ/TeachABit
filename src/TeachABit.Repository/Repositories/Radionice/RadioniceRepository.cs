@@ -9,7 +9,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 {
     private readonly TeachABitContext _context = context;
 
-    public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null)
+    public async Task<List<Radionica>> GetRadionicaList(string? search = null, string? trenutniKorisnikId = null, string? vlasnikId = null, decimal? minCijena = null, decimal? maxCijena = null)
 
     {
         IQueryable<Radionica> query = _context.Radionice
@@ -21,10 +21,17 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             var lowerSearch = search.ToLower();
             query = query.Where(x => x.Naziv.ToLower().Contains(lowerSearch));
         }
+        
+        if (minCijena != null) query = query.Where(x => x.Cijena >= minCijena);
+        if (maxCijena != null) query = query.Where(x => x.Cijena <= maxCijena);
 
         if (!string.IsNullOrEmpty(trenutniKorisnikId))
         {
-            query = query.Include(x => x.RadionicaFavoriti.Where(f => f.KorisnikId == trenutniKorisnikId));
+            query = query
+                .Include(x => x.RadionicaFavoriti
+                    .Where(f => f.KorisnikId == trenutniKorisnikId))
+                .Include(x => x.Ocjene
+                    .Where(x => x.KorisnikId == trenutniKorisnikId));
         }
 
         if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);

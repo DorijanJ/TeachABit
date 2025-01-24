@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,9 +14,9 @@ namespace TeachABit.Service.Util.Token
         private readonly IConfiguration _configuration = configuration;
         private readonly UserManager<Korisnik> _userManager = userManager;
 
-        public async Task<string?> CreateToken(Korisnik user)
+        public async Task<string> CreateToken(Korisnik user)
         {
-            if (user.UserName == null || user.Email == null) return null;
+            if (user.UserName == null || user.Email == null) throw new Exception("Greška pri stvaranju tokena.");
 
             var roles = await _userManager.GetRolesAsync(user);
             List<Claim> roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
@@ -29,8 +30,12 @@ namespace TeachABit.Service.Util.Token
 
             claims.AddRange(roleClaims);
 
-            var secretKey = _configuration["JwtSettings:Key"];
-            if (secretKey == null) return null;
+            if (user.KorisnikStatusId.HasValue)
+            {
+                claims.Add(new(CustomClaimTypes.KorisnikStatus, user.KorisnikStatusId.Value.ToString()));
+            }
+
+            var secretKey = _configuration["JwtSettings:Key"] ?? throw new ConfigurationErrorsException();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

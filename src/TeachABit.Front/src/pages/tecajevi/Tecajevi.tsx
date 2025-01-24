@@ -1,21 +1,19 @@
-import {useEffect, useState} from "react";
-import {TecajDto} from "../../models/TecajDto";
+import { useEffect, useState } from "react";
+import { TecajDto } from "../../models/TecajDto";
 import requests from "../../api/agent";
-import {Button, Menu, MenuItem} from "@mui/material";
-import {useGlobalContext} from "../../context/Global.context";
-import Tecaj from "./Tecaj";
+import { Button, Menu, MenuItem } from "@mui/material";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
 import TecajPopup from "./TecajPopup";
+import globalStore from "../../stores/GlobalStore";
+import { Tecaj } from "./Tecaj";
+import { observer } from "mobx-react";
 import PriceRangeSelector from "./PriceRangeSelector.tsx";
-import {IconButton} from "@mui/material";
+import { IconButton } from "@mui/material";
 
-
-export default function Tecajevi() {
+export const Tecajevi = () => {
     const [tecajList, setTecajList] = useState<TecajDto[]>([]);
-    const globalContext = useGlobalContext();
-    const {buildRequest} = useRequestBuilder();
-
+    const { buildRequest } = useRequestBuilder();
 
     const [popupOpen, setDialogOpen] = useState(false);
     const [reversedOrder, setReversedOrder] = useState<boolean>(false);
@@ -26,7 +24,6 @@ export default function Tecajevi() {
     const [LikesRangeOpen, setLikesRangeOpen] = useState(false);
     const [likesRange, setLikesRange] = useState<[number, number]>([0, 100]);
 
-
     const [OwnerSelectorOpen, setOwnerSelectorOpen] = useState(false);
     const [owner, setOwner] = useState<string | undefined>(undefined);
 
@@ -36,27 +33,24 @@ export default function Tecajevi() {
     const handlePriceRangePopupOpen = () => setPriceRangeOpen(true);
     const handlePriceRangePopupClose = () => setPriceRangeOpen(false);
 
-    const handleNewestFirst =() => {
-        if(reversedOrder){
-            setTecajList(reverseList(tecajList))
-            setReversedOrder(false)
+    const handleNewestFirst = () => {
+        if (reversedOrder) {
+            setTecajList(reverseList(tecajList));
+            setReversedOrder(false);
         }
     };
-    const handleOldestFirst =() => {
-        if(!reversedOrder){
-            setTecajList(reverseList(tecajList))
-            setReversedOrder(true)
+    const handleOldestFirst = () => {
+        if (!reversedOrder) {
+            setTecajList(reverseList(tecajList));
+            setReversedOrder(true);
         }
     };
-
 
     const handleOwnerPopupOpen = () => setOwnerSelectorOpen(true);
     const handleOwnerPopupClose = () => setOwnerSelectorOpen(false);
 
     const handleLikesPopupOpen = () => setLikesRangeOpen(true);
     const handleLikesPopupClose = () => setLikesRangeOpen(false);
-
-
 
     const GetTecajList = async (
         search: string | undefined = undefined,
@@ -82,7 +76,6 @@ export default function Tecajevi() {
     const reverseList = (list: TecajDto[]): TecajDto[] => {
         return [...list].reverse(); // Create a copy and reverse
     };
-
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -119,12 +112,9 @@ export default function Tecajevi() {
                     flexWrap: "wrap",
                 }}
             >
-                <SearchBox onSearch={GetTecajList}/>
+                <SearchBox onSearch={GetTecajList} />
 
-                <Button
-                    variant="contained"
-                    onClick={handleClick}
-                >
+                <Button variant="contained" onClick={handleClick}>
                     Filtriraj
                 </Button>
                 <Menu
@@ -145,13 +135,15 @@ export default function Tecajevi() {
                     }}
                 >
                     <MenuItem
-                        sx={{width: "220px"}}
+                        sx={{ width: "220px" }}
                         onClick={() => {
                             handleClose();
                             handlePriceRangePopupOpen();
                         }}
                     >
-                        <div style={{display: "flex", gap: "10px"}}>Cijena</div>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                            Cijena
+                        </div>
                     </MenuItem>
                     <MenuItem
                         onClick={() => {
@@ -159,7 +151,9 @@ export default function Tecajevi() {
                             handleOwnerPopupOpen();
                         }}
                     >
-                        <div style={{display: "flex", gap: "10px"}}>Po vlasniku</div>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                            Po vlasniku
+                        </div>
                     </MenuItem>
                     <MenuItem
                         onClick={() => {
@@ -167,7 +161,9 @@ export default function Tecajevi() {
                             handleLikesPopupOpen();
                         }}
                     >
-                        <div style={{display: "flex", gap: "10px"}}>Po ocjeni</div>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                            Po ocjeni
+                        </div>
                     </MenuItem>
                     <MenuItem
                         onClick={() => {
@@ -175,7 +171,9 @@ export default function Tecajevi() {
                             handleNewestFirst();
                         }}
                     >
-                        <div style={{display: "flex", gap: "10px"}}>Najnovije</div>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                            Najnovije
+                        </div>
                     </MenuItem>
                     <MenuItem
                         onClick={() => {
@@ -183,32 +181,33 @@ export default function Tecajevi() {
                             handleOldestFirst();
                         }}
                     >
-                        <div style={{display: "flex", gap: "10px"}}>Najstarije</div>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                            Najstarije
+                        </div>
                     </MenuItem>
-
                 </Menu>
 
-
                 {PriceRangeOpen && (
-                    <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
                         <div>
                             <PriceRangeSelector
                                 min={0}
                                 max={100}
                                 onChange={(value: [number, number]) => {
-                                    setPriceRange(value); // Update state with the new range
-                                    GetTecajList(
-                                        undefined,
-                                        value[0].toString(),
-                                        value[1].toString(), // Apply new price filter
-                                        likesRange[0].toString(),
-                                        likesRange[1].toString(),
-                                        owner
-                                    );
+                                    setPriceRange(value); // Update state with the new
                                 }}
                             />
 
-                            <p>Raspon cijene: ${priceRange[0]} - ${priceRange[1]}</p>
+                            <p>
+                                Raspon cijene: ${priceRange[0]} - $
+                                {priceRange[1]}
+                            </p>
                         </div>
                         <IconButton
                             onClick={() => {
@@ -228,12 +227,16 @@ export default function Tecajevi() {
                         >
                             ✖
                         </IconButton>
-
                     </div>
-
                 )}
                 {LikesRangeOpen && (
-                    <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
                         <div>
                             <PriceRangeSelector
                                 min={1}
@@ -251,7 +254,9 @@ export default function Tecajevi() {
                                 }}
                             />
 
-                            <p>Raspon ocjene: {priceRange[0]} - {priceRange[1]}</p>
+                            <p>
+                                Raspon ocjene: {priceRange[0]} - {priceRange[1]}
+                            </p>
                         </div>
                         <IconButton
                             onClick={() => {
@@ -271,11 +276,16 @@ export default function Tecajevi() {
                         >
                             ✖
                         </IconButton>
-
                     </div>
                 )}
                 {OwnerSelectorOpen && (
-                    <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
                         <div>
                             <SearchBox
                                 onSearch={(text) => {
@@ -292,7 +302,6 @@ export default function Tecajevi() {
                                 height="3rem"
                                 width="5rem"
                             />
-
                         </div>
                         <IconButton
                             onClick={() => {
@@ -312,13 +321,10 @@ export default function Tecajevi() {
                         >
                             ✖
                         </IconButton>
-
                     </div>
                 )}
 
-
-
-                {globalContext.userIsLoggedIn && (
+                {globalStore.currentUser !== undefined && (
                     <Button
                         variant="contained"
                         onClick={() => {
@@ -328,7 +334,6 @@ export default function Tecajevi() {
                         Stvori tecaj
                     </Button>
                 )}
-
 
                 <TecajPopup
                     isOpen={popupOpen}
@@ -345,7 +350,7 @@ export default function Tecajevi() {
                 }}
             >
                 Tečajevi:
-                <hr style={{border: "1px solid #cccccc"}}/>
+                <hr style={{ border: "1px solid #cccccc" }} />
             </div>
             <div
                 style={{
@@ -358,10 +363,11 @@ export default function Tecajevi() {
                 }}
             >
                 {tecajList.map((tecaj) => (
-                    <Tecaj key={"tecaj" + tecaj.id} tecaj={tecaj}/>
+                    <Tecaj key={"tecaj" + tecaj.id} tecaj={tecaj} />
                 ))}
             </div>
         </div>
-    )
-        ;
-}
+    );
+};
+
+export default observer(Tecajevi);

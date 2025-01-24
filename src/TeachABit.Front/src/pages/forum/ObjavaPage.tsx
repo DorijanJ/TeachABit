@@ -9,12 +9,13 @@ import UserLink from "../profil/UserLink";
 import ObjavaKomentari from "./ObjavaKomentari";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LikeInfo from "./LikeInfo";
-import { useGlobalContext } from "../../context/Global.context";
 import EditIcon from "@mui/icons-material/Edit";
 import ObjavaEditor from "./ObjavaEditor";
 import { LevelPristupa } from "../../enums/LevelPristupa";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
-export default function ObjavaPage() {
+export const ObjavaPage = () => {
     const [objava, setObjava] = useState<ObjavaDto>({
         sadrzaj: "",
         naziv: "",
@@ -40,7 +41,6 @@ export default function ObjavaPage() {
     };
 
     const navigate = useNavigate();
-    const globalContext = useGlobalContext();
 
     const likeObjava = async () => {
         try {
@@ -182,7 +182,7 @@ export default function ObjavaPage() {
                         alignItems={"center"}
                         gap="10px"
                     >
-                        {globalContext.currentUser?.id === objava.vlasnikId && (
+                        {globalStore.currentUser?.id === objava.vlasnikId && (
                             <IconButton
                                 onClick={() => setIsEditing(true)}
                                 sx={{
@@ -193,8 +193,8 @@ export default function ObjavaPage() {
                                 <EditIcon color="primary"></EditIcon>
                             </IconButton>
                         )}
-                        {(globalContext.currentUser?.id === objava.vlasnikId ||
-                            globalContext.hasPermissions(
+                        {(globalStore.currentUser?.id === objava.vlasnikId ||
+                            globalStore.hasPermissions(
                                 LevelPristupa.Moderator
                             )) && (
                             <>
@@ -228,4 +228,5 @@ export default function ObjavaPage() {
             </Card>
         </>
     );
-}
+};
+export default observer(ObjavaPage);
