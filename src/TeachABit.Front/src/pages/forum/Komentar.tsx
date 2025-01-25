@@ -20,8 +20,6 @@ import globalStore from "../../stores/GlobalStore";
 interface Props {
     komentar: KomentarDto;
     refreshData: () => Promise<any>;
-    selectedNadKomentarId?: number | undefined;
-    setSelectedNadKomentarId: Dispatch<SetStateAction<number | undefined>>;
     level?: number | undefined;
     collapsedComments: Record<number, boolean>;
     toggleCollapse: (komentarId: number | undefined) => void;
@@ -43,6 +41,7 @@ export const Komentar = (props: Props) => {
         props.komentar.liked
     );
     const [isEditing, setIsEditing] = useState(false);
+    const [isReplying, setIsReplying] = useState(false);
 
     const likeKomentar = async () => {
         await requests.postWithLoading(
@@ -322,9 +321,7 @@ export const Komentar = (props: Props) => {
                                     <IconButton
                                         sx={{ width: "30px", height: "30px" }}
                                         onClick={() => {
-                                            props.setSelectedNadKomentarId(
-                                                props.komentar.id
-                                            );
+                                            setIsReplying(true);
                                         }}
                                     >
                                         <ReplyIcon
@@ -338,11 +335,12 @@ export const Komentar = (props: Props) => {
                     </div>
                 </div>
             </div>
+
             <KomentarEditor
                 refreshData={() => props.refreshData()}
-                isOpen={props.selectedNadKomentarId === props.komentar.id}
-                onClose={() => props.setSelectedNadKomentarId(undefined)}
-                nadKomentarId={props.selectedNadKomentarId}
+                isOpen={isReplying}
+                onClose={() => setIsReplying(false)}
+                nadKomentarId={props.komentar.id}
             />
         </>
     );

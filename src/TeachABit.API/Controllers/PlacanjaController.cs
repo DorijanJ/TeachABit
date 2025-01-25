@@ -71,6 +71,11 @@ namespace TeachABit.API.Controllers
 
                     if (korisnikId != null && tecajId != null)
                         await _placanjaService.CreateTecajPlacanje(korisnikId, int.Parse(tecajId));
+
+                    metadata.TryGetValue("radionicaId", out string? radionicaId);
+
+                    if (korisnikId != null && radionicaId != null)
+                        await _placanjaService.CreateRadionicaPlacanje(korisnikId, int.Parse(radionicaId));
                 }
             }
 

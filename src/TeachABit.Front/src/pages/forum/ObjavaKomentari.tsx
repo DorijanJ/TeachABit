@@ -37,9 +37,6 @@ export const ObjavaKomentari = (props: Props) => {
         }
     };
 
-    const [selectedNadKomentarId, setSelectedNadKomentarId] =
-        useState<number>();
-
     useEffect(() => {
         getKomentarListByObjavaId(props.objavaId);
     }, [props.objavaId]);
@@ -49,15 +46,13 @@ export const ObjavaKomentari = (props: Props) => {
         (komentari: KomentarDto[], level: number) => {
             return komentari.map((komentar: KomentarDto) => (
                 <div
+                    key={"komentarobjava" + komentar.id?.toString() + level}
                     style={{
                         display: "flex",
                         flexDirection: "column",
                     }}
                 >
                     <Komentar
-                        key={komentar.id}
-                        setSelectedNadKomentarId={setSelectedNadKomentarId}
-                        selectedNadKomentarId={selectedNadKomentarId}
                         komentar={komentar}
                         refreshData={() =>
                             getKomentarListByObjavaId(props.objavaId)
