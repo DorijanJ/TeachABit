@@ -12,7 +12,7 @@
                         <p>Primili smo zahtjev za resetiranje lozinke za vaš TeachABit račun.</p>
                         <p>Molimo vas da koristite donju poveznicu za resetiranje lozinke:</p>
                         <p style='text-align: center; margin: 60px'>
-                            <a href='{resetUrl}' style='background-color: #5a9; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;  min-width: 200px'>Resetirajte svoju lozinku</a>
+                            <a clicktracking='off' href='{resetUrl}' style='background-color: #5a9; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;  min-width: 200px'>Resetirajte svoju lozinku</a>
                         </p>
                         <p>Ova poveznica vrijedi samo ograničeno vrijeme. Ako niste tražili resetiranje lozinke, slobodno ignorirajte ovaj email.</p>
                         <p>S poštovanjem,<br/>support@TeachABit</p>
@@ -30,7 +30,7 @@
                         <p>Primili smo zahtjev za registraciju TeachABit računa s vašom mail adresom.</p>
                         <p>Molimo vas da koristite donju poveznicu za potvrdu mail adrese:</p>
                         <p style='text-align: center; margin: 60px 10px;'>
-                            <a href='{confirmationUrl}' style='background-color: #5a9; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; min-width: 200px'>Potvrdite mail adresu</a>
+                            <a clicktracking='off' href='{confirmationUrl}' style='background-color: #5a9; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; min-width: 200px'>Potvrdite mail adresu</a>
                         </p>
                         <p>Ova poveznica vrijedi samo ograničeno vrijeme. Ako niste tražili stvaranje računa, slobodno ignorirajte ovaj email.</p>
                         <p>S poštovanjem,<br/>support@TeachABit</p>
