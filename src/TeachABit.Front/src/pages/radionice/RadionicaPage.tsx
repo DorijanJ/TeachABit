@@ -5,6 +5,7 @@ import {
     Box,
     IconButton,
     Rating,
+    Button,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -23,14 +24,23 @@ import globalStore from "../../stores/GlobalStore";
 import { observer } from "mobx-react";
 import React from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import RadionicaUputePopup from "./RadionicaUputePopup";
+import { ObavijestDto } from "../../models/ObavijestDto";
+import RadionicaPrijave from "./RadionicePrijave";
 
 export const RadionicaPage = () => {
     const [isLiked, setIsLiked] = useState(false);
-    const handleLiked = async () => {
-        setIsLiked(!isLiked);
-        await requests.postWithLoading("radionice/favoriti", isLiked);
+    const handleLiked = async (fav: boolean) => {
+        if (fav)
+            await requests.postWithLoading(`radionice/${radionica.id}/favorit`);
+        else
+            await requests.deleteWithLoading(
+                `radionice/${radionica.id}/favorit`
+            );
+        if (radionicaId) getRadionicaById(parseInt(radionicaId));
     };
-    const [value, setValue] = React.useState<number | null>(2);
+    const [isOpenRadionicaPopup, setIsOpenRadionicaPopu] = useState(false);
+    const [value, setValue] = React.useState<number | null>(0);
     const [radionica, setRadionica] = useState<RadionicaDto>({
         naziv: "",
         opis: "",
@@ -75,12 +85,22 @@ export const RadionicaPage = () => {
     const navigate = useNavigate();
 
     const [isPotvrdaOpen, setIsPotvrdaOpen] = useState(false);
+    const [prijavaPopisOtvoren, setPrijavaPopisOtvoren] = useState(false);
 
     const deleteRadionica = async () => {
         const response = await requests.deleteWithLoading(
             `radionice/${radionicaId}`
         );
         if (response && response.message?.severity === "success") navigate(-1);
+    };
+
+    const posaljiObavijest = async (obavijest: ObavijestDto) => {
+        await requests.postWithLoading(
+            `radionice/${obavijest.radionicaId}/obavijest`,
+            obavijest
+        );
+        setIsOpenRadionicaPopu(false);
+        getRadionicaById(obavijest.radionicaId);
     };
 
     const refreshData = async () => {
@@ -95,6 +115,15 @@ export const RadionicaPage = () => {
 
     return (
         <>
+            {prijavaPopisOtvoren &&
+                globalStore.currentUser?.id === radionica.vlasnikId &&
+                radionica.id && (
+                    <RadionicaPrijave
+                        radionicaId={radionica.id}
+                        onClose={() => setPrijavaPopisOtvoren(false)}
+                        kapacitet={radionica.maksimalniKapacitet}
+                    />
+                )}
             {isPotvrdaOpen && (
                 <PotvrdiPopup
                     onConfirm={() => deleteRadionica()}
@@ -147,16 +176,56 @@ export const RadionicaPage = () => {
                             }}
                         />
                     </IconButton>
-                    <UserLink
-                        user={{
-                            id: radionica.vlasnikId,
-                            username: radionica.vlasnikUsername,
-                            profilnaSlikaVersion:
-                                radionica.vlasnikProfilnaSlikaVersion,
+                    {isOpenRadionicaPopup && (
+                        <RadionicaUputePopup
+                            radionica={radionica}
+                            onClose={() => setIsOpenRadionicaPopu(false)}
+                            onConfirm={(r) => posaljiObavijest(r)}
+                        />
+                    )}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: "20px",
                         }}
-                    />
+                    >
+                        {globalStore.currentUser?.id ===
+                            radionica.vlasnikId && (
+                            <>
+                                <Button
+                                    disabled={radionica.obavijestPoslana}
+                                    variant={
+                                        radionica.obavijestPoslana
+                                            ? "contained"
+                                            : "outlined"
+                                    }
+                                    onClick={() => setIsOpenRadionicaPopu(true)}
+                                >
+                                    {radionica.obavijestPoslana
+                                        ? "Obavijest poslana"
+                                        : "Pošalji obavijest"}
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={() =>
+                                        setPrijavaPopisOtvoren((prev) => !prev)
+                                    }
+                                >
+                                    {"Pregled prijava"}
+                                </Button>
+                            </>
+                        )}
+                        <UserLink
+                            user={{
+                                id: radionica.vlasnikId,
+                                username: radionica.vlasnikUsername,
+                                profilnaSlikaVersion:
+                                    radionica.vlasnikProfilnaSlikaVersion,
+                            }}
+                        />
+                    </div>
                 </Box>
-
                 <CardContent
                     sx={{
                         display: "flex",
@@ -280,33 +349,37 @@ export const RadionicaPage = () => {
                             alignItems={"center"}
                             gap="10px"
                         >
-                            <IconButton
-                                onClick={() => {
-                                    setIsLiked(!isLiked);
-                                    handleLiked();
-                                }}
-                                sx={{
-                                    backgroundColor: "white",
-                                    color: isLiked ? "#f44336" : "grey",
-                                    "&:hover": {
-                                        backgroundColor: "#fce4ec",
-                                    },
-                                }}
-                            >
-                                <FavoriteIcon />
-                            </IconButton>
-
-                            {globalStore.currentUser?.id ===
+                            {globalStore.currentUser?.id !==
                                 radionica.vlasnikId && (
                                 <IconButton
-                                    onClick={() => setIsEditing(true)}
+                                    onClick={() => {
+                                        handleLiked(!isLiked);
+                                        setIsLiked(!isLiked);
+                                    }}
                                     sx={{
-                                        width: "40px",
-                                        height: "40px",
+                                        backgroundColor: "white",
+                                        color: isLiked ? "#f44336" : "grey",
+                                        "&:hover": {
+                                            backgroundColor: "#fce4ec",
+                                        },
                                     }}
                                 >
-                                    <EditIcon color="primary"></EditIcon>
+                                    <FavoriteIcon />
                                 </IconButton>
+                            )}
+                            {globalStore.currentUser?.id ===
+                                radionica.vlasnikId && (
+                                <>
+                                    <IconButton
+                                        onClick={() => setIsEditing(true)}
+                                        sx={{
+                                            width: "40px",
+                                            height: "40px",
+                                        }}
+                                    >
+                                        <EditIcon color="primary"></EditIcon>
+                                    </IconButton>
+                                </>
                             )}
                             {(globalStore.currentUser?.id ===
                                 radionica.vlasnikId ||

@@ -1,6 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
 using System.Net.Mail;
+using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
@@ -258,9 +260,9 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
     public async Task<ServiceResult> SendObavijest(ObavijestDto obavijest)
     {
         var prijave = await _radioniceRepository.GetPrijaveForRadionica(obavijest.RadionicaId);
-        var radionica = await _radioniceRepository.GetRadionica(obavijest.RadionicaId);
+        var radionica = await _radioniceRepository.GetRadionicaByIdWithTracking(obavijest.RadionicaId);
 
-        if (radionica == null) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+        if (radionica == null || radionica.ObavijestPoslana == true) return ServiceResult.Failure(MessageDescriber.Unauthorized());
 
         if (radionica.VlasnikId != _authorizationService.GetKorisnik().Id)
         {
@@ -272,20 +274,23 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
             return ServiceResult.Failure(MessageDescriber.BadRequest("Nitko nije prijavljen na radionicu... :("));
         }
 
+        radionica.ObavijestPoslana = true;
+        await _radioniceRepository.UpdateRadionica(radionica);
+
         string[] mails = [];
 
         foreach (var prijava in prijave)
         {
             if (!string.IsNullOrEmpty(prijava.Korisnik.Email))
             {
-                mails.Append(prijava.Korisnik.Email);
+                mails = mails.Append(prijava.Korisnik.Email).ToArray();
             }
         }
 
         MailMessage message = new()
         {
-            Subject = obavijest.Naslov,
-            Body = MailDescriber.RadionicaPrijava(radionica.Naziv, obavijest.Poruka),
+            Subject = WebUtility.HtmlEncode(obavijest.Naslov),
+            Body = MailDescriber.RadionicaPrijava(WebUtility.HtmlEncode(radionica.Naziv), WebUtility.HtmlEncode(obavijest.Poruka)),
             IsBodyHtml = true
         };
 
@@ -327,4 +332,14 @@ public class RadioniceService(IRadioniceRepository radioniceRepository, UserMana
         return ServiceResult.Success();
     }
 
+    public async Task<ServiceResult<List<KorisnikDto>>> GetPrijaveZaRadionicu(int radionicaId)
+    {
+        var korisnik = _authorizationService.GetKorisnik();
+
+        var radionica = await _radioniceRepository.GetRadionica(radionicaId);
+
+        if (radionica == null || korisnik.Id != radionica.VlasnikId) return ServiceResult.Failure(MessageDescriber.Unauthorized());
+
+        return ServiceResult.Success(_mapper.Map<List<KorisnikDto>>(await _radioniceRepository.GetKorisniciPrijavitiZaRadionicu(radionicaId)));
+    }
 }

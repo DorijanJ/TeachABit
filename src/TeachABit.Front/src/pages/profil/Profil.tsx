@@ -176,6 +176,7 @@ export const Profil = () => {
                 flexDirection={"column"}
                 justifyContent={"flex-start"}
                 gap="20px"
+                minWidth={"280px"}
             >
                 <Box
                     display="flex"
@@ -267,11 +268,21 @@ export const Profil = () => {
                                 style={{
                                     display: "flex",
                                     flexDirection: "row",
+                                    flexWrap: "wrap",
                                     gap: "10px",
+                                    width: "90%",
                                     alignItems: "center",
+                                    justifyContent: "center",
                                 }}
                             >
-                                <Typography variant="h4" sx={{ margin: 0 }}>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        margin: 0,
+                                        textOverflow: "ellipsis",
+                                        overflow: "hidden",
+                                    }}
+                                >
                                     <b>{user.username} </b>
                                 </Typography>
                                 {user.verifikacijaStatusId ===
@@ -336,7 +347,8 @@ export const Profil = () => {
                                         width: "100%",
                                         justifyContent: "center",
                                         gap: "10px",
-                                        height: "70px",
+                                        flexWrap: "wrap",
+                                        height: "40px",
                                     }}
                                 >
                                     {username ===
@@ -347,7 +359,6 @@ export const Profil = () => {
                                                 <Button
                                                     disabled
                                                     variant="outlined"
-                                                    sx={{ height: "30px" }}
                                                 >
                                                     {
                                                         user.verifikacijaStatusNaziv
@@ -359,7 +370,6 @@ export const Profil = () => {
                                                     ?.username &&
                                                 !user.verifikacijaStatusId && (
                                                     <Button
-                                                        sx={{ height: "30px" }}
                                                         variant="contained"
                                                         onClick={() =>
                                                             setVerificationDialog(
@@ -394,7 +404,6 @@ export const Profil = () => {
                                                 LevelPristupa.Moderator
                                         ) === undefined && (
                                             <Button
-                                                sx={{ height: "30px" }}
                                                 onClick={() => {
                                                     if (!username) return;
                                                     if (

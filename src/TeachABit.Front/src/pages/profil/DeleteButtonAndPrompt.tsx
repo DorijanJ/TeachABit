@@ -12,7 +12,6 @@ export default function DeleteButtonAndPrompt(props: Props) {
     return (
         <>
             <Button
-                sx={{ height: "30px" }}
                 color="error"
                 variant="contained"
                 onClick={() => setIsPotvrdaOpen(true)}

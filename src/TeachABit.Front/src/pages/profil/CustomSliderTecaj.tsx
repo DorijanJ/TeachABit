@@ -14,14 +14,15 @@ export default function CustomSliderTecaj({ tecajevi }: Props) {
     const [page, setPage] = useState(1);
 
     useEffect(() => {
-        if (containerRef.current) setItemCount(Math.floor(containerRef.current.clientWidth / 360));
-    }), [containerRef.current]
+        if (containerRef.current)
+            setItemCount(Math.floor(containerRef.current.clientWidth / 500));
+    }),
+        [containerRef.current];
 
     const scroll = (direction: "left" | "right") => {
         if (direction === "left") {
             if (page > 1) setPage((prev) => prev - 1);
-        }
-        else if (direction === "right" && itemCount > 0) {
+        } else if (direction === "right" && itemCount > 0) {
             if (page < tecajevi.length / itemCount) setPage((prev) => prev + 1);
         }
     };
@@ -29,8 +30,8 @@ export default function CustomSliderTecaj({ tecajevi }: Props) {
     const tecajeviPage = useMemo(() => {
         const skip = (page - 1) * itemCount;
         const take = itemCount;
-        return tecajevi.slice(skip, skip + take)
-    }, [itemCount, page])
+        return tecajevi.slice(skip, skip + take);
+    }, [itemCount, page]);
 
     return (
         <Box
@@ -47,12 +48,11 @@ export default function CustomSliderTecaj({ tecajevi }: Props) {
                 ref={containerRef}
                 display="grid"
                 minWidth={"360px"}
-                gridTemplateColumns={`repeat(${itemCount}, minmax(350px, 1fr))`}
+                gridTemplateColumns={`repeat(${itemCount}, minmax(500px, 1fr))`}
                 overflow="hidden"
                 width="100%"
                 gap="20px"
                 padding="10px"
-                height={"417px"}
             >
                 {tecajeviPage.map((tecaj) => (
                     <Tecaj tecaj={tecaj} key={"tecaj" + tecaj.id} />
@@ -83,6 +83,6 @@ export default function CustomSliderTecaj({ tecajevi }: Props) {
                     →
                 </Button>
             </div>
-        </Box >
+        </Box>
     );
 }

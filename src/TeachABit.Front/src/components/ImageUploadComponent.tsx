@@ -52,16 +52,6 @@ export default function ImageUploadComponent(props: Props) {
                         Odabir slike
                     </Button>
                 </label>
-                <span
-                    style={{
-                        marginLeft: "10px",
-                        width: "90%",
-                        wordWrap: "break-word",
-                        textAlign: "center",
-                    }}
-                >
-                    {file ? file.name : ""}
-                </span>
                 {file && (
                     <div>{(file.size / 1024 / 1024).toPrecision(3)} mb</div>
                 )}
@@ -69,7 +59,7 @@ export default function ImageUploadComponent(props: Props) {
                     <img
                         src={URL.createObjectURL(file)}
                         style={{
-                            width: props.width ?? "50%",
+                            width: props.width ?? "80%",
                             height: props.height ?? "auto",
                             objectFit: "cover",
                             aspectRatio: props.ratio ?? "auto",

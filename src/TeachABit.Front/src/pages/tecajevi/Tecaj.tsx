@@ -66,8 +66,9 @@ export const Tecaj = (props: Props) => {
                     transform: "scale(1.03)",
                     border: "1px solid #3a7ca5",
                 },
-                minWidth: "340px",
-                maxWidth: "40vw",
+                height: "auto",
+                width: "480px",
+                minWidth: "250px",
             }}
         >
             <CardContent
@@ -111,14 +112,24 @@ export const Tecaj = (props: Props) => {
                             {props.tecaj.naziv}
                         </Typography>
                     </Box>
-                    <div style={{ width: "100%", aspectRatio: "2/1" }}>
+                    <div
+                        style={{
+                            width: "100%",
+                            aspectRatio: "2/1",
+                            position: "relative",
+                            overflow: "hidden",
+                        }}
+                    >
                         {props.tecaj.naslovnaSlikaVersion ? (
                             <img
                                 style={{
                                     borderRadius: "10px",
-                                    maxHeight: "100%",
                                     width: "100%",
-                                    objectFit: "contain",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
                                 }}
                                 src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
                                     props.tecaj?.naslovnaSlikaVersion
@@ -133,8 +144,16 @@ export const Tecaj = (props: Props) => {
                                     width: "100%",
                                     height: "100%",
                                     backgroundColor: "lightblue",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
                                 }}
-                            />
+                            >
+                                {"Nema slike ¯\\_(ツ)_/¯"}
+                            </div>
                         )}
                     </div>
                 </div>
@@ -142,40 +161,57 @@ export const Tecaj = (props: Props) => {
                     style={{
                         display: "flex",
                         width: "100%",
-                        justifyContent: "flex-end",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
                         gap: "10px",
                         alignItems: "center",
                     }}
                 >
-                    {props.tecaj.ocjena}/5
-                    <Rating value={props.tecaj.ocjena} readOnly />
-                    <div onClick={(e) => e.stopPropagation()}>
-                        <UserLink
-                            user={{
-                                id: props.tecaj.vlasnikId,
-                                profilnaSlikaVersion:
-                                    props.tecaj.vlasnikProfilnaSlikaVersion,
-                                username: props.tecaj.vlasnikUsername,
-                            }}
-                        />
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            padding: "8px 14px",
+                        }}
+                    >
+                        {props.tecaj.ocjena}/5
+                        <Rating value={props.tecaj.ocjena} readOnly />
                     </div>
-                    {props.tecaj.cijena !== undefined &&
-                        props.tecaj.cijena > 0 && (
-                            <>
-                                {props.tecaj.kupljen && (
-                                    <CheckCircleIcon color="info" />
-                                )}
-                                <Button
-                                    disabled={props.tecaj.kupljen}
-                                    variant="contained"
-                                    onClick={() =>
-                                        handleCheckout(props.tecaj.id)
-                                    }
-                                >
-                                    {props.tecaj.cijena}€
-                                </Button>
-                            </>
-                        )}
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: "10px",
+                        }}
+                    >
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <UserLink
+                                user={{
+                                    id: props.tecaj.vlasnikId,
+                                    profilnaSlikaVersion:
+                                        props.tecaj.vlasnikProfilnaSlikaVersion,
+                                    username: props.tecaj.vlasnikUsername,
+                                }}
+                            />
+                        </div>
+                        {props.tecaj.cijena !== undefined &&
+                            props.tecaj.cijena > 0 && (
+                                <>
+                                    {props.tecaj.kupljen && (
+                                        <CheckCircleIcon color="info" />
+                                    )}
+                                    <Button
+                                        disabled={props.tecaj.kupljen}
+                                        variant="contained"
+                                        onClick={() =>
+                                            handleCheckout(props.tecaj.id)
+                                        }
+                                    >
+                                        {props.tecaj.cijena}€
+                                    </Button>
+                                </>
+                            )}
+                    </div>
                 </div>
             </CardContent>
         </Card>

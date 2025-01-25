@@ -1,6 +1,5 @@
 import {
     Dialog,
-    DialogTitle,
     DialogContent,
     DialogActions,
     Button,
@@ -10,38 +9,31 @@ import { RadionicaDto } from "../../models/RadionicaDto";
 
 import { ObavijestDto } from "../../models/ObavijestDto";
 import { useState } from "react";
-import requests from "../../api/agent";
+import { Info } from "@mui/icons-material";
 
 interface Props {
     onConfirm: (obavijest: ObavijestDto) => Promise<any>;
     onClose: () => void;
     radionica: RadionicaDto;
-    obavijest: ObavijestDto;
 }
 
-export default function RadionicaPopup(props: Props) {
-    const [obavijest, setObavijest] = useState<ObavijestDto>(
-        props.obavijest || {
-            naslov: "",
-            poruka: "",
-            radionicaId: props.radionica.id,
-        }
-    );
+export default function RadionicaUputePopup(props: Props) {
+    const [obavijest, setObavijest] = useState<ObavijestDto>({
+        naslov: "",
+        poruka: "",
+        radionicaId: props.radionica.id ?? 0,
+    });
 
-    const handleConfirm = async () => {
-        if (!props.radionica.id) return;
-        const o = obavijest;
-        o.radionicaId = props.radionica.id;
-        await requests.postWithLoading(
-            `${props.radionica.id}/obavijest`,
-            obavijest
-        );
-        props.onClose();
-    };
     return (
         <>
             <Dialog open onClose={props.onClose} maxWidth="md" fullWidth>
-                <DialogTitle>
+                <DialogContent
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "20px",
+                    }}
+                >
                     <TextField
                         fullWidth
                         autoFocus
@@ -55,9 +47,6 @@ export default function RadionicaPopup(props: Props) {
                             }))
                         }
                     />
-                </DialogTitle>
-
-                <DialogContent>
                     <TextField
                         fullWidth
                         label="Opis obavijesti"
@@ -72,13 +61,33 @@ export default function RadionicaPopup(props: Props) {
                             }))
                         }
                     />
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: "10px",
+                        }}
+                    >
+                        <Info />
+                        {
+                            "Ovu obavijest možete poslati samo jednom i primiti će ju svi korisnici koji su kupili radionicu."
+                        }
+                    </div>
                 </DialogContent>
 
                 <DialogActions>
                     <Button variant="outlined" onClick={props.onClose}>
                         Odustani
                     </Button>
-                    <Button variant="contained" onClick={handleConfirm}>
+                    <Button
+                        disabled={
+                            obavijest.naslov.length === 0 ||
+                            obavijest.poruka.length === 0
+                        }
+                        variant="contained"
+                        onClick={() => props.onConfirm(obavijest)}
+                    >
                         Pošalji
                     </Button>
                 </DialogActions>

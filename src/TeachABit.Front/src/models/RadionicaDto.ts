@@ -7,6 +7,7 @@ export interface RadionicaDto {
     vlasnikId?: string;
     vlasnikUsername?: string;
     vlasnikProfilnaSlikaVersion?: string;
+    obavijestPoslana?: boolean;
     brojprijavljenih?: number;
     maksimalniKapacitet?: number;
     vrijemeRadionice?: Date;

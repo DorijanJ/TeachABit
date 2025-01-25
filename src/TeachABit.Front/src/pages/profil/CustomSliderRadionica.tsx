@@ -15,7 +15,7 @@ export default function CustomSliderRadionica({ radionice }: Props) {
 
     useEffect(() => {
         if (containerRef.current)
-            setItemCount(Math.floor(containerRef.current.clientWidth / 360));
+            setItemCount(Math.floor(containerRef.current.clientWidth / 500));
     }),
         [containerRef.current];
 
@@ -49,12 +49,11 @@ export default function CustomSliderRadionica({ radionice }: Props) {
                 ref={containerRef}
                 display="grid"
                 minWidth={"360px"}
-                gridTemplateColumns={`repeat(${itemCount}, minmax(350px, 1fr))`}
+                gridTemplateColumns={`repeat(${itemCount}, minmax(500px, 1fr))`}
                 overflow="hidden"
                 width="100%"
                 gap="20px"
                 padding="10px"
-                height="357px"
             >
                 {radionicePage.map((radionica) => (
                     <Radionica

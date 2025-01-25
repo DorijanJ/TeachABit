@@ -113,8 +113,9 @@ export const Radionica = (props: Props) => {
                         border: "1px solid #3a7ca5",
                     },
                     //width: "100%",
-                    minWidth: "340px",
-                    maxWidth: "40vw",
+                    height: "auto",
+                    width: "480px",
+                    minWidth: "250px",
                 }}
                 onClick={() => {
                     globalStore.currentUser?.id === props.radionica.vlasnikId ||
@@ -128,9 +129,8 @@ export const Radionica = (props: Props) => {
                         textAlign: "center",
                         display: "flex",
                         flexDirection: "column",
-                        //justifyContent: "space-between",
+
                         gap: "24px",
-                        height: "100%",
                     }}
                 >
                     <Box
@@ -192,14 +192,24 @@ export const Radionica = (props: Props) => {
                         </Typography>
                     </Box>
 
-                    <div style={{ width: "100%", aspectRatio: "2/1" }}>
+                    <div
+                        style={{
+                            width: "100%",
+                            aspectRatio: "2/1",
+                            position: "relative",
+                            overflow: "hidden",
+                        }}
+                    >
                         {props.radionica.naslovnaSlikaVersion ? (
                             <img
                                 style={{
                                     borderRadius: "10px",
-                                    maxHeight: "100%",
                                     width: "100%",
-                                    objectFit: "contain",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
                                 }}
                                 src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
                                     props.radionica?.naslovnaSlikaVersion
@@ -217,6 +227,9 @@ export const Radionica = (props: Props) => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
                                 }}
                             >
                                 {"Nema slike ¯\\_(ツ)_/¯"}
@@ -229,7 +242,8 @@ export const Radionica = (props: Props) => {
                         display="flex"
                         flexDirection={"row"}
                         alignItems="center"
-                        gap={2}
+                        gap={"10px"}
+                        height={"45px"}
                     >
                         <div onClick={(e) => e.stopPropagation()}>
                             <UserLink
@@ -243,16 +257,9 @@ export const Radionica = (props: Props) => {
                             />
                         </div>
                         {!props.radionica.placen && (
-                            <Box
-                                display={"flex"}
-                                alignItems={"flex-end"}
-                                flexDirection={"row"}
-                                gap={0.7}
-                            >
-                                <Button onClick={() => {}} variant="contained">
-                                    {props.radionica.cijena}€
-                                </Button>
-                            </Box>
+                            <Button onClick={() => {}} variant="contained">
+                                {props.radionica.cijena}€
+                            </Button>
                         )}
                     </Box>
                 </CardContent>

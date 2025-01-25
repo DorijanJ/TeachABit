@@ -14,6 +14,7 @@ public class RadionicaDto
     public decimal? Cijena { get; set; } = null;
     public DateTime VrijemeRadionice { get; set; }
     public int MaksimalniKapacitet { get; set; }
+    public bool? ObavijestPoslana { get; set; } = false;
     [Range(0, 5, ErrorMessage = "Ocjena mora biti između 0 i 5.")]
     public double? Ocjena { get; set; }
     public string VlasnikId { get; set; } = string.Empty;

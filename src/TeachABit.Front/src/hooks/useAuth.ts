@@ -20,8 +20,18 @@ const useAuth = () => {
         const id = localStorage.getItem(ID_KEY);
         const roles = localStorage.getItem(ROLES_KEY);
         const status = localStorage.getItem(STATUS_KEY);
+        const exp = localStorage.getItem("exp");
 
-        if (username !== null && id !== null && roles !== null) {
+        if (
+            username !== null &&
+            id !== null &&
+            roles !== null &&
+            exp !== null
+        ) {
+            if (Date.now() > parseInt(exp, 10)) {
+                globalStore.setCurrentUser(undefined);
+                return;
+            }
             globalStore.setCurrentUser({
                 username: username,
                 id: id,

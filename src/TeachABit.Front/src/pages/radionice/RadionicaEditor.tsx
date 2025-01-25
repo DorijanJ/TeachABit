@@ -55,25 +55,25 @@ export default function RadionicaEditor(props: Props) {
         if (reload) props.refreshData();
     };
 
-  const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
-    if (!radionica.cijena || !radionica.vrijemeRadionice) return;
-    const updateRadionicaDto: CreateOrUpdateRadionicaDto = {
-      id: radionica.id,
-      naziv: radionica.naziv,
-      opis: radionica?.opis ?? "",
-      cijena: radionica.cijena,
-      maksimalniKapacitet: radionica?.maksimalniKapacitet,
-      vrijemeRadionice: radionica?.vrijemeRadionice,
-      naslovnaSlikaBase64: base64image,
+    const handleUpdateRadionicu = async (radionica: RadionicaDto) => {
+        if (!radionica.cijena || !radionica.vrijemeRadionice) return;
+        const updateRadionicaDto: CreateOrUpdateRadionicaDto = {
+            id: radionica.id,
+            naziv: radionica.naziv,
+            opis: radionica?.opis ?? "",
+            cijena: radionica.cijena,
+            maksimalniKapacitet: radionica?.maksimalniKapacitet,
+            vrijemeRadionice: radionica?.vrijemeRadionice,
+            naslovnaSlikaBase64: base64image,
+        };
+        const response = await requests.putWithLoading(
+            "radionice",
+            updateRadionicaDto
+        );
+        if (response && response.data) {
+            handleClose(true);
+        }
     };
-    const response = await requests.putWithLoading(
-      "radionice",
-      updateRadionicaDto
-    );
-    if (response && response.data) {
-      handleClose(true);
-    }
-  };
 
     const handleStvoriRadionicu = async (
         radionica: RadionicaDto //nisam siguran jel tu treba ić samo CreateOrUpdateRadionicaDto?
@@ -174,7 +174,7 @@ export default function RadionicaEditor(props: Props) {
                         name="opis"
                         variant="outlined"
                         multiline
-                        rows={2}
+                        rows={6}
                         //required = {true}
                         value={radionica.opis || ""}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -201,6 +201,8 @@ export default function RadionicaEditor(props: Props) {
                             variant="outlined"
                             sx={{
                                 width: "30%",
+                                flexGrow: 1,
+                                maxWidth: "50",
                             }}
                             value={radionica.maksimalniKapacitet || ""}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -215,37 +217,44 @@ export default function RadionicaEditor(props: Props) {
                             }}
                         />
 
-            <TextField
-              autoFocus
-              label="Cijena"
-              name="cijena"
-              sx={{
-                width: "30%",
-              }}
-              variant="outlined"
-              //type="number"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">€</InputAdornment>
-                  ),
-                },
-              }}
-              value={radionica.cijena || ""}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value.replace(/[^0-9]/g, ""); //POPRAVI DA SE MOGU DECIMALNI UNOSIT
-                setRadionica((prev: any) => ({
-                  ...prev,
-                  cijena: value,
-                }));
-              }}
-            />
+                        <TextField
+                            autoFocus
+                            label="Cijena"
+                            name="cijena"
+                            sx={{
+                                flexGrow: 1,
+                                maxWidth: "50",
+                            }}
+                            variant="outlined"
+                            //type="number"
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            €
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                            value={radionica.cijena || ""}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                const value = e.target.value.replace(
+                                    /[^0-9]/g,
+                                    ""
+                                ); //POPRAVI DA SE MOGU DECIMALNI UNOSIT
+                                setRadionica((prev: any) => ({
+                                    ...prev,
+                                    cijena: value,
+                                }));
+                            }}
+                        />
 
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
                                 label="Datum i vrijeme"
                                 sx={{
-                                    width: "30%",
+                                    flexGrow: 1,
+                                    maxWidth: "50",
                                 }}
                                 ampm={false}
                                 value={
@@ -269,22 +278,22 @@ export default function RadionicaEditor(props: Props) {
                         </LocalizationProvider>
                     </div>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-            }}
-          >
-            <ImageUploadComponent
-              setFile={(file: string) => {
-                setBase64Image(file);
-              }}
-              ratio="2/1"
-              width={"70%"}
-            />
-          </div>
-        </DialogContent>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "10px",
+                            width: "100%",
+                        }}
+                    >
+                        <ImageUploadComponent
+                            setFile={(file: string) => {
+                                setBase64Image(file);
+                            }}
+                            ratio="2/1"
+                        />
+                    </div>
+                </DialogContent>
 
                 <DialogActions>
                     <Button variant="outlined" onClick={() => handleClose()}>

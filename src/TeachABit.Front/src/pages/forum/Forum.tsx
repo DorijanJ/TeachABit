@@ -35,6 +35,7 @@ export const Forum = () => {
                 alignItems: "center",
                 height: "100%",
                 width: "100%",
+                minWidth: "280px",
             }}
         >
             <div

@@ -1,3 +1,4 @@
+using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Radionice;
 using TeachABit.Model.DTOs.Result;
 
@@ -24,4 +25,5 @@ public interface IRadioniceService
     public Task<ServiceResult<List<RadionicaDto>>> GetAllRadioniceFavoritForCurrentUser();
     public Task<ServiceResult> AddFavoritRadionica(int radionicaId);
     public Task<ServiceResult> RemoveFavoritRadionica(int favoritRadionicaId);
+    public Task<ServiceResult<List<KorisnikDto>>> GetPrijaveZaRadionicu(int radionicaId);
 }

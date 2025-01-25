@@ -1,3 +1,4 @@
+using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Radionice;
 
 namespace TeachABit.Repository.Repositories.Radionice;
@@ -13,7 +14,7 @@ public interface IRadioniceRepository
     Task<Radionica> UpdateRadionica(Radionica radionica);
     Task DeleteRadionica(int id);
     Task<Radionica?> GetRadionicaByIdWithTracking(int id);
-
+    Task<List<Korisnik>> GetKorisniciPrijavitiZaRadionicu(int radionicaId);
     Task<RadionicaOcjena> CreateOcjena(RadionicaOcjena ocjena);
     Task DeleteOcjena(int radionicaId, string korisnikId);
     Task<RadionicaOcjena?> GetRadionicaOcjenaWithTracking(int radionicaId, string korisnikId);

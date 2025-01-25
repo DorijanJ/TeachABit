@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TeachABit.Model;
+using TeachABit.Model.Models.Korisnici;
 using TeachABit.Model.Models.Radionice;
 
 namespace TeachABit.Repository.Repositories.Radionice;
@@ -27,7 +28,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
         if (minOcjena != null) query = query.Where(x => x.Ocjene.Average(o => o.Ocjena) >= minOcjena);
         if (maxOcjena != null) query = query.Where(x => x.Ocjene.Average(o => o.Ocjena) <= maxOcjena);
-        
+
         if (minCijena != null) query = query.Where(x => x.Cijena >= minCijena);
         if (maxCijena != null) query = query.Where(x => x.Cijena <= maxCijena);
 
@@ -53,10 +54,17 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
 
     public async Task<Radionica?> GetRadionica(int id, string? korisnikId)
     {
-        return await _context.Radionice
+        var query = _context.Radionice
             .Include(x => x.Placanja)
             .Include(x => x.Vlasnik)
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(korisnikId))
+        {
+            query = query.Include(x => x.RadionicaFavoriti.Where(x => x.KorisnikId == korisnikId));
+        }
+
+        return await query.FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<Radionica?> GetRadionicaById(int id)
@@ -231,6 +239,7 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
         var query = _context.RadionicaFavorit
             .Include(x => x.Korisnik)
             .Include(x => x.Radionica)
+            .ThenInclude(x => x.Vlasnik)
             .Where(a => a.KorisnikId == id)
             .Select(x => x.Radionica)
             .AsQueryable();
@@ -256,6 +265,11 @@ public class RadioniceRepository(TeachABitContext context) : IRadioniceRepositor
             .Include(x => x.Korisnik)
             .Where(x => x.RadionicaId == radionicaId)
             .ToListAsync();
+    }
+
+    public async Task<List<Korisnik>> GetKorisniciPrijavitiZaRadionicu(int radionicaId)
+    {
+        return await _context.RadionicaPlacanja.Include(x => x.Korisnik).Where(x => x.RadionicaId == radionicaId).Select(x => x.Korisnik).ToListAsync();
     }
 
     public async Task<RadionicaFavorit> AddFavoritRadionica(RadionicaFavorit favorit)

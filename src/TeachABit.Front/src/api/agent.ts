@@ -29,6 +29,8 @@ const saveUserInfo = (userInfo: RefreshUserInfoDto) => {
             USER_STORAGE_KEYS.ROLES,
             JSON.stringify(userInfo.roles)
         );
+        const expirationTime = Date.now() + 6 * 60 * 60 * 1000;
+        localStorage.setItem("exp", expirationTime.toString());
         localStorage.setItem(
             USER_STORAGE_KEYS.STATUS,
             userInfo.korisnikStatusId?.toString() || ""

@@ -56,17 +56,15 @@ namespace TeachABit.Repository.Repositories.Tecajevi
             if (minCijena != null && minCijena > 0) query = query.Where(x => x.Cijena >= minCijena);
             if (maxCijena != null) query = query.Where(x => x.Cijena <= maxCijena || x.Cijena == null);
 
-            query = query.Include(x => x.KorisnikTecajOcjene);
-
-            if (minOcjena.HasValue)
+            if (minOcjena.HasValue || maxOcjena.HasValue)
             {
-                query = query.Where(x => x.KorisnikTecajOcjene.Average(o => o.Ocjena) >= minOcjena.Value);
+                query = query.Where(x =>
+                    (x.KorisnikTecajOcjene.Count == 0 && minOcjena.GetValueOrDefault() == 0) ||
+                    (x.KorisnikTecajOcjene.Count > 0 &&
+                        (!minOcjena.HasValue || x.KorisnikTecajOcjene.Average(o => o.Ocjena) >= minOcjena.Value) &&
+                        (!maxOcjena.HasValue || x.KorisnikTecajOcjene.Average(o => o.Ocjena) <= maxOcjena.Value)));
             }
 
-            if (maxOcjena.HasValue)
-            {
-                query = query.Where(x => x.KorisnikTecajOcjene.Average(o => o.Ocjena) <= maxOcjena.Value);
-            }
 
             if (!string.IsNullOrEmpty(vlasnikId)) query = query.Where(x => x.VlasnikId == vlasnikId);
 
@@ -277,6 +275,7 @@ namespace TeachABit.Repository.Repositories.Tecajevi
         {
             var query = _context.TecajFavoriti
                 .Include(x => x.Tecaj)
+                .ThenInclude(x => x.Vlasnik)
                 .Where(x => x.KorisnikId == id)
                 .Select(x => x.Tecaj)
                 .AsQueryable();

@@ -45,7 +45,7 @@
                       <h2 style='color: #5a9;'>Prijava na radionicu</h2>
                       <p>Pozdrav,</p>
                       <p>Dostavljamo vam upute za prijavu na radionicu:</p>
-                      <h6
+                      <h4
                         style='
                           background-color: lightgray;
                           padding: 10px;
@@ -58,7 +58,7 @@
                         '
                       >
                         {radionica}
-                      </h6>
+                      </h4>
                       <p>Molimo vas da koristite donje upute za pridruživanje radionici:</p>
                       <p style='text-align: center; margin: 10px 10px;'>
                         <p
@@ -71,7 +71,6 @@
                           max-width: 100%;
                           white-space: wrap;'> {sadrzaj} </p>
                       </p>
-                      <p>Ova poveznica vrijedi samo ograničeno vrijeme. Ako niste tražili stvaranje računa, slobodno ignorirajte ovaj email.</p>
                       <p>S poštovanjem,<br />support@TeachABit</p>
                     </div>
                   </body>

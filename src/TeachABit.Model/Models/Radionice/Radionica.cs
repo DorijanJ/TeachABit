@@ -15,6 +15,7 @@ public class Radionica
     public DateTime VrijemeRadionice { get; set; }
     public int? MaksimalniKapacitet { get; set; } = null;
     public string? NaslovnaSlikaVersion { get; set; } = null;
+    public bool ObavijestPoslana { get; set; } = false;
 
     public required string VlasnikId { get; set; } = string.Empty;
     [ForeignKey(nameof(VlasnikId))]
