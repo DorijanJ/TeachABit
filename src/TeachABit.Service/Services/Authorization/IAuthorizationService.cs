@@ -1,4 +1,5 @@
 ﻿using TeachABit.Model.DTOs.Korisnici;
+using TeachABit.Model.Enums;
 using TeachABit.Model.Models.Korisnici;
 
 namespace TeachABit.Service.Services.Authorization
@@ -7,8 +8,8 @@ namespace TeachABit.Service.Services.Authorization
     {
         Korisnik GetKorisnik();
         KorisnikDto GetKorisnikDto();
-        Task<KorisnikDto> GetKorisnikFull();
+        Task<Korisnik> GetKorisnikFull();
         Korisnik? GetKorisnikOptional();
-        Task<bool> IsAdmin();
+        Task<bool> HasPermission(LevelPristupaEnum levelPristupa);
     }
 }

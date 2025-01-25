@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { KomentarDto } from "../../models/KomentarDto";
 import requests from "../../api/agent";
-import { useGlobalContext } from "../../context/Global.context";
 import { Button, Typography } from "@mui/material";
 import Komentar from "./Komentar";
 import CreateKomentar from "./KomentarEditor";
+import AddIcon from "@mui/icons-material/Add";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
 interface Props {
     objavaId: number;
+    vlasnikId: string;
 }
 
-export default function ObjavaKomentari(props: Props) {
+export const ObjavaKomentari = (props: Props) => {
     const [komentari, setKomentari] = useState<KomentarDto[]>([]);
     const [isOpenKomentarDialog, setIsOpenKomentarDialog] = useState(false);
     const [collapsedComments, setCollapsedComments] = useState<
@@ -34,54 +37,51 @@ export default function ObjavaKomentari(props: Props) {
         }
     };
 
-    const globalContext = useGlobalContext();
-
-    const [selectedNadKomentarId, setSelectedNadKomentarId] =
-        useState<number>();
-
     useEffect(() => {
         getKomentarListByObjavaId(props.objavaId);
     }, [props.objavaId]);
 
     // Recursive rendering function
-    const renderKomentari = (komentari: KomentarDto[], level: number) => {
-        return komentari.map((komentar: KomentarDto) => (
-            <div
-                key={komentar.id}
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                }}
-            >
-                <Komentar
-                    setSelectedNadKomentarId={setSelectedNadKomentarId}
-                    selectedNadKomentarId={selectedNadKomentarId}
-                    komentar={komentar}
-                    refreshData={() =>
-                        getKomentarListByObjavaId(props.objavaId)
-                    }
-                    level={level}
-                    collapsedComments={collapsedComments}
-                    toggleCollapse={toggleCollapse}
-                />
-                {/* Recursive call for nested comments */}
-                {komentar.podKomentarList &&
-                    komentar.id !== undefined &&
-                    komentar.podKomentarList.length > 0 && (
-                        <div>
-                            {!collapsedComments[komentar.id] && (
-                                <div>
-                                    {renderKomentari(
-                                        komentar.podKomentarList,
-                                        level + 1
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
-            </div>
-        ));
-    };
+    const renderKomentari = useCallback(
+        (komentari: KomentarDto[], level: number) => {
+            return komentari.map((komentar: KomentarDto) => (
+                <div
+                    key={"komentarobjava" + komentar.id?.toString() + level}
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    <Komentar
+                        komentar={komentar}
+                        refreshData={() =>
+                            getKomentarListByObjavaId(props.objavaId)
+                        }
+                        level={level}
+                        collapsedComments={collapsedComments}
+                        toggleCollapse={toggleCollapse}
+                        objavaVlasnikId={props.vlasnikId}
+                    />
+                    {/* Recursive call for nested comments */}
+                    {komentar.podKomentarList &&
+                        komentar.id !== undefined &&
+                        komentar.podKomentarList.length > 0 && (
+                            <div>
+                                {!collapsedComments[komentar.id] && (
+                                    <div>
+                                        {renderKomentari(
+                                            komentar.podKomentarList,
+                                            level + 1
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                </div>
+            ));
+        },
+        [komentari, collapsedComments]
+    );
 
     return (
         <div
@@ -105,14 +105,25 @@ export default function ObjavaKomentari(props: Props) {
                 <Typography color="textDisabled" variant="h6" component="div">
                     Komentari:
                 </Typography>
-                {!isOpenKomentarDialog && globalContext.userIsLoggedIn && (
-                    <Button
-                        onClick={() => setIsOpenKomentarDialog((prev) => !prev)}
-                        variant="contained"
-                    >
-                        Dodaj Komentar
-                    </Button>
-                )}
+                {!isOpenKomentarDialog &&
+                    globalStore.currentUser !== undefined && (
+                        <Button
+                            onClick={() =>
+                                setIsOpenKomentarDialog((prev) => !prev)
+                            }
+                            variant="contained"
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "5px",
+                                paddingLeft: 1,
+                            }}
+                        >
+                            <AddIcon />
+                            Dodaj Komentar
+                        </Button>
+                    )}
             </div>
             <CreateKomentar
                 refreshData={() => getKomentarListByObjavaId(props.objavaId)}
@@ -130,4 +141,6 @@ export default function ObjavaKomentari(props: Props) {
             </div>
         </div>
     );
-}
+};
+
+export default observer(ObjavaKomentari);

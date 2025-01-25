@@ -9,9 +9,11 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Threading.RateLimiting;
 using TeachABit.Model;
+using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Model.Mapping;
 using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Uloge;
 
 namespace TeachABit.API.Configurations
 {
@@ -95,7 +97,7 @@ namespace TeachABit.API.Configurations
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
             })
-            .AddRoles<IdentityRole>()
+            .AddRoles<Uloga>()
             .AddEntityFrameworkStores<TeachABitContext>()
             .AddDefaultTokenProviders();
 
@@ -112,7 +114,7 @@ namespace TeachABit.API.Configurations
                     IssuerSigningKey = key,
                     ValidIssuer = configuration["JwtSettings:Issuer"],
                     ValidAudience = configuration["JwtSettings:Audience"],
-                    ClockSkew = TimeSpan.FromMinutes(5),
+                    ClockSkew = TimeSpan.FromMinutes(10),
                 };
                 opt.Events = new JwtBearerEvents
                 {
@@ -120,27 +122,45 @@ namespace TeachABit.API.Configurations
                     {
                         context.Request.Cookies.TryGetValue("AuthToken", out var token);
                         if (!string.IsNullOrEmpty(token))
+                        {
                             context.Token = token;
+                        }
                         return Task.CompletedTask;
                     },
                     OnAuthenticationFailed = async context =>
                     {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsJsonAsync(MessageDescriber.Unauthenticated());
+                        context.Response.Cookies.Delete("AuthToken", new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                        });
+                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated(), RefreshUserInfo = new() { IsAuthenticated = false } });
                     },
                     OnForbidden = async context =>
                     {
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
                         context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsJsonAsync(MessageDescriber.Unauthorized());
+                        await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthorized(), });
                     },
                     OnChallenge = async context =>
                     {
+                        if (!context.Response.HasStarted)
+                        {
+
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+                            context.Response.Cookies.Delete("AuthToken", new CookieOptions
+                            {
+                                HttpOnly = true,
+                                Secure = true,
+                                SameSite = SameSiteMode.Strict,
+                            });
+                            await context.Response.WriteAsJsonAsync(new ControllerResult() { Message = MessageDescriber.Unauthenticated(), RefreshUserInfo = new() { IsAuthenticated = false } });
+                        }
                         context.HandleResponse();
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsJsonAsync(MessageDescriber.Unauthenticated());
                     }
                 };
             });

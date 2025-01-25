@@ -5,6 +5,14 @@ namespace TeachABit.Service.Services.Korisnici
 {
     public interface IKorisniciService
     {
-        Task<ServiceResult<KorisnikDto>> UpdateKorisnik(UpdateKorisnikDto updateKorisnik);
+        Task<ServiceResult> UpdateKorisnik(UpdateKorisnikDto updateKorisnik);
+        Task<ServiceResult<KorisnikDto>> CreateVerifikacijaZahtjev(string username);
+        Task<ServiceResult<List<KorisnikDto>>> GetKorisniciSaZahtjevomVerifikacije();
+        Task<ServiceResult<KorisnikDto>> PrihvatiVerifikacijaZahtjev(string username);
+        Task<ServiceResult<List<KorisnikDto>>> GetAllUsers(string? search);
+        Task<ServiceResult> UtisajKorisnika(string username);
+        Task<ServiceResult> OdTisajKorisnika(string username);
+        Task<ServiceResult> DeleteKorisnik(string username);
+        public Task<ServiceResult<KorisnikDto>> UpdateName(string username);
     }
 }

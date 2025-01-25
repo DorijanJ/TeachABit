@@ -1,22 +1,21 @@
 import { Navigate } from "react-router-dom";
-import { useGlobalContext } from "../../../context/Global.context";
 import GenericRoute from "./GenericRoute";
+import { observer } from "mobx-react";
+import globalStore from "../../../stores/GlobalStore";
 
 interface PrivateRouteProps {
     page: JSX.Element;
-    withNavigation?: boolean;
+    withNavigation?: boolean | undefined;
 }
 
-export default function PublicRoute(props: PrivateRouteProps) {
-    const globalContext = useGlobalContext();
+export const PublicRoute = (props: PrivateRouteProps) => {
+    if (globalStore.currentUser === undefined) return <Navigate to="/" />;
 
-    const isLoggedIn = globalContext.userIsLoggedIn;
-
-    if (isLoggedIn === undefined) return <></>;
-
-    return isLoggedIn === false ? (
+    return globalStore.currentUser === undefined ? (
         <GenericRoute page={props.page} withNavigation={props.withNavigation} />
     ) : (
         <Navigate to="/dashboard" />
     );
-}
+};
+
+export default observer(PublicRoute);

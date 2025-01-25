@@ -3,15 +3,15 @@ import { ObjavaDto } from "../../models/ObjavaDto";
 import requests from "../../api/agent";
 import { Button } from "@mui/material";
 import Objava from "./Objava";
-import { useGlobalContext } from "../../context/Global.context";
 import SearchBox from "../../components/searchbox/SearchBox";
 import useRequestBuilder from "../../hooks/useRequestBuilder";
 import ObjavaEditor from "./ObjavaEditor";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
-export default function Forum() {
+export const Forum = () => {
     const [objavaList, setObjavaList] = useState<ObjavaDto[]>([]);
     const [isOpenObjavaDialog, setIsOpenObjavaDialog] = useState(false);
-    const globalContext = useGlobalContext();
 
     const { buildRequest } = useRequestBuilder();
 
@@ -35,6 +35,7 @@ export default function Forum() {
                 alignItems: "center",
                 height: "100%",
                 width: "100%",
+                minWidth: "280px",
             }}
         >
             <div
@@ -43,18 +44,20 @@ export default function Forum() {
                     flexDirection: "row",
                     gap: "20px",
                     alignItems: "center",
-                    width: "50%",
+                    width: "100%",
+                    flexWrap: "wrap",
                 }}
             >
                 <SearchBox onSearch={GetObjavaList} />
-                {globalContext.userIsLoggedIn && ( //ako korisnik nije prijavljen, ne može kreirati objave
-                    <Button
-                        variant="contained"
-                        onClick={() => setIsOpenObjavaDialog(true)}
-                    >
-                        Stvori objavu
-                    </Button>
-                )}
+                {globalStore.currentUser !== undefined &&
+                    !globalStore.isMuted() && ( //ako korisnik nije prijavljen, ne može kreirati objave
+                        <Button
+                            variant="contained"
+                            onClick={() => setIsOpenObjavaDialog(true)}
+                        >
+                            {"Stvori objavu"}
+                        </Button>
+                    )}
             </div>
 
             <div
@@ -80,4 +83,6 @@ export default function Forum() {
             />
         </div>
     );
-}
+};
+
+export default observer(Forum);

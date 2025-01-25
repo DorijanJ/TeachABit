@@ -1,22 +1,28 @@
 import { Box, Drawer, IconButton, List } from "@mui/material";
-import BookIcon from "@mui/icons-material/Home";
-import GroupIcon from "@mui/icons-material/Group";
 import ForumIcon from "@mui/icons-material/Forum";
 import AuthForm from "../auth/form/AuthForm";
-import { useGlobalContext } from "../../context/Global.context";
 import localStyles from "./Navigation.module.css";
 import Logo from "../../images/logo.png";
 import NavigationItem from "./NavigationItem";
 import { NavigationUser } from "./NavigationUser";
+import PeopleIcon from "@mui/icons-material/People";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import { LaptopChromebook, MenuBook } from "@mui/icons-material";
+import { LevelPristupa } from "../../enums/LevelPristupa";
+import globalStore from "../../stores/GlobalStore";
+import { observer } from "mobx-react";
 
-export default function Navigation() {
-    const globalContext = useGlobalContext();
+interface Props {
+    isExpanded?: boolean | undefined;
+}
+
+export const Navigation = (props: Props) => {
     const location = useLocation();
     const isActive = (route: string) => location.pathname === route;
-    const [isExpanded, setIsExpanded] = useState(true);
+
+    const [isExpanded, setIsExpanded] = useState(props.isExpanded ?? false);
 
     return (
         <>
@@ -56,6 +62,7 @@ export default function Navigation() {
                                 transform: isExpanded
                                     ? "rotate(0deg)"
                                     : "rotate(180deg)",
+                                color: "#3a7ca5",
                                 transition: "transform 0.3s ease", // dodaje animiranu tranziciju
                             }}
                         />
@@ -88,7 +95,7 @@ export default function Navigation() {
                             name={"Tečajevi"}
                             isActive={isActive("/tecajevi")}
                             icon={
-                                <BookIcon
+                                <MenuBook
                                     color="primary"
                                     className={localStyles.navImage}
                                 />
@@ -100,7 +107,7 @@ export default function Navigation() {
                             name={"Radionice"}
                             isActive={isActive("/radionice")}
                             icon={
-                                <GroupIcon
+                                <LaptopChromebook
                                     color="primary"
                                     className={localStyles.navImage}
                                 />
@@ -119,21 +126,37 @@ export default function Navigation() {
                             }
                             isExpanded={isExpanded}
                         />
+                        {globalStore.hasPermissions(
+                            LevelPristupa.Moderator
+                        ) && (
+                            <NavigationItem
+                                route={"/korisnici-administracija"}
+                                name={"Korisnici"}
+                                isActive={isActive("/korisnici-administracija")}
+                                icon={
+                                    <PeopleIcon
+                                        color="primary"
+                                        className={localStyles.navImage}
+                                    />
+                                }
+                                isExpanded={isExpanded}
+                            />
+                        )}
                     </List>
 
                     <Box sx={{ flexGrow: 1 }} />
 
-                    {globalContext.userIsLoggedIn === true &&
-                        globalContext.currentUser &&
-                        isExpanded && (
-                            <NavigationUser user={globalContext.currentUser} />
-                        )}
+                    {globalStore.currentUser !== undefined && isExpanded && (
+                        <NavigationUser user={globalStore.currentUser} />
+                    )}
 
-                    {globalContext.userIsLoggedIn === false && isExpanded && (
+                    {globalStore.currentUser === undefined && isExpanded && (
                         <AuthForm />
                     )}
                 </Box>
             </Drawer>
         </>
     );
-}
+};
+
+export default observer(Navigation);

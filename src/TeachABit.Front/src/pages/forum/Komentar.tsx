@@ -7,23 +7,26 @@ import ReplyIcon from "@mui/icons-material/Reply";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import LikeInfo from "./LikeInfo";
 import requests from "../../api/agent";
-import { useGlobalContext } from "../../context/Global.context";
 import KomentarEditor from "./KomentarEditor";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { hr } from "date-fns/locale";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { LevelPristupa } from "../../enums/LevelPristupa";
+import { observer } from "mobx-react";
+import globalStore from "../../stores/GlobalStore";
 
 interface Props {
     komentar: KomentarDto;
     refreshData: () => Promise<any>;
-    selectedNadKomentarId?: number | undefined;
-    setSelectedNadKomentarId: Dispatch<SetStateAction<number | undefined>>;
     level?: number | undefined;
     collapsedComments: Record<number, boolean>;
     toggleCollapse: (komentarId: number | undefined) => void;
+    objavaVlasnikId: string;
 }
 
-export default function Komentar(props: Props) {
+export const Komentar = (props: Props) => {
     const isHidden = useMemo(() => {
         return (
             props.komentar.id !== undefined &&
@@ -38,8 +41,7 @@ export default function Komentar(props: Props) {
         props.komentar.liked
     );
     const [isEditing, setIsEditing] = useState(false);
-
-    const globalContext = useGlobalContext();
+    const [isReplying, setIsReplying] = useState(false);
 
     const likeKomentar = async () => {
         await requests.postWithLoading(
@@ -68,6 +70,22 @@ export default function Komentar(props: Props) {
         setLiked(undefined);
     };
 
+    const oznaciTocan = async () => {
+        await requests.postWithLoading(
+            `objave/komentari/${props.komentar.id}/tocan`
+        );
+        document.location.reload();
+        props.refreshData();
+    };
+
+    const clearTocan = async () => {
+        await requests.deleteWithLoading(
+            `objave/komentari/${props.komentar.id}/tocan`
+        );
+        document.location.reload();
+        props.refreshData();
+    };
+
     const deleteKomentar = async () => {
         if (!props.komentar.id) return;
         const response = await requests.deleteWithLoading(
@@ -75,6 +93,10 @@ export default function Komentar(props: Props) {
         );
         if (response?.message?.severity === "success") props.refreshData();
     };
+
+    const isTocan = useMemo(() => {
+        return props.komentar.oznacenTocan;
+    }, [props.komentar]);
 
     return (
         <>
@@ -93,6 +115,7 @@ export default function Komentar(props: Props) {
                     width: "100%",
                     justifyContent: "flex-start",
                     marginTop: "4px",
+                    gap: "5px",
                 }}
             >
                 <div
@@ -102,7 +125,7 @@ export default function Komentar(props: Props) {
                             props.komentar.podKomentarList.length > 0
                                 ? "visible"
                                 : "hidden",
-                        backgroundColor: isHidden ? "#922728" : "lightgray",
+                        backgroundColor: isHidden ? "#3a7ca5" : "lightgray",
                         width: "8px",
                         padding: "0 5px",
                         borderRadius: "5px",
@@ -123,6 +146,9 @@ export default function Komentar(props: Props) {
                         flexDirection: "row",
                         alignItems: "flex-start",
                         width: "100%",
+                        border: "3px solid transparent",
+                        borderRadius: "10px",
+                        borderColor: isTocan === true ? "green" : "none",
                         padding: "10px",
                         gap: "10px",
                     }}
@@ -205,11 +231,45 @@ export default function Komentar(props: Props) {
                                     gap: "10px",
                                 }}
                             >
-                                {(globalContext.currentUser?.id ===
-                                    props.komentar.vlasnikId ||
-                                    globalContext.isAdmin) &&
-                                    !props.komentar.isDeleted && (
-                                        <>
+                                {!props.komentar.nadKomentarId &&
+                                    !props.komentar.isDeleted &&
+                                    props.objavaVlasnikId ===
+                                        globalStore.currentUser?.id &&
+                                    (!props.komentar.oznacenTocan ? (
+                                        <IconButton
+                                            sx={{
+                                                width: "30px",
+                                                height: "30px",
+                                            }}
+                                            onClick={() => {
+                                                oznaciTocan();
+                                            }}
+                                        >
+                                            <CheckIcon
+                                                color="primary"
+                                                fontSize="small"
+                                            />
+                                        </IconButton>
+                                    ) : (
+                                        <IconButton
+                                            sx={{
+                                                width: "30px",
+                                                height: "30px",
+                                            }}
+                                            onClick={() => {
+                                                clearTocan();
+                                            }}
+                                        >
+                                            <CloseIcon
+                                                color="primary"
+                                                fontSize="small"
+                                            />
+                                        </IconButton>
+                                    ))}
+                                {!props.komentar.isDeleted && (
+                                    <>
+                                        {globalStore.currentUser?.id ===
+                                            props.komentar.vlasnikId && (
                                             <IconButton
                                                 sx={{
                                                     width: "30px",
@@ -224,22 +284,31 @@ export default function Komentar(props: Props) {
                                                     fontSize="small"
                                                 />
                                             </IconButton>
-                                            <IconButton
-                                                sx={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                }}
-                                                onClick={() => {
-                                                    deleteKomentar();
-                                                }}
-                                            >
-                                                <DeleteIcon
-                                                    color="primary"
-                                                    fontSize="small"
-                                                />
-                                            </IconButton>
-                                        </>
-                                    )}
+                                        )}
+                                        {(globalStore.currentUser?.id ===
+                                            props.komentar.vlasnikId ||
+                                            globalStore.hasPermissions(
+                                                LevelPristupa.Moderator
+                                            )) && (
+                                            <>
+                                                <IconButton
+                                                    sx={{
+                                                        width: "30px",
+                                                        height: "30px",
+                                                    }}
+                                                    onClick={() => {
+                                                        deleteKomentar();
+                                                    }}
+                                                >
+                                                    <DeleteIcon
+                                                        color="primary"
+                                                        fontSize="small"
+                                                    />
+                                                </IconButton>
+                                            </>
+                                        )}
+                                    </>
+                                )}
                                 <LikeInfo
                                     likeCount={likeCount}
                                     onClear={clearReaction}
@@ -248,13 +317,11 @@ export default function Komentar(props: Props) {
                                     liked={liked}
                                     size="small"
                                 />
-                                {globalContext.userIsLoggedIn && (
+                                {globalStore.currentUser !== undefined && (
                                     <IconButton
                                         sx={{ width: "30px", height: "30px" }}
                                         onClick={() => {
-                                            props.setSelectedNadKomentarId(
-                                                props.komentar.id
-                                            );
+                                            setIsReplying(true);
                                         }}
                                     >
                                         <ReplyIcon
@@ -268,12 +335,15 @@ export default function Komentar(props: Props) {
                     </div>
                 </div>
             </div>
+
             <KomentarEditor
                 refreshData={() => props.refreshData()}
-                isOpen={props.selectedNadKomentarId === props.komentar.id}
-                onClose={() => props.setSelectedNadKomentarId(undefined)}
-                nadKomentarId={props.selectedNadKomentarId}
+                isOpen={isReplying}
+                onClose={() => setIsReplying(false)}
+                nadKomentarId={props.komentar.id}
             />
         </>
     );
-}
+};
+
+export default observer(Komentar);

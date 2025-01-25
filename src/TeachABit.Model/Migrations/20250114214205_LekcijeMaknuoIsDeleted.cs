@@ -11,11 +11,19 @@ namespace TeachABit.Model.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<DateTime>(
-                name: "LastUpdatedDateTime",
-                table: "Lekcija",
-                type: "timestamp with time zone",
-                nullable: true);
+            migrationBuilder.Sql(@"
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = 'backend'
+                AND table_name = 'Lekcija' AND column_name = 'LastUpdatedDateTime'
+            ) THEN
+                ALTER TABLE backend.""Lekcija"" ADD COLUMN ""LastUpdatedDateTime"" timestamp with time zone;
+            END IF;
+        END;
+        $$");
         }
 
         /// <inheritdoc />

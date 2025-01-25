@@ -1,5 +1,6 @@
 using Stripe;
 using TeachABit.API.Configurations;
+using TeachABit.API.Middleware;
 using TeachABit.API.Seed;
 using TeachABit.Service.Util.Stripe;
 
@@ -30,12 +31,15 @@ if (app.Environment.IsDevelopment())
 var scope = app.Services.CreateScope();
 await SeedData.SeedRolesAsync(scope.ServiceProvider);
 await SeedData.SeedUser(scope.ServiceProvider);
+await SeedData.SeedVerifikacijaStatus(scope.ServiceProvider);
+await SeedData.SeedKorisnikStatusi(scope.ServiceProvider);
 
 app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
+app.UseMiddleware<KorisnikStatusCheckMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

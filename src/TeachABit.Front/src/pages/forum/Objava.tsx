@@ -1,9 +1,8 @@
-import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import { ObjavaDto } from "../../models/ObjavaDto";
 import UserLink from "../profil/UserLink";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useNavigate } from "react-router-dom";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 interface Props {
     objava: ObjavaDto;
 }
@@ -18,7 +17,17 @@ export default function Objava(props: Props) {
                 borderRadius: "10px",
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
+                minWidth: "300px",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+                    transform: "scale(1.01)",
+                    border: "1px solid #3a7ca5",
+                },
             }}
+            id="objava"
+            onClick={() => navigate(`/objava/${props.objava.id}`)}
         >
             <CardContent
                 sx={{
@@ -33,27 +42,20 @@ export default function Objava(props: Props) {
                     color="primary"
                     variant="h5"
                     component="div"
+                    id="objavaNaziv"
                     sx={{
                         textOverflow: "ellipsis",
                         overflow: "hidden",
                         whiteSpace: "nowrap",
                         maxWidth: "100%",
-                        color: "black",
+                        //color: "black",
+                        //textDecoration: "underline",
+                        textDecorationColor: "gray",
+                        cursor: "pointer",
                     }}
                 >
                     {props.objava.naziv}
                 </Typography>
-
-                <IconButton
-                    color="primary"
-                    onClick={() => {
-                        navigate(`/objava/${props.objava.id}`);
-                    }}
-                    size="small"
-                    sx={{ border: "1px solid #023047" }}
-                >
-                    <KeyboardArrowRightIcon />
-                </IconButton>
             </CardContent>
             <Box
                 m={2}
@@ -63,14 +65,16 @@ export default function Objava(props: Props) {
                 alignItems="center"
                 gap={2}
             >
-                <UserLink
-                    user={{
-                        id: props.objava.vlasnikId,
-                        username: props.objava.vlasnikUsername,
-                        profilnaSlikaVersion:
-                            props.objava.vlasnikProfilnaSlikaVersion,
-                    }}
-                />
+                <div onClick={(e) => e.stopPropagation()}>
+                    <UserLink
+                        user={{
+                            id: props.objava.vlasnikId,
+                            username: props.objava.vlasnikUsername,
+                            profilnaSlikaVersion:
+                                props.objava.vlasnikProfilnaSlikaVersion,
+                        }}
+                    />
+                </div>
                 <Box
                     display={"flex"}
                     alignItems={"flex-end"}

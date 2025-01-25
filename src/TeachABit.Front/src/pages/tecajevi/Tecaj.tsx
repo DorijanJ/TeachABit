@@ -1,23 +1,29 @@
-import { Button, Card, CardContent, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Rating,
+    Typography,
+} from "@mui/material";
 import { TecajDto } from "../../models/TecajDto";
 import { loadStripe } from "@stripe/stripe-js";
 import requests from "../../api/agent";
-import { useGlobalContext } from "../../context/Global.context";
 import globalStore from "../../stores/GlobalStore";
+import UserLink from "../profil/UserLink";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useNavigate } from "react-router-dom";
+import { observer } from "mobx-react";
 
 const stripePromise = loadStripe(import.meta.env.VITE_REACT_STRIPE_KEY);
 
 interface Props {
     tecaj: TecajDto;
-    onClick: () => void;
 }
 
-export default function Tecaj(props: Props) {
-    const globalContext = useGlobalContext();
-
+export const Tecaj = (props: Props) => {
     const handleCheckout = async (tecajId?: number) => {
-        if (!globalContext.userIsLoggedIn) {
+        if (!globalStore.currentUser) {
             globalStore.addNotification({
                 message: "Niste prijavljeni",
                 severity: "error",
@@ -27,7 +33,7 @@ export default function Tecaj(props: Props) {
 
         if (!tecajId) return;
         const response = await requests.postWithLoading(
-            "placanja/create-checkout-session",
+            "tecajevi/create-checkout-session",
             { tecajId: tecajId }
         );
         const stripe = await stripePromise;
@@ -37,15 +43,32 @@ export default function Tecaj(props: Props) {
         stripe?.redirectToCheckout({ sessionId });
     };
 
+    const navigate = useNavigate();
+
     return (
         <Card
-            onClick={props.onClick}
+            onClick={() => {
+                if (
+                    props.tecaj.kupljen ||
+                    !props.tecaj.cijena ||
+                    globalStore.currentUser?.id === props.tecaj.vlasnikId
+                )
+                    navigate(`/tecajevi/${props.tecaj.id}`);
+            }}
             sx={{
-                width: "32%",
-                height: "400px",
                 borderRadius: "10px",
                 boxSizing: "border-box",
                 border: "1px solid lightgray",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+                    transform: "scale(1.03)",
+                    border: "1px solid #3a7ca5",
+                },
+                height: "auto",
+                width: "480px",
+                minWidth: "250px",
             }}
         >
             <CardContent
@@ -53,49 +76,146 @@ export default function Tecaj(props: Props) {
                     textAlign: "center",
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "space-between",
                     height: "100%",
-                    gap: 1,
+                    gap: "24px",
                 }}
             >
-                <Typography
-                    color="primary"
-                    variant="h5"
-                    component="div"
-                    sx={{
-                        overflow: "hidden",
-                        maxWidth: "100%",
-                        textWrap: "stable",
+                <div
+                    style={{
+                        display: "flex",
+                        gap: "10px",
+                        flexDirection: "column",
+                        alignItems: "center",
                     }}
                 >
-                    {props.tecaj.naziv}
-                </Typography>
-                <div>{props.tecaj.opis}</div>
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"space-between"}
+                        alignItems={"flex-start"}
+                    >
+                        <Typography
+                            color="primary"
+                            variant="h5"
+                            sx={{
+                                textAlign: "left",
+                                width: "100%",
+                                overflowWrap: "break-word",
+                                wordBreak: "break-word",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 3,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                                height: "6rem",
+                            }}
+                        >
+                            {props.tecaj.naziv}
+                        </Typography>
+                    </Box>
+                    <div
+                        style={{
+                            width: "100%",
+                            aspectRatio: "2/1",
+                            position: "relative",
+                            overflow: "hidden",
+                        }}
+                    >
+                        {props.tecaj.naslovnaSlikaVersion ? (
+                            <img
+                                style={{
+                                    borderRadius: "10px",
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                }}
+                                src={`${import.meta.env.VITE_REACT_AWS_BUCKET}${
+                                    props.tecaj?.naslovnaSlikaVersion
+                                }`}
+                                alt="Greška pri učitavanju slike."
+                            />
+                        ) : (
+                            <div
+                                style={{
+                                    borderRadius: "10px",
+                                    objectFit: "cover",
+                                    width: "100%",
+                                    height: "100%",
+                                    backgroundColor: "lightblue",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                }}
+                            >
+                                {"Nema slike ¯\\_(ツ)_/¯"}
+                            </div>
+                        )}
+                    </div>
+                </div>
                 <div
                     style={{
                         display: "flex",
                         width: "100%",
-                        justifyContent: "flex-end",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
                         gap: "10px",
                         alignItems: "center",
                     }}
                 >
-                    {props.tecaj.cijena && props.tecaj.cijena > 0 && (
-                        <>
-                            {props.tecaj.kupljen && (
-                                <CheckCircleIcon color="info" />
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            padding: "8px 14px",
+                        }}
+                    >
+                        {props.tecaj.ocjena}/5
+                        <Rating value={props.tecaj.ocjena} readOnly />
+                    </div>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: "10px",
+                        }}
+                    >
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <UserLink
+                                user={{
+                                    id: props.tecaj.vlasnikId,
+                                    profilnaSlikaVersion:
+                                        props.tecaj.vlasnikProfilnaSlikaVersion,
+                                    username: props.tecaj.vlasnikUsername,
+                                }}
+                            />
+                        </div>
+                        {props.tecaj.cijena !== undefined &&
+                            props.tecaj.cijena > 0 && (
+                                <>
+                                    {props.tecaj.kupljen && (
+                                        <CheckCircleIcon color="info" />
+                                    )}
+                                    <Button
+                                        disabled={props.tecaj.kupljen}
+                                        variant="contained"
+                                        onClick={() =>
+                                            handleCheckout(props.tecaj.id)
+                                        }
+                                    >
+                                        {props.tecaj.cijena}€
+                                    </Button>
+                                </>
                             )}
-                            <Button
-                                disabled={props.tecaj.kupljen}
-                                variant="contained"
-                                onClick={() => handleCheckout(props.tecaj.id)}
-                            >
-                                {props.tecaj.cijena}€
-                            </Button>
-                        </>
-                    )}
+                    </div>
                 </div>
             </CardContent>
         </Card>
     );
-}
+};
+
+export default observer(Tecaj);

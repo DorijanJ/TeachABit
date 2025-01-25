@@ -1,17 +1,21 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using TeachABit.Model.DTOs.Korisnici;
+using TeachABit.Model.Enums;
 using TeachABit.Model.Models.Korisnici;
+using TeachABit.Model.Models.Uloge;
 
 namespace TeachABit.Service.Services.Authorization
 {
-    public class AuthorizationService(IHttpContextAccessor httpContextAccessor, IMapper mapper, UserManager<Korisnik> userManager) : IAuthorizationService
+    public class AuthorizationService(IHttpContextAccessor httpContextAccessor, IMapper mapper, UserManager<Korisnik> userManager, RoleManager<Uloga> roleManager) : IAuthorizationService
     {
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IMapper _mapper = mapper;
         private readonly UserManager<Korisnik> _userManager = userManager;
+        private readonly RoleManager<Uloga> _roleManager = roleManager;
 
         public Korisnik GetKorisnik()
         {
@@ -43,17 +47,27 @@ namespace TeachABit.Service.Services.Authorization
             return _mapper.Map<KorisnikDto>(GetKorisnik());
         }
 
-        public async Task<KorisnikDto> GetKorisnikFull()
+        public async Task<Korisnik> GetKorisnikFull()
         {
             var korisnik = GetKorisnik();
-            return _mapper.Map<KorisnikDto>(await _userManager.FindByIdAsync(korisnik.Id));
+            var fullKorisnik = await _userManager.Users
+                .Include(x => x.KorisnikUloge)
+                .ThenInclude(x => x.Uloga)
+                .Include(x => x.VerifikacijaStatus)
+                .FirstOrDefaultAsync(k => k.Id == korisnik.Id);
+            return fullKorisnik ?? throw new UnauthorizedAccessException();
         }
 
-        public async Task<bool> IsAdmin()
+        public async Task<bool> HasPermission(LevelPristupaEnum levelPristupa)
         {
             var korisnik = GetKorisnik();
-            var roles = await _userManager.GetRolesAsync(korisnik);
-            return roles.Contains("Admin");
+
+            var userRoles = await _userManager.GetRolesAsync(korisnik);
+            var highestRole = _roleManager.Roles
+                .Where(role => role.Name != null && userRoles.Contains(role.Name))
+                .Select(role => role.LevelPristupa)
+                .Max();
+            return highestRole >= (int)levelPristupa;
         }
     }
 }

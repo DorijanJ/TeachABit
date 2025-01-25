@@ -2,17 +2,46 @@
 
 namespace TeachABit.Model.DTOs.Authentication
 {
-    public class RegisterAttemptDto
+    public class RegisterAttemptDto : IValidatableObject
     {
         [Required(ErrorMessage = "Email ne smije biti prazan.")]
+        [MinLength(1, ErrorMessage = "Email ne smije biti prazan.")]
+        [StringLength(50, ErrorMessage = "Email predugačak.")]
         [EmailAddress(ErrorMessage = "Neispravan Email.")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Username ne smije biti prazan.")]
+        [MinLength(1, ErrorMessage = "USername ne smije biti prazan.")]
+        [StringLength(50, ErrorMessage = "Username predugačak.")]
         public string Username { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Lozinka ne smije biti prazna.")]
-        [RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$", ErrorMessage = "Lozinka nije dovoljno kompleksna.")]
+        [MinLength(1, ErrorMessage = "Lozinka ne smije biti prazna.")]
         public string Password { get; set; } = string.Empty;
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            ArgumentNullException.ThrowIfNull(validationContext);
+
+            if (Password.Length < 8 || Password.Length > 16)
+            {
+                yield return new ValidationResult("Lozinka mora biti dugačka između 8 i 16 znakova.", new[] { nameof(Password) });
+            }
+
+            if (!Password.Any(char.IsUpper))
+            {
+                yield return new ValidationResult("Lozinka mora sadržavati barem jedno veliko slovo.", new[] { nameof(Password) });
+            }
+
+            if (!Password.Any(char.IsLower))
+            {
+                yield return new ValidationResult("Lozinka mora sadržavati barem jedno malo slovo.", new[] { nameof(Password) });
+            }
+
+            if (!Password.Any(char.IsDigit))
+            {
+                yield return new ValidationResult("Lozinka mora sadržavati barem jedan broj.", new[] { nameof(Password) });
+            }
+        }
     }
 }

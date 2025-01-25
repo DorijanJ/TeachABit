@@ -1,9 +1,22 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import requests from "../../api/agent";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MessageResponseDto } from "../../models/common/MessageResponseDto";
-import { Alert, Button, InputAdornment, Stack, TextField } from "@mui/material";
+import {
+    Alert,
+    Button,
+    IconButton,
+    InputAdornment,
+    Stack,
+    TextField,
+    Tooltip,
+    Typography,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import HelpIcon from "@mui/icons-material/Help";
+
+const minPasswordLength = 8;
+const maxPasswordLength = 16;
 
 export default function ResetPassword() {
     const location = useLocation();
@@ -31,99 +44,143 @@ export default function ResetPassword() {
         }
     };
 
+    const isValidPassword = useMemo(() => {
+        const password = newPassword;
+        if (
+            password.length < minPasswordLength ||
+            password.length > maxPasswordLength ||
+            !/[A-Z]/.test(password) ||
+            !/[a-z]/.test(password) ||
+            !/[0-9]/.test(password)
+        )
+            return false;
+        return true;
+    }, [newPassword]);
+
+    const navigate = useNavigate();
+
     return (
         <>
-            <form
+            <div
                 style={{
-                    backgroundColor: "background",
-                    padding: "20px",
-                    boxSizing: "border-box",
-                    maxWidth: "fit-content",
-                    borderRadius: "5px",
-                    height: "300px",
-                }}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleReset();
+                    display: "flex",
+                    gap: "20px",
+                    flexDirection: "column",
+                    alignItems: "center",
                 }}
             >
-                <Stack
-                    gap={"10px"}
-                    padding={"10px"}
-                    alignItems={"center"}
-                    width={400}
+                <img
+                    onClick={() => navigate("/tecajevi")}
+                    style={{ height: "200px", width: "200px" }}
+                    src="/src/images/logo.png"
+                />
+
+                <form
+                    style={{ width: "100%", maxWidth: "500px" }}
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleReset();
+                    }}
                 >
-                    <TextField
-                        fullWidth
-                        label="New password"
-                        value={newPassword}
-                        type={showNewPassword ? "text" : "password"}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        slotProps={{
-                            input: {
-                                endAdornment: (
-                                    <InputAdornment
-                                        sx={{ cursor: "pointer" }}
-                                        onClick={() =>
-                                            setShowNewPassword((prev) => !prev)
-                                        }
-                                        position="end"
-                                    >
-                                        {showNewPassword ? (
-                                            <Visibility />
-                                        ) : (
-                                            <VisibilityOff />
-                                        )}
-                                    </InputAdornment>
-                                ),
-                            },
-                        }}
-                    />
-                    <TextField
-                        fullWidth
-                        label="Confirm password"
-                        value={confirmPassword}
-                        type={showConfirmPassword ? "text" : "password"}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        slotProps={{
-                            input: {
-                                endAdornment: (
-                                    <InputAdornment
-                                        sx={{ cursor: "pointer" }}
-                                        onClick={() =>
-                                            setShowConfirmPassword(
-                                                (prev) => !prev
-                                            )
-                                        }
-                                        position="end"
-                                    >
-                                        {showConfirmPassword ? (
-                                            <Visibility />
-                                        ) : (
-                                            <VisibilityOff />
-                                        )}
-                                    </InputAdornment>
-                                ),
-                            },
-                        }}
-                    />
-                    <Button
-                        disabled={
-                            !newPassword || newPassword !== confirmPassword
-                        }
-                        sx={{ width: "50%" }}
-                        variant="contained"
-                        type="submit"
-                    >
-                        {"Reset password"}
-                    </Button>
-                    {message && (
-                        <Alert severity={message.severity}>
-                            {message.message}
-                        </Alert>
-                    )}
-                </Stack>
-            </form>
+                    <Stack gap={"10px"} padding={"10px"} alignItems={"center"}>
+                        <TextField
+                            fullWidth
+                            label="New password"
+                            value={newPassword}
+                            type={showNewPassword ? "text" : "password"}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <>
+                                            <Tooltip
+                                                title={
+                                                    <Typography variant="body2">
+                                                        Duljina 8-16 znakova.
+                                                        <br />
+                                                        Mora sadržavati barem
+                                                        jedno malo slovo.
+                                                        <br />
+                                                        Mora sadržavati barem
+                                                        jedno veliko slovo.
+                                                        <br />
+                                                        Mora sadržavati barem
+                                                        jedan broj.
+                                                    </Typography>
+                                                }
+                                            >
+                                                <IconButton>
+                                                    <HelpIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <InputAdornment
+                                                sx={{ cursor: "pointer" }}
+                                                onClick={() =>
+                                                    setShowNewPassword(
+                                                        (prev) => !prev
+                                                    )
+                                                }
+                                                position="end"
+                                            >
+                                                {showNewPassword ? (
+                                                    <Visibility />
+                                                ) : (
+                                                    <VisibilityOff />
+                                                )}
+                                            </InputAdornment>
+                                        </>
+                                    ),
+                                },
+                            }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Confirm password"
+                            value={confirmPassword}
+                            type={showConfirmPassword ? "text" : "password"}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment
+                                            sx={{ cursor: "pointer" }}
+                                            onClick={() =>
+                                                setShowConfirmPassword(
+                                                    (prev) => !prev
+                                                )
+                                            }
+                                            position="end"
+                                        >
+                                            {showConfirmPassword ? (
+                                                <Visibility />
+                                            ) : (
+                                                <VisibilityOff />
+                                            )}
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                        <Button
+                            disabled={
+                                !newPassword ||
+                                newPassword !== confirmPassword ||
+                                !isValidPassword
+                            }
+                            sx={{ width: "50%" }}
+                            variant="contained"
+                            type="submit"
+                        >
+                            {"Reset password"}
+                        </Button>
+                        {message && (
+                            <Alert severity={message.severity}>
+                                {message.message}
+                            </Alert>
+                        )}
+                    </Stack>
+                </form>
+            </div>
         </>
     );
 }

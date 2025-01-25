@@ -45,6 +45,7 @@ export default function AuthButton() {
                     margin: 5,
                 }}
                 onClick={() => setSelectedTab(0)}
+                id="authForm-prijavaButton"
             >
                 Prijava
             </Button>
@@ -53,7 +54,6 @@ export default function AuthButton() {
                     open
                     onClose={onClose}
                     sx={{
-                        maxHeight: "500vh",
                         padding: 0,
                     }}
                 >

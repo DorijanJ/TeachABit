@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TeachABit.API.Middleware;
 using TeachABit.Model.DTOs.Objave;
+using TeachABit.Model.Enums;
 using TeachABit.Service.Services.Objave;
 
 namespace TeachABit.API.Controllers
@@ -26,12 +28,16 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpPost]
+        [NotStatus(KorisnikStatusEnum.Utisan)]
+        [ModelStateFilter]
         public async Task<IActionResult> CreateObjava(ObjavaDto objava)
         {
             return GetControllerResult(await _objaveService.CreateObjava(objava));
         }
 
         [HttpPut]
+        [NotStatus(KorisnikStatusEnum.Utisan)]
+        [ModelStateFilter]
         public async Task<IActionResult> UpdateObjava(UpdateObjavaDto updateObjava)
         {
             return GetControllerResult(await _objaveService.UpdateObjava(updateObjava));
@@ -47,13 +53,15 @@ namespace TeachABit.API.Controllers
         [HttpGet("{id}/komentari")]
         public async Task<IActionResult> GetKomentarListByObjavaId(int id)
         {
-            return GetControllerResult(await _objaveService.GetKomentarListRecursive(id));
+            return GetControllerResult(await _objaveService.GetObjavaKomentarListRecursive(id));
         }
 
         [HttpPost("{id}/komentari")]
-        public async Task<IActionResult> CreateKomentar([FromBody] KomentarDto komentar, int id)
+        [NotStatus(KorisnikStatusEnum.Utisan)]
+        [ModelStateFilter]
+        public async Task<IActionResult> CreateKomentar([FromBody] ObjavaKomentarDto komentar, int id)
         {
-            return GetControllerResult(await _objaveService.CreateKomentar(komentar, id));
+            return GetControllerResult(await _objaveService.CreateObjavaKomentar(komentar, id));
         }
 
         [HttpPost("{id}/like")]
@@ -63,9 +71,9 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpPost("komentari/{komentarId}/like")]
-        public async Task<IActionResult> Like(int komentarId)
+        public async Task<IActionResult> LikeObjavaKomentar(int komentarId)
         {
-            return GetControllerResult(await _objaveService.LikeKomentar(komentarId));
+            return GetControllerResult(await _objaveService.LikeObjavaKomentar(komentarId));
         }
 
         [HttpPost("{id}/dislike")]
@@ -75,33 +83,47 @@ namespace TeachABit.API.Controllers
         }
 
         [HttpPost("komentari/{komentarId}/dislike")]
-        public async Task<IActionResult> DislikeKomentar(int komentarId)
+        public async Task<IActionResult> DislikeObjavaKomentar(int komentarId)
         {
-            return GetControllerResult(await _objaveService.DislikeKomentar(komentarId));
+            return GetControllerResult(await _objaveService.DislikeObjavaKomentar(komentarId));
         }
 
         [HttpDelete("{id}/reakcija")]
         public async Task<IActionResult> ClearObjavaReaction(int id)
         {
-            return GetControllerResult(await _objaveService.ClearObjavaReaction(id));
+            return GetControllerResult(await _objaveService.ClearObjavaKomentarReaction(id));
         }
 
         [HttpDelete("komentari/{komentarId}/reakcija")]
         public async Task<IActionResult> ClearKomentarReaction(int komentarId)
         {
-            return GetControllerResult(await _objaveService.ClearKomentarReaction(komentarId));
+            return GetControllerResult(await _objaveService.ClearObjavaKomentarReaction(komentarId));
         }
 
         [HttpPut("komentari")]
-        public async Task<IActionResult> UpdateKomentar(UpdateKomentarDto updateKomentar)
+        [ModelStateFilter]
+        [NotStatus(KorisnikStatusEnum.Utisan)]
+        public async Task<IActionResult> UpdateKomentar(UpdateObjavaKomentarDto updateKomentar)
         {
-            return GetControllerResult(await _objaveService.UpdateKomentar(updateKomentar));
+            return GetControllerResult(await _objaveService.UpdateObjavaKomentar(updateKomentar));
         }
 
         [HttpDelete("komentari/{komentarId}")]
         public async Task<IActionResult> DeleteKomentar(int komentarId)
         {
-            return GetControllerResult(await _objaveService.DeleteKomentar(komentarId));
+            return GetControllerResult(await _objaveService.DeleteObjavaKomentar(komentarId));
+        }
+
+        [HttpPost("komentari/{komentarId}/tocan")]
+        public async Task<IActionResult> OznaciTocanKomentar(int komentarId)
+        {
+            return GetControllerResult(await _objaveService.OznaciKaoTocan(komentarId));
+        }
+
+        [HttpDelete("komentari/{komentarId}/tocan")]
+        public async Task<IActionResult> ClearTocanKomentar(int komentarId)
+        {
+            return GetControllerResult(await _objaveService.ClearTocanKomentar(komentarId));
         }
     }
 }

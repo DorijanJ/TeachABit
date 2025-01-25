@@ -1,20 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Stripe;
 using TeachABit.Model.DTOs.Placanja;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
 using TeachABit.Service.Services.Placanja;
-using TeachABit.Service.Util.Stripe;
 
 namespace TeachABit.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlacanjaController(IOptions<StripeSettings> stripeSettings, IPlacanjaService placanjaService, IConfiguration configuration) : BaseController
+    public class PlacanjaController(IPlacanjaService placanjaService, IConfiguration configuration) : BaseController
     {
-        private readonly StripeSettings _stripeSettings = stripeSettings.Value;
         private readonly IPlacanjaService _placanjaService = placanjaService;
         private readonly IConfiguration _configuration = configuration;
 
@@ -74,16 +71,15 @@ namespace TeachABit.API.Controllers
 
                     if (korisnikId != null && tecajId != null)
                         await _placanjaService.CreateTecajPlacanje(korisnikId, int.Parse(tecajId));
+
+                    metadata.TryGetValue("radionicaId", out string? radionicaId);
+
+                    if (korisnikId != null && radionicaId != null)
+                        await _placanjaService.CreateRadionicaPlacanje(korisnikId, int.Parse(radionicaId));
                 }
             }
 
             return Ok();
-        }
-
-        [HttpPost("create-checkout-session")]
-        public async Task<IActionResult> CreateCheckoutSession([FromBody] TecajPlacanjeRequestDto request)
-        {
-            return GetControllerResult(await _placanjaService.CreateTecajCheckoutSession(request));
         }
     }
 }

@@ -10,6 +10,7 @@ using TeachABit.Model.DTOs.Authentication;
 using TeachABit.Model.DTOs.Korisnici;
 using TeachABit.Model.DTOs.Result;
 using TeachABit.Model.DTOs.Result.Message;
+using TeachABit.Model.DTOs.Uloge;
 using TeachABit.Model.Models.Korisnici;
 using TeachABit.Service.Services.Authorization;
 using TeachABit.Service.Util.Mail;
@@ -17,7 +18,7 @@ using TeachABit.Service.Util.Token;
 
 namespace TeachABit.Service.Services.Authentication
 {
-    public class AuthenticationService(UserManager<Korisnik> userManager, IAuthorizationService authorizationService, SignInManager<Korisnik> signInManager, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
+    public class AuthenticationService(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, IAuthorizationService authorizationService, IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IMapper mapper, IMailSenderService mailSenderService, IConfiguration configuration) : IAuthenticationService
     {
         private readonly UserManager<Korisnik> _userManager = userManager;
         private readonly SignInManager<Korisnik> _signInManager = signInManager;
@@ -28,10 +29,13 @@ namespace TeachABit.Service.Services.Authentication
         private readonly IConfiguration _configuration = configuration;
         private readonly IAuthorizationService _authorizationService = authorizationService;
 
-        public async Task<ServiceResult<KorisnikDto>> Login(LoginAttemptDto loginAttempt)
+        public async Task<ServiceResult> Login(LoginAttemptDto loginAttempt)
         {
-            Korisnik? user = await _userManager.FindByEmailAsync(loginAttempt.Credentials)
-                ?? await _userManager.FindByNameAsync(loginAttempt.Credentials);
+            var normalizedCredentials = loginAttempt.Credentials.ToUpper();
+            Korisnik? user = await _userManager.Users
+                .Include(x => x.KorisnikUloge)
+                .ThenInclude(x => x.Uloga)
+                .FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedCredentials || x.NormalizedUserName == normalizedCredentials);
 
             if (user == null)
             {
@@ -47,26 +51,32 @@ namespace TeachABit.Service.Services.Authentication
             }
             if (!result.Succeeded) return ServiceResult.Failure(MessageDescriber.PasswordMismatch());
 
-            if (!user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.EmailNotConfirmed());
+            bool useMailConfirmation = _configuration.GetValue<bool>("UseMailConfirmation");
+
+            if (useMailConfirmation && !user.EmailConfirmed) return ServiceResult.Failure(MessageDescriber.EmailNotConfirmed());
 
             ServiceResult cookieSetResult = await SetAuthCookie(user);
             if (cookieSetResult.IsError) return ServiceResult.Failure(cookieSetResult.Message);
 
-            var korisnikDto = _mapper.Map<KorisnikDto>(user);
+            var k = (await _userManager.Users.Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == user.Id));
+            if (k != null) user.KorisnikUloge = k.KorisnikUloge;
+            RefreshUserInfoDto refresh = _mapper.Map<RefreshUserInfoDto>(user);
+            refresh.IsAuthenticated = true;
 
-            var roles = await _userManager.GetRolesAsync(user);
-            korisnikDto.Roles = [.. roles];
-
-            return ServiceResult.Success(korisnikDto);
+            return ServiceResult.Success(refresh);
         }
 
         public ServiceResult Logout()
         {
             ClearAuthCookie();
-            return ServiceResult.Success();
+            RefreshUserInfoDto refresh = new()
+            {
+                IsAuthenticated = false
+            };
+            return ServiceResult.Success(refresh: refresh);
         }
 
-        public async Task<ServiceResult<KorisnikDto>> Register(RegisterAttemptDto registerAttempt)
+        public async Task<ServiceResult> Register(RegisterAttemptDto registerAttempt)
         {
             if (await _userManager.Users.AnyAsync(x => x.UserName == registerAttempt.Username))
                 return ServiceResult.Failure(MessageDescriber.DuplicateUsername(registerAttempt.Username));
@@ -74,10 +84,13 @@ namespace TeachABit.Service.Services.Authentication
             if (await _userManager.Users.AnyAsync(x => x.Email == registerAttempt.Email))
                 return ServiceResult.Failure(MessageDescriber.DuplicateEmail(registerAttempt.Email));
 
+            bool useMailConfirmation = _configuration.GetValue<bool>("UseMailConfirmation");
+
             Korisnik user = new()
             {
                 Email = registerAttempt.Email,
                 UserName = registerAttempt.Username,
+                EmailConfirmed = !useMailConfirmation,
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, registerAttempt.Password);
@@ -87,6 +100,10 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult.Failure(MessageDescriber.RegistrationError(errorMessage));
             }
 
+            await _userManager.AddToRoleAsync(user, "Korisnik");
+
+            if (!useMailConfirmation) return ServiceResult.Success("Račun kreiran.");
+
             ServiceResult mailResult = await SendEmailConfirmationMail(user);
 
             if (mailResult.IsError)
@@ -95,7 +112,7 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult.Failure(mailResult.Message);
             }
 
-            return ServiceResult.Success(_mapper.Map<KorisnikDto>(user), MessageDescriber.EmailConfimationSent());
+            return ServiceResult.Success(MessageDescriber.EmailConfimationSent());
         }
 
         private async Task<ServiceResult> SendEmailConfirmationMail(Korisnik user)
@@ -139,7 +156,7 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        private ServiceResult ClearAuthCookie(Korisnik? user = null, bool valid = true)
+        private ServiceResult ClearAuthCookie()
         {
             var httpContext = _httpContextAccessor.HttpContext;
 
@@ -154,7 +171,7 @@ namespace TeachABit.Service.Services.Authentication
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<KorisnikDto>> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
+        public async Task<ServiceResult> SignInGoogle(GoogleSignInAttempt googleSigninAttempt)
         {
             GoogleJsonWebSignature.Payload payload;
 
@@ -185,6 +202,8 @@ namespace TeachABit.Service.Services.Authentication
                     string errorMessage = result.Errors.First().Description;
                     return ServiceResult.Failure(MessageDescriber.RegistrationError(errorMessage));
                 }
+
+                await _userManager.AddToRoleAsync(user, "Korisnik");
             }
 
             var cookieSetResult = await SetAuthCookie(user);
@@ -193,12 +212,12 @@ namespace TeachABit.Service.Services.Authentication
                 return ServiceResult.Failure(cookieSetResult.Message);
             }
 
-            var korisnikDto = _mapper.Map<KorisnikDto>(user);
+            var k = (await _userManager.Users.AsNoTracking().Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == user.Id));
+            if (k != null) user.KorisnikUloge = k.KorisnikUloge;
+            RefreshUserInfoDto refresh = _mapper.Map<RefreshUserInfoDto>(user);
+            refresh.IsAuthenticated = true;
 
-            var roles = await _userManager.GetRolesAsync(user);
-            korisnikDto.Roles = [.. roles];
-
-            return ServiceResult.Success(korisnikDto);
+            return ServiceResult.Success(refresh);
 
         }
 
@@ -275,14 +294,39 @@ namespace TeachABit.Service.Services.Authentication
 
         public async Task<ServiceResult<KorisnikDto>> GetKorisnikByUsername(string username)
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var user = await _userManager.Users
+                .Include(x => x.VerifikacijaStatus)
+                .Include(x => x.KorisnikUloge)
+                .ThenInclude(x => x.Uloga)
+                .FirstOrDefaultAsync(x => x.UserName == username);
+
             if (user == null) return ServiceResult.Failure(MessageDescriber.UserNotFound());
 
-            var userDto = _mapper.Map<KorisnikDto>(user);
-            var roles = await _userManager.GetRolesAsync(user);
-            userDto.Roles = [.. roles];
+            var korisnikDto = _mapper.Map<KorisnikDto>(user);
 
-            return ServiceResult.Success(userDto);
+            return ServiceResult.Success(korisnikDto);
+        }
+
+        public async Task<ServiceResult> Reauth()
+        {
+            var user = await _userManager.FindByIdAsync(_authorizationService.GetKorisnik().Id);
+
+            if (user == null) return ServiceResult.Failure();
+
+            var dbUser = await _userManager.Users.Include(x => x.KorisnikUloge).ThenInclude(x => x.Uloga).FirstOrDefaultAsync(x => x.Id == user.Id);
+
+            if (dbUser == null) return ServiceResult.Failure();
+
+            RefreshUserInfoDto refreshUserInfoDto = new()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                IsAuthenticated = true,
+                Roles = _mapper.Map<List<UlogaDto>>(dbUser.KorisnikUloge.Select(x => x.Uloga)),
+                KorisnikStatusId = user.KorisnikStatusId,
+            };
+
+            return ServiceResult.Success(refreshUserInfoDto);
         }
     }
 }

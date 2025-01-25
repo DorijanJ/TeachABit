@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@mui/x-data-grid": "^7.24.1",
+    "rc-slider": "^11.1.8",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1"
+  },
+  "devDependencies": {
+    "@types/react-slick": "^0.23.13"
+  }
+}
