@@ -2,7 +2,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import requests from "../../api/agent";
 import { useMemo, useState } from "react";
 import { MessageResponseDto } from "../../models/common/MessageResponseDto";
-import { Alert, Button, IconButton, InputAdornment, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import {
+    Alert,
+    Button,
+    IconButton,
+    InputAdornment,
+    Stack,
+    TextField,
+    Tooltip,
+    Typography,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import HelpIcon from "@mui/icons-material/Help";
 
@@ -34,7 +43,7 @@ export default function ResetPassword() {
             if (response?.message) setMessage(response.message);
         }
     };
-    
+
     const isValidPassword = useMemo(() => {
         const password = newPassword;
         if (
@@ -84,38 +93,41 @@ export default function ResetPassword() {
                                 input: {
                                     endAdornment: (
                                         <>
-                                        <Tooltip
-                                            title={
-                                                <Typography variant="body2">
-                                                    Duljina 8-16 znakova.
-                                                    <br />
-                                                    Mora sadržavati barem jedno malo slovo.
-                                                    <br />
-                                                    Mora sadržavati barem jedno veliko slovo.
-                                                    <br />
-                                                    Mora sadržavati barem jedan broj.
-                                                </Typography>
-                                            }
-                                        >
-                                            <IconButton>
-                                                <HelpIcon />
-                                            </IconButton>
-                                        </Tooltip>
-                                        <InputAdornment
-                                            sx={{ cursor: "pointer" }}
-                                            onClick={() =>
-                                                setShowNewPassword(
-                                                    (prev) => !prev
-                                                )
-                                            }
-                                            position="end"
-                                        >
-                                            {showNewPassword ? (
-                                                <Visibility />
-                                            ) : (
-                                                <VisibilityOff />
-                                            )}
-                                        </InputAdornment>
+                                            <Tooltip
+                                                title={
+                                                    <Typography variant="body2">
+                                                        Duljina 8-16 znakova.
+                                                        <br />
+                                                        Mora sadržavati barem
+                                                        jedno malo slovo.
+                                                        <br />
+                                                        Mora sadržavati barem
+                                                        jedno veliko slovo.
+                                                        <br />
+                                                        Mora sadržavati barem
+                                                        jedan broj.
+                                                    </Typography>
+                                                }
+                                            >
+                                                <IconButton>
+                                                    <HelpIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <InputAdornment
+                                                sx={{ cursor: "pointer" }}
+                                                onClick={() =>
+                                                    setShowNewPassword(
+                                                        (prev) => !prev
+                                                    )
+                                                }
+                                                position="end"
+                                            >
+                                                {showNewPassword ? (
+                                                    <Visibility />
+                                                ) : (
+                                                    <VisibilityOff />
+                                                )}
+                                            </InputAdornment>
                                         </>
                                     ),
                                 },
@@ -151,7 +163,9 @@ export default function ResetPassword() {
                         />
                         <Button
                             disabled={
-                                !newPassword || newPassword !== confirmPassword || !isValidPassword
+                                !newPassword ||
+                                newPassword !== confirmPassword ||
+                                !isValidPassword
                             }
                             sx={{ width: "50%" }}
                             variant="contained"
